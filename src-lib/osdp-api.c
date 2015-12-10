@@ -30,6 +30,8 @@
 #include <osdp_conformance.h>
 
 
+extern int
+  check_for_command;
 //extern OSDP_TLS_CONFIG config;
 extern OSDP_CONTEXT
   context;
@@ -97,13 +99,15 @@ void
 
 { /* signal_callback_handler */
 
-  int
-    status;
+//  int status;
 
 
+  check_for_command = 1;
+#if 0
   status = process_current_command ();
   if (status EQUALS ST_OK)
     preserve_current_command ();
+#endif
 
 } /* signal_callback_handler */
 
