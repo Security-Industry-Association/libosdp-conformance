@@ -33,7 +33,7 @@ osdp-net-client:	osdp-net-client.o \
 	${CC} -o osdp-net-client -g osdp-net-client.o \
 	  osdp-api.o \
 	  -L ../src-lib -losdp \
-	  -L /tester/current/lib -lgnutls -lexpat
+	  -L /tester/current/lib -lgnutls -lexpat -ljansson
 
 osdp-net-server:	osdp-net-server.o \
 	  osdp-api.o \
@@ -41,7 +41,7 @@ osdp-net-server:	osdp-net-server.o \
 	${CC} -o osdp-net-server -g osdp-net-server.o \
 	  osdp-api.o \
 	  -L ../src-lib -losdp \
-	  -L /tester/current/lib -lgnutls -lexpat
+	  -L /tester/current/lib -lgnutls -lexpat -ljansson
 
 oo_util.o:	oo_util.c
 	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \

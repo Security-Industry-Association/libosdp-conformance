@@ -87,6 +87,8 @@
 #define OSDP_MENU_PD_DIAG (0x0200)
 #define OSDP_MENU_SETUP   (0x0800)
 
+// commands used through breech-loading interface
+#define OSDP_CMDB_DUMP_STATUS (1001)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -209,6 +211,10 @@ typedef struct osdp_context
     authenticated;
   gnutls_session_t
     tls_session;
+  char
+    command_path [1024];
+  int
+    cmd_hist_counter;
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)
@@ -275,6 +281,12 @@ typedef struct osdp_buffer
   int
     overflow;
 } OSDP_BUFFER;
+
+typedef struct osdp_command
+{
+  int
+    command;
+} OSDP_COMMAND;
 
 typedef struct osdp_param
 {
@@ -428,6 +440,9 @@ typedef struct osdp_multi_hdr
 #define ST_MMSG_OUT_OF_ORDER (25)
 #define ST_MMSG_LAST_FRAG_TOO_BIG (26)
 #define ST_NET_INPUT_READY        (27)
+#define ST_CMD_ERROR                 (28)
+#define ST_CMD_INVALID               (29)
+#define ST_CMD_OVERFLOW              (30)
 
 #define ST_OSDP_TLS_CLOSED        (31)
 #define ST_OSDP_TLS_ERROR         (32)
@@ -439,6 +454,9 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_TLS_LISTEN_ERR    (38)
 #define ST_OSDP_TLS_NONBLOCK      (39)
 #define ST_OSDP_TLS_CLIENT_HANDSHAKE (40)
+
+#define ST_CMD_UNDERFLOW             (41)
+#define ST_CMD_PATH                  (42)
 
 
 int
@@ -480,11 +498,13 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char *sec_blk);
 int osdp_timeout (OSDP_CONTEXT *ctx, long int *last_time_check);
 int parse_message (OSDP_CONTEXT *context, OSDP_MSG *m, OSDP_HDR *h);
-void preserve_current_command (OSDP_TLS_CONFIG *cfg);
+void preserve_current_command (void);
+int process_command (int command, OSDP_CONTEXT *context);
 void process_current_command (void);
 int process_osdp_input (OSDP_BUFFER *osdpbuf);
 int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
+int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);
 int send_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int *current_length, int data_length, unsigned char *data);

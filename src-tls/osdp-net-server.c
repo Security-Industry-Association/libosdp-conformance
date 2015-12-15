@@ -87,17 +87,18 @@ int
 
 { /* generate_dh_params */
 
-        unsigned int bits = gnutls_sec_param_to_pk_bits(GNUTLS_PK_DH,
-                                                        GNUTLS_SEC_PARAM_LEGACY);
-        /* Generate Diffie-Hellman parameters - for use with DHE
-         * kx algorithms. These should be discarded and regenerated
-         * once a day, once a week or once a month. Depending on the
-         * security requirements.
-         */
-        gnutls_dh_params_init(&dh_params);
-        gnutls_dh_params_generate2(dh_params, bits);
+  unsigned int bits = gnutls_sec_param_to_pk_bits(GNUTLS_PK_DH,
+    GNUTLS_SEC_PARAM_LEGACY);
+  /* Generate Diffie-Hellman parameters - for use with DHE
+   * kx algorithms. These should be discarded and regenerated
+   * once a day, once a week or once a month. Depending on the
+   * security requirements.
+   */
+  gnutls_dh_params_init(&dh_params);
+  gnutls_dh_params_generate2(dh_params, bits);
 
-        return 0;
+  return 0;
+
 } /* generate_dh_params */
 
 
@@ -146,6 +147,8 @@ system (command);
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
 m_verbosity=9;
+strcpy (context.command_path, "/tester/current/run/open_osdp_command.json");
+context.current_menu = OSDP_MENU_TOP;
 
   if (status EQUALS ST_OK)
   {

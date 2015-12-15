@@ -29,10 +29,15 @@ clean:
 	rm -f core *.o libosdp.a
 
 libosdp.a:	oo_initialize.o oo_process.o oo_util.o oo_util2.o \
-	  oosdp_actions.o oosdp_crc.o oosdp_logmsg.o oosdp_secure.o
+	  oo_cmdbreech.o oosdp_actions.o oosdp_crc.o oosdp_logmsg.o \
+	  oosdp_secure.o oosdp_ui.o
 	ar r libosdp.a \
-	  oo_initialize.o oo_process.o oo_util.o oo_util2.o \
-	  oosdp_actions.o oosdp_crc.o oosdp_logmsg.o oosdp_secure.o
+	  oo_cmdbreech.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
+	  oosdp_actions.o oosdp_crc.o oosdp_logmsg.o oosdp_secure.o oosdp_ui.o
+
+oo_cmdbreech.o:	oo_cmdbreech.c
+	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	  oo_cmdbreech.c
 
 oo_initialize.o:	oo_initialize.c
 	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
@@ -65,4 +70,8 @@ oosdp_logmsg.o:	oosdp_logmsg.c
 oosdp_secure.o:	oosdp_secure.c
 	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
 	  oosdp_secure.c
+
+oosdp_ui.o:	oosdp_ui.c
+	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	  oosdp_ui.c
 

@@ -25,8 +25,6 @@ typedef struct osdp_tls_config
 //  int role;
   int
     listen_sap;
-  int
-    cmd_hist_counter;
   char
     cmd_dir [1024];
   char

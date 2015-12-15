@@ -31,6 +31,8 @@
 
 extern OSDP_TLS_CONFIG
   config;
+extern OSDP_CONTEXT
+  context;
 
 void
   process_current_command
@@ -38,30 +40,47 @@ void
 
 { /*process_current_command */
 
+  OSDP_COMMAND
+    cmd;
+  int
+    status;
+
+
   fprintf (stderr, "processing current command...\n");
+  status = read_command (&context, &cmd);
+  if (status EQUALS ST_OK)
+  {
+    status = process_command (cmd.command, &context);
+  };
+  if (status != ST_OK)
+    fprintf (stderr, "process_current_command: status %d\n",
+      status);
 
 } /*process_current_command */
 
 
 void
   preserve_current_command
-    (OSDP_TLS_CONFIG
-      *cfg)
+    (void)
 
 { /* preserve_current_command */
 
   char
     command [1024];
+  char
+    preserve [1024];
 
 
-  sprintf (command, "mv %s/osdp-tls_command.json %s/history/%02d_osdp-tls_command.json",
-    cfg->cmd_dir,
-    cfg->cmd_dir,
-    cfg->cmd_hist_counter);
+  sprintf (preserve, "%s_%02d",
+    context.command_path,
+    context.cmd_hist_counter);
+  sprintf (command, "mv %s %s",
+    context.command_path,
+    preserve);
   system (command);
-  cfg->cmd_hist_counter ++;
-  if (cfg->cmd_hist_counter > 99)
-    cfg->cmd_hist_counter = 0;
+  context.cmd_hist_counter ++;
+  if (context.cmd_hist_counter > 99)
+    context.cmd_hist_counter = 0;
 
 } /* preserve_current_command */
 
@@ -91,7 +110,7 @@ void
 { /* signal_callback_handler */
 
   process_current_command ();
-  preserve_current_command (&config);
+  preserve_current_command ();
 
 } /* signal_callback_handler */
 
