@@ -534,6 +534,37 @@ fprintf (stderr, "fixme: RND.A\n");
       dump_conformance (context, &osdp_conformance);
       status = ST_OK;
       break;
+    case OSDP_CMDB_IDENT:
+      {
+        unsigned char
+          param [1];
+
+        current_length = 0;
+        /*
+          osdp_ID takes one argment, a one byte value of 0 indicating
+          "send Standard PD ID Block"
+        */
+        param [0] = 0;
+        current_length = 0;
+        status = send_message (context,
+          OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
+        osdp_conformance.cmd_id.test_status =
+          OCONFORM_EXERCISED;
+        if (m_verbosity > 3)
+          fprintf (stderr, "Requesting PD Ident\n");
+      };
+      status = ST_OK;
+      break;
+    case OSDP_CMDB_SEND_POLL:
+      current_length = 0;
+      status = send_message (context,
+        OSDP_POLL, p_card.addr, &current_length, 0, NULL);
+      if (m_verbosity > 3)
+        fprintf (stderr, "On-demand polling\n");
+      status = ST_OK;
+      break;
+
+    // menu (keyboard-driven) cases
 
     case OSDP_CMD_CP_DIAG:
       context->current_menu = OSDP_MENU_CP_DIAG;

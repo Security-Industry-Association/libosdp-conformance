@@ -536,7 +536,7 @@ int
     0); // no security
   if (status EQUALS ST_OK)
   {
-  if (m_verbosity > 3)
+  if (m_verbosity > 4)
     if (1 /* m_dump */ )
     {
       int

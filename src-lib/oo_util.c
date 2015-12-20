@@ -1329,7 +1329,7 @@ printf ("MMSG DONE\n");
     case OSDP_PDID:
       status = oosdp_make_message (OOSDP_MSG_PD_IDENT, tlogmsg, msg);
       if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_STRING, 1, tlogmsg);
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;
 

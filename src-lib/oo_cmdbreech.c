@@ -95,11 +95,38 @@ int
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));
-    fprintf (stderr, "command was %s\n",
-      this_command);
     test_command = "dump_status";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
       cmd->command = OSDP_CMDB_DUMP_STATUS;
+      if (m_verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "ident";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_IDENT;
+      if (m_verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "send_poll";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_SEND_POLL;
+      if (m_verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
   }; 
   if (cmdf != NULL)
     fclose (cmdf);

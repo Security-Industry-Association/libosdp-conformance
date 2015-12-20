@@ -89,6 +89,8 @@
 
 // commands used through breech-loading interface
 #define OSDP_CMDB_DUMP_STATUS (1001)
+#define OSDP_CMDB_SEND_POLL   (1002)
+#define OSDP_CMDB_IDENT       (1003)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)

@@ -146,7 +146,7 @@ system (command);
   last_time_check = time (NULL);
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
-m_verbosity=9;
+m_verbosity=4;
 strcpy (context.command_path, "/tester/current/run/open_osdp_command.json");
 context.current_menu = OSDP_MENU_TOP;
 
