@@ -1,0 +1,3 @@
+#!/bin/bash
+echo $1 >/opt/open-osdp/run/current_osdp_server_CP_pid
+
