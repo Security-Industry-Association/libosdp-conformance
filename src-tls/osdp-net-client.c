@@ -145,6 +145,7 @@ m_verbosity = 9;
     status = initialize_osdp (&context);
   context.role = OSDP_ROLE_PD;
   m_verbosity = 9;
+strcpy (context.command_path, "/tester/current/run/open_osdp_command.json");
 
   context.authenticated = 1; // for now just say we're authenticated.
 
@@ -153,13 +154,19 @@ m_verbosity = 9;
     fprintf (stderr, "osdp-tls version %s\n",
       config->version);
     if (context.role EQUALS OSDP_ROLE_CP)
+    {
       fprintf (stderr, "Role: CP\n");
+      fprintf (stderr, "Server certificate: %s\n",
+        config->cert_file);
+      fprintf (stderr, "        Server key: %s\n",
+        config->key_file);
+    };
     if (context.role EQUALS OSDP_ROLE_PD)
+    {
       fprintf (stderr, "Role: PD\n");
-    fprintf (stderr, "Server certificate: %s\n",
-      config->cert_file);
-    fprintf (stderr, "        Server key: %s\n",
-      config->key_file);
+      fprintf (stderr, "CA list: %s\n",
+        config->ca_file);
+    };
   };
 
   return (status);

@@ -34,7 +34,7 @@ extern OSDP_TLS_CONFIG
 extern OSDP_CONTEXT
   context;
 
-void
+int
   process_current_command
     (void)
 
@@ -55,6 +55,7 @@ void
   if (status != ST_OK)
     fprintf (stderr, "process_current_command: status %d\n",
       status);
+  return (status);
 
 } /*process_current_command */
 
@@ -109,8 +110,13 @@ void
 
 { /* signal_callback_handler */
 
-  process_current_command ();
-  preserve_current_command ();
+  int
+    status;
+
+
+  status = process_current_command ();
+  if (status EQUALS ST_OK)
+    preserve_current_command ();
 
 } /* signal_callback_handler */
 

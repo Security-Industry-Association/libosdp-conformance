@@ -336,19 +336,6 @@ int
     switch (command)
     {
     case OSDP_CMD_CAP:
-      {
-        unsigned char
-          param [1];
-
-        current_length = 0;
-        param [0] = 0;
-        status = send_message (context,
-          OSDP_CAP, p_card.addr, &current_length, sizeof (param), param);
-        osdp_conformance.cmd_pdcap.test_status =
-          OCONFORM_EXERCISED;
-        if (m_verbosity > 2)
-          fprintf (stderr, "Requesting Capabilities Report\n");
-      };
       break;
 
     case OSDP_CMD_CP_SEND_POLL:
@@ -530,6 +517,22 @@ fprintf (stderr, "fixme: RND.A\n");
     {
     // breech-loaded cases
 
+    case OSDP_CMDB_CAPAS:
+      {
+        unsigned char
+          param [1];
+
+        current_length = 0;
+        param [0] = 0;
+        status = send_message (context,
+          OSDP_CAP, p_card.addr, &current_length, sizeof (param), param);
+        osdp_conformance.cmd_pdcap.test_status =
+          OCONFORM_EXERCISED;
+        if (m_verbosity > 2)
+          fprintf (stderr, "Requesting Capabilities Report\n");
+      };
+      status = ST_OK;
+      break;
     case OSDP_CMDB_DUMP_STATUS:
       dump_conformance (context, &osdp_conformance);
       status = ST_OK;

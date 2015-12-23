@@ -91,6 +91,7 @@
 #define OSDP_CMDB_DUMP_STATUS (1001)
 #define OSDP_CMDB_SEND_POLL   (1002)
 #define OSDP_CMDB_IDENT       (1003)
+#define OSDP_CMDB_CAPAS       (1004)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -502,7 +503,7 @@ int osdp_timeout (OSDP_CONTEXT *ctx, long int *last_time_check);
 int parse_message (OSDP_CONTEXT *context, OSDP_MSG *m, OSDP_HDR *h);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context);
-void process_current_command (void);
+int process_current_command (void);
 int process_osdp_input (OSDP_BUFFER *osdpbuf);
 int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
