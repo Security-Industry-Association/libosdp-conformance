@@ -119,7 +119,7 @@ int
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));
-    test_command = "ident";
+    test_command = "identify";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_IDENT;

@@ -1,0 +1,4 @@
+#!/bin/bash
+./osdp-net-server &
+echo >/opt/open-osdp/run/current_osdp_server_CP_pid $!
+

@@ -133,6 +133,17 @@ system (command);
 
   strcpy (specified_passphrase, "speakFriend&3ntr");
 
+  // initialize my current pid
+  {
+    pid_t
+      my_pid;
+
+    my_pid = getpid ();
+    sprintf (command, "sudo -n /opt/open-osdp/bin/set-cp-pid %d",
+      my_pid);
+    system (command);
+  };
+
 {
   int status_signal;
   static struct sigaction signal_action;
@@ -147,7 +158,7 @@ system (command);
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
 m_verbosity=4;
-strcpy (context.command_path, "/tester/current/run/open_osdp_command.json");
+strcpy (context.command_path, "/opt/open-osdp/run/open_osdp_command.json");
 context.current_menu = OSDP_MENU_TOP;
 
   if (status EQUALS ST_OK)

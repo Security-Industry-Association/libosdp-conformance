@@ -27,6 +27,10 @@ all:	${PROGS}
 clean:
 	rm -f core *.o ${PROGS}
 
+build:	all
+	mkdir -p ../opt/open-osdp/bin
+	cp ${PROGS} ../opt/open-osdp/bin
+
 osdp-net-client:	osdp-net-client.o \
 	  osdp-api.o \
 	  Makefile

@@ -178,6 +178,27 @@ int
 
   case OOSDP_MSG_PD_IDENT:
     msg = (OSDP_MSG *) aux;
+{
+  FILE *identf;
+  identf = fopen ("/opt/open-osdp/run/ident_from_PD00.json", "w");
+if (identf != NULL)
+{
+  fprintf (identf, "{\n");
+  fprintf (identf, "  \"OUI\" : \"%02x-%02x-%02x\"\n",
+    *(msg->data_payload + 0), *(msg->data_payload + 1),
+    *(msg->data_payload + 2));
+  fprintf (identf, "  \"version\" : \"model-%d-ver-%d\"\n",
+    *(msg->data_payload + 3), *(msg->data_payload + 4));
+  fprintf (identf, "  \"serial\" : \"%02x%02x%02x%02x\"\n",
+    *(msg->data_payload + 5), *(msg->data_payload + 6),
+    *(msg->data_payload + 7), *(msg->data_payload + 8));
+  fprintf (identf, "  \"firmware\" : \"%d.%d-build-%d\"\n",
+    *(msg->data_payload + 9), *(msg->data_payload + 10),
+    *(msg->data_payload + 11));
+  fprintf (identf, "}\n");
+  fclose (identf);
+};
+};
     sprintf (tlogmsg, 
 "PD Identification\n OUI %02x-%02x-%02x Model %d Ver %d SN %02x%02x%02x%02x FW %d.%d Build %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1),

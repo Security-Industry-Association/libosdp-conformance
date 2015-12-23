@@ -75,7 +75,7 @@ void
   sprintf (preserve, "%s_%02d",
     context.command_path,
     context.cmd_hist_counter);
-  sprintf (command, "mv %s %s",
+  sprintf (command, "sudo -n mv %s %s",
     context.command_path,
     preserve);
   system (command);
