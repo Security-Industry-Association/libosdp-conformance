@@ -21,6 +21,7 @@
 #define OCONFORM_UNTESTED     (0)
 #define OCONFORM_EXERCISED    (1)
 #define OCONFORM_EX_GOOD_ONLY (2)
+#define OCONFORM_FAIL         (3)
 
 typedef struct osdp_conform
 {
@@ -36,6 +37,10 @@ typedef struct osdp_interop_assessment
     fail;
   int
     untested;
+  int
+    conforming_messages;
+  int
+    last_unknown_command;
   // 2.x
   OSDP_CONFORM physical_interface;      // 2.1
   OSDP_CONFORM signalling;              // 2.2
@@ -90,3 +95,4 @@ typedef struct osdp_interop_assessment
 
 } OSDP_INTEROP_ASSESSMENT;
 
+#define PARAM_MMT (3) // minimum message thresshold

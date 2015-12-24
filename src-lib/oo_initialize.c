@@ -129,6 +129,7 @@ int
   status = ST_OK;
   memset (context, 0, sizeof (*context));
   memset (&osdp_conformance, 0, sizeof (osdp_conformance));
+  osdp_conformance.last_unknown_command = OSDP_POLL;
   context->mmsgbuf = multipart_message_buffer_1;
   memset (&p_card, 0, sizeof (p_card));
 

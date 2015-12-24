@@ -75,6 +75,10 @@ void
   sprintf (preserve, "%s_%02d",
     context.command_path,
     context.cmd_hist_counter);
+  sprintf (command,
+    "sudo -n chmod 777 %s",
+    context.command_path);
+  system (command);
   sprintf (command, "sudo -n mv %s %s",
     context.command_path,
     preserve);

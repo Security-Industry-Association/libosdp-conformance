@@ -409,10 +409,6 @@ if (m_verbosity > 3)
         };
         fprintf (context->log, "\n");
       };
-    // note we just processed the CTRL field
-    osdp_conformance.CTRL.test_status = OCONFORM_EXERCISED;
-    // note the length looks (more or less) legitimate
-    osdp_conformance.LEN.test_status = OCONFORM_EX_GOOD_ONLY;
 
     // go check the command field
     osdp_conformance.CMND_REPLY.test_status = OCONFORM_EX_GOOD_ONLY;
@@ -435,6 +431,8 @@ if (m_verbosity > 3)
         strcpy (tlogmsg2, "osdp_ACK");
       context->pd_acks ++;
       osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
       break;
 
     case OSDP_BUSY:
@@ -590,6 +588,8 @@ if (m_verbosity > 3)
       if (m_verbosity > 2)
         strcpy (tlogmsg2, "osdp_POLL");
       context->cp_polls ++;
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
       break;
 
     case OSDP_RAW:
@@ -642,8 +642,6 @@ if (m_verbosity > 3)
       wire_crc = *(1+m->crc_check) << 8 | *(m->crc_check);
       if (parsed_crc != wire_crc)
         status = ST_BAD_CRC;
-      else
-        osdp_conformance.CHKSUM_CRC16.test_status = OCONFORM_EX_GOOD_ONLY;
 
     }
     else
@@ -693,10 +691,6 @@ if (m->lth == 7)
       us but it's a frame.
     */
     context->packets_received ++;
-    osdp_conformance.physical_interface.test_status = OCONFORM_EXERCISED;
-    osdp_conformance.signalling.test_status = OCONFORM_EXERCISED;
-    osdp_conformance.character_encoding.test_status = OCONFORM_EXERCISED;
-    osdp_conformance.channel_access.test_status = OCONFORM_EXERCISED;
 
     if (context->role EQUALS OSDP_ROLE_PD)
       if ((p_card.addr != p->addr) && (p->addr != 0x7f))
@@ -1361,6 +1355,8 @@ printf ("MMSG DONE\n");
       break;
     };
   } /* role CP */
+  if (status EQUALS ST_MSG_UNKNOWN)
+    osdp_conformance.last_unknown_command = msg->msg_cmd;
 
   return (status);
 

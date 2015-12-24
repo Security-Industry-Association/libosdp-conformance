@@ -71,6 +71,7 @@ int
   if (cmdf != NULL)
   {
     status = ST_OK;
+    memset (json_string, 0, sizeof (json_string));
     status_io = fread (json_string,
       sizeof (json_string [0]), sizeof (json_string), cmdf);
     if (status_io >= sizeof (json_string))
@@ -83,7 +84,11 @@ int
   {
     root = json_loads (json_string, 0, &status_json);
     if (!root)
+    {
+      fprintf (stderr, "JSON parser failed.  String was ->\n%s<-\n",
+        json_string);
       status = ST_CMD_ERROR;
+    };
     if (status EQUALS ST_OK)
     {
       strcpy (field, "command");

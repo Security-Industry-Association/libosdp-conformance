@@ -77,6 +77,10 @@ char
     strcpy (response, "Exercised (no edge case tests)");
     osdp_conformance.pass ++;
     break;
+  case OCONFORM_FAIL:
+    strcpy (response, "Failed)");
+    osdp_conformance.fail ++;
+    break;
   default:
     sprintf (response, "conformance status unknown(%d)", cstat);
     break;
@@ -190,6 +194,40 @@ void
   oconf->pass = 0;
   oconf->fail = 0;
   oconf->untested = 0;
+
+  // fill in results for mmt cases
+
+  if (oconf->conforming_messages >= PARAM_MMT)
+  {
+    oconf->physical_interface.test_status =
+      OCONFORM_EXERCISED;
+    oconf->signalling.test_status =
+      OCONFORM_EXERCISED;
+    oconf->character_encoding.test_status =
+      OCONFORM_EXERCISED;
+    oconf->channel_access.test_status =
+      OCONFORM_EXERCISED;
+    oconf->packet_format.test_status =
+      OCONFORM_EXERCISED;
+    oconf->SOM.test_status =
+      OCONFORM_EXERCISED;
+    oconf->LEN.test_status =
+      OCONFORM_EXERCISED;
+    oconf->CTRL.test_status =
+      OCONFORM_EXERCISED;
+    oconf->CTRL.test_status =
+      OCONFORM_EXERCISED;
+    oconf->security_block.test_status =
+      OCONFORM_EXERCISED;
+    oconf->CHKSUM_CRC16.test_status =
+      OCONFORM_EXERCISED;
+    if (oconf->last_unknown_command EQUALS OSDP_POLL)
+      oconf->CMND_REPLY.test_status =
+        OCONFORM_EXERCISED;
+    else
+      oconf->CMND_REPLY.test_status =
+        OCONFORM_FAIL;
+  };
   fprintf (ctx->log, "Conformance Report:\n");
 
   fprintf (ctx->log, "2.1  Physical Interface                 %s\n",
@@ -205,20 +243,20 @@ void
   fprintf (ctx->log, "2.6  Packet Size Limits                 %s\n",
 "???"); //    conformance_status (oconf->channel_access.test_status));
   fprintf (ctx->log, "2.7  Timing                             %s\n",
-"???"); //    conformance_status (oconf->channel_access.test_status));
+    "Not implemented in open-osdp");
   fprintf (ctx->log, "2.8  Message Synchronization            %s\n",
-"???"); //    conformance_status (oconf->channel_access.test_status));
+    "Not implemented in open-osdp");
   fprintf (ctx->log, "2.9  Packet Formats                     %s\n",
-"???"); //    conformance_status (oconf->channel_access.test_status));
+    conformance_status (oconf->packet_format.test_status));
   fprintf (ctx->log, "2.10 SOM - Start of Message             %s\n",
-"???"); //    conformance_status (oconf->channel_access.test_status));
+    conformance_status (oconf->SOM.test_status));
   fprintf (ctx->log, "2.11 ADDR - Address                     %s\n",
 "???"); //    conformance_status (oconf->channel_access.test_status));
   fprintf (ctx->log, "2.12 LEN - Length                       %s\n",
     conformance_status (oconf->LEN.test_status));
   fprintf (ctx->log, "2.13 CTRL - Control                     %s\n",
     conformance_status (oconf->CTRL.test_status));
-  fprintf (ctx->log, "2.14 Security Block                     %s\n",
+  fprintf (ctx->log, "2.14 Security Block (hdr process only)  %s\n",
     conformance_status (oconf->security_block.test_status));
   fprintf (ctx->log, "2.15 CMND/REPLY - Command/Reply Code    %s\n",
     conformance_status (oconf->CMND_REPLY.test_status));
@@ -301,6 +339,9 @@ void
     "Passed: %d Failed: %d Untested: %d\n",
     oconf->pass, oconf->fail, oconf->untested);
   fprintf (ctx->log, "---end of report---\n");
+fprintf (ctx->log, "mmt %d of %d\n",
+  oconf->conforming_messages,
+  PARAM_MMT);
 }
 
 
