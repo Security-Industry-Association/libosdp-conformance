@@ -1,0 +1,6 @@
+#!/bin/bash
+CMDPATH=/opt/open-osdp/run/CP/open_osdp_command.json
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"$1\""
+echo >>${CMDPATH} "}"
+

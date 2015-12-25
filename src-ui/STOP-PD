@@ -1,0 +1,3 @@
+#!/bin/bash
+kill -9 `cat /opt/open-osdp/run/PD/current_osdp_PD_pid`
+
