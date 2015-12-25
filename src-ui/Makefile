@@ -21,7 +21,7 @@
 CC=clang
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command
-PAGES = open-osdp-CP.html
+PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
 SCRIPTS = HUP-CP HUP-PD \
   STOP-CP STOP-PD \
   set-CP-pid set-PD-pid \
