@@ -49,7 +49,7 @@ int
     printf ("<BR><BR><BR><P ALIGN=\"center\">Executing %s command...</P>\n",
       command);
     sprintf (shell_command,
-"sudo -n /opt/open-osdp/bin/write_osdp_command %s",
+"sudo -n /opt/open-osdp/bin/write-osdp-CP-command %s",
   command);
     system (shell_command);
     system ("sudo -n /opt/open-osdp/bin/HUP-CP");
@@ -57,6 +57,15 @@ int
     if (0 == strncmp (tag, command, strlen (tag)))
     {
       system ("sudo -n /opt/open-osdp/bin/STOP-CP");
+    };
+  };
+  strcpy (tag, "cmd=PD-");
+  if (0 == strncmp (tag, arguments, strlen (tag)))
+  {
+    strcpy (tag, "stop");
+    if (0 == strncmp (tag, command, strlen (tag)))
+    {
+      system ("sudo -n /opt/open-osdp/bin/STOP-PD");
     };
   };
   printf ("</BODY></HTML>\n");

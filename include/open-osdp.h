@@ -88,10 +88,12 @@
 #define OSDP_MENU_SETUP   (0x0800)
 
 // commands used through breech-loading interface
-#define OSDP_CMDB_DUMP_STATUS (1001)
-#define OSDP_CMDB_SEND_POLL   (1002)
-#define OSDP_CMDB_IDENT       (1003)
-#define OSDP_CMDB_CAPAS       (1004)
+#define OSDP_CMDB_DUMP_STATUS  (1001)
+#define OSDP_CMDB_SEND_POLL    (1002)
+#define OSDP_CMDB_IDENT        (1003)
+#define OSDP_CMDB_CAPAS        (1004)
+#define OSDP_CMDB_RESET_POWER  (1005)
+#define OSDP_CMDB_PRESENT_CARD (1006)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -136,6 +138,8 @@ typedef struct osdp_context
 {
   int
     verbosity;
+  char
+    log_path [1024];
 //  int mode;
   int
     current_menu;

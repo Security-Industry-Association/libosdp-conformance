@@ -20,9 +20,12 @@
 
 CC=clang
 
-CGIPROGS = send-osdp-command
+CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command
 PAGES = open-osdp-CP.html
-SCRIPTS = HUP-CP STOP-CP set-cp-pid write_osdp_command
+SCRIPTS = HUP-CP HUP-PD \
+  STOP-CP STOP-PD \
+  set-CP-pid set-PD-pid \
+  write-osdp-CP-command write-osdp-PD-command
 
 all:	${CGIPROGS} ${PAGES} ${SCRIPTS}
 
@@ -34,12 +37,28 @@ build:	all
 	mkdir -p ../opt/open-osdp/bin
 	mkdir -p ../opt/open-osdp/cgi-bin
 	mkdir -p ../opt/open-osdp/www
+	mkdir -p ../opt/open-osdp/CP
+	mkdir -p ../opt/open-osdp/PD
 	cp ${PAGES} ../opt/open-osdp/www
 	cp ${CGIPROGS} ../opt/open-osdp/cgi-bin
 	cp ${SCRIPTS} ../opt/open-osdp/bin
 
+open-osdp-CP-status:	open-osdp-CP-status.o Makefile
+	${CC} -o open-osdp-CP-status -g open-osdp-CP-status.o -lrt
+
+open-osdp-PD-status:	open-osdp-PD-status.o Makefile
+	${CC} -o open-osdp-PD-status -g open-osdp-PD-status.o -lrt
+
 send-osdp-command:	send-osdp-command.o Makefile
 	${CC} -o send-osdp-command -g send-osdp-command.o
+
+open-osdp-CP-status.o:	open-osdp-CP-status.c
+	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
+	  open-osdp-CP-status.c
+
+open-osdp-PD-status.o:	open-osdp-PD-status.c
+	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
+	  open-osdp-PD-status.c
 
 send-osdp-command.o:	send-osdp-command.c
 	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \

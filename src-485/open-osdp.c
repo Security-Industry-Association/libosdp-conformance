@@ -56,7 +56,10 @@ int
 
 int
   initialize
-    (void)
+    (int
+      argc,
+    char
+      *argv [])
 
 { /* initialize */
 
@@ -66,16 +69,13 @@ int
     my_pid;
   int
     status;
+  char
+    tag [1024];
 
 
   status = ST_OK;
-m_idle_timeout = 30;
 
-  // initialize my current pid
-   my_pid = getpid ();
-  sprintf (command, "sudo -n /opt/open-osdp/bin/set-cp-pid %d",
-    my_pid);
-  system (command);
+m_idle_timeout = 30;
 
 {
   int status_signal;
@@ -91,11 +91,30 @@ m_idle_timeout = 30;
   if (status EQUALS ST_OK)
   {
     memset (&context, 0, sizeof (context));
-    strcpy (context.init_parameters_path, "/opt/open-osdp/run/open_osdp_params.json");
-strcpy (context.command_path, "/opt/open-osdp/run/open_osdp_command.json");
+    strcpy (context.init_parameters_path, "open_osdp_params.json");
+    strcpy (context.log_path, "open_osdp.log");
+
+    // if there's an argument it is the config file path
+    if (argc > 1)
+    {
+      strcpy (context.init_parameters_path, argv [1]);
+    };
     status = initialize_osdp (&context);
     context.current_menu = OSDP_MENU_TOP;
   };
+
+  // set things up depending on role.
+
+  strcpy (tag, "PD");
+  if (context.role EQUALS OSDP_ROLE_CP)
+    strcpy (tag, "CP");
+  sprintf (context.command_path,
+    "/opt/open-osdp/run/%s/open_osdp_command.json", tag);
+  // initialize my current pid
+  my_pid = getpid ();
+  sprintf (command, "sudo -n /opt/open-osdp/bin/set-%s-pid %d",
+    tag, my_pid);
+  system (command);
 
   if (status EQUALS ST_OK)
   {
@@ -148,11 +167,10 @@ int
 
 
   status = ST_OK;
-  status = initialize (); // no TLS config for RS-485
+  status = initialize (argc, argv);
   done = 0;
   fprintf (stderr, "role %02x\n",
     context.role);
-fprintf (stderr, "starting to loop looking for 485 data\n");
   if (status != ST_OK)
     done = 1;
   while (!done)
@@ -174,7 +192,19 @@ fprintf (stderr, "starting to loop looking for 485 data\n");
     if (status_select EQUALS -1)
     {
       status = ST_SELECT_ERROR;
-      fprintf (stderr, "errno at select error %d\n", errno);
+
+      // if it's an interrupt, fake it's ok.  assume a legitimate HUP
+      // interrupted it and we'll recover.
+
+      if (errno EQUALS EINTR)
+      {
+        status = ST_OK;
+        status_select = 0;
+      }
+      else
+      {
+        fprintf (stderr, "errno at select error %d\n", errno);
+      };
     };
     if (status_select EQUALS 0)
     {
@@ -191,7 +221,9 @@ fprintf (stderr, "starting to loop looking for 485 data\n");
       status_io = read (context.fd, buffer, 1);
       if (status_io < 1)
       {
-        status = ST_SERIAL_READ_ERR;
+        //status = ST_SERIAL_READ_ERR;
+        // continue if it was a serial error
+        status = ST_OK;
       }
       else
       {
