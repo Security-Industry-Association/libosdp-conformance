@@ -61,7 +61,7 @@ int
   int
     status_io;
 
-  if (m_verbosity > 3)
+  if (context->verbosity > 3)
     printf ("init_serial: command %s\n",
       context->init_command);
   if (strlen (context->init_command) > 0)
@@ -127,13 +127,12 @@ int
 
 
   status = ST_OK;
-  memset (context, 0, sizeof (*context));
   memset (&osdp_conformance, 0, sizeof (osdp_conformance));
   osdp_conformance.last_unknown_command = OSDP_POLL;
   context->mmsgbuf = multipart_message_buffer_1;
   memset (&p_card, 0, sizeof (p_card));
 
-  m_verbosity = 3;
+  context->verbosity = 3;
   m_version_minor = OSDP_VERSION_MINOR;
   m_build = OSDP_VERSION_BUILD;
   context->model = 2;
@@ -164,7 +163,7 @@ int
     */
     status = read_config (context);
 m_idle_timeout = 30;
-    if (m_verbosity > 3)
+    if (context->verbosity > 3)
       fprintf (stderr, "read_config returned %d\n", status);
     status = ST_OK; // doesn't matter if config reading failed
   };
@@ -199,7 +198,7 @@ m_idle_timeout = 30;
   };
 
   fprintf (context->log, "Verbosity set to %d.\n",
-    m_verbosity);
+    context->verbosity);
   if (context->special_1 != 0)
     fprintf (context->log, "SPECIAL Processing (%d) Enabled\n",
       context->special_1);

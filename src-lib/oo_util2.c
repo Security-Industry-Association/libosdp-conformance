@@ -27,6 +27,7 @@
 #include <expat.h>
 
 
+#include <jansson.h>
 #include <gnutls/gnutls.h>
 
 
@@ -222,7 +223,6 @@ void
       break;
     case PARMV_ROLE:
       if (strcmp (last_content, "CP") == 0)
-        context.role = OSDP_ROLE_CP;
       if (strcmp (last_content, "PD") == 0)
         context.role = OSDP_ROLE_PD;
       if (strncmp (last_content, "MONITOR", 7) == 0)
@@ -431,6 +431,125 @@ int
 
 
 int
+  parse_json
+    (OSDP_CONTEXT
+      *ctx)
+
+{ /* parse_json */
+
+  FILE
+    *cmdf;
+  char
+    field [1024];
+  char
+    json_string [4096];
+  json_t
+    *root;
+  int
+    status;
+  int
+    status_io;
+  json_error_t
+    status_json;
+  char
+    *test_command;
+  char
+    this_command [1024];
+  json_t
+    *value;
+  int
+    was_valid;
+
+
+  status = -1;
+  cmdf = fopen (ctx->init_parameters_path, "r");
+  if (cmdf != NULL)
+  {
+    status = ST_OK;
+    memset (json_string, 0, sizeof (json_string));
+    status_io = fread (json_string,
+      sizeof (json_string [0]), sizeof (json_string), cmdf);
+    if (status_io >= sizeof (json_string))
+      status = ST_CMD_OVERFLOW;
+    if (status_io <= 0)
+      status = ST_CMD_UNDERFLOW;
+  };
+  if (status EQUALS ST_OK)
+  {
+    root = json_loads (json_string, 0, &status_json);
+    if (!root)
+    {
+      fprintf (stderr, "JSON parser failed.  String was ->\n%s<-\n",
+        json_string);
+      status = ST_CMD_ERROR;
+    };
+  }; 
+  if (status EQUALS ST_OK)
+  {
+    strcpy (field, "address");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      status= ST_CMD_INVALID;
+  };
+  if (status EQUALS ST_OK)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    p_card.addr = i;
+  };
+  if (status EQUALS ST_OK)
+  {
+    strcpy (field, "verbosity");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      status= ST_CMD_INVALID;
+  };
+  if (status EQUALS ST_OK)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    context.verbosity = i;
+  };
+  if (status EQUALS ST_OK)
+  {
+    strcpy (field, "role");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      status= ST_CMD_INVALID;
+  };
+  if (status EQUALS ST_OK)
+  {
+    was_valid = 0;
+    strcpy (this_command, json_string_value (value));
+    test_command = "CP";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      was_valid = 1;
+      context.role = OSDP_ROLE_CP;
+    };
+    test_command = "PD";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      was_valid = 1;
+      context.role = OSDP_ROLE_PD;
+    };
+    if (!was_valid)
+    {
+      fprintf (stderr, "Parse error: field %s\n",
+        field);
+      status = ST_PARSE_ERROR;
+    };
+  }; 
+  return (status);
+
+} /* parse_json */
+
+
+int
   read_config
     (OSDP_CONTEXT
       *ctx)
@@ -439,16 +558,15 @@ int
 
   int
     status;
-  char
-    test_buffer [16384];
 
 
   status = 0;
   ctx->cparm = PARAMETER_NONE;
   ctx->cparm_v = PARMV_NONE;
 
-  status = parse_xml (test_buffer, sizeof (test_buffer));
   m_idle_timeout = p_card.poll;
+  status = parse_json (ctx);
+//  status = parse_xml (test_buffer, sizeof (test_buffer));
 
   if (p_card.value_len EQUALS 26)
   {
@@ -536,7 +654,7 @@ int
     0); // no security
   if (status EQUALS ST_OK)
   {
-  if (m_verbosity > 4)
+  if (context->verbosity > 4)
     if (1 /* m_dump */ )
     {
       int

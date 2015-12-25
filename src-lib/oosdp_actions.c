@@ -192,7 +192,7 @@ int
     status = send_message (ctx,
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-    if (m_verbosity > 2)
+    if (ctx->verbosity > 2)
     {
       sprintf (tlogmsg, "Responding with OSDP_LSTAT (Power)");
       fprintf (ctx->log, "%s\n", tlogmsg);
@@ -221,7 +221,7 @@ int
       current_length = 0;
       status = send_message (ctx,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data);
-      if (m_verbosity > 2)
+      if (ctx->verbosity > 2)
       {
         sprintf (tlogmsg, "Responding with cardholder data (%d bits)",
           p_card.bits);
@@ -293,7 +293,7 @@ int
           (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
         ctx->pd_acks ++;
         osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
-        if (m_verbosity > 4)
+        if (ctx->verbosity > 4)
           fprintf (stderr, "Responding with OSDP_ACK\n");
       };
     };
@@ -427,7 +427,7 @@ int
   status = send_message (ctx, OSDP_RSTATR, p_card.addr,
     &current_length,
     sizeof (osdp_rstat_response_data), osdp_rstat_response_data);
-  if (m_verbosity > 2)
+  if (ctx->verbosity > 2)
   {
     sprintf (tlogmsg, "Responding with OSDP_RSTATR (Ext Tamper)");
     fprintf (ctx->log, "%s\n", tlogmsg); tlogmsg[0]=0;
@@ -474,7 +474,7 @@ fflush (ctx->log);
   status = send_message
     (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
   ctx->pd_acks ++;
-  if (m_verbosity > 2)
+  if (ctx->verbosity > 2)
     fprintf (ctx->log, "Responding with OSDP_ACK\n");
 
   return (status);

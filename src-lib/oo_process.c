@@ -136,7 +136,9 @@ int
 
 
   status = ST_OK;
-  memset (context, 0, sizeof (*context));
+
+  // assumes the caller set the entire "context" structure to zero
+
   memset (&osdp_conformance, 0, sizeof (osdp_conformance));
   context->mmsgbuf = multipart_message_buffer_1;
   memset (&p_card, 0, sizeof (p_card));

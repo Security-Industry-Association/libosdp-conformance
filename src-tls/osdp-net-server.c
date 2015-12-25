@@ -72,7 +72,8 @@ OSDP_PARAMETERS
   p_card;
 struct sockaddr_in
   sa_serv;
-//gnutls_session_t session;
+gnutls_session_t
+  tls_session;
 
 
 void
@@ -155,9 +156,9 @@ system (command);
 };
 
   last_time_check = time (NULL);
+  memset (&context, 0, sizeof (context));
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
-m_verbosity=4;
 strcpy (context.command_path, "/opt/open-osdp/run/open_osdp_command.json");
 context.current_menu = OSDP_MENU_TOP;
 
@@ -267,25 +268,25 @@ int
   };
   if (status EQUALS ST_OK)
   {
-    gnutls_init (&(context.tls_session), GNUTLS_SERVER);
-    gnutls_priority_set(context.tls_session, priority_cache);
-    gnutls_credentials_set(context.tls_session, GNUTLS_CRD_CERTIFICATE, x509_cred);
+    gnutls_init (&(tls_session), GNUTLS_SERVER);
+    gnutls_priority_set(tls_session, priority_cache);
+    gnutls_credentials_set(tls_session, GNUTLS_CRD_CERTIFICATE, x509_cred);
     sd = accept (listen_sd, (struct sockaddr *) &sa_cli, &client_len);
     fprintf (stderr, "- connection from %s, port %d\n",
       inet_ntop (AF_INET, &sa_cli.sin_addr, topbuf, sizeof (topbuf)),
       ntohs (sa_cli.sin_port));
-    gnutls_transport_set_int (context.tls_session, sd);
+    gnutls_transport_set_int (tls_session, sd);
     do {
-      status_tls = gnutls_handshake (context.tls_session);
+      status_tls = gnutls_handshake (tls_session);
     } while (status_tls < 0 && gnutls_error_is_fatal (status_tls) == 0);
     if (status_tls < 0)
     {
       close (sd);
-      gnutls_deinit (context.tls_session);
+      gnutls_deinit (tls_session);
       fprintf (stderr, "*** Handshake has failed (%s)\n\n",
         gnutls_strerror (status_tls));
       status = ST_OSDP_TLS_HANDSHAKE;
-      context.tls_session = NULL;
+      tls_session = NULL;
     }
   };
   if (status EQUALS ST_OK)
@@ -356,7 +357,7 @@ int
             return the moral equivalent of E_AGAIN since we've set the FD
             to nonblocking.
           */
-          status_tls = gnutls_record_recv (context.tls_session, buffer, MAX_BUF);
+          status_tls = gnutls_record_recv (tls_session, buffer, MAX_BUF);
           if (status_tls EQUALS GNUTLS_E_AGAIN)
           {
             // look for HUP signal
@@ -471,4 +472,22 @@ int
   return (status);
 
 } /* main for osdp-tls */
+
+
+int
+  send_osdp_data
+    (OSDP_CONTEXT
+      *context,
+    unsigned char
+      *buf,
+    int
+      lth)
+
+{ /* send_osdp_data */
+
+  gnutls_record_send (tls_session, buf, lth);
+  return (ST_OK);
+
+} /* send_osdp_data */
+
 

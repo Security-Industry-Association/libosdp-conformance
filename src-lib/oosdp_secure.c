@@ -31,6 +31,9 @@
 #include <osdp-tls.h>
 #include <open-osdp.h>
 
+extern OSDP_CONTEXT
+  context;
+
 
 int
   osdp_build_secure_message
@@ -110,7 +113,7 @@ printf ("dl %d. sbl %d. cs %d. whole lth for header %d.\n",
   // control
   p->ctrl = 0;
   p->ctrl = p->ctrl | (0x3 & sequence);
-  if (m_verbosity > 4)
+  if (context.verbosity > 4)
     fprintf (stderr, "build msg: seq %d added ctl now %02x m_check %d\n",
       sequence, p->ctrl, m_check);
 
@@ -150,7 +153,7 @@ printf ("bef sec block to new length %d.\n", new_length);
     int i;
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
-    if (m_verbosity > 3)
+    if (context.verbosity > 3)
       fprintf (stderr, "orig next_data %lx\n", (unsigned long)next_data);
     for (i=0; i<data_length; i++)
     {
@@ -158,7 +161,7 @@ printf ("bef sec block to new length %d.\n", new_length);
       new_length ++;
       next_data ++; // where crc goes (after data)
     };
-    if (m_verbosity > 3)
+    if (context.verbosity > 3)
     fprintf (stderr, "data_length %d new_length now %d next_data now %lx\n",
       data_length, new_length, (unsigned long)next_data);
   };
@@ -192,7 +195,7 @@ printf ("adding 2 crc was %d\n",
     new_length ++;
   };
 
-  if (m_verbosity > 4)
+  if (context.verbosity > 4)
   {
     fprintf (stderr,
       "build: sequence %d. new_length %d. whole_msg_lth %d.\n",
@@ -250,7 +253,7 @@ int
   if (context->special_1 EQUALS 1)
     true_dest = 0x7f;
   *current_length = 0;
-if (m_verbosity > 3)
+if (context->verbosity > 3)
 {
   printf ("secure send: sl %d l %d\n",
     sec_blk_lth, data_length);
@@ -266,7 +269,7 @@ if (m_verbosity > 3)
     sec_blk_type, sec_blk_lth, sec_blk); // security values
   if (status EQUALS ST_OK)
   {
-  if ((m_verbosity > 3) || (command != OSDP_ACK))
+  if ((context->verbosity > 3) || (command != OSDP_ACK))
     if (m_dump)
     {
       int
@@ -282,7 +285,7 @@ if (m_verbosity > 3)
     // send start-of-message marker (0xff)
     write (context->fd, buf, 1);
 
-    if (m_verbosity > 4)
+    if (context->verbosity > 4)
       fprintf (stderr, "sending(secure) %d\n", *current_length);
        
     write (context->fd, test_blk, *current_length);

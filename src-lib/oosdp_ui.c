@@ -383,7 +383,7 @@ int
       current_length = 0;
       status = send_message (context,
         OSDP_POLL, p_card.addr, &current_length, 0, NULL);
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         fprintf (stderr, "Polling\n");
       break;
 
@@ -429,7 +429,7 @@ status = -1;
           OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
         osdp_conformance.cmd_id.test_status =
           OCONFORM_EXERCISED;
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
           fprintf (stderr, "Requesting PD Ident\n");
       };
       break;
@@ -447,7 +447,7 @@ status = -1;
         param [4] = 0;
         status = send_message (context, OSDP_COMSET, 0x7f,
           &current_length, sizeof (param), param);
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
           fprintf (context->log, "COM Set: PD %d, Speed %d.\n",
             param [0], 9600);
       };
@@ -458,7 +458,7 @@ status = -1;
       current_length = 0;
       status = send_message (context,
         OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         fprintf (stderr, "Requesting Capabilities Report\n");
       break;
 
@@ -467,7 +467,7 @@ status = -1;
       current_length = 0;
       status = send_message (context,
         OSDP_RSTAT, p_card.addr, &current_length, 0, NULL);
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         fprintf (stderr, "Requesting (External) Reader (Tamper) Status\n");
       break;
 
@@ -485,7 +485,7 @@ fprintf (stderr, "fixme: RND.A\n");
           OSDP_CHLNG, p_card.addr, &current_length, 
           sizeof (context->random_value), context->random_value,
           OSDP_SEC_SCS_11, sizeof (sec_blk), sec_blk);
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
           fprintf (stderr, "Initiating Secure Channel\n");
       };
       break;
@@ -517,7 +517,7 @@ fprintf (stderr, "fixme: RND.A\n");
       */
       context->card_data_valid = p_card.bits;
       context->creds_a_avail = creds_buffer_a_lth;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         fprintf (context->log, "Presenting card data (raw: %d, Creds A: %d)\n",
           context->card_data_valid, context->creds_a_avail);
       break;
@@ -569,7 +569,7 @@ fprintf (stderr, "fixme: RND.A\n");
           OSDP_CAP, p_card.addr, &current_length, sizeof (param), param);
         osdp_conformance.cmd_pdcap.test_status =
           OCONFORM_EXERCISED;
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
           fprintf (stderr, "Requesting Capabilities Report\n");
       };
       status = ST_OK;
@@ -594,7 +594,7 @@ fprintf (stderr, "fixme: RND.A\n");
           OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
         osdp_conformance.cmd_id.test_status =
           OCONFORM_EXERCISED;
-        if (m_verbosity > 3)
+        if (context->verbosity > 3)
           fprintf (stderr, "Requesting PD Ident\n");
       };
       status = ST_OK;
@@ -603,7 +603,7 @@ fprintf (stderr, "fixme: RND.A\n");
       current_length = 0;
       status = send_message (context,
         OSDP_POLL, p_card.addr, &current_length, 0, NULL);
-      if (m_verbosity > 3)
+      if (context->verbosity > 3)
         fprintf (stderr, "On-demand polling\n");
       status = ST_OK;
       break;
@@ -624,7 +624,7 @@ fprintf (stderr, "fixme: RND.A\n");
          context->role, m_check);
       fprintf (stderr,
 "  Timeout %02d(%d.) Dump %d Debug %d.\n",
-         m_idle_timeout, p_card.poll, m_dump, m_verbosity);
+         m_idle_timeout, p_card.poll, m_dump, context->verbosity);
       fprintf (stderr,
 " PwrRpt %d Special-1 %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report, context->special_1,

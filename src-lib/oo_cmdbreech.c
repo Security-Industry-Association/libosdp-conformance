@@ -104,7 +104,7 @@ int
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_CAPAS;
-      if (m_verbosity > 3)
+      if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
     };
@@ -116,7 +116,7 @@ int
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_DUMP_STATUS;
-      if (m_verbosity > 3)
+      if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
     };
@@ -128,7 +128,7 @@ int
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_IDENT;
-      if (m_verbosity > 3)
+      if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
     };
@@ -140,7 +140,7 @@ int
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_SEND_POLL;
-      if (m_verbosity > 3)
+      if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
     };

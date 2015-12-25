@@ -272,7 +272,7 @@ int
     fprintf (context->log, "%s%s", prefix, logmsg);
   }
   else
-    if (m_verbosity >= level)
+    if (context->verbosity >= level)
       fprintf (context->log, "%s%s", prefix, logmsg);
   
   return (status);

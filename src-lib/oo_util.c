@@ -127,7 +127,7 @@ status = -2;
   // control
   p->ctrl = 0;
   p->ctrl = p->ctrl | (0x3 & sequence);
-  if (m_verbosity > 4)
+  if (context.verbosity > 4)
     fprintf (stderr, "build msg: seq %d added ctl now %02x m_check %d\n",
       sequence, p->ctrl, m_check);
 
@@ -160,7 +160,7 @@ if (secure != 0)
     int i;
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
-if (m_verbosity > 3)
+if (context.verbosity > 3)
   fprintf (stderr, "orig next_data %lx\n", (unsigned long)next_data);
     for (i=0; i<data_length; i++)
     {
@@ -168,7 +168,7 @@ if (m_verbosity > 3)
       new_length ++;
       next_data ++; // where crc goes (after data)
     };
-if (m_verbosity > 3)
+if (context.verbosity > 3)
   fprintf (stderr, "data_length %d new_length now %d next_data now %lx\n",
     data_length, new_length, (unsigned long)next_data);
   };
@@ -200,7 +200,7 @@ if (m_verbosity > 3)
     new_length ++;
   };
 
-  if (m_verbosity > 4)
+  if (context.verbosity > 4)
   {
     fprintf (stderr, "build: sequence %d. Lth %d\n", sequence, new_length);
   }
@@ -283,7 +283,7 @@ int
   if (status EQUALS ST_OK)
   {    
     tlogmsg [0] = 0;
-    if (m_verbosity > 3)
+    if (context->verbosity > 3)
       sprintf (tlogmsg,
 "Addr:%02x Lth:%d. CTRL %02x",
         p->addr, msg_lth, p->ctrl);
@@ -334,7 +334,7 @@ int
       msg_data_length = msg_data_length - 6 - sec_blk_length - 2;
         // whole thing less 5 hdr less 1 cmd less sec blk less 2 crc
 fflush (stdout);fflush (stderr);
-if (m_verbosity > 3)
+if (context->verbosity > 3)
 {
   fprintf (stderr, "sec blk lth %d\n", sec_blk_length);
 };
@@ -344,13 +344,13 @@ if (m_verbosity > 3)
     returned_hdr -> command = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->command;
 
-    if ((m_verbosity > 2) || (m->msg_cmd != OSDP_ACK))
+    if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
     {
       sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
       strcat (tlogmsg, tlogmsg2);
     };
 ///    msg_data_length = 0; // depends on command
-    if ((m_verbosity > 4) || ((m->msg_cmd != OSDP_POLL) &&
+    if ((context->verbosity > 4) || ((m->msg_cmd != OSDP_POLL) &&
        (m->msg_cmd != OSDP_ACK)))
       if (m_dump > 0)
       {
@@ -420,14 +420,14 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       fprintf (stderr, "Unknown command, default msg_data_length was %d\n",
         msg_data_length);
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
       break;
 
     case OSDP_ACK:
       m->data_payload = NULL;
       msg_data_length = 0;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ACK");
       context->pd_acks ++;
       osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
@@ -438,14 +438,14 @@ if (m_verbosity > 3)
     case OSDP_BUSY:
       m->data_payload = NULL;
       msg_data_length = 0;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BUSY");
       osdp_conformance.rep_busy.test_status = OCONFORM_EXERCISED;
       break;
 
     case OSDP_CCRYPT:
       m->data_payload = m->cmd_payload + 1;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
       {
         if (context->role EQUALS OSDP_ROLE_PD)
         {
@@ -462,7 +462,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_MFG");
       break;
 
@@ -471,7 +471,7 @@ if (m_verbosity > 3)
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       context->sent_naks ++;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_NAK");
       break;
 
@@ -479,7 +479,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BUZ");
       break;
 
@@ -487,7 +487,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_CAP");
       break;
 
@@ -495,14 +495,14 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_COM");
       break;
 
     case OSDP_COMSET:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = 5;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_COMSET");
       break;
 
@@ -510,7 +510,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ID");
       break;
 
@@ -518,7 +518,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_KEYPAD");
       break;
 
@@ -526,14 +526,14 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_LED");
       break;
 
     case OSDP_LSTAT:
       m->data_payload = NULL;
       msg_data_length = 0;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_LSTAT");
       break;
 
@@ -541,7 +541,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_LSTATR");
       break;
 
@@ -549,7 +549,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_MFGREP");
       break;
 
@@ -557,7 +557,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_OUT");
       break;
 
@@ -565,7 +565,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDCAP");
       osdp_conformance.cmd_pdcap.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_device_capas.test_status = OCONFORM_EXERCISED;
@@ -576,7 +576,7 @@ if (m_verbosity > 3)
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
 // ASSUMES NO SECURITY
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDID");
       osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
@@ -585,7 +585,7 @@ if (m_verbosity > 3)
     case OSDP_POLL:
       m->data_payload = NULL;
       msg_data_length = 0;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_POLL");
       context->cp_polls ++;
       if (osdp_conformance.conforming_messages < PARAM_MMT)
@@ -596,14 +596,14 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_RAW");
       break;
 
     case OSDP_RSTAT:
       m->data_payload = NULL;
       msg_data_length = 0;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_RSTAT");
       break;
 
@@ -611,7 +611,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_RSTATR");
       break;
 
@@ -619,7 +619,7 @@ if (m_verbosity > 3)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_TEXT");
       break;
     };
@@ -657,7 +657,7 @@ if (m_verbosity > 3)
 //experimental
 if (m->lth == 7)
   wire_cksum = *(m->cmd_payload + 1 + msg_data_length);
-      if (m_verbosity > 99)
+      if (context->verbosity > 99)
       {
         fprintf (stderr, "pck %04x wck %04x\n",
           parsed_cksum, wire_cksum);
@@ -668,7 +668,7 @@ if (m->lth == 7)
         context->checksum_errs ++;
       };
     };
-    if ((m_verbosity > 2) || (m_dump > 0))
+    if ((context->verbosity > 2) || (m_dump > 0))
     {
       char
         log_line [1024];
@@ -679,7 +679,7 @@ if (m->lth == 7)
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
         (returned_hdr->command != OSDP_ACK)) ||
-        (m_verbosity > 3))
+        (context->verbosity > 3))
         fprintf (context->log, "%s\n", log_line);
       tlogmsg [0] = 0; tlogmsg2 [0] = 0;
     };
@@ -695,7 +695,7 @@ if (m->lth == 7)
     if (context->role EQUALS OSDP_ROLE_PD)
       if ((p_card.addr != p->addr) && (p->addr != 0x7f))
       {
-        if (m_verbosity > 3)
+        if (context->verbosity > 3)
           fprintf (stderr, "addr mismatch for: %02x me: %02x\n",
             p->addr, p_card.addr);
         status = ST_NOT_MY_ADDR;
@@ -855,7 +855,7 @@ int
         osdp_conformance.rep_device_capas.test_status =
           OCONFORM_EXERCISED;
 fprintf (stderr, "2 pdcap\n");
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
           fprintf (stderr, "Responding with OSDP_PDCAP\n");
       };
       break;
@@ -884,7 +884,7 @@ fprintf (stderr, "2 pdcap\n");
         status = send_message (context,
           OSDP_COM, p_card.addr, &current_length,
           sizeof (osdp_com_response_data), osdp_com_response_data);
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
         {
           sprintf (logmsg, "Responding with OSDP_COM");
           fprintf (context->log, "%s\n", logmsg); logmsg[0]=0;
@@ -960,7 +960,7 @@ printf ("fixme: client cryptogram\n");
         status = send_message (context, OSDP_PDID, p_card.addr,
           &current_length,
           sizeof (osdp_pdid_response_data), osdp_pdid_response_data);
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
         {
           sprintf (logmsg, "Responding with OSDP_PDID");
           fprintf (context->log, "%s\n", logmsg);
@@ -1019,7 +1019,7 @@ printf ("fixme: client cryptogram\n");
         status = send_message
           (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
         context->pd_acks ++;
-        if (m_verbosity > 4)
+        if (context->verbosity > 4)
           fprintf (stderr, "Responding with OSDP_ACK\n");
       };
       break;
@@ -1048,7 +1048,7 @@ printf ("fixme: client cryptogram\n");
       status = send_message (context,
         OSDP_LSTATR, p_card.addr, &current_length,
         sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
       {
         sprintf (logmsg, "Responding with OSDP_LSTAT (Power)");
         fprintf (context->log, "%s\n", logmsg);
@@ -1082,7 +1082,7 @@ fprintf (stderr, "%s\n", tlogmsg);
       current_length = 0;
       status = send_message (context,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data);
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
       {
 int i;
 char c;
@@ -1110,7 +1110,7 @@ char c;
         status = send_message
           (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
         context->pd_acks ++;
-        if (m_verbosity > 4)
+        if (context->verbosity > 4)
           fprintf (stderr, "Responding with OSDP_ACK\n");
       };
     };
@@ -1130,7 +1130,7 @@ char c;
       status = send_message (context, OSDP_LSTATR, p_card.addr,
         &current_length,
         sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
       {
         sprintf (logmsg, "Responding with OSDP_LSTAT (Power)");
         fprintf (context->log, "%s\n", logmsg);
@@ -1163,7 +1163,7 @@ status = -1;
           OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
         context->sent_naks ++;
         osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
-        if (m_verbosity > 2)
+        if (context->verbosity > 2)
         {
           fprintf (stderr, "CMD %02x Unknown\n", msg->msg_cmd);
         };
@@ -1227,7 +1227,7 @@ send OSDP_SCRYPT
 
     case OSDP_NAK:
       status = ST_OK;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
       {
         sprintf (tlogmsg, "osdp_NAK: Error Code %02x",
           *(0+msg->data_payload));
@@ -1239,7 +1239,7 @@ send OSDP_SCRYPT
 
     case OSDP_COM:
       status = ST_OK;
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
       {
         fprintf (stderr, "osdp_COM: Addr %02x Baud (m->l) %02x %02x %02x %02x\n",
           *(0+msg->data_payload), *(1+msg->data_payload), *(2+msg->data_payload),
@@ -1328,7 +1328,7 @@ printf ("MMSG DONE\n");
       break;
 
     default:
-      if (m_verbosity > 2)
+      if (context->verbosity > 2)
       {
         fprintf (stderr, "CMD %02x Unknown to CP\n", msg->msg_cmd);
       };

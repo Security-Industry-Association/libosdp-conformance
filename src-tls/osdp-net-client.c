@@ -60,6 +60,8 @@ time_t
   previous_time;
 struct sockaddr_in
   sa_serv;
+gnutls_session_t
+  tls_session;
 gnutls_certificate_credentials_t
   xcred;
 
@@ -135,16 +137,15 @@ strcpy (config->cmd_dir, "/tester/current/results");
 sprintf (command, "mkdir -p %s/history",
   config->cmd_dir);
 system (command);
-m_verbosity = 9;
 
   strcpy (specified_passphrase, "speakFriend&3ntr");
 
   signal (SIGHUP, signal_callback_handler);
 
+  memset (&context, 0, sizeof (context));
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
   context.role = OSDP_ROLE_PD;
-  m_verbosity = 9;
 strcpy (context.command_path, "/tester/current/run/open_osdp_command.json");
 
   context.authenticated = 1; // for now just say we're authenticated.
@@ -217,32 +218,32 @@ int
     */
     /* Initialize TLS session 
      */
-    gnutls_init(&context.tls_session, GNUTLS_CLIENT);
+    gnutls_init(&tls_session, GNUTLS_CLIENT);
 
-    gnutls_session_set_ptr(context.tls_session, (void *) "perim-0000.example.com");
+    gnutls_session_set_ptr(tls_session, (void *) "perim-0000.example.com");
 
-    gnutls_server_name_set(context.tls_session, GNUTLS_NAME_DNS, "my_host_name",
+    gnutls_server_name_set(tls_session, GNUTLS_NAME_DNS, "my_host_name",
       strlen("my_host_name"));
 
     /* use default priorities */
-    gnutls_set_default_priority (context.tls_session);
+    gnutls_set_default_priority (tls_session);
 
     /* put the x509 credentials to the current session
      */
-    gnutls_credentials_set (context.tls_session, GNUTLS_CRD_CERTIFICATE, xcred);
+    gnutls_credentials_set (tls_session, GNUTLS_CRD_CERTIFICATE, xcred);
 
     /* connect to the peer
      */
     sd = tcp_connect();
 
-    gnutls_transport_set_int(context.tls_session, sd);
-    gnutls_handshake_set_timeout(context.tls_session,
+    gnutls_transport_set_int(tls_session, sd);
+    gnutls_handshake_set_timeout(tls_session,
       GNUTLS_DEFAULT_HANDSHAKE_TIMEOUT);
 
     /* Perform the TLS handshake
      */
     do {
-      ret = gnutls_handshake (context.tls_session);
+      ret = gnutls_handshake (tls_session);
     }
     while (ret < 0 && gnutls_error_is_fatal(ret) == 0);
 
@@ -256,7 +257,7 @@ int
     {
       char *desc;
 
-      desc = gnutls_session_get_desc (context.tls_session);
+      desc = gnutls_session_get_desc (tls_session);
       printf("- Session info: %s\n", desc);
       gnutls_free(desc);
     }
@@ -331,7 +332,7 @@ int
             return the moral equivalent of E_AGAIN since we've set the FD
             to nonblocking.
           */
-          status_tls = gnutls_record_recv (context.tls_session, buffer, MAX_BUF);
+          status_tls = gnutls_record_recv (tls_session, buffer, MAX_BUF);
           if (status_tls EQUALS GNUTLS_E_AGAIN)
           {
             // look for HUP signal
@@ -516,4 +517,21 @@ int _verify_certificate_callback(gnutls_session_t session)
         /* notify gnutls to continue handshake normally */
         return 0;
 }
+
+
+int
+  send_osdp_data
+    (OSDP_CONTEXT
+      *context,
+    unsigned char
+      *buf,
+    int
+      lth)
+
+{ /* send_osdp_data */
+
+  gnutls_record_send (tls_session, buf, lth);
+  return (ST_OK);
+
+} /* send_osdp_data */
 

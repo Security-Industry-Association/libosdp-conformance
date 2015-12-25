@@ -134,6 +134,8 @@
 
 typedef struct osdp_context
 {
+  int
+    verbosity;
 //  int mode;
   int
     current_menu;
@@ -212,12 +214,12 @@ typedef struct osdp_context
     next_out;
   int
     authenticated;
-  gnutls_session_t
-    tls_session;
   char
     command_path [1024];
   int
     cmd_hist_counter;
+  char
+    init_parameters_path [1024];
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)
@@ -441,29 +443,28 @@ typedef struct osdp_multi_hdr
 #define ST_BAD_MULTIPART_BUF (23)
 #define ST_MMSG_SEQ_ERR      (24)
 #define ST_MMSG_OUT_OF_ORDER (25)
-#define ST_MMSG_LAST_FRAG_TOO_BIG (26)
-#define ST_NET_INPUT_READY        (27)
+#define ST_MMSG_LAST_FRAG_TOO_BIG    (26)
+#define ST_NET_INPUT_READY           (27)
 #define ST_CMD_ERROR                 (28)
 #define ST_CMD_INVALID               (29)
 #define ST_CMD_OVERFLOW              (30)
 
-#define ST_OSDP_TLS_CLOSED        (31)
-#define ST_OSDP_TLS_ERROR         (32)
-#define ST_OSDP_TLS_HANDSHAKE     (33)
-#define ST_OSDP_TLS_NOCERT        (34)
-#define ST_OSDP_TLS_ERR           (35)
-#define ST_OSDP_TLS_BIND_ERR      (36)
-#define ST_OSDP_TLS_SOCKET_ERR    (37)
-#define ST_OSDP_TLS_LISTEN_ERR    (38)
-#define ST_OSDP_TLS_NONBLOCK      (39)
+#define ST_OSDP_TLS_CLOSED           (31)
+#define ST_OSDP_TLS_ERROR            (32)
+#define ST_OSDP_TLS_HANDSHAKE        (33)
+#define ST_OSDP_TLS_NOCERT           (34)
+#define ST_OSDP_TLS_ERR              (35)
+#define ST_OSDP_TLS_BIND_ERR         (36)
+#define ST_OSDP_TLS_SOCKET_ERR       (37)
+#define ST_OSDP_TLS_LISTEN_ERR       (38)
+#define ST_OSDP_TLS_NONBLOCK         (39)
 #define ST_OSDP_TLS_CLIENT_HANDSHAKE (40)
 
 #define ST_CMD_UNDERFLOW             (41)
 #define ST_CMD_PATH                  (42)
+#define ST_PARSE_ERROR               (43)
 
 
-int
-  m_verbosity;
 int
   m_version_minor;
 int

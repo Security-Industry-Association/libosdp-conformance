@@ -1,4 +1,4 @@
-# Make file for osdp-tls
+# Make file for osdp-485
 
 #  (C)Copyright 2014-2015 Smithee,Spelvin,Agnew & Plinge, Inc.
 
@@ -15,12 +15,11 @@
 #  distributed under the License is distributed on an "AS IS" BASIS,
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
-#  limitations under the License.
-
+#  limitations under the License.  
 
 CC=clang
 
-PROGS = osdp-net-client osdp-net-server
+PROGS = open-osdp
 
 all:	${PROGS}
 
@@ -31,29 +30,14 @@ build:	all
 	mkdir -p ../opt/open-osdp/bin
 	cp ${PROGS} ../opt/open-osdp/bin
 
-osdp-net-client:	osdp-net-client.o \
-	  ../src-lib/libosdp.a Makefile
-	${CC} -o osdp-net-client -g osdp-net-client.o \
+open-osdp:	open-osdp.o Makefile ../src-lib/libosdp.a
+	${CC} -o open-osdp -g open-osdp.o \
 	  -L ../src-lib -losdp \
-	  -L /tester/current/lib -lgnutls -lexpat -ljansson -lrt
+	  -L /tester/current/lib -lexpat -ljansson -lrt
 
-osdp-net-server:	osdp-net-server.o \
-	  ../src-lib/libosdp.a Makefile
-	${CC} -o osdp-net-server -g osdp-net-server.o \
-	  -L ../src-lib -losdp \
-	  -L /tester/current/lib -lgnutls -lexpat -ljansson -lrt
-
-osdp-net-client.o:	osdp-net-client.c \
-	  ../include/osdp_conformance.h ../include/osdp-tls.h \
-	  ../include/open-osdp.h
+open-osdp.o:	open-osdp.c
 	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
-	  osdp-net-client.c
-
-osdp-net-server.o:	osdp-net-server.c \
-	  ../include/osdp_conformance.h ../include/osdp-tls.h \
-	  ../include/open-osdp.h
-	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
-	  osdp-net-server.c
+	  open-osdp.c
 
 ../src-lib/libosdp.a:
 	(cd ../src-lib; make build)
