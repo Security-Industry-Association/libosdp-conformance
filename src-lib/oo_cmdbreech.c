@@ -1,13 +1,6 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  Use:
-    set RUNDIR
-    start osdp-net-server, record pid into ${SRVPID}
-    set or clear %{RUNDIR}/bin/reload
-    put command in ${RUNDIR}/run/open-osdp-command.json
-    kill -HUP ${SRVPID}
-
   (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");

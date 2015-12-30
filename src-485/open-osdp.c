@@ -26,12 +26,17 @@
 #include <signal.h>
 #include <time.h>
 #include <errno.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+#include <fcntl.h>
 
 
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 
 
+int
+  check_for_command;
 OSDP_CONTEXT
   context;
 long int
@@ -42,6 +47,8 @@ OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 OSDP_PARAMETERS
   p_card;
+char
+  tag [1024]; // PD or CP as a string
 
 
 unsigned char
@@ -69,11 +76,10 @@ int
     my_pid;
   int
     status;
-  char
-    tag [1024];
 
 
   status = ST_OK;
+  check_for_command = 0;
 
 m_idle_timeout = 30;
 
@@ -91,7 +97,7 @@ m_idle_timeout = 30;
   if (status EQUALS ST_OK)
   {
     memset (&context, 0, sizeof (context));
-    strcpy (context.init_parameters_path, "open_osdp_params.json");
+    strcpy (context.init_parameters_path, "open-osdp-params.json");
     strcpy (context.log_path, "open_osdp.log");
 
     // if there's an argument it is the config file path
@@ -164,6 +170,9 @@ int
     timeout;
   fd_set
     writefds;
+int ufd;
+int scount;
+int c1;
 
 
   status = ST_OK;
@@ -173,6 +182,35 @@ int
     context.role);
   if (status != ST_OK)
     done = 1;
+{
+  struct sockaddr_un usock;
+  int snl;
+  char sn [1024];
+  int status_socket;
+
+  memset (sn, 0, sizeof (1024));
+  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-485", tag);
+  snl = strlen (sn);
+
+  ufd = socket (AF_UNIX, SOCK_STREAM, 0);
+  if (ufd != -1)
+  {
+    memset (&usock, 0, sizeof (usock));
+    usock.sun_family = AF_UNIX;
+    unlink (sn);
+    strcpy (usock.sun_path, sn);
+    fprintf (stderr, "unix socket path %s\n",
+      usock.sun_path);
+    status_socket = bind (ufd, (struct sockaddr *)&usock, sizeof (usock));
+    if (status_socket != -1)
+    {
+      status_socket = fcntl (ufd, F_SETFL,
+        fcntl (ufd, F_GETFL, 0) | O_NONBLOCK);
+      if (status_socket != -1)
+        status_socket = listen (ufd, 0);
+    };
+  };
+};
   while (!done)
   {
     fflush (context.log);
@@ -181,12 +219,17 @@ int
 
     nfds = 0;
     FD_ZERO (&readfds);
+    FD_SET (ufd, &readfds);
     FD_SET (context.fd, &readfds);
+    if (ufd > context.fd)
+      scount = ufd+1;
+    else
+      scount = context.fd+1;
     FD_ZERO (&writefds);
     FD_ZERO (&exceptfds);
     timeout.tv_sec = 0;
     timeout.tv_nsec = 100000000;
-    status_select = pselect (1+context.fd, &readfds, &writefds, &exceptfds,
+    status_select = pselect (scount, &readfds, &writefds, &exceptfds,
       &timeout, &sigmask);
 
     if (status_select EQUALS -1)
@@ -213,7 +256,42 @@ int
         status = background (&context);
     };
 
+
+
     // if there was data at the 485 file descriptor, process it
+
+if (status_select > 0)
+{
+
+    // check for command input (unix socket activity pokes us to check)
+
+    if (FD_ISSET (ufd, &readfds))
+{
+  char cmdbuf [2];
+fprintf (stderr, "ufd socket was selected in READ (%d)\n",
+  ufd);
+  c1 = accept (ufd, NULL, NULL);
+fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
+  ufd, c1);
+  if (c1 != -1)
+  {
+    status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+    if (status_io > 0)
+    {
+      fprintf (stderr, "cmd buf %02x%02x\n",
+        cmdbuf [0], cmdbuf [1]);
+      close (c1);
+
+     status = process_current_command ();
+     if (status EQUALS ST_OK)
+       preserve_current_command ();
+     check_for_command = 0;
+     status = ST_OK;
+
+    };
+  };
+};
+};
 
     if (FD_ISSET (context.fd, &readfds))
     {
@@ -265,147 +343,6 @@ int
     if (status != ST_OK)
       done = 1;
   };
-#if 0
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <fcntl.h>
-
-
-
-
-int
-  passphrase_length;
-int
-  plmax = 16;
-char
-  current_passphrase [17];
-char
-  specified_passphrase [17];
-char
-  buffer [MAX_BUF + 1];
-gnutls_dh_params_t
-  dh_params;
-struct sockaddr_in
-  sa_serv;
-//gnutls_session_t session;
-
-
-void
-  signal_callback_handler
-    (int
-      signum);
-
-
-int
-  generate_dh_params
-    (void)
-
-{ /* generate_dh_params */
-
-  unsigned int bits = gnutls_sec_param_to_pk_bits(GNUTLS_PK_DH,
-    GNUTLS_SEC_PARAM_LEGACY);
-  /* Generate Diffie-Hellman parameters - for use with DHE
-   * kx algorithms. These should be discarded and regenerated
-   * once a day, once a week or once a month. Depending on the
-   * security requirements.
-   */
-  gnutls_dh_params_init(&dh_params);
-  gnutls_dh_params_generate2(dh_params, bits);
-
-  return 0;
-
-} /* generate_dh_params */
-
-
-// MAIN
-
-
-//merged
-//  next
-//    next
-//      next
-            if (status_sock EQUALS 0)
-            {
-              status = ST_OK;
-            };
-          }
-          else
-          {
-            status = ST_OK; // assume tls read was ok for starters
-            tls_current_length = status_tls;
-            if (status_tls EQUALS 0)
-              status = ST_OSDP_TLS_CLOSED;
-            if (status_tls < 0)
-              status = ST_OSDP_TLS_ERROR;
-            if (status EQUALS ST_OK)
-            {
-              // if we have enough data look for the passphrase
-              if (!context.authenticated)
-              {
-                if (passphrase_length < plmax)
-                {
-                  int lth;
-                  lth = tls_current_length;
-                  if ((passphrase_length + lth) > plmax)
-                    lth = plmax - passphrase_length;
-                  memcpy (current_passphrase+passphrase_length, buffer, lth);
-                  if (0 EQUALS
-                    memcmp (current_passphrase, specified_passphrase, plmax))
-                    context.authenticated = 1;
-                };
-              };
-
-              // append buffer to osdp buffer
-              if (context.authenticated)
-              {
-                // while first not SOM skip until SOM
-
-                int i;
-                int done;
-                int current_length;
-
-                i = 0;
-                current_length = tls_current_length;
-                done = 0;
-                while (!done)
-                {
-                  if (buffer [i] != C_SOM)
-                  {
-                    i++;
-                    current_length --;
-                  }
-                  else
-                  {
-                    memcpy (osdp_buf.buf + osdp_buf.next,
-                      buffer+i, current_length);
-                    osdp_buf.next = osdp_buf.next + current_length;
-                    status = ST_NET_INPUT_READY;
-                    done = 1;
-                  };
-                  if (i EQUALS tls_current_length)
-                    done = 1;
-                }
-              };
-            }
-          };
-          if (status != ST_OK)
-          {
-            if (status != ST_NET_INPUT_READY)
-            {
-              fprintf (stderr, "status %d\n", status);
-              done_tls = 1;
-            };
-          };
-          if (status != ST_OK)
-          {
-            done_tls = 1;
-          };
-#endif
-//merged
-//  next
-//    next
   if (status != ST_OK)
     fprintf (stderr, "open-osdp return status %d\n",
       status);

@@ -365,6 +365,11 @@ int
 
 
   status = ST_CMD_UNKNOWN;
+  if (context->verbosity > 3)
+  {
+    fprintf (context->log, "process_command: command is %d\n",
+      command);
+  };
   processed = 0;
   if (command EQUALS OSDP_CMD_NOOP)
   {
