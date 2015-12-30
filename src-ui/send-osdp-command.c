@@ -62,6 +62,7 @@ int
   strcpy (tag, "cmd=PD-");
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {
+    strcpy (command, arguments+strlen(tag));
     strcpy (tag, "stop");
     if (0 == strncmp (tag, command, strlen (tag)))
     {
