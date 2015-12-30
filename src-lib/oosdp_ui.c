@@ -575,8 +575,75 @@ fprintf (stderr, "fixme: RND.A\n");
       status = ST_OK;
       break;
     case OSDP_CMDB_DUMP_STATUS:
-      dump_conformance (context, &osdp_conformance);
-      status = ST_OK;
+      {
+        FILE *sf;
+        char statfile [1024];
+        char tag [3];
+        if (context->role EQUALS OSDP_ROLE_PD)
+          strcpy (tag, "PD");
+        else
+          strcpy (tag, "CP");
+        sprintf (statfile, "/opt/open-osdp/run/%s/open-osdp-status.json",
+          tag);
+        sf = fopen (statfile, "w");
+        if (sf != NULL)
+        {
+          time_t current_time;
+          char current_date_string [1024];
+
+          current_time = time (NULL);
+          strcpy (current_date_string, asctime (localtime (&current_time)));
+          current_date_string [strlen (current_date_string)-1] = 0;
+          fprintf (sf, "{\n");
+          fprintf (sf, "      \"last_update\" : \"%s\",\n",
+            current_date_string);
+          fprintf (sf, "             \"role\" : \"%d\",\n",
+            context->role);
+          fprintf (sf, "                \"#\" : \"0=PC 1=PD 2=MON\",\n");
+          fprintf (sf, "       \"pd_address\" : \"%02x\",\n",
+            p_card.addr);
+          fprintf (sf, "         \"cp_polls\" : \"%d\",\n",
+            context->cp_polls);
+          fprintf (sf, "          \"pd_acks\" : \"%d\",\n",
+            context->pd_acks);
+          fprintf (sf, "     \"sent_naks\" : \"%d\",\n",
+            context->sent_naks);
+          fprintf (sf, "  \"power_report\" : \"%d\",\n",
+            context->power_report);
+          fprintf (sf, "     \"verbosity\" : \"%d\",\n",
+            context->verbosity);
+          fprintf (sf, "           \"crc\" : \"%d\",\n",
+            m_check);
+          fprintf (sf, "       \"timeout\" : \"%d\",\n",
+            m_idle_timeout);
+          fprintf (sf, "          \"poll\" : \"%d\",\n",
+            p_card.poll);
+          fprintf (sf, "          \"dump\" : \"%d\",\n",
+            m_dump);
+          fprintf (sf, "  \"checksum_errors\" : \"%d\",\n",
+            context->checksum_errs);
+      {
+        int count;
+        int i;
+        char val [1024];
+        memset (val, 0, sizeof (val));
+        count = 0;
+        if (osdp_buf.next > 0)
+          count = osdp_buf.next;
+        fprintf (sf, "  \"raw_data_count\" : \"%d\",\n",
+          count);
+        for (i=0; i<count; i++)
+          sprintf (val+(2*count), "%02x", osdp_buf.buf [i]);
+        fprintf (sf, "  \"raw_data\" : \"%s\"\n", // LAST so no comma
+          val);
+      };
+          fprintf (sf, "}\n");
+          fclose (sf);
+        };
+
+        dump_conformance (context, &osdp_conformance);
+        status = ST_OK;
+      };
       break;
     case OSDP_CMDB_IDENT:
       {
@@ -597,6 +664,21 @@ fprintf (stderr, "fixme: RND.A\n");
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting PD Ident\n");
       };
+      status = ST_OK;
+      break;
+    case OSDP_CMDB_PRESENT_CARD:
+      /*
+        use card data from loaded config
+      */
+      context->card_data_valid = p_card.bits;
+      context->creds_a_avail = creds_buffer_a_lth;
+      if (context->verbosity > 2)
+        fprintf (context->log, "Presenting card data (raw: %d, Creds A: %d)\n",
+          context->card_data_valid, context->creds_a_avail);
+      status = ST_OK;
+      break;
+    case OSDP_CMDB_RESET_POWER:
+      context->power_report = 1;
       status = ST_OK;
       break;
     case OSDP_CMDB_SEND_POLL:

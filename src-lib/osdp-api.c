@@ -46,7 +46,6 @@ int
     status;
 
 
-  fprintf (stderr, "processing current command...\n");
   status = read_command (&context, &cmd);
   if (status EQUALS ST_OK)
   {

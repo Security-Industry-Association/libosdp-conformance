@@ -151,7 +151,7 @@ int
 
   previous_time = 0;
 
-  context->log = fopen ("open-osdp.log", "w");
+  context->log = fopen (context->log_path, "w");
   if (context->log EQUALS NULL)
     status = ST_LOG_OPEN_ERR;
 

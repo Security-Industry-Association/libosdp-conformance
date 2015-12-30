@@ -136,6 +136,30 @@ int
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));
+    test_command = "present_card";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_PRESENT_CARD;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "reset_power";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_RESET_POWER;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
     test_command = "send_poll";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {

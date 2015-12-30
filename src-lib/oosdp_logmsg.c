@@ -180,7 +180,7 @@ int
     msg = (OSDP_MSG *) aux;
 {
   FILE *identf;
-  identf = fopen ("/opt/open-osdp/run/ident_from_PD00.json", "w");
+  identf = fopen ("/opt/open-osdp/run/CP/ident_from_PD00.json", "w");
 if (identf != NULL)
 {
   fprintf (identf, "{\n");

@@ -389,48 +389,6 @@ oltc = *last_time_check;
    
 
 int
-  parse_xml
-    (char
-      *buff,
-    size_t
-      buff_size)
-
-{ /* parse_xml */
-
-    FILE
-      *fp;
-    XML_Parser
-      parser;
-    fp = fopen ("open-osdp.cfg", "r");
-    if(fp == NULL)
-    {
-      printf("Failed to open file\n");
-      return 1;
-    }
-
-    parser = XML_ParserCreate(NULL);
-    XML_SetElementHandler(parser, start_element, end_element);
-    XML_SetCharacterDataHandler (parser, handle_data);
-
-    memset(buff, 0, buff_size);
-
-    fread (buff, sizeof(char), buff_size, fp);
-
-    /* parse the xml */
-    if(XML_Parse(parser, buff, strlen(buff), XML_TRUE) == XML_STATUS_ERROR)
-    {
-        printf("Error: %s\n", XML_ErrorString(XML_GetErrorCode(parser)));
-    }
-
-    fclose(fp);
-    XML_ParserFree(parser);
-
-    return 0;
-
-} /* parse_xml */
-
-
-int
   parse_json
     (OSDP_CONTEXT
       *ctx)
@@ -455,6 +413,8 @@ int
     *test_command;
   char
     this_command [1024];
+  char
+    this_value [1024];
   json_t
     *value;
   int
@@ -484,6 +444,9 @@ int
       status = ST_CMD_ERROR;
     };
   }; 
+
+  // parameter "address"
+
   if (status EQUALS ST_OK)
   {
     strcpy (field, "address");
@@ -499,6 +462,45 @@ int
     sscanf (vstr, "%d", &i);
     p_card.addr = i;
   };
+
+  // parameter "bits"
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (field, "bits");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      status= ST_CMD_INVALID;
+  };
+  if (status EQUALS ST_OK)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    p_card.bits = i;
+  }; 
+
+  // parameter "poll"
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (field, "poll");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      status= ST_CMD_INVALID;
+  };
+  if (status EQUALS ST_OK)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    p_card.poll = i;
+  }; 
+
+  // parameter "verbosity"
+
   if (status EQUALS ST_OK)
   {
     strcpy (field, "verbosity");
@@ -514,6 +516,9 @@ int
     sscanf (vstr, "%d", &i);
     context.verbosity = i;
   };
+
+  // parameter "role"
+
   if (status EQUALS ST_OK)
   {
     strcpy (field, "role");
@@ -544,6 +549,64 @@ int
       status = ST_PARSE_ERROR;
     };
   }; 
+
+  // parameter "serial_device"
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (field, "serial_device");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      status= ST_CMD_INVALID;
+  };
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_value, json_string_value (value));
+    strcpy (p_card.filename, this_value);
+  }; 
+
+  // parameter "raw_value"
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (field, "raw_value");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      status= ST_CMD_INVALID;
+  };
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_value, json_string_value (value));
+    /*
+      accumulate the "value" field into p_card.value
+    */
+    int
+      i;
+    int
+      idata;
+    int
+      idx;
+    int
+      rem;
+    char
+      tmps [3];
+
+    idx=0;
+    idata = 0;
+    rem = strlen (this_value);
+    while (rem > 0)
+    {
+      strncpy (tmps, this_value+idx, 2);
+      idx = idx + 2;
+      rem = rem - 2;
+      tmps [2] = 0;
+      sscanf (tmps, "%x", &i);
+      p_card.value [idata] = i;
+      idata ++;
+      p_card.value_len ++;
+    };
+  }; 
+
   return (status);
 
 } /* parse_json */
