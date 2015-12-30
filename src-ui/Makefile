@@ -37,8 +37,8 @@ build:	all
 	mkdir -p ../opt/open-osdp/bin
 	mkdir -p ../opt/open-osdp/cgi-bin
 	mkdir -p ../opt/open-osdp/www
-	mkdir -p ../opt/open-osdp/CP
-	mkdir -p ../opt/open-osdp/PD
+	mkdir -p ../opt/open-osdp/run/CP
+	mkdir -p ../opt/open-osdp/run/PD
 	cp ${PAGES} ../opt/open-osdp/www
 	cp ${CGIPROGS} ../opt/open-osdp/cgi-bin
 	cp ${SCRIPTS} ../opt/open-osdp/bin
