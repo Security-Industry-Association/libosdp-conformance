@@ -174,7 +174,10 @@ int
 
 
   status = ST_OK;
+
+  // i.e. we GOT a poll
   osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
+
   /*
     poll response can be many things.  we do one and then return, which
     can cause some turn-the-crank artifacts.  may need multiple polls for

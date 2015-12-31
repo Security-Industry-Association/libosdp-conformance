@@ -734,8 +734,6 @@ int
 
     status = send_osdp_data (context, test_blk, *current_length);
   };
-  if (command == OSDP_POLL)
-    osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
   return (status);
 
 } /* send_message */
