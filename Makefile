@@ -11,7 +11,9 @@ clean:
 	(cd src-ui; make clean; cd ..)
 
 build:	all
-	echo building libosdp
+	(cd src-lib; make build; cd ..)
+	(cd src-485; make build; cd ..)
+	(cd src-ui; make build; cd ..)
 
 release:	build
 	tar czvf release-libosdp.tgz opt/*
