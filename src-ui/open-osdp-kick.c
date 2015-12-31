@@ -4,15 +4,22 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-//char *socket_path = "./socket";
-char *socket_path = "./socket1";
+char socket_path [1024];
 
 int main(int argc, char *argv[]) {
   struct sockaddr_un addr;
   char buf[100];
   int fd,rc;
+  char
+    *tag;
 
-  if (argc > 1) socket_path=argv[1];
+  tag = "CP";
+  if (argc > 1)
+    if (strcmp (argv [1], "PD") == 0)
+      tag = "PD";
+  sprintf (socket_path,
+    "/opt/open-osdp/run/%s/open-osdp-control",
+    tag);
 
   if ( (fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
     perror("socket error");

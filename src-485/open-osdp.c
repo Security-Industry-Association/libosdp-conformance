@@ -189,7 +189,7 @@ int c1;
   int status_socket;
 
   memset (sn, 0, sizeof (1024));
-  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-485", tag);
+  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
   snl = strlen (sn);
 
   ufd = socket (AF_UNIX, SOCK_STREAM, 0);
@@ -234,6 +234,7 @@ int c1;
 
     if (status_select EQUALS -1)
     {
+fprintf (stderr, "errno at select error %d\n", errno);
       status = ST_SELECT_ERROR;
 
       // if it's an interrupt, fake it's ok.  assume a legitimate HUP
@@ -262,6 +263,9 @@ int c1;
 
 if (status_select > 0)
 {
+  if (context.verbosity > 9)
+    fprintf (stderr, "%d descriptors from pselect\n",
+      status_select);
 
     // check for command input (unix socket activity pokes us to check)
 

@@ -200,7 +200,7 @@ if (context.verbosity > 3)
     new_length ++;
   };
 
-  if (context.verbosity > 4)
+  if (context.verbosity > 9)
   {
     fprintf (stderr, "build: sequence %d. Lth %d\n", sequence, new_length);
   }

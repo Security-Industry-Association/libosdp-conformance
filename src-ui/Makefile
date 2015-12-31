@@ -21,16 +21,17 @@
 CC=clang
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command
+PROGS = open-osdp-kick
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
 SCRIPTS = HUP-CP HUP-PD \
   STOP-CP STOP-PD \
   set-CP-pid set-PD-pid \
   write-osdp-CP-command write-osdp-PD-command
 
-all:	${CGIPROGS} ${PAGES} ${SCRIPTS}
+all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS}
 
 clean:
-	rm -f core *.o ${CGIPROGS}
+	rm -f core *.o ${CGIPROGS} ${PROGS}
 	rm -rf ../opt/open-osdp
 
 build:	all
@@ -42,6 +43,7 @@ build:	all
 	cp ${PAGES} ../opt/open-osdp/www
 	cp ${CGIPROGS} ../opt/open-osdp/cgi-bin
 	cp ${SCRIPTS} ../opt/open-osdp/bin
+	cp ${PROGS} ../opt/open-osdp/bin
 
 open-osdp-CP-status:	open-osdp-CP-status.o Makefile
 	${CC} -o open-osdp-CP-status -g open-osdp-CP-status.o -lrt
@@ -51,6 +53,13 @@ open-osdp-PD-status:	open-osdp-PD-status.o Makefile
 
 send-osdp-command:	send-osdp-command.o Makefile
 	${CC} -o send-osdp-command -g send-osdp-command.o
+
+open-osdp-kick:	open-osdp-kick.o Makefile
+	${CC} -o open-osdp-kick -g open-osdp-kick.o
+
+open-osdp-kick.o:	open-osdp-kick.c
+	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
+	  open-osdp-kick.c
 
 open-osdp-CP-status.o:	open-osdp-CP-status.c
 	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \

@@ -1,3 +1,4 @@
 #!/bin/bash
-kill -HUP `cat /opt/open-osdp/run/PD/current_osdp_PD_pid`
+echo "00" >/tmp/1.in
+/opt/open-osdp/bin/open-osdp-kick PD </tmp/1.in
 
