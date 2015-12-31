@@ -1,3 +1,4 @@
 #!/bin/bash
-kill -HUP `cat /opt/open-osdp/run/CP/current_osdp_CP_pid`
+echo "00" >/tmp/1.in
+/opt/open-osdp/bin/open-osdp-kick CP </tmp/1.in
 
