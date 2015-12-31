@@ -5,9 +5,6 @@ int
 #include <string.h>
 
 
-// stub
-//<A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">Identify</A>
-
 int
   main
     (int
@@ -32,20 +29,17 @@ int
   status = -1;
   strcpy (arguments, getenv ("QUERY_STRING"));
   printf ("Content-type: text/html\n\n");
-  printf ("<HTML><HEAD><TITLE>open-osdp CP console</TITLE>");
-  printf ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");
-  printf ("</HEAD><BODY>");
   if (param_verbosity > 1)
     fprintf (stderr, "arguments: %s\n",
       arguments);
   strcpy (tag, "cmd=CP-");
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {
+  printf ("<HTML><HEAD><TITLE>open-osdp CP console</TITLE>");
+  printf ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");
+  printf ("</HEAD><BODY>");
     strcpy (command, arguments+strlen(tag));
     // send the CP daemon a command
-    if (param_verbosity > 1)
-      fprintf (stderr, "STUB: sending CP daemon command: %s\n",
-        command);
     printf ("<BR><BR><BR><P ALIGN=\"center\">Executing %s command...</P>\n",
       command);
     sprintf (shell_command,
@@ -62,6 +56,22 @@ int
   strcpy (tag, "cmd=PD-");
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {
+    printf ("<HTML><HEAD><TITLE>open-osdp PD console</TITLE>");
+    printf
+("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-PD.html\">");
+    printf ("</HEAD><BODY>");
+
+    strcpy (command, arguments+strlen(tag));
+
+    // send the PD daemon a command
+    printf ("<BR><BR><BR><P ALIGN=\"center\">Executing %s command...</P>\n",
+      command);
+    sprintf (shell_command,
+"sudo -n /opt/open-osdp/bin/write-osdp-PD-command %s",
+  command);
+    system (shell_command);
+    system ("sudo -n /opt/open-osdp/bin/HUP-PD");
+
     strcpy (command, arguments+strlen(tag));
     strcpy (tag, "stop");
     if (0 == strncmp (tag, command, strlen (tag)))
