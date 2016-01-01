@@ -399,6 +399,8 @@ int
     *cmdf;
   char
     field [1024];
+  int
+    found_field;
   char
     json_string [4096];
   json_t
@@ -422,6 +424,7 @@ int
 
 
   status = -1;
+  found_field = 0;
   cmdf = fopen (ctx->init_parameters_path, "r");
   if (cmdf != NULL)
   {
@@ -449,12 +452,13 @@ int
 
   if (status EQUALS ST_OK)
   {
+    found_field = 1;
     strcpy (field, "address");
     value = json_object_get (root, field);
     if (!json_is_string (value))
-      status= ST_CMD_INVALID;
+      found_field = 0;
   };
-  if (status EQUALS ST_OK)
+  if (found_field)
   {
     char vstr [1024];
     int i;
@@ -467,12 +471,13 @@ int
 
   if (status EQUALS ST_OK)
   {
+    found_field = 1;
     strcpy (field, "bits");
     value = json_object_get (root, field);
     if (!json_is_string (value))
-      status= ST_CMD_INVALID;
+      found_field = 0;
   };
-  if (status EQUALS ST_OK)
+  if (found_field)
   {
     char vstr [1024];
     int i;
@@ -485,12 +490,13 @@ int
 
   if (status EQUALS ST_OK)
   {
+    found_field = 1;
     strcpy (field, "poll");
     value = json_object_get (root, field);
     if (!json_is_string (value))
-      status= ST_CMD_INVALID;
+      found_field = 0;
   };
-  if (status EQUALS ST_OK)
+  if (found_field)
   {
     char vstr [1024];
     int i;
@@ -499,21 +505,45 @@ int
     p_card.poll = i;
   }; 
 
-  // parameter "verbosity"
+  // parameter "timeout"
 
   if (status EQUALS ST_OK)
   {
-    strcpy (field, "verbosity");
+    found_field = 1;
+    strcpy (field, "timeout");
     value = json_object_get (root, field);
     if (!json_is_string (value))
-      status= ST_CMD_INVALID;
+      found_field = 0;
   };
-  if (status EQUALS ST_OK)
+  if (found_field)
   {
     char vstr [1024];
     int i;
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
+    m_idle_timeout = i;
+  }; 
+
+  // parameter "verbosity"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "verbosity");
+fprintf (stderr, "look for %s\n",
+  field);
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+fprintf (stderr, "processing value %s\n",
+  vstr);
     context.verbosity = i;
   };
 
@@ -521,12 +551,13 @@ int
 
   if (status EQUALS ST_OK)
   {
+    found_field = 1;
     strcpy (field, "role");
     value = json_object_get (root, field);
     if (!json_is_string (value))
-      status= ST_CMD_INVALID;
+      found_field = 0;
   };
-  if (status EQUALS ST_OK)
+  if (found_field)
   {
     was_valid = 0;
     strcpy (this_command, json_string_value (value));
@@ -552,14 +583,15 @@ int
 
   // parameter "serial_device"
 
-  if (status EQUALS ST_OK)
+  if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
   {
     strcpy (field, "serial_device");
+    found_field = 1;
     value = json_object_get (root, field);
     if (!json_is_string (value))
-      status= ST_CMD_INVALID;
+      found_field = 0;
   };
-  if (status EQUALS ST_OK)
+  if (found_field)
   {
     strcpy (this_value, json_string_value (value));
     strcpy (p_card.filename, this_value);
@@ -569,12 +601,13 @@ int
 
   if (status EQUALS ST_OK)
   {
+    found_field = 1;
     strcpy (field, "raw_value");
     value = json_object_get (root, field);
     if (!json_is_string (value))
-      status= ST_CMD_INVALID;
+      found_field = 0;
   };
-  if (status EQUALS ST_OK)
+  if (found_field)
   {
     strcpy (this_value, json_string_value (value));
     /*

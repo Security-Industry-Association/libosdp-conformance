@@ -52,10 +52,8 @@ int
   };
 };
   printf ("</PRE>\n");
-  //system ("cat /opt/open-osdp/run/PD/open-osdp-status.json");
-  //system ("cat /opt/open-osdp/run/PD/open-osdp-status.json");
   printf ("</BODY></HTML>\n");
   return (status);
 
-} /* main for open-osdp-PD-status */
+} /* main for open-osdp-CP-status */
 

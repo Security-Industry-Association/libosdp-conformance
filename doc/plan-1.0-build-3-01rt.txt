@@ -1,0 +1,8 @@
+main html page
+  cp html page
+  pd html page
+  cp status page (separate, refreshes)
+  pd status page (separate, refreshes)
+
+status page shows last 20 of log with log file line count
+

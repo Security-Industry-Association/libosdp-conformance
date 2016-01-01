@@ -164,6 +164,10 @@ typedef struct osdp_context
   int
     creds_a_avail;
   int
+    bytes_received;
+  int
+    bytes_sent;
+  int
     packets_received;
   int
     cp_polls;
@@ -224,6 +228,9 @@ typedef struct osdp_context
     cmd_hist_counter;
   char
     init_parameters_path [1024];
+
+  int
+    current_pid;
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)

@@ -30,8 +30,6 @@
 #include <osdp_conformance.h>
 
 
-extern int
-  check_for_command;
 //extern OSDP_TLS_CONFIG config;
 extern OSDP_CONTEXT
   context;
@@ -89,25 +87,4 @@ void
     context.cmd_hist_counter = 0;
 
 } /* preserve_current_command */
-
-
-void
-  signal_callback_handler
-    (int
-      signum)
-
-{ /* signal_callback_handler */
-
-//  int status;
-
-
-  check_for_command = 1;
-#if 0
-  status = process_current_command ();
-  if (status EQUALS ST_OK)
-    preserve_current_command ();
-#endif
-
-} /* signal_callback_handler */
-
 

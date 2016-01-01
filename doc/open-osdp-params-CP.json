@@ -1,0 +1,8 @@
+{
+    "role" : "CP"
+  ,"address" : "01"
+  ,"serial_device" : "/dev/ttyUSB0"
+  ,"poll" : "1"
+  ,"timeout" : "3"
+  ,"verbosity" : "9"
+}

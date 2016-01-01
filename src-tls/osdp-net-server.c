@@ -28,6 +28,7 @@
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/un.h>
 
 
 #include <gnutls/gnutls.h>
@@ -36,6 +37,7 @@
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+#include <osdp-local-config.h>
 
 
 int
@@ -72,6 +74,8 @@ OSDP_PARAMETERS
   p_card;
 struct sockaddr_in
   sa_serv;
+char
+  *tag;
 gnutls_session_t
   tls_session;
 
@@ -106,7 +110,11 @@ int
 int
   initialize
     (OSDP_TLS_CONFIG
-      *config)
+      *config,
+    int
+      argc,
+    char
+      *argv [])
 
 { /* initialize */
 
@@ -118,21 +126,38 @@ int
 
   status = ST_OK;
   memset (config, 0, sizeof (*config));
-  strcpy (config->version, "v0.00-EP02");
-  strcpy (config->cert_file, "/tester/current/etc/osdp_tls_server_cert.pem");
-  strcpy (config->key_file, "/tester/current/etc/osdp_tls_server_key.pem");
+
+  memset (&context, 0, sizeof (context));
+  strcpy (context.init_parameters_path, "open-osdp-params.json");
+  strcpy (context.log_path, "open_osdp.log");
+
+  // if there's an argument it is the config file path
+  if (argc > 1)
+  {
+    strcpy (context.init_parameters_path, argv [1]);
+  };
+  strcpy (config->version, "v1.00-Build3");
+  strcpy (config->cert_file, OSDP_LCL_SERVER_CERT);
+  strcpy (config->key_file, OSDP_LCL_SERVER_KEY);
 // read json config file
 // sets role
 context.role = OSDP_ROLE_CP;
 // sets port
 config->listen_sap = 10443;
+
+  if (context.role EQUALS OSDP_ROLE_CP)
+    tag = "CP";
+  else
+    tag = "PD";
+
   m_idle_timeout = 30;
-strcpy (config->cmd_dir, "/tester/current/results");
+sprintf (config->cmd_dir, OSDP_LCL_SERVER_RESULTS,
+  tag);
 sprintf (command, "mkdir -p %s/history",
   config->cmd_dir);
 system (command);
 
-  strcpy (specified_passphrase, "speakFriend&3ntr");
+  strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
 
   // initialize my current pid
   {
@@ -140,26 +165,17 @@ system (command);
       my_pid;
 
     my_pid = getpid ();
-    sprintf (command, "sudo -n /opt/open-osdp/bin/set-cp-pid %d",
-      my_pid);
+    context.current_pid = my_pid;
+    sprintf (command, OSPD_LCL_SET_PID_TEMPLATE,
+      tag, my_pid);
     system (command);
   };
 
-{
-  int status_signal;
-  static struct sigaction signal_action;
-  //signal (SIGHUP, signal_callback_handler);
-  memset (&signal_action, 0, sizeof (signal_action));
-  signal_action.sa_handler = signal_callback_handler;
-  status_signal = sigaction (SIGHUP,
-    &signal_action, NULL);
-};
-
   last_time_check = time (NULL);
-  memset (&context, 0, sizeof (context));
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
-strcpy (context.command_path, "/opt/open-osdp/run/open_osdp_command.json");
+sprintf (context.command_path, 
+  OSDP_LCL_COMMAND_PATH, tag);
 context.current_menu = OSDP_MENU_TOP;
 
   if (status EQUALS ST_OK)
@@ -306,6 +322,69 @@ int
 
 
 int
+  local_socket_setup
+  (int
+    *lcl_sock_fd)
+
+{ /* local_socket_setup */
+
+  struct sockaddr_un usock;
+  int snl;
+  char sn [1024];
+  int
+    status;
+  int
+    status_socket;
+  int
+    ufd;
+
+
+  status = ST_OK;
+  memset (sn, 0, sizeof (1024));
+  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
+  snl = strlen (sn);
+
+  ufd = socket (AF_UNIX, SOCK_STREAM, 0);
+  if (ufd != -1)
+  {
+    memset (&usock, 0, sizeof (usock));
+    usock.sun_family = AF_UNIX;
+    unlink (sn);
+    strcpy (usock.sun_path, sn);
+    fprintf (stderr, "unix socket path %s\n",
+      usock.sun_path);
+    status_socket = bind (ufd, (struct sockaddr *)&usock, sizeof (usock));
+    if (status_socket != -1)
+    {
+      status_socket = fcntl (ufd, F_SETFL,
+        fcntl (ufd, F_GETFL, 0) | O_NONBLOCK);
+      if (status_socket != -1)
+      {
+        status_socket = listen (ufd, 0);
+      }
+      else
+      {
+        status = -5;
+      };
+    }
+    else
+    {
+      status = -4;
+    };
+  }
+  else
+  {
+    status = -3;
+  };
+
+  if (status EQUALS ST_OK)
+    *lcl_sock_fd = ufd;
+  return (status);
+
+} /* local_socket_setup */
+
+
+int
   main
     (int
       argc,
@@ -314,6 +393,8 @@ int
 
 { /* main for osdp-tls */
 
+  int
+    c1;
   int
     done_tls;
   fd_set
@@ -327,6 +408,8 @@ int
   int
     status;
   int
+    status_io;
+  int
     status_sock;
   int
     status_tls;
@@ -334,12 +417,18 @@ int
     timeout;
   int
     tls_current_length;
+  int
+    ufd;
   fd_set
     writefds;
 
 
   status = ST_OK;
-  status = initialize (&config);
+  status = initialize (&config, argc, argv);
+  if (status EQUALS ST_OK)
+  {
+    status = local_socket_setup (&ufd);
+  };
   if (status EQUALS ST_OK)
   {
     if (context.role EQUALS OSDP_ROLE_CP)
@@ -366,6 +455,8 @@ int
             FD_ZERO (&readfds);
             FD_ZERO (&writefds);
             FD_ZERO (&exceptfds);
+            FD_SET (ufd, &readfds);
+            nfds = ufd+1;
             timeout.tv_sec = 0;
             timeout.tv_nsec = 100000000;
             status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
@@ -379,6 +470,34 @@ int
                 status = background (&context);
               };
             };
+            if (status_sock > 0)
+            {
+              // check for command input (unix socket activity pokes us to check)
+              if (FD_ISSET (ufd, &readfds))
+              {
+                char cmdbuf [2];
+                fprintf (stderr, "ufd socket was selected in READ (%d)\n",
+                  ufd);
+                c1 = accept (ufd, NULL, NULL);
+                fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
+                  ufd, c1);
+                if (c1 != -1)
+                {
+                  status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+                  if (status_io > 0)
+                  {
+                    fprintf (stderr, "cmd buf %02x%02x\n",
+                      cmdbuf [0], cmdbuf [1]);
+                    close (c1);
+
+                    status = process_current_command ();
+                    if (status EQUALS ST_OK)
+                      preserve_current_command ();
+                    status = ST_OK;
+                  };
+                };
+              };
+            };
           }
           else
           {
@@ -390,6 +509,8 @@ int
               status = ST_OSDP_TLS_ERROR;
             if (status EQUALS ST_OK)
             {
+              context.bytes_received = context.bytes_received + status_tls;
+
               // if we have enough data look for the passphrase
               if (!context.authenticated)
               {
@@ -486,8 +607,10 @@ int
 { /* send_osdp_data */
 
   gnutls_record_send (tls_session, buf, lth);
+  context->bytes_sent = context->bytes_sent + lth;
   return (ST_OK);
 
 } /* send_osdp_data */
+
 
 

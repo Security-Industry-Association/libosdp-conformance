@@ -83,16 +83,6 @@ int
 
 m_idle_timeout = 30;
 
-{
-  int status_signal;
-  static struct sigaction signal_action;
-  //signal (SIGHUP, signal_callback_handler);
-  memset (&signal_action, 0, sizeof (signal_action));
-  signal_action.sa_handler = signal_callback_handler;
-  status_signal = sigaction (SIGHUP,
-    &signal_action, NULL);
-};
-
   last_time_check = time (NULL);
   if (status EQUALS ST_OK)
   {

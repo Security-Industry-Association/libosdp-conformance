@@ -127,9 +127,6 @@ status = -2;
   // control
   p->ctrl = 0;
   p->ctrl = p->ctrl | (0x3 & sequence);
-  if (context.verbosity > 4)
-    fprintf (stderr, "build msg: seq %d added ctl now %02x m_check %d\n",
-      sequence, p->ctrl, m_check);
 
   // set CRC depending on current value of global parameter
   if (m_check EQUALS OSDP_CRC)

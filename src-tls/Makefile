@@ -46,13 +46,13 @@ osdp-net-server:	osdp-net-server.o \
 osdp-net-client.o:	osdp-net-client.c \
 	  ../include/osdp_conformance.h ../include/osdp-tls.h \
 	  ../include/open-osdp.h
-	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} -c -g -I. -I../include -I /tester/current/include -Wall -Werror \
 	  osdp-net-client.c
 
 osdp-net-server.o:	osdp-net-server.c \
 	  ../include/osdp_conformance.h ../include/osdp-tls.h \
 	  ../include/open-osdp.h
-	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} -c -g -I. -I../include -I /tester/current/include -Wall -Werror \
 	  osdp-net-server.c
 
 ../src-lib/libosdp.a:

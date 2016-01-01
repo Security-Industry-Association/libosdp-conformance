@@ -67,7 +67,7 @@ unsigned char
 
 
 int
-  initialize
+  zzzinitialize
     (OSDP_CONTEXT
        *context,
     int
@@ -91,7 +91,7 @@ int
 
 
 int
-  initialize
+  zzzinitialize
     (OSDP_CONTEXT
       *context,
     int

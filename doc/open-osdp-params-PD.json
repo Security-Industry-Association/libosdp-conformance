@@ -1,0 +1,9 @@
+{
+   "role" : "PD"
+  ,"address" : "01"
+  ,"serial_device" : "/dev/ttyUSB0"
+  ,"verbosity" : "3"
+  ,"bits" : "26"
+  ,"raw_value" : "11223344"
+}
+
