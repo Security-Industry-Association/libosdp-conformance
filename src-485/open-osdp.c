@@ -1,7 +1,7 @@
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
 
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+#include <osdp-local-config.h>
 
 
 int
@@ -81,7 +82,7 @@ int
   status = ST_OK;
   check_for_command = 0;
 
-m_idle_timeout = 30;
+  m_idle_timeout = 30;
 
   last_time_check = time (NULL);
   if (status EQUALS ST_OK)
@@ -139,6 +140,8 @@ int
 { /* main for open-osdp */
 
   int
+    c1;
+  int
     done;
   fd_set
     exceptfds;
@@ -146,6 +149,8 @@ int
     readfds;
   int
     nfds;
+  int
+    scount;
   const sigset_t
     sigmask;
   int
@@ -156,11 +161,10 @@ int
     status_select;
   struct timespec
     timeout;
+  int
+    ufd;
   fd_set
     writefds;
-int ufd;
-int scount;
-int c1;
 
 
   status = ST_OK;
@@ -170,35 +174,44 @@ int c1;
     context.role);
   if (status != ST_OK)
     done = 1;
-{
-  struct sockaddr_un usock;
-  int snl;
-  char sn [1024];
-  int status_socket;
 
-  memset (sn, 0, sizeof (1024));
-  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
-  snl = strlen (sn);
+  // set up a unix socket so commands can be injected
 
-  ufd = socket (AF_UNIX, SOCK_STREAM, 0);
-  if (ufd != -1)
   {
-    memset (&usock, 0, sizeof (usock));
-    usock.sun_family = AF_UNIX;
-    unlink (sn);
-    strcpy (usock.sun_path, sn);
-    fprintf (stderr, "unix socket path %s\n",
-      usock.sun_path);
-    status_socket = bind (ufd, (struct sockaddr *)&usock, sizeof (usock));
-    if (status_socket != -1)
+    char
+      sn [1024];
+    int
+      snl;
+    int
+      status_socket;
+    struct sockaddr_un
+      usock;
+
+
+    memset (sn, 0, sizeof (1024));
+    sprintf (sn, OSDP_LCL_UNIX_SOCKET, tag);
+    snl = strlen (sn);
+
+    ufd = socket (AF_UNIX, SOCK_STREAM, 0);
+    if (ufd != -1)
     {
-      status_socket = fcntl (ufd, F_SETFL,
-        fcntl (ufd, F_GETFL, 0) | O_NONBLOCK);
+      memset (&usock, 0, sizeof (usock));
+      usock.sun_family = AF_UNIX;
+      unlink (sn);
+      strcpy (usock.sun_path, sn);
+      if (context.verbosity > 3)
+        fprintf (stderr, "unix socket path %s\n",
+          usock.sun_path);
+      status_socket = bind (ufd, (struct sockaddr *)&usock, sizeof (usock));
       if (status_socket != -1)
-        status_socket = listen (ufd, 0);
+      {
+        status_socket = fcntl (ufd, F_SETFL,
+          fcntl (ufd, F_GETFL, 0) | O_NONBLOCK);
+        if (status_socket != -1)
+          status_socket = listen (ufd, 0);
+      };
     };
   };
-};
   while (!done)
   {
     fflush (context.log);
@@ -258,18 +271,15 @@ int c1;
       if (FD_ISSET (ufd, &readfds))
       {
         char cmdbuf [2];
-        fprintf (stderr, "ufd socket was selected in READ (%d)\n",
-          ufd);
         c1 = accept (ufd, NULL, NULL);
-        fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
-          ufd, c1);
+        if (context.verbosity > 3)
+          fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
+            ufd, c1);
         if (c1 != -1)
         {
           status_io = read (c1, cmdbuf, sizeof (cmdbuf));
           if (status_io > 0)
           {
-            fprintf (stderr, "cmd buf %02x%02x\n",
-              cmdbuf [0], cmdbuf [1]);
             close (c1);
 
             status = process_current_command ();
