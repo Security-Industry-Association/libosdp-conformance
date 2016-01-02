@@ -118,8 +118,6 @@ m_idle_timeout = 30;
   };
   if (status EQUALS ST_OK)
   {
-    fprintf (stderr, "open-osdp version %s\n",
-      "TEMP 1.0-build 3");
     if (context.role EQUALS OSDP_ROLE_CP)
       fprintf (stderr, "Role: CP\n");
     if (context.role EQUALS OSDP_ROLE_PD)
@@ -224,7 +222,6 @@ int c1;
 
     if (status_select EQUALS -1)
     {
-fprintf (stderr, "errno at select error %d\n", errno);
       status = ST_SELECT_ERROR;
 
       // if it's an interrupt, fake it's ok.  assume a legitimate HUP
@@ -247,50 +244,47 @@ fprintf (stderr, "errno at select error %d\n", errno);
         status = background (&context);
     };
 
+    // if there was data at the 485 file descriptor, process it.
+    // if we got kicked in the unix socket, process the waiting command
 
-
-    // if there was data at the 485 file descriptor, process it
-
-if (status_select > 0)
-{
-  if (context.verbosity > 9)
-    fprintf (stderr, "%d descriptors from pselect\n",
-      status_select);
-
-    // check for command input (unix socket activity pokes us to check)
-
-    if (FD_ISSET (ufd, &readfds))
-{
-  char cmdbuf [2];
-fprintf (stderr, "ufd socket was selected in READ (%d)\n",
-  ufd);
-  c1 = accept (ufd, NULL, NULL);
-fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
-  ufd, c1);
-  if (c1 != -1)
-  {
-    status_io = read (c1, cmdbuf, sizeof (cmdbuf));
-    if (status_io > 0)
+    if (status_select > 0)
     {
-      fprintf (stderr, "cmd buf %02x%02x\n",
-        cmdbuf [0], cmdbuf [1]);
-      close (c1);
+      if (context.verbosity > 9)
+        fprintf (stderr, "%d descriptors from pselect\n",
+          status_select);
 
-     status = process_current_command ();
-     if (status EQUALS ST_OK)
-       preserve_current_command ();
-     check_for_command = 0;
-     status = ST_OK;
+      // check for command input (unix socket activity pokes us to check)
 
-    };
-  };
-};
-};
+      if (FD_ISSET (ufd, &readfds))
+      {
+        char cmdbuf [2];
+        fprintf (stderr, "ufd socket was selected in READ (%d)\n",
+          ufd);
+        c1 = accept (ufd, NULL, NULL);
+        fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
+          ufd, c1);
+        if (c1 != -1)
+        {
+          status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+          if (status_io > 0)
+          {
+            fprintf (stderr, "cmd buf %02x%02x\n",
+              cmdbuf [0], cmdbuf [1]);
+            close (c1);
 
-    if (FD_ISSET (context.fd, &readfds))
-    {
-      unsigned char buffer [2];
-      status_io = read (context.fd, buffer, 1);
+            status = process_current_command ();
+            if (status EQUALS ST_OK)
+              preserve_current_command ();
+            check_for_command = 0;
+            status = ST_OK;
+          };
+        };       
+      };
+
+      if (FD_ISSET (context.fd, &readfds))
+      {
+        unsigned char buffer [2];
+        status_io = read (context.fd, buffer, 1);
       if (status_io < 1)
       {
         //status = ST_SERIAL_READ_ERR;
@@ -299,6 +293,10 @@ fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
       }
       else
       {
+        if (context.verbosity > 9)
+          fprintf (stderr, "485 read returned %d bytes\n",
+            status_io);
+
         status = ST_SERIAL_IN;
         if (osdp_buf.next < sizeof (osdp_buf.buf))
         {
@@ -324,6 +322,7 @@ fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
         };
       };
     };
+    }; // select returned nonzero number of fd's
 
     // if there was input, process the message
     if (status EQUALS ST_SERIAL_IN)
