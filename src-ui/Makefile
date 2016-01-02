@@ -25,7 +25,7 @@ PROGS = open-osdp-kick
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
 SCRIPTS = HUP-CP HUP-PD \
   STOP-CP STOP-PD \
-  set-CP-pid set-PD-pid \
+  set-pid \
   write-osdp-CP-command write-osdp-PD-command
 
 all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS}

@@ -297,7 +297,10 @@ int
         ctx->pd_acks ++;
         osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
         if (ctx->verbosity > 4)
-          fprintf (stderr, "Responding with OSDP_ACK\n");
+        {
+          sprintf (tlogmsg, "Responding with OSDP_ACK");
+          fprintf (ctx->log, "%s\n", tlogmsg);
+        };
       };
     };
   };
