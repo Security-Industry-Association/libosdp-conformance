@@ -1,0 +1,24 @@
+OSDP_OUT
+
+16 outputs
+
+array
+counter at start is set to timeout time in 100ms units (16-bit unsigned max)
+  unless time is zero in which state set permanently
+perm-state on timeout
+current state (default off at start-up)
+
+calc is
+  if counter not zer0
+    if current time >= counter
+      reset state to perm-state
+
+command processor (16 max)
+  00 nop
+  01 set off and abord timer
+  02 set on and abort timer
+  03 set perm off continue timer
+  04 set perm on continue timer
+  05 set temp on continue timer
+  06 set temp off continue timer
+

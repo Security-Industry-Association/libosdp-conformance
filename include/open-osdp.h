@@ -94,6 +94,7 @@
 #define OSDP_CMDB_CAPAS        (1004)
 #define OSDP_CMDB_RESET_POWER  (1005)
 #define OSDP_CMDB_PRESENT_CARD (1006)
+#define OSDP_CMDB_OUT          (1007)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -133,6 +134,38 @@
 #define OSDP_OPT_MONITOR  (111)
 #define OSDP_OPT_SPECIAL  (112)
 
+typedef struct osdp_out_cmd
+{
+  int
+    output_number;
+  int
+    control_code;
+  unsigned int
+    timer;
+} OSDP_OUT_CMD;
+
+typedef struct osdp_out_msg
+{
+  unsigned char
+    output_number;
+  unsigned char
+    control_code;
+  unsigned char
+    timer_lsb;
+  unsigned char
+    timer_msb;
+} OSDP_OUT_MSG;
+
+typedef struct osdp_out_state
+{
+  unsigned int
+    timer;
+  int
+    current;
+  int
+    permanent;
+} OSDP_OUT_STATE;
+#define OSDP_MAX_OUT (16)
 
 typedef struct osdp_context
 {
@@ -231,6 +264,9 @@ typedef struct osdp_context
 
   int
     current_pid;
+
+  OSDP_OUT_STATE
+    out [16];
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)

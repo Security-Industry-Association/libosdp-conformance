@@ -37,6 +37,8 @@
 
 extern OSDP_CONTEXT
   context;
+extern OSDP_OUT_CMD
+  current_output_command [];
 extern OSDP_BUFFER
   osdp_buf;
 extern OSDP_INTEROP_ASSESSMENT
@@ -359,6 +361,8 @@ int
   int
     current_length;
   int
+    j;
+  int
     processed;
   int
     status;
@@ -643,6 +647,11 @@ fprintf (stderr, "fixme: RND.A\n");
             context->pd_acks);
           fprintf (sf, "     \"sent_naks\" : \"%d\",\n",
             context->sent_naks);
+          for (j=0; j<OSDP_MAX_OUT; j++)
+          {
+            fprintf (sf, " \"out-%02d\" : \"%d\",\n",
+              j, context->out [j].current);
+          };
           fprintf (sf, "  \"power_report\" : \"%d\",\n",
             context->power_report);
           fprintf (sf, "     \"verbosity\" : \"%d\",\n",
@@ -700,6 +709,24 @@ fprintf (stderr, "fixme: RND.A\n");
           fprintf (stderr, "Requesting PD Ident\n");
       };
       status = ST_OK;
+      break;
+    case OSDP_CMDB_OUT:
+      {
+        OSDP_OUT_MSG
+          osdp_out_msg [16];
+        int
+          out_lth;
+
+        current_length = 0;
+        osdp_out_msg [0].output_number = current_output_command [0].output_number;
+        osdp_out_msg [0].control_code = current_output_command [0].control_code;
+        osdp_out_msg [0].timer_lsb = current_output_command [0].timer & 0xff;
+        osdp_out_msg [0].timer_lsb = (current_output_command [0].timer > 8) & 0xff;
+        out_lth = sizeof (osdp_out_msg [0]);
+        status = send_message (context,
+          OSDP_OUT, p_card.addr, &current_length, out_lth, (unsigned char *)osdp_out_msg);
+        status = ST_OK;
+      };
       break;
     case OSDP_CMDB_PRESENT_CARD:
       /*

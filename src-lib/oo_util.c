@@ -427,6 +427,7 @@ if (context->verbosity > 3)
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ACK");
       context->pd_acks ++;
+      osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;

@@ -50,6 +50,8 @@ OSDP_TLS_CONFIG
   config;
 OSDP_CONTEXT
   context;
+OSDP_OUT_CMD
+  current_output_command [16];
 gnutls_dh_params_t
   dh_params;
 OSDP_BUFFER

@@ -46,6 +46,8 @@ OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
+OSDP_OUT_CMD
+  current_output_command [16];
 OSDP_PARAMETERS
   p_card;
 char

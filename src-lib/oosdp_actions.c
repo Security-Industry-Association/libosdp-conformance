@@ -295,8 +295,9 @@ int
         status = send_message
           (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
         ctx->pd_acks ++;
-        osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
         if (ctx->verbosity > 4)
+        osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
+        osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
         {
           sprintf (tlogmsg, "Responding with OSDP_ACK");
           fprintf (ctx->log, "%s\n", tlogmsg);
