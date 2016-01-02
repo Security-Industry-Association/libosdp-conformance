@@ -1,0 +1,4 @@
+#!/bin/bash
+set -x
+wget http://localhost:468/cgi-bin/send-osdp-command?cmd=CP-dump_status
+

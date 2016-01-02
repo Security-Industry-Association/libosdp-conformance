@@ -1,0 +1,20 @@
+#!/bin/bash
+set -x
+cp-tests/1-status
+cp-tests/2-poll
+sleep 3
+cp-tests/2-poll
+sleep 3
+cp-tests/2-poll
+sleep 3
+pd-tests/3-power
+sleep 3
+cp-tests/3-identify
+sleep 3
+cp-tests/4-capabilities
+sleep 3
+pd-tests/4-present_card
+sleep 3
+cp-tests/1-status
+pd-tests/1-status
+

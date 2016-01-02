@@ -1,0 +1,5 @@
+#!/bin/bash
+set -x
+/opt/open-osdp/bin/write-osdp-PD-command reset_power
+/opt/open-osdp/bin/HUP-PD
+
