@@ -62,6 +62,8 @@ int
   creds_buffer_a_next;
 int
   creds_buffer_a_remaining;
+OSDP_OUT_CMD
+  current_output_command [16];
 gnutls_dh_params_t
   dh_params;
 long int

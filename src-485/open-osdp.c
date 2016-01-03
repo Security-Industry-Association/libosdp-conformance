@@ -1,7 +1,7 @@
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
 
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+#include <osdp-local-config.h>
 
 
 int
@@ -45,6 +46,8 @@ OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
+OSDP_OUT_CMD
+  current_output_command [16];
 OSDP_PARAMETERS
   p_card;
 char
@@ -81,7 +84,7 @@ int
   status = ST_OK;
   check_for_command = 0;
 
-m_idle_timeout = 30;
+  m_idle_timeout = 30;
 
   last_time_check = time (NULL);
   if (status EQUALS ST_OK)
@@ -118,8 +121,6 @@ m_idle_timeout = 30;
   };
   if (status EQUALS ST_OK)
   {
-    fprintf (stderr, "open-osdp version %s\n",
-      "TEMP 1.0-build 3");
     if (context.role EQUALS OSDP_ROLE_CP)
       fprintf (stderr, "Role: CP\n");
     if (context.role EQUALS OSDP_ROLE_PD)
@@ -141,6 +142,8 @@ int
 { /* main for open-osdp */
 
   int
+    c1;
+  int
     done;
   fd_set
     exceptfds;
@@ -148,6 +151,8 @@ int
     readfds;
   int
     nfds;
+  int
+    scount;
   const sigset_t
     sigmask;
   int
@@ -158,11 +163,10 @@ int
     status_select;
   struct timespec
     timeout;
+  int
+    ufd;
   fd_set
     writefds;
-int ufd;
-int scount;
-int c1;
 
 
   status = ST_OK;
@@ -172,35 +176,44 @@ int c1;
     context.role);
   if (status != ST_OK)
     done = 1;
-{
-  struct sockaddr_un usock;
-  int snl;
-  char sn [1024];
-  int status_socket;
 
-  memset (sn, 0, sizeof (1024));
-  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
-  snl = strlen (sn);
+  // set up a unix socket so commands can be injected
 
-  ufd = socket (AF_UNIX, SOCK_STREAM, 0);
-  if (ufd != -1)
   {
-    memset (&usock, 0, sizeof (usock));
-    usock.sun_family = AF_UNIX;
-    unlink (sn);
-    strcpy (usock.sun_path, sn);
-    fprintf (stderr, "unix socket path %s\n",
-      usock.sun_path);
-    status_socket = bind (ufd, (struct sockaddr *)&usock, sizeof (usock));
-    if (status_socket != -1)
+    char
+      sn [1024];
+    int
+      snl;
+    int
+      status_socket;
+    struct sockaddr_un
+      usock;
+
+
+    memset (sn, 0, sizeof (1024));
+    sprintf (sn, OSDP_LCL_UNIX_SOCKET, tag);
+    snl = strlen (sn);
+
+    ufd = socket (AF_UNIX, SOCK_STREAM, 0);
+    if (ufd != -1)
     {
-      status_socket = fcntl (ufd, F_SETFL,
-        fcntl (ufd, F_GETFL, 0) | O_NONBLOCK);
+      memset (&usock, 0, sizeof (usock));
+      usock.sun_family = AF_UNIX;
+      unlink (sn);
+      strcpy (usock.sun_path, sn);
+      if (context.verbosity > 3)
+        fprintf (stderr, "unix socket path %s\n",
+          usock.sun_path);
+      status_socket = bind (ufd, (struct sockaddr *)&usock, sizeof (usock));
       if (status_socket != -1)
-        status_socket = listen (ufd, 0);
+      {
+        status_socket = fcntl (ufd, F_SETFL,
+          fcntl (ufd, F_GETFL, 0) | O_NONBLOCK);
+        if (status_socket != -1)
+          status_socket = listen (ufd, 0);
+      };
     };
   };
-};
   while (!done)
   {
     fflush (context.log);
@@ -224,7 +237,6 @@ int c1;
 
     if (status_select EQUALS -1)
     {
-fprintf (stderr, "errno at select error %d\n", errno);
       status = ST_SELECT_ERROR;
 
       // if it's an interrupt, fake it's ok.  assume a legitimate HUP
@@ -247,50 +259,44 @@ fprintf (stderr, "errno at select error %d\n", errno);
         status = background (&context);
     };
 
+    // if there was data at the 485 file descriptor, process it.
+    // if we got kicked in the unix socket, process the waiting command
 
-
-    // if there was data at the 485 file descriptor, process it
-
-if (status_select > 0)
-{
-  if (context.verbosity > 9)
-    fprintf (stderr, "%d descriptors from pselect\n",
-      status_select);
-
-    // check for command input (unix socket activity pokes us to check)
-
-    if (FD_ISSET (ufd, &readfds))
-{
-  char cmdbuf [2];
-fprintf (stderr, "ufd socket was selected in READ (%d)\n",
-  ufd);
-  c1 = accept (ufd, NULL, NULL);
-fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
-  ufd, c1);
-  if (c1 != -1)
-  {
-    status_io = read (c1, cmdbuf, sizeof (cmdbuf));
-    if (status_io > 0)
+    if (status_select > 0)
     {
-      fprintf (stderr, "cmd buf %02x%02x\n",
-        cmdbuf [0], cmdbuf [1]);
-      close (c1);
+      if (context.verbosity > 9)
+        fprintf (stderr, "%d descriptors from pselect\n",
+          status_select);
 
-     status = process_current_command ();
-     if (status EQUALS ST_OK)
-       preserve_current_command ();
-     check_for_command = 0;
-     status = ST_OK;
+      // check for command input (unix socket activity pokes us to check)
 
-    };
-  };
-};
-};
+      if (FD_ISSET (ufd, &readfds))
+      {
+        char cmdbuf [2];
+        c1 = accept (ufd, NULL, NULL);
+        if (context.verbosity > 3)
+          fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
+            ufd, c1);
+        if (c1 != -1)
+        {
+          status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+          if (status_io > 0)
+          {
+            close (c1);
 
-    if (FD_ISSET (context.fd, &readfds))
-    {
-      unsigned char buffer [2];
-      status_io = read (context.fd, buffer, 1);
+            status = process_current_command ();
+            if (status EQUALS ST_OK)
+              preserve_current_command ();
+            check_for_command = 0;
+            status = ST_OK;
+          };
+        };       
+      };
+
+      if (FD_ISSET (context.fd, &readfds))
+      {
+        unsigned char buffer [2];
+        status_io = read (context.fd, buffer, 1);
       if (status_io < 1)
       {
         //status = ST_SERIAL_READ_ERR;
@@ -299,6 +305,10 @@ fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
       }
       else
       {
+        if (context.verbosity > 9)
+          fprintf (stderr, "485 read returned %d bytes\n",
+            status_io);
+
         status = ST_SERIAL_IN;
         if (osdp_buf.next < sizeof (osdp_buf.buf))
         {
@@ -324,6 +334,7 @@ fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
         };
       };
     };
+    }; // select returned nonzero number of fd's
 
     // if there was input, process the message
     if (status EQUALS ST_SERIAL_IN)

@@ -36,7 +36,7 @@ open-osdp:	open-osdp.o Makefile ../src-lib/libosdp.a
 	  -L /tester/current/lib -lexpat -ljansson -lrt
 
 open-osdp.o:	open-osdp.c
-	${CC} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} -c -g -I. -I../include -I /tester/current/include -Wall -Werror \
 	  open-osdp.c
 
 ../src-lib/libosdp.a:
