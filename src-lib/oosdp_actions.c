@@ -124,12 +124,18 @@ int
 
 { /* action_osdp_OUT */
 
+  unsigned char
+    buffer [1024];
+  int
+    current_length;
   int
     done;
   OSDP_OUT_MSG
     *outmsg;
   int
     status;
+  int
+    to_send;
 
 
   status = ST_OK;
@@ -178,6 +184,22 @@ fprintf (stderr, "data_length in OSDP_OUT: %d\n",
 done = 1; // just first one for now.
   };
 
+  // return osdp_OSTATR with now-current output state
+  {
+    int j;
+    unsigned char out_status [OSDP_MAX_OUT];
+
+    for (j=0; j<OSDP_MAX_OUT; j++)
+    {
+      out_status [j] = ctx->out[j].current;
+    };
+
+    to_send = OSDP_MAX_OUT;
+    memcpy (buffer, out_status, OSDP_MAX_OUT);
+    current_length = 0;
+    status = send_message (ctx, OSDP_OSTATR, p_card.addr,
+      &current_length, to_send, buffer);
+  };
   status = ST_OK;
   return (status);
 
