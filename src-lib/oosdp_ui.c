@@ -308,12 +308,23 @@ void
     conformance_status (oconf->rep_device_ident.test_status));
   fprintf (ctx->log, "4.4  Device Capabilities Report         %s\n",
     conformance_status (oconf->rep_device_capas.test_status));
+  fprintf (ctx->log, "4.5  Local Status Report                %s\n",
+    conformance_status (oconf->rep_local_stat.test_status));
   fprintf (ctx->log, "4.9  Card Data Report, Raw Bit Array    %s\n",
     conformance_status (oconf->rep_raw.test_status));
 
   fprintf (ctx->log, "4.17 PD Busy Reply                      %s\n",
     conformance_status (oconf->rep_busy.test_status));
 #if 0
+  //OSDP_CONFORM rep_input_stat;          // 4.6
+  OSDP_CONFORM rep_output_stat;         // 4.7
+  OSDP_CONFORM rep_reader_tamper;       // 4.8
+  OSDP_CONFORM rep_raw;                 // 4.9
+  OSDP_CONFORM rep_formatted;           // 4.10
+  OSDP_CONFORM rep_keypad;              // 4.11
+  OSDP_CONFORM rep_comm;                // 4.12
+  OSDP_CONFORM rep_scan_send;           // 4.13
+  OSDP_CONFORM rep_scan_match;          // 4.14
   // 3.x
   OSDP_CONFORM cmd_diag;                // 3.4
   OSDP_CONFORM cmd_lstat;               // 3.5

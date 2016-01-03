@@ -850,6 +850,8 @@ int
         status = send_message (context,
           OSDP_PDCAP, p_card.addr, &current_length,
           sizeof (osdp_cap_response_data), osdp_cap_response_data);
+        osdp_conformance.cmd_pdcap.test_status =
+          OCONFORM_EXERCISED;
         osdp_conformance.rep_device_capas.test_status =
           OCONFORM_EXERCISED;
 fprintf (stderr, "2 pdcap\n");
@@ -958,6 +960,8 @@ printf ("fixme: client cryptogram\n");
         status = send_message (context, OSDP_PDID, p_card.addr,
           &current_length,
           sizeof (osdp_pdid_response_data), osdp_pdid_response_data);
+        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
+        osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
         if (context->verbosity > 2)
         {
           sprintf (logmsg, "Responding with OSDP_PDID");
@@ -1046,6 +1050,8 @@ printf ("fixme: client cryptogram\n");
       status = send_message (context,
         OSDP_LSTATR, p_card.addr, &current_length,
         sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
+      osdp_conformance.rep_local_stat.test_status =
+        OCONFORM_EXERCISED;
       if (context->verbosity > 2)
       {
         sprintf (logmsg, "Responding with OSDP_LSTAT (Power)");
@@ -1251,6 +1257,8 @@ send OSDP_SCRYPT
       fprintf (context->log,
         " Tamper %d Power %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1));
+      osdp_conformance.rep_local_stat.test_status =
+        OCONFORM_EXERCISED;
       break;
 
     case OSDP_MFGREP:
