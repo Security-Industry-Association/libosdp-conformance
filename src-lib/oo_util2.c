@@ -40,8 +40,6 @@ extern OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 extern OSDP_CONTEXT
   context;
-extern OSDP_OUT_CMD
-  current_output_command [];
 extern OSDP_PARAMETERS
   p_card;
 
@@ -486,44 +484,6 @@ int
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
     p_card.bits = i;
-  }; 
-
-  // parameter "output"
-
-  if (status EQUALS ST_OK)
-  {
-    found_field = 1;
-    strcpy (field, "output");
-    value = json_object_get (root, field);
-    if (!json_is_string (value))
-      found_field = 0;
-  };
-  if (found_field)
-  {
-    char vstr [1024];
-    int i;
-
-    value = json_object_get (root, "output_number");
-    if (json_is_string (value))
-    {
-      strcpy (vstr, json_string_value (value));
-      sscanf (vstr, "%d", &i);
-      current_output_command [0].output_number = i;
-    };
-    value = json_object_get (root, "control_code");
-    if (json_is_string (value))
-    {
-      strcpy (vstr, json_string_value (value));
-      sscanf (vstr, "%d", &i);
-      current_output_command [0].control_code = i;
-    };
-    value = json_object_get (root, "timer");
-    if (json_is_string (value))
-    {
-      strcpy (vstr, json_string_value (value));
-      sscanf (vstr, "%d", &i);
-      current_output_command [0].timer = i;
-    };
   }; 
 
   // parameter "poll"

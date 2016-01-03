@@ -73,11 +73,11 @@ int
   int
     check_size;
   unsigned char
-    * cmd_ptr;
+    *cmd_ptr;
   int
     new_length;
   unsigned char
-    * next_data;
+    *next_data;
   OSDP_HDR
     *p;
   int
@@ -138,7 +138,7 @@ status = -2;
   if (secure)
   {
     p->ctrl = p->ctrl | 0x08;
-    cmd_ptr = buf + 8; // STUB pretend security block is 3 bytes len len 1 payload
+    cmd_ptr = buf + 8; // STUB pretend sec blk is 3 bytes len len 1 payload
   }
   else
   {
@@ -157,17 +157,17 @@ if (secure != 0)
     int i;
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
-if (context.verbosity > 3)
-  fprintf (stderr, "orig next_data %lx\n", (unsigned long)next_data);
+    if (context.verbosity > 5)
+      fprintf (stderr, "orig next_data %lx\n", (unsigned long)next_data);
     for (i=0; i<data_length; i++)
     {
       *(sptr+i) = *(i+data);
       new_length ++;
       next_data ++; // where crc goes (after data)
     };
-if (context.verbosity > 3)
-  fprintf (stderr, "data_length %d new_length now %d next_data now %lx\n",
-    data_length, new_length, (unsigned long)next_data);
+    if (context.verbosity > 5)
+      fprintf (stderr, "data_length %d new_length now %d next_data now %lx\n",
+        data_length, new_length, (unsigned long)next_data);
   };
 
   // crc
@@ -281,9 +281,10 @@ int
   {    
     tlogmsg [0] = 0;
     if (context->verbosity > 3)
+      // prints low 7 bits of addr field i.e. not request/reply
       sprintf (tlogmsg,
 "Addr:%02x Lth:%d. CTRL %02x",
-        p->addr, msg_lth, p->ctrl);
+        (0x7f & p->addr), msg_lth, p->ctrl);
    
     // must start with SOM
     if (p->som != C_SOM)
@@ -349,7 +350,6 @@ if (context->verbosity > 3)
 ///    msg_data_length = 0; // depends on command
     if ((context->verbosity > 4) || ((m->msg_cmd != OSDP_POLL) &&
        (m->msg_cmd != OSDP_ACK)))
-      if (m_dump > 0)
       {
         char
           dirtag [1024];
@@ -368,7 +368,6 @@ if (context->verbosity > 3)
         else
           strcpy (dirtag, "CP");
         sprintf (tlogmsg,
-//"OSDP (From %s): SOM %02x ADDR %02x LEN_LSB %02x LEN_MSB %02x Len=%d. CTRL %02x",
 "OSDP (From %s): A %02x Len=%d. CTRL %02x",
           dirtag,
 //          *p1, *(p1+1), *(p1+2), *(p1+3), (*(p1+3))*256 + *(p1+2), *(p1+4));
@@ -398,13 +397,14 @@ if (context->verbosity > 3)
           {
             fprintf (context->log, " %02x", *(i+p1));
           };
+
+          fprintf (context->log, " Raw data: ");
+          for (i=0; i<msg_lth; i++)
+          {
+            fprintf (context->log, " %02x", *(i+m->ptr));
+          };
+          fprintf (context->log, "\n");
         };
-        fprintf (context->log, " Raw data: ");
-        for (i=0; i<msg_lth; i++)
-        {
-          fprintf (context->log, " %02x", *(i+m->ptr));
-        };
-        fprintf (context->log, "\n");
       };
 
     // go check the command field

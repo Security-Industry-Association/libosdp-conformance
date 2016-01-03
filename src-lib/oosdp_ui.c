@@ -649,31 +649,31 @@ fprintf (stderr, "fixme: RND.A\n");
             current_date_string);
           fprintf (sf, "             \"role\" : \"%d\",\n",
             context->role);
-          fprintf (sf, "                \"#\" : \"0=PC 1=PD 2=MON\",\n");
+          fprintf (sf, "                \"#\" : \"0=CP 1=PD 2=MON\",\n");
           fprintf (sf, "       \"pd_address\" : \"%02x\",\n",
             p_card.addr);
           fprintf (sf, "         \"cp_polls\" : \"%d\",\n",
             context->cp_polls);
           fprintf (sf, "          \"pd_acks\" : \"%d\",\n",
             context->pd_acks);
-          fprintf (sf, "     \"sent_naks\" : \"%d\",\n",
+          fprintf (sf, "        \"sent_naks\" : \"%d\",\n",
             context->sent_naks);
           for (j=0; j<OSDP_MAX_OUT; j++)
           {
-            fprintf (sf, " \"out-%02d\" : \"%d\",\n",
+            fprintf (sf, "       \"out-%02d\" : \"%d\",\n",
               j, context->out [j].current);
           };
-          fprintf (sf, "  \"power_report\" : \"%d\",\n",
+          fprintf (sf, "     \"power_report\" : \"%d\",\n",
             context->power_report);
-          fprintf (sf, "     \"verbosity\" : \"%d\",\n",
+          fprintf (sf, "        \"verbosity\" : \"%d\",\n",
             context->verbosity);
-          fprintf (sf, "           \"crc\" : \"%d\",\n",
+          fprintf (sf, "              \"crc\" : \"%d\",\n",
             m_check);
-          fprintf (sf, "       \"timeout\" : \"%d\",\n",
+          fprintf (sf, "          \"timeout\" : \"%d\",\n",
             m_idle_timeout);
-          fprintf (sf, "          \"poll\" : \"%d\",\n",
+          fprintf (sf, "             \"poll\" : \"%d\",\n",
             p_card.poll);
-          fprintf (sf, "          \"dump\" : \"%d\",\n",
+          fprintf (sf, "             \"dump\" : \"%d\",\n",
             m_dump);
           fprintf (sf, "  \"checksum_errors\" : \"%d\",\n",
             context->checksum_errs);

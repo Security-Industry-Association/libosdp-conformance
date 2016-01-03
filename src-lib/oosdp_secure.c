@@ -154,7 +154,7 @@ printf ("bef sec block to new length %d.\n", new_length);
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
     if (context.verbosity > 3)
-      fprintf (stderr, "orig next_data %lx\n", (unsigned long)next_data);
+      fprintf (stderr, "orig (s) next_data %lx\n", (unsigned long)next_data);
     for (i=0; i<data_length; i++)
     {
       *(sptr+i) = *(i+data);

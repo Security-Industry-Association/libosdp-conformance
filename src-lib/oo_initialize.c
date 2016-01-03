@@ -145,7 +145,7 @@ int
   context->vendor_code [2] = 0x1b;
   m_idle_timeout = 29;
   m_check = OSDP_CRC;
-  m_dump = 1;
+  m_dump = 0;
   strcpy (p_card.filename, "/dev/ttyUSB0");
   context->next_sequence = 0;
 
@@ -162,8 +162,11 @@ int
       try to get configuration from configuration file open_osdp.cfg
     */
     status = read_config (context);
-    if (context->verbosity > 3)
+    if (context->verbosity > 4)
+    {
+      m_dump = 1;
       fprintf (stderr, "read_config returned %d\n", status);
+    };
     status = ST_OK; // doesn't matter if config reading failed
   };
 
