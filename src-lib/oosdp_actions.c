@@ -195,9 +195,11 @@ int
     status = send_message (ctx,
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
+    osdp_conformance.rep_local_stat.test_status =
+      OCONFORM_EXERCISED;
     if (ctx->verbosity > 2)
     {
-      sprintf (tlogmsg, "Responding with OSDP_LSTAT (Power)");
+      sprintf (tlogmsg, "Responding with OSDP_LSTATR (Power)");
       fprintf (ctx->log, "%s\n", tlogmsg);
     };
   }
@@ -224,6 +226,7 @@ int
       current_length = 0;
       status = send_message (ctx,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data);
+      osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
       if (ctx->verbosity > 2)
       {
         sprintf (tlogmsg, "Responding with cardholder data (%d bits)",
