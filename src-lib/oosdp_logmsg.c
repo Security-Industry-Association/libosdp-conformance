@@ -116,6 +116,25 @@ int
     };
     break;
 
+  case OOSDP_MSG_OUT_STATUS:
+    {
+      int
+        i;
+      unsigned char *out_status;
+      char tmpstr [1024];
+
+      msg = (OSDP_MSG *) aux;
+      tlogmsg [0] = 0;
+      out_status = msg->data_payload;
+      for (i=0; i<OSDP_MAX_OUT; i++)
+      {
+        sprintf (tmpstr, " Out-%02d = %d\n",
+          i, out_status [i]);
+        strcat (tlogmsg, tmpstr);
+      };
+    };
+    break;
+
   case OOSDP_MSG_PD_CAPAS:
     {
       int

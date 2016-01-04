@@ -551,6 +551,14 @@ if (context->verbosity > 3)
         strcpy (tlogmsg2, "osdp_MFGREP");
       break;
 
+    case OSDP_OSTATR:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_OSTATR");
+      break;
+
     case OSDP_OUT:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
@@ -1319,6 +1327,12 @@ printf ("MMSG DONE\n");
           };
         };
       };
+      break;
+
+    case OSDP_OSTATR:
+      osdp_conformance.rep_output_stat.test_status = OCONFORM_EXERCISED;
+      status = oosdp_make_message (OOSDP_MSG_OUT_STATUS, tlogmsg, msg);
+      fprintf (context->log, "%s\n", tlogmsg);
       break;
 
     case OSDP_PDCAP:

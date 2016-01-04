@@ -101,7 +101,7 @@ int
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_CAPAS;
-      if (ctx->verbosity > 3)
+      if (ctx->verbosity > 4)
         fprintf (stderr, "command was %s\n",
           this_command);
     };
@@ -179,6 +179,8 @@ int
   }; 
   if (status EQUALS ST_OK)
   {
+    value = json_object_get (root, "command");
+
     strcpy (this_command, json_string_value (value));
     test_command = "present_card";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))

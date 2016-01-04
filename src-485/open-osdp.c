@@ -274,7 +274,7 @@ int
       {
         char cmdbuf [2];
         c1 = accept (ufd, NULL, NULL);
-        if (context.verbosity > 3)
+        if (context.verbosity > 5)
           fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
             ufd, c1);
         if (c1 != -1)
