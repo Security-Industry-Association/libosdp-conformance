@@ -276,6 +276,9 @@ typedef struct osdp_context
 
   OSDP_OUT_STATE
     out [16];
+
+  char
+    network_address [1024];
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)

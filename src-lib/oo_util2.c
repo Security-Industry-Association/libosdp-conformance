@@ -449,6 +449,7 @@ int
   }; 
 
   // parameter "address"
+  // this is the PD address.
 
   if (status EQUALS ST_OK)
   {
@@ -486,7 +487,21 @@ int
     p_card.bits = i;
   }; 
 
-  // parameter "poll"
+  // parameter "network_address"
+  // this is the other end of the TLS connection
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "network_address");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    strcpy (ctx->network_address, json_string_value (value));
+  };
 
   if (status EQUALS ST_OK)
   {

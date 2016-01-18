@@ -1,6 +1,7 @@
 {
     "role" : "CP"
-  ,"address" : "01"
+  ,"network_address" : "127.0.0.1"
+  ,"address" : "00"
   ,"serial_device" : "/dev/ttyUSB0"
   ,"poll" : "1"
   ,"timeout" : "3"

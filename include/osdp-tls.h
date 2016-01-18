@@ -26,8 +26,6 @@ typedef struct osdp_tls_config
   int
     listen_sap;
   char
-    cmd_dir [1024];
-  char
     version [1024];
   char
     cert_file [1024];
