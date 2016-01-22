@@ -1,6 +1,0 @@
-{
-  "serial_device" : "/dev/ttyUSB0",
-  "poll" : "3",
-  "verbosity" : "9",
-  "role" : "CP"
-}

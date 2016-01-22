@@ -143,6 +143,7 @@ int
   context->vendor_code [0] = 0x08;
   context->vendor_code [1] = 0x00;
   context->vendor_code [2] = 0x1b;
+  strcpy (context->fqdn, "perim-0000.example.com");
   m_idle_timeout = 29;
   m_check = OSDP_CRC;
   m_dump = 0;

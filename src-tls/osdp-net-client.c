@@ -257,7 +257,9 @@ int
      */
     gnutls_init(&tls_session, GNUTLS_CLIENT);
 
-    gnutls_session_set_ptr(tls_session, (void *) "perim-0000.example.com");
+fprintf (stderr, "fqdn is %s\n",
+  context.fqdn);
+    gnutls_session_set_ptr(tls_session, (void *) context.fqdn);
 
     gnutls_server_name_set(tls_session, GNUTLS_NAME_DNS, "my_host_name",
       strlen("my_host_name"));

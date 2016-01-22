@@ -486,6 +486,21 @@ int
     p_card.bits = i;
   }; 
 
+  // parameter "fqdn"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "fqdn");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    strcpy (ctx->fqdn, json_string_value (value));
+  }; 
+
   // parameter "network_address"
   // this is the other end of the TLS connection
 

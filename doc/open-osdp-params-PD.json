@@ -1,5 +1,6 @@
 {
    "role" : "PD"
+  ,"fqdn" : "perim-0000.example.com"
   ,"network_address" : "127.0.0.1"
   ,"verbosity" : "3"
   ,"bits" : "26"
