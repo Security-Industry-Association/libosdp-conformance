@@ -307,12 +307,24 @@ void
     conformance_status (oconf->rep_device_ident.test_status));
   fprintf (ctx->log, "4.4  Device Capabilities Report         %s\n",
     conformance_status (oconf->rep_device_capas.test_status));
+  fprintf (ctx->log, "4.5  Local Status Report                %s\n",
+    conformance_status (oconf->rep_local_stat.test_status));
+  fprintf (ctx->log, "4.7  Output Status                      %s\n",
+    conformance_status (oconf->rep_output_stat.test_status));
   fprintf (ctx->log, "4.9  Card Data Report, Raw Bit Array    %s\n",
     conformance_status (oconf->rep_raw.test_status));
 
   fprintf (ctx->log, "4.17 PD Busy Reply                      %s\n",
     conformance_status (oconf->rep_busy.test_status));
 #if 0
+  //OSDP_CONFORM rep_input_stat;          // 4.6
+  OSDP_CONFORM rep_reader_tamper;       // 4.8
+  OSDP_CONFORM rep_raw;                 // 4.9
+  OSDP_CONFORM rep_formatted;           // 4.10
+  OSDP_CONFORM rep_keypad;              // 4.11
+  OSDP_CONFORM rep_comm;                // 4.12
+  OSDP_CONFORM rep_scan_send;           // 4.13
+  OSDP_CONFORM rep_scan_match;          // 4.14
   // 3.x
   OSDP_CONFORM cmd_diag;                // 3.4
   OSDP_CONFORM cmd_lstat;               // 3.5
@@ -637,31 +649,31 @@ fprintf (stderr, "fixme: RND.A\n");
             current_date_string);
           fprintf (sf, "             \"role\" : \"%d\",\n",
             context->role);
-          fprintf (sf, "                \"#\" : \"0=PC 1=PD 2=MON\",\n");
+          fprintf (sf, "                \"#\" : \"0=CP 1=PD 2=MON\",\n");
           fprintf (sf, "       \"pd_address\" : \"%02x\",\n",
             p_card.addr);
           fprintf (sf, "         \"cp_polls\" : \"%d\",\n",
             context->cp_polls);
           fprintf (sf, "          \"pd_acks\" : \"%d\",\n",
             context->pd_acks);
-          fprintf (sf, "     \"sent_naks\" : \"%d\",\n",
+          fprintf (sf, "        \"sent_naks\" : \"%d\",\n",
             context->sent_naks);
           for (j=0; j<OSDP_MAX_OUT; j++)
           {
-            fprintf (sf, " \"out-%02d\" : \"%d\",\n",
+            fprintf (sf, "       \"out-%02d\" : \"%d\",\n",
               j, context->out [j].current);
           };
-          fprintf (sf, "  \"power_report\" : \"%d\",\n",
+          fprintf (sf, "     \"power_report\" : \"%d\",\n",
             context->power_report);
-          fprintf (sf, "     \"verbosity\" : \"%d\",\n",
+          fprintf (sf, "        \"verbosity\" : \"%d\",\n",
             context->verbosity);
-          fprintf (sf, "           \"crc\" : \"%d\",\n",
+          fprintf (sf, "              \"crc\" : \"%d\",\n",
             m_check);
-          fprintf (sf, "       \"timeout\" : \"%d\",\n",
+          fprintf (sf, "          \"timeout\" : \"%d\",\n",
             m_idle_timeout);
-          fprintf (sf, "          \"poll\" : \"%d\",\n",
+          fprintf (sf, "             \"poll\" : \"%d\",\n",
             p_card.poll);
-          fprintf (sf, "          \"dump\" : \"%d\",\n",
+          fprintf (sf, "             \"dump\" : \"%d\",\n",
             m_dump);
           fprintf (sf, "  \"checksum_errors\" : \"%d\",\n",
             context->checksum_errs);

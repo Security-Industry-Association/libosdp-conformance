@@ -127,12 +127,15 @@ int
 
   char
     command [1024];
+  char
+    current_network_address [1024];
   int
     status;
 
 
   status = ST_OK;
   memset (config, 0, sizeof (*config));
+  current_network_address [0] = 0;
 
   memset (&context, 0, sizeof (context));
   strcpy (context.init_parameters_path, "open-osdp-params.json");
@@ -142,27 +145,19 @@ int
   if (argc > 1)
   {
     strcpy (context.init_parameters_path, argv [1]);
+
+    // a second argument is the network address of the destination
+    if (argc > 2)
+      strcpy (current_network_address, argv [2]);
   };
 
   strcpy (config->version, "v0.00-EP02");
   strcpy (config->ca_file, OSDP_LCL_CA_KEYS);
-// read json config file
-// sets role
-context.role = OSDP_ROLE_PD;
 // sets port
 config->listen_sap = 10443;
 
-  if (context.role EQUALS OSDP_ROLE_CP)
-    tag = "CP";
-  else
-    tag = "PD";
 
   m_idle_timeout = 30;
-sprintf (config->cmd_dir, OSDP_LCL_SERVER_RESULTS,
-  tag);
-sprintf (command, "mkdir -p %s/history",
-  config->cmd_dir);
-system (command);
 
   strcpy (specified_passphrase, "speakFriend&3ntr");
 
@@ -180,9 +175,15 @@ system (command);
 
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
-  context.role = OSDP_ROLE_PD;
-sprintf (context.command_path, 
-  OSDP_LCL_COMMAND_PATH, tag);
+  if (strlen (current_network_address) > 0)
+    strcpy (context.network_address, current_network_address);
+  if (context.role EQUALS OSDP_ROLE_CP)
+    tag = "CP";
+  else
+    tag = "PD";
+
+  sprintf (context.command_path, 
+    OSDP_LCL_COMMAND_PATH, tag);
 
   context.authenticated = 1; // for now just say we're authenticated.
 
@@ -428,8 +429,6 @@ int
   };
   if (status EQUALS ST_OK)
   {
-    if (context.role EQUALS OSDP_ROLE_PD)
-    {
       status = init_tls_client ();
       // send the passphrase to authenticate
       status = send_osdp_data (&context,
@@ -558,7 +557,6 @@ int
           };
         } /* not done dls */;
       } /* tls initialized */;
-    } /* role PD */;
   } /* ok initialize */;
 
   if (status != ST_OK)
@@ -575,10 +573,14 @@ int tcp_connect(void)
         const char *PORT =
 "10443";
 // "5556";
-        const char *SERVER = "127.0.0.1";
+//        const char *SERVER = "127.0.0.1";
         int err, sd;
         struct sockaddr_in sa;
 
+
+fprintf (context.log, "Connecting to %s Port %s\n",
+  context.network_address,
+  PORT);
         /* connects to server
          */
         sd = socket(AF_INET, SOCK_STREAM, 0);
@@ -586,7 +588,7 @@ int tcp_connect(void)
         memset(&sa, '\0', sizeof(sa));
         sa.sin_family = AF_INET;
         sa.sin_port = htons(atoi(PORT));
-        inet_pton(AF_INET, SERVER, &sa.sin_addr);
+        inet_pton(AF_INET, context.network_address, &sa.sin_addr);
 
         err = connect(sd, (struct sockaddr *) &sa, sizeof(sa));
         if (err < 0) {

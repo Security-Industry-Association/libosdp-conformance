@@ -87,12 +87,17 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_nak;                 // 4.2
   OSDP_CONFORM rep_device_ident;        // 4.3
   OSDP_CONFORM rep_device_capas;        // 4.4
-
-  // 4.x partial...
+  OSDP_CONFORM rep_local_stat;          // 4.5
+  OSDP_CONFORM rep_input_stat;          // 4.6
+  OSDP_CONFORM rep_output_stat;         // 4.7
+  OSDP_CONFORM rep_reader_tamper;       // 4.8
   OSDP_CONFORM rep_raw;                 // 4.9
-
-  OSDP_CONFORM rep_busy;                // 4.14
-
+  OSDP_CONFORM rep_formatted;           // 4.10
+  OSDP_CONFORM rep_keypad;              // 4.11
+  OSDP_CONFORM rep_comm;                // 4.12
+  OSDP_CONFORM rep_scan_send;           // 4.13
+  OSDP_CONFORM rep_scan_match;          // 4.14
+  OSDP_CONFORM rep_busy;                // 4.17
 } OSDP_INTEROP_ASSESSMENT;
 
 #define PARAM_MMT (3) // minimum message thresshold

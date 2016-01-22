@@ -10,21 +10,28 @@
 Go to <A HREF="open-osdp-PD.html">PD</A> (reader).
 (this is the panel)
 </P>
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">Identify</A>
-::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">Dump</A> Status
-::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-send_poll">Send</A> Poll
-::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> open-osdp CP 
-<HR>
-Responses:<BR>
-Card Data is (9999 bits) 0x00112233445566<BR>
-Ident: <BR>
-Capabilities: <BR>
-999 polls received; 999 acks sent; 999 messages sent; 999 naks sent;
-999 raw data (card) messages sent.
+<P>
+CP: 
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> ::
+Display
+<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A>
 <BR>
+Go to <A HREF="open-osdp-control.html">Control</A> (top leve menu).
+Go to <A HREF="open-osdp-CP.html">PD</A> (reader, this is the panel)
+</P>
+<P>
+<UL>
+  <LI>
+    <A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">Identify</A>
+  </LI>
+  <LI>
+    <A HREF="/cgi-bin/send-osdp-command?cmd=CP-send_poll">Send</A> Poll
+  </LI>
+  <LI>
+    <A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">Dump</A> Status
+  </LI>
+</UL>
+</P>
 </BODY>
 <HEAD>
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">

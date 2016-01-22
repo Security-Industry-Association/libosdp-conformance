@@ -28,6 +28,10 @@
 #include <open-osdp.h>
 
 
+extern OSDP_OUT_CMD
+  current_output_command [];
+
+
 int
   read_command
     (OSDP_CONTEXT
@@ -97,7 +101,7 @@ int
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_CAPAS;
-      if (ctx->verbosity > 3)
+      if (ctx->verbosity > 4)
         fprintf (stderr, "command was %s\n",
           this_command);
     };
@@ -128,6 +132,55 @@ int
   }; 
   if (status EQUALS ST_OK)
   {
+    int
+      i;
+    char
+      vstr [1024];
+
+    strcpy (this_command, json_string_value (value));
+    test_command = "output";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_OUT;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+
+      // default values in case some are missing
+
+      current_output_command [0].output_number = 0;
+      current_output_command [0].control_code = 2; // permanent on immediate
+      current_output_command [0].timer = 0; // forever
+
+      // the output command takes arguments: output_number, control_code
+
+      value = json_object_get (root, "output_number");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        current_output_command [0].output_number = i;
+      };
+      value = json_object_get (root, "control_code");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        current_output_command [0].control_code = i;
+      };
+      value = json_object_get (root, "timer");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        current_output_command [0].timer = i;
+      };
+    };
+  }; 
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "command");
+
     strcpy (this_command, json_string_value (value));
     test_command = "present_card";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))

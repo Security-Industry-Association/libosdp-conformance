@@ -73,7 +73,8 @@
 #define OSDP_PDID     (0x45)
 #define OSDP_PDCAP    (0x46)
 #define OSDP_LSTATR   (0x48)
-#define OSDP_RSTATR   (0x4b)
+#define OSDP_OSTATR   (0x4A)
+#define OSDP_RSTATR   (0x4B)
 #define OSDP_RAW      (0x50)
 #define OSDP_KEYPAD   (0x53)
 #define OSDP_COM      (0x54)
@@ -133,6 +134,14 @@
 #define OSDP_OPT_INIT     (110)
 #define OSDP_OPT_MONITOR  (111)
 #define OSDP_OPT_SPECIAL  (112)
+
+#define OSDP_OUT_NOP              (0)
+#define OSDP_OUT_OFF_PERM_ABORT   (1)
+#define OSDP_OUT_ON_PERM_ABORT    (2)
+#define OSDP_OUT_OFF_PERM_TIMEOUT (3)
+#define OSDP_OUT_ON_PERM_TIMEOUT  (4)
+#define OSDP_OUT_ON_TEMP_TIMEOUT  (5)
+#define OSDP_OUT_OFF_TEMP_TIMEOUT (6)
 
 typedef struct osdp_out_cmd
 {
@@ -267,6 +276,9 @@ typedef struct osdp_context
 
   OSDP_OUT_STATE
     out [16];
+
+  char
+    network_address [1024];
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)
@@ -321,6 +333,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_KEYPAD    (2)
 #define OOSDP_MSG_PKT_STATS (3)
 #define OOSDP_MSG_PD_CAPAS  (4)
+#define OOSDP_MSG_OUT_STATUS (5)
 
 
 #define OSDP_BUF_MAX (8192)
@@ -510,7 +523,8 @@ typedef struct osdp_multi_hdr
 #define ST_CMD_UNDERFLOW             (41)
 #define ST_CMD_PATH                  (42)
 #define ST_PARSE_ERROR               (43)
-
+#define ST_OUT_TOO_MANY              (44)
+#define ST_OUT_UNKNOWN               (45)
 
 int
   m_version_minor;

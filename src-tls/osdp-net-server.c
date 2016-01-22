@@ -141,25 +141,19 @@ int
   strcpy (config->version, "v1.00-Build3");
   strcpy (config->cert_file, OSDP_LCL_SERVER_CERT);
   strcpy (config->key_file, OSDP_LCL_SERVER_KEY);
-// read json config file
-// sets role
-context.role = OSDP_ROLE_CP;
 // sets port
 config->listen_sap = 10443;
 
+  m_idle_timeout = 30;
+
+  strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
+
+  if (status EQUALS ST_OK)
+    status = initialize_osdp (&context);
   if (context.role EQUALS OSDP_ROLE_CP)
     tag = "CP";
   else
     tag = "PD";
-
-  m_idle_timeout = 30;
-sprintf (config->cmd_dir, OSDP_LCL_SERVER_RESULTS,
-  tag);
-sprintf (command, "mkdir -p %s/history",
-  config->cmd_dir);
-system (command);
-
-  strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
 
   // initialize my current pid
   {
@@ -174,8 +168,6 @@ system (command);
   };
 
   last_time_check = time (NULL);
-  if (status EQUALS ST_OK)
-    status = initialize_osdp (&context);
 sprintf (context.command_path, 
   OSDP_LCL_COMMAND_PATH, tag);
 context.current_menu = OSDP_MENU_TOP;
@@ -252,7 +244,11 @@ int
   {
     generate_dh_params ();
     gnutls_priority_init (&priority_cache,
-      "PERFORMANCE:%SERVER_PRECEDENCE", NULL);
+//      "PERFORMANCE:%SERVER_PRECEDENCE", NULL);
+//"SERVER128:+PSK:+DHE_PSK:+SHA:+AES128_CBC",
+"PERFORMANCE:%SERVER_PRECEDENCE:+PSK",
+      NULL);
+
     gnutls_certificate_set_dh_params(x509_cred, dh_params);
     listen_sd = socket (AF_INET, SOCK_STREAM, 0);
     if (listen_sd EQUALS -1)
@@ -433,7 +429,6 @@ int
   };
   if (status EQUALS ST_OK)
   {
-    if (context.role EQUALS OSDP_ROLE_CP)
     {
       status = init_tls_server ();
       if (status EQUALS 0)
@@ -580,11 +575,6 @@ int
             done_tls = 1;
           };
         };
-      };
-      if (context.role EQUALS OSDP_ROLE_PD)
-      {
-        fprintf (stderr, "PD\n");
-        status = -2;
       };
     };
   };

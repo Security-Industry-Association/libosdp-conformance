@@ -1,9 +1,10 @@
 {
    "role" : "PD"
-  ,"address" : "01"
-  ,"serial_device" : "/dev/ttyUSB0"
+  ,"network_address" : "127.0.0.1"
   ,"verbosity" : "3"
   ,"bits" : "26"
   ,"raw_value" : "11223344"
+  ,"address" : "00"
+  ,"serial_device" : "/dev/ttyUSB0"
 }
 
