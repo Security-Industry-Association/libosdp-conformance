@@ -759,7 +759,8 @@ int
     break;
 
   case OSDP_RAW:
-    // in monitor mode we're really not supposed to use 'action' routines but all it does is printf.
+    // in monitor mode we're really not supposed to use 'action' routines
+    // but all it does is printf.
 
     status = action_osdp_RAW (context, msg);
     break;

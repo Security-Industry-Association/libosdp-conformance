@@ -410,6 +410,7 @@ int
     this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
   */
   bits = *(msg->data_payload+2) + ((*(msg->data_payload+3))<<8);
+  ctx->last_raw_read_bits = bits;
 if (ctx->special_1 EQUALS 3)
 {
   fprintf (stderr, "Special case 2: bits at beginning of RAW\n");
@@ -417,6 +418,13 @@ if (ctx->special_1 EQUALS 3)
   raw_data = msg->data_payload + 2;
 };
 
+  {
+    int octets;
+    octets = (bits+7)/8;
+    if (octets > sizeof (ctx->last_raw_read_data))
+      octets = sizeof (ctx->last_raw_read_data);
+    memcpy (ctx->last_raw_read_data, raw_data, octets);
+  };
   if (bits EQUALS 26)
   {
     fprintf (ctx->log, "CARD DATA (%d bits):", bits);
