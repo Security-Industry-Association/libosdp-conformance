@@ -20,7 +20,7 @@
 
 OUTLIB=libosdp.a
 CC=clang
-CFLAGS=""
+CFLAGS=-I /tester/current/include
 
 
 all:	${OUTLIB}
@@ -39,46 +39,46 @@ libosdp.a:	oo_initialize.o oo_process.o oo_util.o oo_util2.o \
 	  osdp-api.o
 
 oo_cmdbreech.o:	oo_cmdbreech.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oo_cmdbreech.c
 
 oo_initialize.o:	oo_initialize.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oo_initialize.c
 
 oo_process.o:	oo_process.c
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oo_process.c
 
 oo_util.o:	oo_util.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oo_util.c
 
 oo_util2.o:	oo_util2.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oo_util2.c
 
 oosdp_actions.o:	oosdp_actions.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_actions.c
 
 oosdp_crc.o:	oosdp_crc.c
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_crc.c
 
 oosdp_logmsg.o:	oosdp_logmsg.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_logmsg.c
 
 oosdp_secure.o:	oosdp_secure.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_secure.c
 
 oosdp_ui.o:	oosdp_ui.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_ui.c
 
 osdp-api.o:	osdp-api.c ../include/osdp-tls.h ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  osdp-api.c
 

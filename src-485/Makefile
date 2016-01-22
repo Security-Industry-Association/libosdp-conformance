@@ -18,6 +18,8 @@
 #  limitations under the License.  
 
 CC=clang
+CFLAGS=-I /tester/current/include
+LDFLAGS=-L /tester/current/lib
 
 PROGS = open-osdp
 
@@ -31,12 +33,12 @@ build:	all
 	cp ${PROGS} ../opt/open-osdp/bin
 
 open-osdp:	open-osdp.o Makefile ../src-lib/libosdp.a
-	${CC} -o open-osdp -g open-osdp.o \
+	${CC} ${LDFLAGS} -o open-osdp -g open-osdp.o \
 	  -L ../src-lib -losdp \
-	  -L /tester/current/lib -lexpat -ljansson -lrt
+	  -ljansson -lrt
 
 open-osdp.o:	open-osdp.c
-	${CC} -c -g -I. -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
 	  open-osdp.c
 
 ../src-lib/libosdp.a:

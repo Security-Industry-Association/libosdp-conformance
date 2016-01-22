@@ -22,7 +22,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <expat.h>
 #include <time.h>
 #include <arpa/inet.h>
 

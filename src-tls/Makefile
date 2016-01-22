@@ -19,6 +19,9 @@
 
 
 CC=clang
+CFLAGS=-I /tester/current/include
+LDFLAGS=-L /tester/current/lib
+
 
 PROGS = osdp-net-client osdp-net-server
 
@@ -33,26 +36,26 @@ build:	all
 
 osdp-net-client:	osdp-net-client.o \
 	  ../src-lib/libosdp.a Makefile
-	${CC} -o osdp-net-client -g osdp-net-client.o \
+	${CC} ${LDFLAGS} -o osdp-net-client -g osdp-net-client.o \
 	  -L ../src-lib -losdp \
-	  -L /tester/current/lib -lgnutls -lexpat -ljansson -lrt
+	  -lgnutls -ljansson -lrt
 
 osdp-net-server:	osdp-net-server.o \
 	  ../src-lib/libosdp.a Makefile
-	${CC} -o osdp-net-server -g osdp-net-server.o \
+	${CC} ${LDFLAGS} -o osdp-net-server -g osdp-net-server.o \
 	  -L ../src-lib -losdp \
-	  -L /tester/current/lib -lgnutls -lexpat -ljansson -lrt
+	  -lgnutls -ljansson -lrt
 
 osdp-net-client.o:	osdp-net-client.c \
 	  ../include/osdp_conformance.h ../include/osdp-tls.h \
 	  ../include/open-osdp.h
-	${CC} -c -g -I. -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
 	  osdp-net-client.c
 
 osdp-net-server.o:	osdp-net-server.c \
 	  ../include/osdp_conformance.h ../include/osdp-tls.h \
 	  ../include/open-osdp.h
-	${CC} -c -g -I. -I../include -I /tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
 	  osdp-net-server.c
 
 ../src-lib/libosdp.a:

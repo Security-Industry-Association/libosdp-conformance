@@ -24,7 +24,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
-#include <expat.h>
 
 
 #include <jansson.h>
