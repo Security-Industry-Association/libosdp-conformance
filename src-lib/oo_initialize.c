@@ -270,6 +270,9 @@ int
   
   memset (&osdp_buf, 0, sizeof (osdp_buf));
   context->current_menu = OSDP_MENU_TOP;
+
+  if (status EQUALS ST_OK)
+    status = write_status (context);
   return (status);
 
 } /* initialize_osdp */

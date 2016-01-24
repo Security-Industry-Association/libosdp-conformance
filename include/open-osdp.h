@@ -585,4 +585,5 @@ int send_secure_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int sec_blk_lth, unsigned char *sec_blk);
 void signal_callback_handler (int signum);
 unsigned short int fCrcBlk (unsigned char *pData, unsigned short int nLength);
+int write_status (OSDP_CONTEXT *ctx);
 

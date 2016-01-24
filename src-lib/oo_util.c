@@ -1357,14 +1357,6 @@ printf ("MMSG DONE\n");
 
     case OSDP_RAW:
       status = action_osdp_RAW (context, msg);
-#if 0
-      status = ST_OK;
-      fprintf (context->log, "CARD DATA:");
-      fprintf (context->log,
-" %02x-%02x-%02x-%02x\n",
-        *(msg->data_payload + 4), *(msg->data_payload + 5),
-        *(msg->data_payload + 6), *(msg->data_payload + 7));
-#endif
       break;
 
     case OSDP_RSTATR:

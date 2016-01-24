@@ -411,12 +411,6 @@ int
   */
   bits = *(msg->data_payload+2) + ((*(msg->data_payload+3))<<8);
   ctx->last_raw_read_bits = bits;
-if (ctx->special_1 EQUALS 3)
-{
-  fprintf (stderr, "Special case 2: bits at beginning of RAW\n");
-  bits = *(msg->data_payload+0) + ((*(msg->data_payload+1))<<8);
-  raw_data = msg->data_payload + 2;
-};
 
   {
     int octets;
@@ -425,6 +419,7 @@ if (ctx->special_1 EQUALS 3)
       octets = sizeof (ctx->last_raw_read_data);
     memcpy (ctx->last_raw_read_data, raw_data, octets);
   };
+  status = write_status (ctx);
   if (bits EQUALS 26)
   {
     fprintf (ctx->log, "CARD DATA (%d bits):", bits);
@@ -434,10 +429,6 @@ if (ctx->special_1 EQUALS 3)
       *(raw_data+1),
       *(raw_data+2),
       *(raw_data+3));
-#if 0
-      *(msg->data_payload + 2), *(msg->data_payload + 3),
-      *(msg->data_payload + 4), *(msg->data_payload + 5));
-#endif
     processed = 1;
   };
   if (bits EQUALS 75)
