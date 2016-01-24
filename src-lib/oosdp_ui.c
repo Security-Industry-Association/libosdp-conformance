@@ -683,12 +683,17 @@ fprintf (stderr, "fixme: RND.A\n");
         char val [1024];
         memset (val, 0, sizeof (val));
         count = 0;
-        if (osdp_buf.next > 0)
-          count = osdp_buf.next;
-        fprintf (sf, "  \"raw_data_count\" : \"%d\",\n",
-          count);
-        for (i=0; i<count; i++)
-          sprintf (val+(2*count), "%02x", osdp_buf.buf [i]);
+        fprintf (sf, "  \"raw_data_bits\" : \"%d\",\n",
+          context->last_raw_read_bits);
+fprintf (stderr, "count %d\n",
+  (7+context->last_raw_read_bits)/8);
+        for (i=0; i<(7+context->last_raw_read_bits)/8; i++)
+        {
+fprintf (stderr, "octet %d %02x\n",
+  i,
+  context->last_raw_read_data [i]);
+          sprintf (val+(2*i), "%02x", context->last_raw_read_data [i]);
+        };
         fprintf (sf, "  \"raw_data\" : \"%s\"\n", // LAST so no comma
           val);
       };

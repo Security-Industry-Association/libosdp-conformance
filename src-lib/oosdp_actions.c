@@ -427,6 +427,7 @@ if (ctx->special_1 EQUALS 3)
   };
   if (bits EQUALS 26)
   {
+FUCK
     fprintf (ctx->log, "CARD DATA (%d bits):", bits);
     fprintf (ctx->log,
       " %02x-%02x-%02x-%02x\n",
