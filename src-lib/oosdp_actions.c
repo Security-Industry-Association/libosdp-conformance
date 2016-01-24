@@ -1,7 +1,7 @@
 /*
   oosdp-actions - open osdp action routines
 
-  (C)Copyright 2014-2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2014-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -427,7 +427,6 @@ if (ctx->special_1 EQUALS 3)
   };
   if (bits EQUALS 26)
   {
-FUCK
     fprintf (ctx->log, "CARD DATA (%d bits):", bits);
     fprintf (ctx->log,
       " %02x-%02x-%02x-%02x\n",

@@ -23,7 +23,7 @@ CFLAGS=-I /tester/current/include
 LDFLAGS=-L /tester/current/lib
 
 
-PROGS = osdp-net-client osdp-net-server
+PROGS = osdp-net-client osdp-net-server initiator
 
 all:	${PROGS}
 
@@ -33,6 +33,9 @@ clean:
 build:	all
 	mkdir -p ../opt/open-osdp/bin
 	cp ${PROGS} ../opt/open-osdp/bin
+
+initiator:	initiator.o Makefile
+	${CC} ${LDFLAGS} -o initiator -g initiator.o 
 
 osdp-net-client:	osdp-net-client.o \
 	  ../src-lib/libosdp.a Makefile
@@ -45,6 +48,10 @@ osdp-net-server:	osdp-net-server.o \
 	${CC} ${LDFLAGS} -o osdp-net-server -g osdp-net-server.o \
 	  -L ../src-lib -losdp \
 	  -lgnutls -ljansson -lrt
+
+initiator.o:	initiator.c \
+	${CC} ${CFLAGS} -c -g -Wall -Werror \
+	  initiator.c
 
 osdp-net-client.o:	osdp-net-client.c \
 	  ../include/osdp_conformance.h ../include/osdp-tls.h \
