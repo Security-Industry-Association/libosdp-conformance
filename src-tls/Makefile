@@ -49,7 +49,7 @@ osdp-net-server:	osdp-net-server.o \
 	  -L ../src-lib -losdp \
 	  -lgnutls -ljansson -lrt
 
-initiator.o:	initiator.c \
+initiator.o:	initiator.c
 	${CC} ${CFLAGS} -c -g -Wall -Werror \
 	  initiator.c
 
