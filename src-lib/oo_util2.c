@@ -43,7 +43,6 @@ extern OSDP_PARAMETERS
   p_card;
 
 
-void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void start_element (void *data, const char *element, const char **attribute);
 
 
@@ -531,6 +530,25 @@ int
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
     p_card.poll = i;
+  }; 
+
+  // parameter "slow_timer"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "slow_timer");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    context.slow_timer = i;
   }; 
 
   // parameter "timeout"
