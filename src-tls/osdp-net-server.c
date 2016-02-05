@@ -1,7 +1,7 @@
 /*
   osdp-tls - TLS implementation of OSDP protocol
 
-  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -392,7 +392,7 @@ int
     char
       *argv [])
 
-{ /* main for osdp-tls */
+{ /* main for osdp-net-server */
 
   int
     c1;
@@ -432,7 +432,6 @@ int
   };
   if (status EQUALS ST_OK)
   {
-    {
       status = init_tls_server ();
       if (status EQUALS 0)
       {
@@ -467,7 +466,8 @@ int
               status = ST_OK;
               if (osdp_timeout (&context, &last_time_check))
               {
-                status = background (&context);
+                if (context.authenticated)
+                  status = background (&context);
               };
             };
             if (status_sock > 0)
@@ -509,6 +509,16 @@ int
               status = ST_OSDP_TLS_ERROR;
             if (status EQUALS ST_OK)
             {
+
+              /*
+                if we're using "slow" timeouts declare an osdp timeout
+                and do background processing, just because we saw inbound traffic.
+              */
+              if (context.slow_timer)
+              {
+                osdp_reset_background_timer (&context);
+              };
+
               context.bytes_received = context.bytes_received + status_tls;
 
               // if we have enough data look for the passphrase
@@ -568,15 +578,23 @@ int
               done_tls = 1;
             };
           };
-          // if there was input, process the message
-          if (status EQUALS ST_NET_INPUT_READY)
-          {
-            status = process_osdp_input (&osdp_buf);
-          };
+        // if there was input, process the message
+        if (status EQUALS ST_NET_INPUT_READY)
+        {
+          char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
+          /*
+            send a benign "message" up the line so that the other knows we're active.
+            If the othere end is the CP this will motivate it to generate an osdp_POLL.
+          */
+          status = send_osdp_data (&context,
+            (unsigned char *)gratuitous_data, 1);
           if (status != ST_OK)
-          {
             done_tls = 1;
-          };
+            status = process_osdp_input (&osdp_buf);
+        };
+        if (status != ST_OK)
+        {
+          done_tls = 1;
         };
       };
     };

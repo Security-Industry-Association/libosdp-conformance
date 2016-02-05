@@ -33,6 +33,7 @@
 
 // OSDP defined constants
 #define C_SOM (0x53)
+#define C_OSDP_MARK (0xff) // used in OSDP TLS to poke CP
 
 #define OSDP_DEST_CP (0x00)
 
@@ -285,6 +286,8 @@ typedef struct osdp_context
     last_raw_read_bits;
   char
     last_raw_read_data [1024];
+  int
+    slow_timer;
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)
@@ -296,7 +299,7 @@ typedef struct osdp_context
 
 #define OSDP_VERSION_MAJOR (1)
 #define OSDP_VERSION_MINOR (0)
-#define OSDP_VERSION_BUILD (3)
+#define OSDP_VERSION_BUILD (5)
 
 typedef struct osdp_parameters
 {
@@ -567,6 +570,7 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
+void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 int osdp_timeout (OSDP_CONTEXT *ctx, long int *last_time_check);
 int parse_message (OSDP_CONTEXT *context, OSDP_MSG *m, OSDP_HDR *h);
 void preserve_current_command (void);

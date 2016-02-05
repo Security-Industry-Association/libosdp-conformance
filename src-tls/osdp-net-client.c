@@ -1,7 +1,10 @@
 /*
   osdp-net-client - network (TLS) client implementation of OSDP protocol
 
-  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+
+  Support provided by the Security Industry Association
+  http://www.securityindustry.org
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -391,7 +394,7 @@ int
     char
       *argv [])
 
-{ /* main for osdp-net-server */
+{ /* main for osdp-net-client */
 
   int
     c1;
@@ -431,17 +434,21 @@ int
   };
   if (status EQUALS ST_OK)
   {
-      status = init_tls_client ();
-      // send the passphrase to authenticate
-      status = send_osdp_data (&context,
-        (unsigned char *)specified_passphrase, plmax);
-      if (status != ST_OK)
-        done_tls = 1;
-      if (status EQUALS 0)
+    done_tls = 0; // assume not done unless some bad status
+
+    status = init_tls_client ();
+
+    // for "phase 1" authentication, kludge it by sending a passphrase
+    // send the passphrase to authenticate
+    status = send_osdp_data (&context,
+      (unsigned char *)specified_passphrase, plmax);
+    if (status != ST_OK)
+      done_tls = 1;
+
+    if (status EQUALS 0)
+    {
+      while (!done_tls)
       {
-        done_tls = 0;
-        while (!done_tls)
-        {
           fflush (stdout); fflush (stderr); fflush (context.log);
           /*
             try reading TLS data.  If there isn't any there it will
@@ -451,7 +458,7 @@ int
           status_tls = gnutls_record_recv (tls_session, buffer, MAX_BUF);
           if (status_tls EQUALS GNUTLS_E_AGAIN)
           {
-            // look for HUP signal
+            // look for file descriptor activity
 
             nfds = 0;
             FD_ZERO (&readfds);
@@ -540,26 +547,37 @@ int
               };
             }
           };
-          if (status != ST_OK)
+        if (status != ST_OK)
+        {
+          if (status != ST_NET_INPUT_READY)
           {
-            if (status != ST_NET_INPUT_READY)
-            {
-              fprintf (stderr, "status %d\n", status);
-              done_tls = 1;
-            };
-          };
-          // if there was input, process the message
-          if (status EQUALS ST_NET_INPUT_READY)
-          {
-            status = process_osdp_input (&osdp_buf);
-          };
-          if (status != ST_OK)
-          {
+            fprintf (stderr, "status %d\n", status);
             done_tls = 1;
           };
-        } /* not done dls */;
-      } /* tls initialized */;
-  } /* ok initialize */;
+        };
+        // if there was input, process the message
+        if (status EQUALS ST_NET_INPUT_READY)
+        {
+          char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
+          /*
+            send a benign "message" up the line so that the other knows we're active.
+            If the othere end is the CP this will motivate it to generate an osdp_POLL.
+          */
+          status = send_osdp_data (&context,
+            (unsigned char *)gratuitous_data, 1);
+          if (status != ST_OK)
+            done_tls = 1;
+
+          if (status != ST_OK)
+            status = process_osdp_input (&osdp_buf);
+        };
+        if (status != ST_OK)
+        {
+          done_tls = 1;
+        };
+      } /* not done dls */;
+    } /* tls initialized */;
+  };
 
   if (status != ST_OK)
     fprintf (stderr, "osdp-tls return status %d\n",

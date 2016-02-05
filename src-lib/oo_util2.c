@@ -347,6 +347,7 @@ void
 
 } /* osdp_reset_background_timer */
 
+
 int
   osdp_timeout
     (OSDP_CONTEXT
@@ -368,8 +369,6 @@ int
   current_time = time (NULL);
   if (*last_time_check != current_time)
   {
-time_t oltc;
-oltc = *last_time_check;
     delta_time = current_time - *last_time_check;
     *last_time_check = current_time;
     if (delta_time > 0)
