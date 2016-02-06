@@ -404,6 +404,8 @@ int
     readfds;
   int
     nfds;
+  int
+    request_immediate_poll;
   const sigset_t
     sigmask;
   int
@@ -436,6 +438,7 @@ int
       if (status EQUALS 0)
       {
         done_tls = 0;
+        request_immediate_poll = 0;
         while (!done_tls)
         {
           fflush (stdout); fflush (stderr);
@@ -448,8 +451,6 @@ int
           status_tls = gnutls_record_recv (tls_session, buffer, MAX_BUF);
           if (status_tls EQUALS GNUTLS_E_AGAIN)
           {
-            // look for HUP signal
-
             nfds = 0;
             FD_ZERO (&readfds);
             FD_ZERO (&writefds);
@@ -464,23 +465,32 @@ int
             if (status_sock EQUALS 0)
             {
               status = ST_OK;
-              if (osdp_timeout (&context, &last_time_check))
+
+              if (context.role EQUALS OSDP_ROLE_CP)
               {
-                if (context.authenticated)
-                  status = background (&context);
+                /*
+                  if timed out due to inactivity or requested,
+                  run the background poller.
+                */
+                if ((osdp_timeout (&context, &last_time_check)) ||
+                  (request_immediate_poll))
+                {
+                  if (context.authenticated)
+                    status = background (&context);
+                  request_immediate_poll = 0;
+                };
               };
             };
             if (status_sock > 0)
             {
-              // check for command input (unix socket activity pokes us to check)
+              // chk for cmd (unix socket activity pokes us to check)
+
               if (FD_ISSET (ufd, &readfds))
               {
                 char cmdbuf [2];
                 fprintf (stderr, "ufd socket was selected in READ (%d)\n",
                   ufd);
                 c1 = accept (ufd, NULL, NULL);
-                fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
-                  ufd, c1);
                 if (c1 != -1)
                 {
                   status_io = read (c1, cmdbuf, sizeof (cmdbuf));
@@ -501,6 +511,13 @@ int
           }
           else
           {
+if(0)
+{
+  unsigned char raw_tls [8];
+  memcpy (raw_tls, buffer, 8);
+fprintf (stderr, "tls buf (%d) %2x %2x %2x\n",
+  status_tls, raw_tls [0], raw_tls [1], raw_tls [2]);
+};
             status = ST_OK; // assume tls read was ok for starters
             tls_current_length = status_tls;
             if (status_tls EQUALS 0)
@@ -509,16 +526,6 @@ int
               status = ST_OSDP_TLS_ERROR;
             if (status EQUALS ST_OK)
             {
-
-              /*
-                if we're using "slow" timeouts declare an osdp timeout
-                and do background processing, just because we saw inbound traffic.
-              */
-              if (context.slow_timer)
-              {
-                osdp_reset_background_timer (&context);
-              };
-
               context.bytes_received = context.bytes_received + status_tls;
 
               // if we have enough data look for the passphrase
@@ -553,11 +560,18 @@ int
                 {
                   if (buffer [i] != C_SOM)
                   {
+                    if (context.slow_timer)
+{
+  fprintf (stderr, "!SOM %02x\n",
+    buffer [i]);
+                        request_immediate_poll = 1;
+};
                     i++;
                     current_length --;
                   }
                   else
                   {
+request_immediate_poll = 0; // saw an SOM, so normal incoming message
                     memcpy (osdp_buf.buf + osdp_buf.next,
                       buffer+i, current_length);
                     osdp_buf.next = osdp_buf.next + current_length;
@@ -583,14 +597,17 @@ int
         {
           char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
           /*
-            send a benign "message" up the line so that the other knows we're active.
-            If the othere end is the CP this will motivate it to generate an osdp_POLL.
+            send a benign "message" up the line so that the CP knows we're
+            active.
           */
-          status = send_osdp_data (&context,
-            (unsigned char *)gratuitous_data, 1);
-          if (status != ST_OK)
-            done_tls = 1;
-            status = process_osdp_input (&osdp_buf);
+          if (context.role EQUALS OSDP_ROLE_PD)
+          {
+            status = send_osdp_data (&context,
+              (unsigned char *)gratuitous_data, 1);
+            if (status != ST_OK)
+              done_tls = 1;
+          };
+          status = process_osdp_input (&osdp_buf);
         };
         if (status != ST_OK)
         {
@@ -624,6 +641,4 @@ int
   return (ST_OK);
 
 } /* send_osdp_data */
-
-
 

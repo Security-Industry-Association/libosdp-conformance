@@ -449,104 +449,112 @@ int
     {
       while (!done_tls)
       {
-          fflush (stdout); fflush (stderr); fflush (context.log);
-          /*
-            try reading TLS data.  If there isn't any there it will
-            return the moral equivalent of E_AGAIN since we've set the FD
-            to nonblocking.
-          */
-          status_tls = gnutls_record_recv (tls_session, buffer, MAX_BUF);
-          if (status_tls EQUALS GNUTLS_E_AGAIN)
+        fflush (stdout); fflush (stderr); fflush (context.log);
+        /*
+          try reading TLS data.  If there isn't any there it will
+          return the moral equivalent of E_AGAIN since we've set the FD
+          to nonblocking.
+        */
+        status_tls = gnutls_record_recv (tls_session, buffer, MAX_BUF);
+        if (status_tls EQUALS GNUTLS_E_AGAIN)
+        {
+          // look for file descriptor activity
+
+          nfds = 0;
+          FD_ZERO (&readfds);
+          FD_ZERO (&writefds);
+          FD_ZERO (&exceptfds);
+          FD_SET (ufd, &readfds);
+          nfds = ufd+1;
+          timeout.tv_sec = 0;
+          timeout.tv_nsec = 100000000;
+          status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
+            &timeout, &sigmask);
+
+          if (status_sock > 0)
           {
-            // look for file descriptor activity
-
-            nfds = 0;
-            FD_ZERO (&readfds);
-            FD_ZERO (&writefds);
-            FD_ZERO (&exceptfds);
-            FD_SET (ufd, &readfds);
-            nfds = ufd+1;
-            timeout.tv_sec = 0;
-            timeout.tv_nsec = 100000000;
-            status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
-              &timeout, &sigmask);
-
-            if (status_sock > 0)
+            // check for command input (unix socket activity pokes us to check)
+            if (FD_ISSET (ufd, &readfds))
             {
-              // check for command input (unix socket activity pokes us to check)
-              if (FD_ISSET (ufd, &readfds))
-              {
-                char cmdbuf [2];
-                fprintf (stderr, "ufd socket was selected in READ (%d)\n",
-                  ufd);
-                c1 = accept (ufd, NULL, NULL);
-                fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
-                  ufd, c1);
-                if (c1 != -1)
-                {
-                  status_io = read (c1, cmdbuf, sizeof (cmdbuf));
-                  if (status_io > 0)
-                  {
-                    fprintf (stderr, "cmd buf %02x%02x\n",
-                      cmdbuf [0], cmdbuf [1]);
-                    close (c1);
+              char cmdbuf [2];
+//              char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
 
-                    status = process_current_command ();
-                    if (status EQUALS ST_OK)
-                      preserve_current_command ();
-                    status = ST_OK;
-                  };
+              /*
+                send a benign "message" up the line so that the other knows we're active.
+                If the othere end is the CP this will motivate it to generate an osdp_POLL.
+              */
+              status = send_osdp_data (&context,
+                (unsigned char *)"!!!!!!!!!!!!!!!!!!!!!!!", 8);
+//(unsigned char *)gratuitous_data, 1);
+              if (status != ST_OK)
+                done_tls = 1;
+
+              c1 = accept (ufd, NULL, NULL);
+              if (c1 != -1)
+              {
+                status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+                if (status_io > 0)
+                {
+                  fprintf (stderr, "cmd buf %02x%02x\n",
+                    cmdbuf [0], cmdbuf [1]);
+                  close (c1);
+
+                  status = process_current_command ();
+                  if (status EQUALS ST_OK)
+                    preserve_current_command ();
+                  status = ST_OK;
                 };
               };
             };
-          }
-          else
-          {
-            status = ST_OK; // assume tls read was ok for starters
-            tls_current_length = status_tls;
-            if (status_tls EQUALS 0)
-              status = ST_OSDP_TLS_CLOSED;
-            if (status_tls < 0)
-              status = ST_OSDP_TLS_ERROR;
-            if (status EQUALS ST_OK)
-            {
-              if (context.verbosity > 4)
-                fprintf (stderr, "%d bytes received via TLS:\n",
-                  status_tls);
-
-              // append buffer to osdp buffer
-              if (context.authenticated)
-              {
-                // while first not SOM skip until SOM
-
-                int i;
-                int done;
-                int current_length;
-
-                i = 0;
-                current_length = tls_current_length;
-                done = 0;
-                while (!done)
-                {
-                  if (buffer [i] != C_SOM)
-                  {
-                    i++;
-                    current_length --;
-                  }
-                  else
-                  {
-                    memcpy (osdp_buf.buf + osdp_buf.next,
-                      buffer+i, current_length);
-                    osdp_buf.next = osdp_buf.next + current_length;
-                    status = ST_NET_INPUT_READY;
-                    done = 1;
-                  };
-                  if (i EQUALS tls_current_length)
-                    done = 1;
-                }
-              };
-            }
           };
+        }
+        else
+        {
+          status = ST_OK; // assume tls read was ok for starters
+          tls_current_length = status_tls;
+          if (status_tls EQUALS 0)
+            status = ST_OSDP_TLS_CLOSED;
+          if (status_tls < 0)
+            status = ST_OSDP_TLS_ERROR;
+          if (status EQUALS ST_OK)
+          {
+            if (context.verbosity > 4)
+              fprintf (stderr, "%d bytes received via TLS:\n",
+                status_tls);
+
+            // append buffer to osdp buffer
+            if (context.authenticated)
+            {
+              // while first not SOM skip until SOM
+
+              int i;
+              int done;
+              int current_length;
+
+              i = 0;
+              current_length = tls_current_length;
+              done = 0;
+              while (!done)
+              {
+                if (buffer [i] != C_SOM)
+                {
+                  i++;
+                  current_length --;
+                }
+                else
+                {
+                  memcpy (osdp_buf.buf + osdp_buf.next,
+                    buffer+i, current_length);
+                  osdp_buf.next = osdp_buf.next + current_length;
+                  status = ST_NET_INPUT_READY;
+                  done = 1;
+                };
+                if (i EQUALS tls_current_length)
+                  done = 1;
+              }
+            };
+          }
+        };
         if (status != ST_OK)
         {
           if (status != ST_NET_INPUT_READY)
@@ -558,15 +566,6 @@ int
         // if there was input, process the message
         if (status EQUALS ST_NET_INPUT_READY)
         {
-          char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
-          /*
-            send a benign "message" up the line so that the other knows we're active.
-            If the othere end is the CP this will motivate it to generate an osdp_POLL.
-          */
-          status = send_osdp_data (&context,
-            (unsigned char *)gratuitous_data, 1);
-          if (status != ST_OK)
-            done_tls = 1;
 
           if (status != ST_OK)
             status = process_osdp_input (&osdp_buf);
