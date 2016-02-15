@@ -164,7 +164,15 @@ config->listen_sap = 10443;
 
   strcpy (specified_passphrase, "speakFriend&3ntr");
 
+  if (status EQUALS ST_OK)
+    status = initialize_osdp (&context);
+  if (context.role EQUALS OSDP_ROLE_CP)
+    tag = "CP";
+  else
+    tag = "PD";
+
   // initialize my current pid
+  if (status EQUALS ST_OK)
   {
     pid_t
       my_pid;
@@ -175,15 +183,8 @@ config->listen_sap = 10443;
       tag, my_pid);
     system (command);
   };
-
-  if (status EQUALS ST_OK)
-    status = initialize_osdp (&context);
   if (strlen (current_network_address) > 0)
     strcpy (context.network_address, current_network_address);
-  if (context.role EQUALS OSDP_ROLE_CP)
-    tag = "CP";
-  else
-    tag = "PD";
 
   sprintf (context.command_path, 
     OSDP_LCL_COMMAND_PATH, tag);
@@ -250,12 +251,11 @@ int
       GNUTLS_X509_FMT_PEM);
     gnutls_certificate_set_verify_function(xcred,
       _verify_certificate_callback);
-    /* If client holds a certificate it can be set using the following:
-     *
-       gnutls_certificate_set_x509_key_file (xcred, 
-         "cert.pem", "key.pem", 
-         GNUTLS_X509_FMT_PEM); 
-    */
+#if 1
+    gnutls_certificate_set_x509_key_file (xcred, 
+      "/opt/open-osdp/etc/thing1_cert.pem", "/opt/open-osdp/etc/thing1_key.pem",
+      GNUTLS_X509_FMT_PEM); 
+#endif
     /* Initialize TLS session 
      */
     gnutls_init(&tls_session, GNUTLS_CLIENT);
@@ -477,15 +477,15 @@ int
             if (FD_ISSET (ufd, &readfds))
             {
               char cmdbuf [2];
-//              char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
+              char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
 
               /*
                 send a benign "message" up the line so that the other knows we're active.
                 If the othere end is the CP this will motivate it to generate an osdp_POLL.
               */
               status = send_osdp_data (&context,
-                (unsigned char *)"!!!!!!!!!!!!!!!!!!!!!!!", 8);
-//(unsigned char *)gratuitous_data, 1);
+//                (unsigned char *)"!!!!!!!!!!!!!!!!!!!!!!!", 8);
+(unsigned char *)gratuitous_data, 1);
               if (status != ST_OK)
                 done_tls = 1;
 
