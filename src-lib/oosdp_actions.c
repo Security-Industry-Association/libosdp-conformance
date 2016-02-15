@@ -376,6 +376,10 @@ int
     };
   };
 
+  // update status json
+  if (status EQUALS ST_OK)
+    status = write_status (ctx);
+
   return (status);
 
 } /* action_osdp_MFG */
