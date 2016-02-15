@@ -35,12 +35,16 @@
 
 
 #include <gnutls/gnutls.h>
+#include <gnutls/x509.h>
 
 
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 #include <osdp-local-config.h>
+
+
+int _verify_certificate_callback(gnutls_session_t session);
 
 
 int
@@ -83,12 +87,6 @@ char
   *tag;
 gnutls_session_t
   tls_session;
-
-
-void
-  signal_callback_handler
-    (int
-      signum);
 
 
 int
@@ -237,6 +235,13 @@ int
     gnutls_global_init ();
     gnutls_certificate_allocate_credentials (&x509_cred);
 
+    // set trusted CA's, set up verify callback
+
+    gnutls_certificate_set_x509_trust_file (x509_cred,
+      "/opt/open-osdp/etc/ca_keys.pem", GNUTLS_X509_FMT_PEM);
+    gnutls_certificate_set_verify_function (x509_cred,
+      _verify_certificate_callback);
+
     status_tls =
       gnutls_certificate_set_x509_key_file(x509_cred, config.cert_file,
       config.key_file, GNUTLS_X509_FMT_PEM);
@@ -288,6 +293,8 @@ int
     gnutls_init (&(tls_session), GNUTLS_SERVER);
     gnutls_priority_set(tls_session, priority_cache);
     gnutls_credentials_set(tls_session, GNUTLS_CRD_CERTIFICATE, x509_cred);
+
+    gnutls_certificate_server_set_request (tls_session, GNUTLS_CERT_REQUIRE);
     sd = accept (listen_sd, (struct sockaddr *) &sa_cli, &client_len);
     fprintf (stderr, "- connection from %s, port %d\n",
       inet_ntop (AF_INET, &sa_cli.sin_addr, topbuf, sizeof (topbuf)),
@@ -641,4 +648,69 @@ int
   return (ST_OK);
 
 } /* send_osdp_data */
+
+/* This function will verify the peer's certificate, and check
+ * if the hostname matches, as well as the activation, expiration dates.
+ */
+int _verify_certificate_callback(gnutls_session_t session)
+{
+        unsigned int status;
+        int ret, type;
+        const char *hostname;
+        gnutls_datum_t out;
+
+        /* read hostname */
+        hostname = gnutls_session_get_ptr(session);
+
+        /* This verification function uses the trusted CAs in the credentials
+         * structure. So you must have installed one or more CA certificates.
+         */
+
+         /* The following demonstrate two different verification functions,
+          * the more flexible gnutls_certificate_verify_peers(), as well
+          * as the old gnutls_certificate_verify_peers3(). */
+#if 1
+        {
+        gnutls_typed_vdata_st data[2];
+
+        memset(data, 0, sizeof(data));
+
+        data[0].type = GNUTLS_DT_DNS_HOSTNAME;
+        data[0].data = (void*)hostname;
+
+        data[1].type = GNUTLS_DT_KEY_PURPOSE_OID;
+        data[1].data = (void*)GNUTLS_KP_TLS_WWW_SERVER;
+
+        ret = gnutls_certificate_verify_peers(session, data, 2,
+					      &status);
+        }
+#else
+        ret = gnutls_certificate_verify_peers3(session, hostname,
+					       &status);
+#endif
+        if (ret < 0) {
+                printf("Error\n");
+                return GNUTLS_E_CERTIFICATE_ERROR;
+        }
+
+        type = gnutls_certificate_type_get(session);
+
+        ret =
+            gnutls_certificate_verification_status_print(status, type,
+                                                         &out, 0);
+        if (ret < 0) {
+                printf("Error\n");
+                return GNUTLS_E_CERTIFICATE_ERROR;
+        }
+
+        printf("%s", out.data);
+
+        gnutls_free(out.data);
+
+        if (status != 0)        /* Certificate is not trusted */
+                return GNUTLS_E_CERTIFICATE_ERROR;
+
+        /* notify gnutls to continue handshake normally */
+        return 0;
+}
 
