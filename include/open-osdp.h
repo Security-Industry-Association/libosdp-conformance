@@ -528,12 +528,15 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_TLS_LISTEN_ERR       (38)
 #define ST_OSDP_TLS_NONBLOCK         (39)
 #define ST_OSDP_TLS_CLIENT_HANDSHAKE (40)
+#define ST_OSDP_TCP_NONBLOCK         (41)
 
 #define ST_CMD_UNDERFLOW             (41)
 #define ST_CMD_PATH                  (42)
 #define ST_PARSE_ERROR               (43)
 #define ST_OUT_TOO_MANY              (44)
 #define ST_OUT_UNKNOWN               (45)
+#define ST_OSDP_NET_ERROR            (46)
+#define ST_OSDP_NET_CLOSED           (47)
 
 int
   m_version_minor;

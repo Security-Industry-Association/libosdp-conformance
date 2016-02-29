@@ -1,6 +1,6 @@
 # Make file for osdp-tls
 
-#  (C)Copyright 2014-2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+#  (C)Copyright 2014-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -23,7 +23,8 @@ CFLAGS=-I /tester/current/include
 LDFLAGS=-L /tester/current/lib
 
 
-PROGS = osdp-net-client osdp-net-server initiator
+PROGS = osdp-net-client osdp-net-server initiator \
+  osdp-tcp-client osdp-tcp-server
 
 all:	${PROGS}
 
@@ -64,6 +65,30 @@ osdp-net-server.o:	osdp-net-server.c \
 	  ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
 	  osdp-net-server.c
+
+osdp-tcp-client:	osdp-tcp-client.o \
+	  ../src-lib/libosdp.a Makefile
+	${CC} ${LDFLAGS} -o osdp-tcp-client -g osdp-tcp-client.o \
+	  -L ../src-lib -losdp \
+	  -ljansson -lrt
+
+osdp-tcp-client.o:	osdp-tcp-client.c \
+	  ../include/osdp_conformance.h ../include/osdp-tls.h \
+	  ../include/open-osdp.h
+	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
+	  osdp-tcp-client.c
+
+osdp-tcp-server:	osdp-tcp-server.o \
+	  ../src-lib/libosdp.a Makefile
+	${CC} ${LDFLAGS} -o osdp-tcp-server -g osdp-tcp-server.o \
+	  -L ../src-lib -losdp \
+	  -ljansson -lrt
+
+osdp-tcp-server.o:	osdp-tcp-server.c \
+	  ../include/osdp_conformance.h ../include/osdp-tls.h \
+	  ../include/open-osdp.h
+	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
+	  osdp-tcp-server.c
 
 ../src-lib/libosdp.a:
 	(cd ../src-lib; make build)
