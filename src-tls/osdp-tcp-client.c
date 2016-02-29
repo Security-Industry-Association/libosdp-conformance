@@ -64,6 +64,8 @@ OSDP_OUT_CMD
   current_output_command [16];
 int
   current_sd; // current socket for tcp connection
+long int
+  last_time_check;
 OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
@@ -171,6 +173,10 @@ config->listen_sap = 10443;
       tag, my_pid);
     system (command);
   };
+
+  // init timer
+  last_time_check = time (NULL);
+
   if (strlen (current_network_address) > 0)
     strcpy (context.network_address, current_network_address);
 
@@ -391,9 +397,7 @@ int
                 send a benign "message" up the line so that the other knows we're active.
                 If the othere end is the CP this will motivate it to generate an osdp_POLL.
               */
-              status = send_osdp_data (&context,
-//                (unsigned char *)"!!!!!!!!!!!!!!!!!!!!!!!", 8);
-(unsigned char *)gratuitous_data, 1);
+              status = send_osdp_data (&context, (unsigned char *)gratuitous_data, 1);
               if (status != ST_OK)
                 done_tls = 1;
 
@@ -413,11 +417,26 @@ int
                   status = ST_OK;
                 };
               };
+            };
 
-              if (FD_ISSET (current_sd, &readfds))
+            if (FD_ISSET (current_sd, &readfds))
+            {
+              status = read_tcp_stream (&context, current_sd,
+                &request_immediate_poll);
+            };
+          };
+
+          // idle processing
+
+          if (status_sock EQUALS 0)
+          {
+            if ((context.role EQUALS OSDP_ROLE_CP) && context.authenticated)
+            {
+              if (osdp_timeout (&context, &last_time_check) ||
+                request_immediate_poll)
               {
-                status = read_tcp_stream (&context, current_sd,
-                  &request_immediate_poll);
+                status = background (&context);
+                request_immediate_poll = 0;
               };
             };
           };
@@ -480,9 +499,11 @@ int
         // if there was input, process the message
         if (status EQUALS ST_NET_INPUT_READY)
         {
-
           if (status != ST_OK)
             status = process_osdp_input (&osdp_buf);
+          // if it's too short so far it'll be 'serial_in' so ignore that
+          if (status EQUALS ST_SERIAL_IN)
+            status = ST_OK;
         };
         if (status != ST_OK)
         {
@@ -574,6 +595,7 @@ int
     status = ST_OSDP_NET_ERROR;
   if (status EQUALS ST_OK)
   {
+fprintf (stderr, "net read %d\n", status_io);
     ctx->bytes_received = ctx->bytes_received + status_io;
 
     // if we have enough data look for the passphrase
@@ -649,6 +671,7 @@ int
     status_io;
 
 
+fprintf (stderr, "sending %d\n", lth);
   status = ST_OK;
   status_io = write (current_sd, buf, lth);
 
