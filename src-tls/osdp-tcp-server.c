@@ -335,6 +335,8 @@ int
     done_tls;
   fd_set
     exceptfds;
+  char
+    gratuitous_data [2] = {C_OSDP_MARK, 0x00};
   fd_set
     readfds;
   int
@@ -440,6 +442,15 @@ if (status_sock > 0)
                     if (status EQUALS ST_OK)
                       preserve_current_command ();
                     status = ST_OK;
+                    /*
+                      send a benign "message" up the line so that the CP knows we're
+                      active.
+                    */
+                    if (context.role EQUALS OSDP_ROLE_PD)
+                    {
+                      status = send_osdp_data (&context,
+                       (unsigned char *)gratuitous_data, 1);
+                    };
                   };
                 };
               };
@@ -462,18 +473,6 @@ if (status_sock > 0)
         // if there was input, process the message
         if (status EQUALS ST_NET_INPUT_READY)
         {
-          char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
-          /*
-            send a benign "message" up the line so that the CP knows we're
-            active.
-          */
-          if (context.role EQUALS OSDP_ROLE_PD)
-          {
-            status = send_osdp_data (&context,
-              (unsigned char *)gratuitous_data, 1);
-            if (status != ST_OK)
-              done_tls = 1;
-          };
           status = process_osdp_input (&osdp_buf);
         };
         if (status != ST_OK)
