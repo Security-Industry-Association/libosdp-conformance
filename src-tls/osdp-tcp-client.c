@@ -365,6 +365,7 @@ int
 
     if (status EQUALS 0)
     {
+      request_immediate_poll = 0;
       while (!done_tls)
       {
         fflush (stdout); fflush (stderr); fflush (context.log);
@@ -524,10 +525,7 @@ int
 
 int tcp_connect(void)
 {
-        const char *PORT =
-"10443";
-// "5556";
-//        const char *SERVER = "127.0.0.1";
+        const char *PORT = "10001";
         int err, sd;
         struct sockaddr_in sa;
 
@@ -575,8 +573,6 @@ int
     i;
   int
     lth;
-  int
-    request_immediate_poll;
   int
     status;
   int
@@ -628,7 +624,7 @@ fprintf (stderr, "net read %d\n", status_io);
           {
             fprintf (stderr, "!SOM %02x\n",
               buffer [i]);
-            request_immediate_poll = 1;
+            *poll = 1;
           };
           i++;
           current_length --;
@@ -648,7 +644,6 @@ fprintf (stderr, "net read %d\n", status_io);
       }
     };
   };
-  *poll = request_immediate_poll;
   return (status);
 
 } /* read_tcp_stream */
