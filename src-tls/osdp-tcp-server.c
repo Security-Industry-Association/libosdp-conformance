@@ -129,13 +129,13 @@ int
   {
     strcpy (context.init_parameters_path, argv [1]);
   };
-  strcpy (config->version, "v1.00-Build4");
+  strcpy (config->version, "v1.00-Build6");
   // sets port
-  config->listen_sap = 10443;
+  config->listen_sap = 10001;
 
   m_idle_timeout = 30;
 
-  strcpy (specified_passphrase, "1234"); // OSDP_LCL_DEFAULT_PSK);
+  strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
   plmax = 4;
 
   if (status EQUALS ST_OK)

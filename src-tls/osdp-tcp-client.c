@@ -1,5 +1,5 @@
 /*
-  osdp-net-client - network (TLS) client implementation of OSDP protocol
+  osdp-tcp-client - TCP-only version of osdp-net-client
 
   (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
@@ -141,10 +141,10 @@ int
       strcpy (current_network_address, argv [2]);
   };
 
-  strcpy (config->version, "v0.00-EP02");
+  strcpy (config->version, "v1.00-Build6");
   strcpy (config->ca_file, OSDP_LCL_CA_KEYS);
 // sets port
-config->listen_sap = 10443;
+config->listen_sap = 10001;
 
 
   m_idle_timeout = 30;

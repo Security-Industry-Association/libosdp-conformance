@@ -154,7 +154,7 @@ int
       strcpy (current_network_address, argv [2]);
   };
 
-  strcpy (config->version, "v0.00-EP02");
+  strcpy (config->version, "v1.00-Build6");
   strcpy (config->ca_file, OSDP_LCL_CA_KEYS);
 // sets port
 config->listen_sap = 10443;
