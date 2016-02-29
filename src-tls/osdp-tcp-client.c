@@ -150,9 +150,7 @@ config->listen_sap = 10001;
   m_idle_timeout = 30;
 
   //strcpy (specified_passphrase, "speakFriend&3ntr");
-  strcpy (specified_passphrase, "1234"); // OSDP_LCL_DEFAULT_PSK);
-  plmax = 4;
-
+  strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
 
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);

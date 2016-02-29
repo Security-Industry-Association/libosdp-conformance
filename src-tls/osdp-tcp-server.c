@@ -136,7 +136,6 @@ int
   m_idle_timeout = 30;
 
   strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
-  plmax = 4;
 
   if (status EQUALS ST_OK)
     status = initialize_osdp (&context);
@@ -393,6 +392,7 @@ int
             status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
               &timeout, &sigmask);
 
+if (context.verbosity > 3)
 if (status_sock > 0)
 {
   fprintf (stderr, "pselect %d\n",
