@@ -199,6 +199,7 @@ int
 
 
   status = ST_OK;
+  sd = 0;
   if (status EQUALS ST_OK)
   {
     listen_sd = socket (AF_INET, SOCK_STREAM, 0);
@@ -359,6 +360,7 @@ int
 
 
   status = ST_OK;
+  request_immediate_poll = 0;
   status = initialize (&config, argc, argv);
   if (status EQUALS ST_OK)
   {
@@ -525,6 +527,7 @@ int
 
 
   status = ST_OK;
+  request_immediate_poll = 0;
   status_io = read (net_fd, buffer, sizeof (buffer));
   if (status_io EQUALS 0)
     status = ST_OSDP_NET_CLOSED;
