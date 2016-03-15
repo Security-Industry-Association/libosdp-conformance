@@ -17,14 +17,14 @@
 
 echo Content-type: text/html
 echo
-echo "<HTML><HEAD><TITLE>Start open-osdp as CP using TCP as a network client</TITLE></HEAD><BODY>"
+echo "<HTML><HEAD><TITLE>Start open-osdp as PD using TCP as a network server</TITLE></HEAD><BODY>"
 echo "<META HTTP-EQUIV=\"REFRESH\""
-echo " CONTENT=\"1;URL=/open-osdp-CP.html\">"
+echo " CONTENT=\"1;URL=/open-osdp-PD.html\">"
 echo "<PRE>"
 echo
-cd /opt/open-osdp/run/CP
-sudo -n /opt/open-osdp/bin/osdp-tcp-client >stdout 2>stderr &
+echo Note: server will restart automatically.  Run from the command line if you want it to only run once.
+cd /opt/open-osdp/run/PD
+sudo -n /opt/open-osdp/bin/initiator /opt/open-osdp/bin/osdp-tcp-server >stdout 2>stderr &
 echo "<PRE>"
 echo "</BODY></HTML>"
-
 

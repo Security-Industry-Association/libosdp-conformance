@@ -21,7 +21,7 @@
 CC=clang
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
-  start-CP-tcp-client
+  start-CP-tcp-client start-PD-tcp-server
 PROGS = open-osdp-kick
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
 SCRIPTS = exec-CPtcpclient HUP-CP HUP-PD \
@@ -57,6 +57,9 @@ send-osdp-command:	send-osdp-command.o Makefile
 
 start-CP-tcp-client:	start-CP-tcp-client.sh
 	cp start-CP-tcp-client.sh start-CP-tcp-client
+
+start-PD-tcp-server:	start-PD-tcp-server.sh
+	cp start-PD-tcp-server.sh start-PD-tcp-server
 
 open-osdp-kick:	open-osdp-kick.o Makefile
 	${CC} -o open-osdp-kick -g open-osdp-kick.o

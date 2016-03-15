@@ -1,12 +1,12 @@
 <HTML>
 <HEAD>
 <TITLE>open-osdp (PD)</TITLE>
+<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
 </HEAD>
 <BODY>
 <H3>open-osdp PD</H3>
 <P>
 PD: 
-<A HREF="/cgi-bin/send-osdp-command?cmd=PD-stop">Stop</A> ::
 Display
 <A HREF="/cgi-bin/open-osdp-PD-status" target="_blank">status</A>
 <BR>
@@ -28,6 +28,14 @@ Go to <A HREF="open-osdp-CP.html">CP</A> (panel, this is the reader)
     <A HREF="/cgi-bin/send-osdp-command?cmd=PD-dump_status">Dump</A> Status
   </LI>
 </UL>
+</P>
+<P>
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-stop">Stop</A> PD<BR>
+PD (Reader) - <A HREF="/cgi-bin/start-PD-485">Start</A> RS-485 (RS-485 slave)<BR>
+PD (Panel) - <A HREF="/cgi-bin/start-PD-tls-server">Start</A> TLS Network Server (called by CP on port 10443, requires certificates)<BR>
+PD (Panel) - <A HREF="/cgi-bin/start-CP-tcp-server">Start</A> TCP Network Server (called by CP on port 10001)<BR>
+<EM>use the command line for other variations</EM>
+</P>
 </BODY>
 </HTML>
 

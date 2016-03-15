@@ -14,17 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+cd /opt/open-osdp/run/PD
+sudo -n killall osdp-tcp-server
+sudo -n /opt/open-osdp/bin/exec-PDtcpserver
+echo "Content-type: text/html"
+echo ""
 
-echo Content-type: text/html
-echo
-echo "<HTML><HEAD><TITLE>Start open-osdp as CP using TCP as a network client</TITLE></HEAD><BODY>"
-echo "<META HTTP-EQUIV=\"REFRESH\""
-echo " CONTENT=\"1;URL=/open-osdp-CP.html\">"
-echo "<PRE>"
-echo
-cd /opt/open-osdp/run/CP
-sudo -n /opt/open-osdp/bin/osdp-tcp-client >stdout 2>stderr &
-echo "<PRE>"
+echo "<HTML><HEAD><TITLE>start PD TCP Server</TITLE>"
+echo "<BODY><PRE>"
+echo "osdp-tcp-server started in PD run directory"
 echo "</BODY></HTML>"
 
 
