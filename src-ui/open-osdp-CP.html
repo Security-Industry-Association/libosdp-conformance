@@ -6,19 +6,12 @@
 </HEAD>
 <BODY>
 <H3>open-osdp CP</H3>
-<P ALIGN=RIGHT>
-Go to <A HREF="open-osdp-PD.html">PD</A> (reader).
-(this is the panel)
-</P>
 <P>
 CP: 
-<A HREF="/cgi-bin/start-CP-tcp-client">Start</A> (TCP) ::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> ::
 Display
-<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A>
-<BR>
-Go to <A HREF="open-osdp-control.html">Control</A> (top leve menu).
-Go to <A HREF="open-osdp-CP.html">PD</A> (reader, this is the panel)
+<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A>.
+Go to <A HREF="open-osdp-control.html">Control</A> (top level menu.)
+Go to <A HREF="open-osdp-CP.html">PD</A> (reader, this is the panel.)
 </P>
 <P>
 <UL>
@@ -33,6 +26,10 @@ Go to <A HREF="open-osdp-CP.html">PD</A> (reader, this is the panel)
   </LI>
 </UL>
 </P>
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP<BR>
+CP (Panel) - <A HREF="/cgi-bin/start-CP-485-client">Start</A> RS-485 (RS-485 master)<BR>
+CP (Panel) - <A HREF="/cgi-bin/start-CP-tls-client">Start</A> TLS Network Client (calls PD on port 10443, requires certificates)<BR>
+CP (Panel) - <A HREF="/cgi-bin/start-CP-tcp-client">Start</A> TCP Network Client (calls PD on port 10001)<BR>
 </BODY>
 <HEAD>
 <META HTTP-EQUIV="Pragma" CONTENT="no-cache">

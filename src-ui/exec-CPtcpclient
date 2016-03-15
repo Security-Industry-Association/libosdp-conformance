@@ -14,7 +14,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+echo Content-type: text/html
+echo
+echo "<HTML><HEAD><TITLE>Start open-osdp as CP using TCP as the network client</TITLE></HEAD><BODY>"
+echo "<META HTTP-EQUIV=\"REFRESH\""
+echo " CONTENT=\"1;URL=/open-osdp-CP.html\">"
+echo "<PRE>"
+echo
 cd /opt/open-osdp/run/CP
-/opt/open-osdp/bin/osdp-tcp-client >stdout 2>stderr &
+sudo -n /opt/open-osdp/bin/osdp-tcp-client >stdout 2>stderr &
+echo "<PRE>"
+echo "</BODY></HTML>"
 
 
