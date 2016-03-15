@@ -368,42 +368,42 @@ int
   };
   if (status EQUALS ST_OK)
   {
-      status = init_tcp_server ();
-      if (status EQUALS ST_OK)
+    status = init_tcp_server ();
+    if (status EQUALS ST_OK)
+    {
+      fprintf (stderr, "Specified passphrase: %s(%d)\n",
+        specified_passphrase, plmax);
+      done_tls = 0;
+      request_immediate_poll = 0;
+      while (!done_tls)
       {
-        fprintf (stderr, "Specified passphrase: %s(%d)\n",
-          specified_passphrase, plmax);
-        done_tls = 0;
-        request_immediate_poll = 0;
-        while (!done_tls)
+        fflush (stdout); fflush (stderr);
+        fflush (context.log);
         {
-          fflush (stdout); fflush (stderr);
-          fflush (context.log);
-          {
-            nfds = 0;
-            nfds = ufd+1;
-            if (current_sd > ufd)
-              nfds = current_sd + 1;
-            FD_ZERO (&readfds);
-            FD_SET (current_sd, &readfds);
-            FD_ZERO (&writefds);
-            FD_ZERO (&exceptfds);
-            FD_SET (ufd, &readfds);
-            timeout.tv_sec = 0;
-            timeout.tv_nsec = 100000000;
-            status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
-              &timeout, &sigmask);
+        nfds = 0;
+        nfds = ufd+1;
+        if (current_sd > ufd)
+          nfds = current_sd + 1;
+        FD_ZERO (&readfds);
+        FD_SET (current_sd, &readfds);
+        FD_ZERO (&writefds);
+        FD_ZERO (&exceptfds);
+        FD_SET (ufd, &readfds);
+        timeout.tv_sec = 0;
+        timeout.tv_nsec = 100000000;
+        status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
+          &timeout, &sigmask);
 
-if (context.verbosity > 3)
-if (status_sock > 0)
-{
-  fprintf (stderr, "pselect %d\n",
-    status_sock);
-  if (FD_ISSET (current_sd, &readfds))
-    fprintf (stderr, "TCP FD ready\n");
-};
-            if (status_sock EQUALS 0)
-            {
+        if (context.verbosity > 9)
+          if (context.verbosity > 9) if (status_sock > 0)
+          {
+            fprintf (stderr, "pselect %d\n",
+              status_sock);
+            if (FD_ISSET (current_sd, &readfds))
+              fprintf (stderr, "TCP FD ready\n");
+          };
+        if (status_sock EQUALS 0)
+        {
               status = ST_OK;
 
               if (context.role EQUALS OSDP_ROLE_CP)

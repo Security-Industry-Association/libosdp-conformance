@@ -589,7 +589,8 @@ int
     status = ST_OSDP_NET_ERROR;
   if (status EQUALS ST_OK)
   {
-fprintf (stderr, "net read %d\n", status_io);
+    if (context.verbosity > 9)
+      fprintf (stderr, "net read %d\n", status_io);
     ctx->bytes_received = ctx->bytes_received + status_io;
 
     // if we have enough data look for the passphrase
@@ -664,7 +665,6 @@ int
     status_io;
 
 
-fprintf (stderr, "sending %d\n", lth);
   status = ST_OK;
   status_io = write (current_sd, buf, lth);
 
