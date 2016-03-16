@@ -111,7 +111,7 @@ int
     "/opt/open-osdp/run/%s/open_osdp_command.json", tag);
   // initialize my current pid
   my_pid = getpid ();
-  sprintf (command, "sudo -n /opt/open-osdp/bin/set-%s-pid %d",
+  sprintf (command, OSPD_LCL_SET_PID_TEMPLATE,
     tag, my_pid);
   system (command);
 

@@ -499,6 +499,22 @@ int
     strcpy (ctx->fqdn, json_string_value (value));
   }; 
 
+  // parameter "init_command"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "init_command");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    strcpy (ctx->init_command, json_string_value (value));
+  }; 
+
+
   // parameter "network_address"
   // this is the other end of the TLS connection
 

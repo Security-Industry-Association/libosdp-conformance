@@ -1,6 +1,6 @@
 # Make file for osdp-ui
 
-#  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+#  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -21,10 +21,11 @@
 CC=clang
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
-  start-CP-tcp-client start-PD-tcp-server
+  start-CP-tcp-client start-PD-tcp-server start-PD-485
+
 PROGS = open-osdp-kick
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
-SCRIPTS = exec-CPtcpclient HUP-CP HUP-PD \
+SCRIPTS = exec-CPtcpclient exec-PD485 exec-PDtcpserver HUP-CP HUP-PD \
   STOP-CP STOP-PD \
   set-pid \
   write-osdp-CP-command write-osdp-PD-command
@@ -60,6 +61,9 @@ start-CP-tcp-client:	start-CP-tcp-client.sh
 
 start-PD-tcp-server:	start-PD-tcp-server.sh
 	cp start-PD-tcp-server.sh start-PD-tcp-server
+
+start-PD-485:	start-PD-485.sh
+	cp start-PD-485.sh start-PD-485
 
 open-osdp-kick:	open-osdp-kick.o Makefile
 	${CC} -o open-osdp-kick -g open-osdp-kick.o
