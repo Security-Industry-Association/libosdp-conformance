@@ -629,6 +629,12 @@ fprintf (stderr, "processing value %s\n",
       was_valid = 1;
       context.role = OSDP_ROLE_CP;
     };
+    test_command = "MON";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      was_valid = 1;
+      context.role = OSDP_ROLE_MONITOR;
+    };
     test_command = "PD";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
