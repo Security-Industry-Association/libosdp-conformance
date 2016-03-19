@@ -129,7 +129,7 @@ int
   {
     strcpy (context.init_parameters_path, argv [1]);
   };
-  strcpy (config->version, "v1.00-Build6");
+  sprintf (config->version, "v1.00-Build%d", OSDP_VERSION_BUILD);
   // sets port
   config->listen_sap = 10001;
 

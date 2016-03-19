@@ -299,7 +299,7 @@ typedef struct osdp_context
 
 #define OSDP_VERSION_MAJOR (1)
 #define OSDP_VERSION_MINOR (0)
-#define OSDP_VERSION_BUILD (5)
+#define OSDP_VERSION_BUILD (8)
 
 typedef struct osdp_parameters
 {
