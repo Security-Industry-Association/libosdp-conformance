@@ -107,6 +107,8 @@ int
   strcpy (tag, "PD");
   if (context.role EQUALS OSDP_ROLE_CP)
     strcpy (tag, "CP");
+  if (context.role EQUALS OSDP_ROLE_MONITOR)
+    strcpy (tag, "MON");
   sprintf (context.command_path,
     "/opt/open-osdp/run/%s/open_osdp_command.json", tag);
   // initialize my current pid
