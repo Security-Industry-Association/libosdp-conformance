@@ -332,8 +332,8 @@ check_serial (&context);
       else
       {
         if (context.verbosity > 9)
-          fprintf (stderr, "485 read returned %d bytes %02x\n",
-            status_io, buffer [0]);
+          fprintf (stderr, "485 read returned %d bytes\n",
+            status_io);
 
         status = ST_SERIAL_IN;
         if (osdp_buf.next < sizeof (osdp_buf.buf))
@@ -394,7 +394,24 @@ int
 
 { /* send_osdp_data */
 
+  if (context->verbosity > 9)
+  {
+    int idx;
+   
+    fprintf (stderr, "\nRaw:");
+    for (idx=0; idx<lth; idx++)
+    {
+      fprintf (stderr, " %02x", buf[idx]);
+    };
+    fprintf (stderr, "\n");
+  };
   write (context->fd, buf, lth);
+if (context->verbosity > 9)
+{
+  char buf2 [16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };;
+  write (context->fd, buf2, 8);
+};
+  
   return (ST_OK);
 
 } /* send_osdp_data */
