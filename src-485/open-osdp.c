@@ -406,11 +406,6 @@ int
     fprintf (stderr, "\n");
   };
   write (context->fd, buf, lth);
-if (context->verbosity > 9)
-{
-  char buf2 [16] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07 };;
-  write (context->fd, buf2, 8);
-};
   
   return (ST_OK);
 
