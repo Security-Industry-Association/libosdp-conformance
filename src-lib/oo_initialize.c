@@ -84,12 +84,14 @@ int
   {
     status_io = tcgetattr (context->fd, &(context->tio));
 fprintf (stderr, "tcgetattr returned %d\n", status_io);
+    cfmakeraw (&(context->tio));
+    status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
+fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
 
     status_io = cfsetispeed (&(context->tio), B9600);
 fprintf (stderr, "cfsetispeed returned %d\n", status_io);
     status_io = cfsetospeed (&(context->tio), B9600);
 fprintf (stderr, "cfsetospeed returned %d\n", status_io);
-    cfmakeraw (&(context->tio));
     status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
 fprintf (stderr, "tcsetattr returned %d\n", status_io);
     if (status_io != 0)

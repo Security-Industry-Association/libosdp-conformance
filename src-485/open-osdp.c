@@ -332,8 +332,8 @@ check_serial (&context);
       else
       {
         if (context.verbosity > 9)
-          fprintf (stderr, "485 read returned %d bytes\n",
-            status_io);
+          fprintf (stderr, "485 read returned %d bytes %02x\n",
+            status_io, buffer [0]);
 
         status = ST_SERIAL_IN;
         if (osdp_buf.next < sizeof (osdp_buf.buf))
@@ -398,5 +398,4 @@ int
   return (ST_OK);
 
 } /* send_osdp_data */
-
 
