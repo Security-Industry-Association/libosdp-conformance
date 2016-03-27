@@ -29,6 +29,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <fcntl.h>
+#include <termios.h>
 
 
 #include <open-osdp.h>
@@ -63,6 +64,28 @@ int
 int
   creds_buffer_a_remaining;
 
+
+void
+  check_serial
+    (OSDP_CONTEXT
+      *ctx)
+{
+  struct termios
+    serial_termios;
+  speed_t
+    speed;
+  int
+    status_io;
+
+
+  status_io = tcgetattr (ctx->fd, &serial_termios);
+  fprintf (stderr, "tcgetattr returned %d\n", status_io);
+  speed = cfgetispeed (&serial_termios);
+  fprintf (stderr, "input speed %d\n", speed);
+  speed = cfgetospeed (&serial_termios);
+  fprintf (stderr, "output speed %d\n", speed);
+
+}
 
 int
   initialize
@@ -214,6 +237,7 @@ int
       };
     };
   };
+check_serial (&context);
   while (!done)
   {
     fflush (context.log);
