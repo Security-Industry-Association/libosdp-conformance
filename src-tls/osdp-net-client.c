@@ -1,4 +1,3 @@
-int SHUNT_CERT_VERIFY = 0;
 /*
   osdp-net-client - network (TLS) client implementation of OSDP protocol
 
@@ -434,6 +433,8 @@ int
   status = initialize (&config, argc, argv);
   if (status EQUALS ST_OK)
   {
+    if (context.disable_certificate_checking)
+      fprintf (stderr, "WARNING: Certificate checking disabled.\n");
     status = local_socket_setup (&ufd);
   };
   if (status EQUALS ST_OK)
@@ -635,9 +636,6 @@ int _verify_certificate_callback(gnutls_session_t session)
         const char *hostname;
         gnutls_datum_t out;
 
-if (SHUNT_CERT_VERIFY)
-  return 0;
-
         /* read hostname */
         hostname = gnutls_session_get_ptr(session);
 
@@ -689,6 +687,8 @@ if (SHUNT_CERT_VERIFY)
         if (context.disable_certificate_checking)
           return 0;
 
+  if (context.disable_certificate_checking)
+    return 0;
         if (status != 0)        /* Certificate is not trusted */
                 return GNUTLS_E_CERTIFICATE_ERROR;
 
