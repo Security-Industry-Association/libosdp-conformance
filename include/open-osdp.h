@@ -288,6 +288,8 @@ typedef struct osdp_context
     last_raw_read_data [1024];
   int
     slow_timer;
+  int
+    disable_certificate_checking;
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)

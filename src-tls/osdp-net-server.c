@@ -294,7 +294,8 @@ int
     gnutls_priority_set(tls_session, priority_cache);
     gnutls_credentials_set(tls_session, GNUTLS_CRD_CERTIFICATE, x509_cred);
 
-    gnutls_certificate_server_set_request (tls_session, GNUTLS_CERT_REQUIRE);
+    if (!context.disable_certificate_checking)
+      gnutls_certificate_server_set_request (tls_session, GNUTLS_CERT_REQUIRE);
     sd = accept (listen_sd, (struct sockaddr *) &sa_cli, &client_len);
     fprintf (stderr, "- connection from %s, port %d\n",
       inet_ntop (AF_INET, &sa_cli.sin_addr, topbuf, sizeof (topbuf)),
@@ -437,6 +438,9 @@ int
   status = initialize (&config, argc, argv);
   if (status EQUALS ST_OK)
   {
+
+    if (context.disable_certificate_checking)
+      fprintf (stderr, "WARNING: Certificate checking disabled.\n");
     status = local_socket_setup (&ufd);
   };
   if (status EQUALS ST_OK)
@@ -659,6 +663,7 @@ int _verify_certificate_callback(gnutls_session_t session)
         const char *hostname;
         gnutls_datum_t out;
 
+
         /* read hostname */
         hostname = gnutls_session_get_ptr(session);
 
@@ -707,8 +712,11 @@ int _verify_certificate_callback(gnutls_session_t session)
 
         gnutls_free(out.data);
 
+        if (context.disable_certificate_checking)
+          return 0;
+
         if (status != 0)        /* Certificate is not trusted */
-                return GNUTLS_E_CERTIFICATE_ERROR;
+          return GNUTLS_E_CERTIFICATE_ERROR;
 
         /* notify gnutls to continue handshake normally */
         return 0;

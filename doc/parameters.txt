@@ -1,0 +1,6 @@
+parameters for open-osdp-parameters.json
+
+"disable_certificate_checking" : "1"
+disables certificate checking.  applies to osdp-net-server and osdp-net-client.
+
+

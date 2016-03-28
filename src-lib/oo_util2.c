@@ -484,6 +484,26 @@ int
     p_card.bits = i;
   }; 
 
+  // parameter "disable_checking"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "disable_checking");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    if (i != 0)
+      ctx->disable_certificate_checking = i;
+  }; 
+
   // parameter "fqdn"
 
   if (status EQUALS ST_OK)

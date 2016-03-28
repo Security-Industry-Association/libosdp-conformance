@@ -1,3 +1,4 @@
+int SHUNT_CERT_VERIFY = 0;
 /*
   osdp-net-client - network (TLS) client implementation of OSDP protocol
 
@@ -193,7 +194,7 @@ config->listen_sap = 10443;
 
   if (status EQUALS ST_OK)
   {
-    fprintf (stderr, "osdp-tls version %s\n",
+    fprintf (stderr, "osdp-net-server (TLS) version %s\n",
       config->version);
     if (context.role EQUALS OSDP_ROLE_CP)
     {
@@ -630,6 +631,9 @@ int _verify_certificate_callback(gnutls_session_t session)
         int ret, type;
         const char *hostname;
         gnutls_datum_t out;
+
+if (SHUNT_CERT_VERIFY)
+  return 0;
 
         /* read hostname */
         hostname = gnutls_session_get_ptr(session);

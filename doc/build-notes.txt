@@ -1,0 +1,64 @@
+added osdp to sudoers
+performed standard debian update and package set-up
+
+  apt-get update
+  apt-get upgrade
+  apt-get install build-essential
+
+  apt-get install clang lzip pkg-config libgmp3-dev libgmpxx4ldbl screen
+  apt-get install tcpdump gdb apache2 git
+
+downloaded jansson, libtasn, nettle, and gnutls.
+
+build jansson
+  ./configure --prefix=/opt
+  make
+  sudo make install
+
+build tasn
+  ./configure --prefix=/opt
+  make
+  sudo make install
+
+build nettle
+  PKG_CONFIG_PATH=/opt/lib/pkgconfig ./configure --prefix=/opt
+  make
+  sudo make install
+
+build gnutls
+  
+  PKG_CONFIG_PATH=/opt/lib/pkgconfig/ ./configure --prefix=/opt --without-p11-kit
+  make
+  sudo make install
+
+grabbed the current libosdp release
+  git clone https://github.com/smithee-us/libosdp
+
+added ifconfig command to /etc/rc.local to hard-code eth0 to 10.0.0.200
+added /etc/ld.so.conf.d/libgnutls.conf
+
+building libosdp
+
+  cd setup/libosdp
+  make clean
+  make CFLAGS="-I/opt/include" LDFLAGS="-L/opt/lib" release
+  cd /
+  sudo tar xzvf /home/osdp/setup/libosdp/release-libosdp.tgz
+
+set up test certificates
+
+  cd setup/test-ca
+    ./0-init-ca
+    ./1-create-certs
+
+  copy the appropriate certs to etc
+    cp root.pem osdp-pd-1_cert.pem osdp-pd-1_key.pem /opt/open-osdp/etc
+    cd /opt/open-osdp/etc
+    cp root.pem ca_certs.pem
+    cp osdp-pd-1_cert.pem cert.pem
+    cp osdp-pd-1_key.pem key.pem  
+
+  set up to run as PD
+    cd /opt/open-osdp/run/PD
+    cp /home/osdp/setup/libosdp/doc/open-osdp-params-PD.json open-osdp-params.json
+
