@@ -252,11 +252,14 @@ int
       GNUTLS_X509_FMT_PEM);
     gnutls_certificate_set_verify_function(xcred,
       _verify_certificate_callback);
-#if 1
-    gnutls_certificate_set_x509_key_file (xcred, 
-      "/opt/open-osdp/etc/thing1_cert.pem", "/opt/open-osdp/etc/thing1_key.pem",
-      GNUTLS_X509_FMT_PEM); 
-#endif
+
+    // specify my cert to send as a client
+
+    if (!context.disable_certificate_checking)
+      gnutls_certificate_set_x509_key_file (xcred, 
+        "/opt/open-osdp/etc/client_cert.pem", "/opt/open-osdp/etc/client_key.pem",
+        GNUTLS_X509_FMT_PEM); 
+
     /* Initialize TLS session 
      */
     gnutls_init(&tls_session, GNUTLS_CLIENT);
@@ -682,6 +685,9 @@ if (SHUNT_CERT_VERIFY)
         printf("%s", out.data);
 
         gnutls_free(out.data);
+
+        if (context.disable_certificate_checking)
+          return 0;
 
         if (status != 0)        /* Certificate is not trusted */
                 return GNUTLS_E_CERTIFICATE_ERROR;
