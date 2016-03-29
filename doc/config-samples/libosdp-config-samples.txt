@@ -1,0 +1,17 @@
+Sample config files.
+
+serial port at /dev/ttyUSB0.  init serial with ./init-serial.sh
+skips network_address and fqdn
+
+{
+   "role" : "PD"
+  ,"verbosity" : "3"
+  ,"bits" : "26"
+  ,"raw_value" : "70123440"
+  ,"address" : "00"
+  ,"serial_device" : "/dev/ttyUSB0"
+  ,"init_command" : "./init-serial.sh"
+}
+
+  ,"slow_timer" : "1"
+
