@@ -57,6 +57,8 @@ OSDP_OUT_CMD
   current_output_command [16];
 gnutls_dh_params_t
   dh_params;
+long int
+  last_time_check;
 OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
@@ -65,6 +67,8 @@ OSDP_PARAMETERS
   p_card;
 time_t
   previous_time;
+int
+  request_immediate_poll;
 struct sockaddr_in
   sa_serv;
 char
@@ -183,6 +187,10 @@ config->listen_sap = 10443;
       tag, my_pid);
     system (command);
   };
+
+  // init timer
+  last_time_check = time (NULL);
+
   if (strlen (current_network_address) > 0)
     strcpy (context.network_address, current_network_address);
 
@@ -452,6 +460,7 @@ int
 
     if (status EQUALS 0)
     {
+      request_immediate_poll = 0;
       while (!done_tls)
       {
         fflush (stdout); fflush (stderr); fflush (context.log);
@@ -512,6 +521,21 @@ int
               };
             };
           };
+
+          // idle processing
+
+          if (status_sock EQUALS 0)
+          {
+            if ((context.role EQUALS OSDP_ROLE_CP) && context.authenticated)
+            {
+              if (osdp_timeout (&context, &last_time_check) ||
+                request_immediate_poll)
+              {
+                status = background (&context);
+                request_immediate_poll = 0;
+              };
+            };
+          };
         }
         else
         {
@@ -543,11 +567,20 @@ int
               {
                 if (buffer [i] != C_SOM)
                 {
+                  if (context.slow_timer)
+                  {
+                    fprintf (stderr, "!SOM %02x\n",
+                      buffer [i]);
+                    request_immediate_poll = 1;
+                  };
                   i++;
                   current_length --;
                 }
                 else
                 {
+                  // saw an SOM, so normal incoming message
+                  request_immediate_poll = 0; 
+
                   memcpy (osdp_buf.buf + osdp_buf.next,
                     buffer+i, current_length);
                   osdp_buf.next = osdp_buf.next + current_length;
