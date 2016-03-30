@@ -454,12 +454,14 @@ int
 
     status = init_tls_client ();
 
+#if TEMP_PASSPHRASE
     // for "phase 1" authentication, kludge it by sending a passphrase
     // send the passphrase to authenticate
     status = send_osdp_data (&context,
       (unsigned char *)specified_passphrase, plmax);
     if (status != ST_OK)
       done_tls = 1;
+#endif
 
     if (status EQUALS 0)
     {
