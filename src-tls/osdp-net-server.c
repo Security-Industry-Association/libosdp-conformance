@@ -534,14 +534,17 @@ int
           }
           else
           {
-if(context.verbosity > 9)
-{
-  unsigned char raw_tls [8];
-  fprintf (stderr, "status_tls %d\n", status_tls);
-  memcpy (raw_tls, buffer, 8);
-fprintf (stderr, "tls buf (%d) %2x %2x %2x\n",
-  status_tls, raw_tls [0], raw_tls [1], raw_tls [2]);
-};
+            if (context.verbosity > 9)
+            {
+              /*
+                dump bits of the tls-protected data stream for debugging.
+              */
+              unsigned char raw_tls [8];
+              fprintf (stderr, "status_tls %d\n", status_tls);
+              memcpy (raw_tls, buffer, 8);
+              fprintf (stderr, "tls buf (%d) %2x %2x %2x\n",
+                status_tls, raw_tls [0], raw_tls [1], raw_tls [2]);
+            };
             status = ST_OK; // assume tls read was ok for starters
             tls_current_length = status_tls;
             if (status_tls EQUALS 0)
@@ -555,6 +558,10 @@ fprintf (stderr, "tls buf (%d) %2x %2x %2x\n",
               // if we have enough data look for the passphrase
               if (!context.authenticated)
               {
+#ifndef TEMP_PASSPHRASE
+                context.authenticated = 1;
+#endif
+#ifdef TEMP_PASSPHRASE
                 if (passphrase_length < plmax)
                 {
                   int lth;
@@ -566,6 +573,7 @@ fprintf (stderr, "tls buf (%d) %2x %2x %2x\n",
                     memcmp (current_passphrase, specified_passphrase, plmax))
                     context.authenticated = 1;
                 };
+#endif
               };
 
               // append buffer to osdp buffer
