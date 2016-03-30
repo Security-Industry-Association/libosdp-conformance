@@ -297,6 +297,9 @@ int
     if (!context.disable_certificate_checking)
       gnutls_certificate_server_set_request (tls_session, GNUTLS_CERT_REQUIRE);
     sd = accept (listen_sd, (struct sockaddr *) &sa_cli, &client_len);
+    fprintf (context.log, "- connection from %s, port %d\n",
+      inet_ntop (AF_INET, &sa_cli.sin_addr, topbuf, sizeof (topbuf)),
+      ntohs (sa_cli.sin_port));
     fprintf (stderr, "- connection from %s, port %d\n",
       inet_ntop (AF_INET, &sa_cli.sin_addr, topbuf, sizeof (topbuf)),
       ntohs (sa_cli.sin_port));
@@ -308,6 +311,8 @@ int
     {
       close (sd);
       gnutls_deinit (tls_session);
+      fprintf (context.log, "*** Handshake has failed (%s)\n\n",
+        gnutls_strerror (status_tls));
       fprintf (stderr, "*** Handshake has failed (%s)\n\n",
         gnutls_strerror (status_tls));
       status = ST_OSDP_TLS_HANDSHAKE;
@@ -316,6 +321,7 @@ int
   };
   if (status EQUALS ST_OK)
   {
+    fprintf (context.log, "- Handshake was completed\n");
     fprintf (stderr, "- Handshake was completed\n");
 
     status_sock = fcntl (sd, F_SETFL,
@@ -445,9 +451,15 @@ int
   };
   if (status EQUALS ST_OK)
   {
-      status = init_tls_server ();
-      if (status EQUALS 0)
-      {
+    fprintf (context.log, "Initializing TLS Server...\n");
+    /*
+      apparently the entire thing pends so flush the log 
+      before waiting for a TLS connection so you do get logs...
+    */
+    fflush (context.log);
+    status = init_tls_server ();
+    if (status EQUALS 0)
+    {
         done_tls = 0;
         request_immediate_poll = 0;
         while (!done_tls)
