@@ -534,9 +534,10 @@ int
           }
           else
           {
-if(0)
+if(context.verbosity > 9)
 {
   unsigned char raw_tls [8];
+  fprintf (stderr, "status_tls %d\n", status_tls);
   memcpy (raw_tls, buffer, 8);
 fprintf (stderr, "tls buf (%d) %2x %2x %2x\n",
   status_tls, raw_tls [0], raw_tls [1], raw_tls [2]);
