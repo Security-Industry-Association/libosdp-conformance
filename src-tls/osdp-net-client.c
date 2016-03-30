@@ -417,6 +417,8 @@ int
     readfds;
   int
     nfds;
+  int
+    request_immediate_poll;
   const sigset_t
     sigmask;
   int
@@ -448,6 +450,7 @@ int
   if (status EQUALS ST_OK)
   {
     done_tls = 0; // assume not done unless some bad status
+    request_immediate_poll = 0;
 
     status = init_tls_client ();
 
@@ -520,6 +523,24 @@ int
                 };
               };
             };
+          }
+          else
+          {
+            // pselect returned no fd's
+            if (context.role EQUALS OSDP_ROLE_CP)
+            {
+			/*
+			  if timed out due to inactivity or requested,
+			  run the background poller.
+			*/
+			if ((osdp_timeout (&context, &last_time_check)) ||
+			  (request_immediate_poll))
+			{
+			  if (context.authenticated)
+			    status = background (&context);
+			  request_immediate_poll = 0;
+			};
+		      };
           };
 
           // idle processing
