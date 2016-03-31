@@ -277,6 +277,12 @@ int
       osdp_conformance.multibyte_data_encoding.test_status =
         OCONFORM_EXERCISED;
   };
+  if (status != ST_OK)
+  {
+    fprintf (context->log, "parse_message did not clear the header.  msg_data_length %d. msg_check_type 0x%x m->check_size %d. m->lth %d. msg_lth %d status %d.\n",
+      msg_data_length, msg_check_type, m->check_size, m->lth, msg_lth, status);
+    fflush (context->log);
+  };
   if (status EQUALS ST_OK)
   {    
     tlogmsg [0] = 0;
@@ -713,8 +719,18 @@ if (m->lth == 7)
   // if there was an error dump the log buffer
 
   if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT))
+  {
     if (strlen (logmsg) > 0)
       fprintf (context->log, "%s\n", logmsg);
+
+    // if parse failed report the status code
+    if (context->verbosity > 3)
+    {
+      fflush (context->log);
+      fprintf (context->log,
+        "Message input parsing failed, status %d\n", status);
+    };
+  };
   return (status);
 
 } /* parse_message */
@@ -805,6 +821,11 @@ int
   oh = (OSDP_HDR *)(msg->ptr);
   if (context -> role EQUALS OSDP_ROLE_PD)
   {
+    if (context->verbosity > 9)
+    {
+      fprintf (context->log, "PD: command %02x\n",
+        context->role);
+    };
     if ((oh->ctrl & 0x03) EQUALS 0)
     {
       fprintf (context->log,

@@ -593,17 +593,18 @@ int
                   if (buffer [i] != C_SOM)
                   {
                     if (context.slow_timer)
-{
-  fprintf (stderr, "!SOM %02x\n",
-    buffer [i]);
-                        request_immediate_poll = 1;
-};
+                    {
+                      if (context.verbosity > 8)
+                        fprintf (context.log, "!SOM %02x\n",
+                          buffer [i]);
+                      request_immediate_poll = 1;
+                    };
                     i++;
                     current_length --;
                   }
                   else
                   {
-request_immediate_poll = 0; // saw an SOM, so normal incoming message
+                    request_immediate_poll = 0; // saw an SOM, so normal incoming message
                     memcpy (osdp_buf.buf + osdp_buf.next,
                       buffer+i, current_length);
                     osdp_buf.next = osdp_buf.next + current_length;
@@ -668,6 +669,23 @@ int
 
 { /* send_osdp_data */
 
+  int
+    i;
+
+
+  if (context->verbosity > 9)
+  {
+    fprintf (context->log, "Send via TLS: %d. bytes via gnutls_record_send\n",
+      lth);
+    for (i=0; i<lth; i++)
+    {
+      fprintf (context->log, " %02x", buf[i]);
+      if (7 EQUALS (i % 8))
+        fprintf (context->log, "\n");
+    };
+    if (7 != (lth % 8))
+      fprintf (context->log, "\n");
+  };
   gnutls_record_send (tls_session, buf, lth);
   context->bytes_sent = context->bytes_sent + lth;
   return (ST_OK);
@@ -678,7 +696,7 @@ int
  * if the hostname matches, as well as the activation, expiration dates.
  */
 int _verify_certificate_callback(gnutls_session_t session)
-{
+{ /* _verify_certificate_callback */
         unsigned int status;
         int ret, type;
         const char *hostname;
@@ -741,5 +759,6 @@ int _verify_certificate_callback(gnutls_session_t session)
 
         /* notify gnutls to continue handshake normally */
         return 0;
-}
+
+} /* _verify_certificate_callback */
 
