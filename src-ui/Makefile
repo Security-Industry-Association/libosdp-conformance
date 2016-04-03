@@ -21,14 +21,16 @@
 CC=clang
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
-  start-CP-tcp-client start-CP-485 start-PD-tcp-server start-PD-485
+  start-CP-tcp-client start-CP-485 start-PD-tcp-server start-PD-485 \
+  start-CP-net-client start-PD-net-server 
 
 PROGS = open-osdp-kick
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
 SCRIPTS = exec-CPtcpclient exec-CP485 exec-PD485 exec-PDtcpserver HUP-CP HUP-PD \
   STOP-CP STOP-PD \
   set-pid \
-  write-osdp-CP-command write-osdp-PD-command
+  write-osdp-CP-command write-osdp-PD-command \
+  exec-CPnetclient exec-PDnetserver
 
 all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS}
 
