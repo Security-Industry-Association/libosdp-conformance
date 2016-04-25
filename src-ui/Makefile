@@ -61,6 +61,9 @@ send-osdp-command:	send-osdp-command.o Makefile
 start-CP-tcp-client:	start-CP-tcp-client.sh
 	cp start-CP-tcp-client.sh start-CP-tcp-client
 
+start-PD-net-server:	start-PD-net-server.sh
+	cp start-PD-net-server.sh start-PD-net-server
+
 start-PD-tcp-server:	start-PD-tcp-server.sh
 	cp start-PD-tcp-server.sh start-PD-tcp-server
 

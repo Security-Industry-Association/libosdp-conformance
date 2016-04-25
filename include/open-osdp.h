@@ -97,6 +97,7 @@
 #define OSDP_CMDB_RESET_POWER  (1005)
 #define OSDP_CMDB_PRESENT_CARD (1006)
 #define OSDP_CMDB_OUT          (1007)
+#define OSDP_CMDB_LED          (1008)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -362,6 +363,8 @@ typedef struct osdp_command
 {
   int
     command;
+  unsigned char
+    details [128];
 } OSDP_COMMAND;
 
 typedef struct osdp_param
@@ -579,7 +582,7 @@ void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 int osdp_timeout (OSDP_CONTEXT *ctx, long int *last_time_check);
 int parse_message (OSDP_CONTEXT *context, OSDP_MSG *m, OSDP_HDR *h);
 void preserve_current_command (void);
-int process_command (int command, OSDP_CONTEXT *context);
+int process_command (int command, OSDP_CONTEXT *context, char *details);
 int process_current_command (void);
 int process_osdp_input (OSDP_BUFFER *osdpbuf);
 int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);

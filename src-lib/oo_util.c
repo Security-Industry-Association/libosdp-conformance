@@ -729,7 +729,7 @@ if (m->lth == 7)
       fprintf (context->log, "%s\n", logmsg);
 
     // if parse failed report the status code
-    if (context->verbosity > 3)
+    if ((context->verbosity > 3) && (status != ST_MONITOR_ONLY))
     {
       fflush (context->log);
       fprintf (context->log,

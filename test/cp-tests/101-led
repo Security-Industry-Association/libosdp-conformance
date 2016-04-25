@@ -1,0 +1,11 @@
+#!/bin/bash
+set -x
+CMDPATH=/opt/open-osdp/run/CP/open_osdp_command.json
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"1\""
+
+echo >>${CMDPATH} "}"
+
+/opt/open-osdp/bin/HUP-CP
+

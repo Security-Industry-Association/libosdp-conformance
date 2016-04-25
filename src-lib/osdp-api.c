@@ -49,7 +49,7 @@ int
   status = read_command (&context, &cmd);
   if (status EQUALS ST_OK)
   {
-    status = process_command (cmd.command, &context);
+    status = process_command (cmd.command, &context, (char *)cmd.details);
   };
   if (status != ST_OK)
     fprintf (stderr, "process_current_command: status %d\n",

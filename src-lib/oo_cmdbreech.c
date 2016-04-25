@@ -130,6 +130,37 @@ int
           this_command);
     };
   }; 
+
+  // LED output
+
+  if (status EQUALS ST_OK)
+  {
+    int
+      i;
+    char
+      vstr [1024];
+
+    strcpy (this_command, json_string_value (value));
+    test_command = "led";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_LED;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+
+      value = json_object_get (root, "perm_on_color");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        cmd->details [0] = i;
+      };
+    };
+  }; 
+
+  // output (digital bits out)
+
   if (status EQUALS ST_OK)
   {
     int

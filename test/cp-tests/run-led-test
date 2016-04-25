@@ -1,0 +1,35 @@
+#!/bin/bash
+set -x
+echo 0 - BLACK
+./102-led 0
+sleep 4
+echo 1 - RED
+sleep 4;./102-led 1
+sleep 4
+echo 2 - GREEN
+sleep 4;./102-led 2
+sleep 4
+echo 3 - AMBER
+sleep 4;./102-led 3
+sleep 4
+echo 4 - BLUE
+sleep 4;./102-led 4
+sleep 4
+sleep 4;./102-led 5
+sleep 4
+sleep 4;./102-led 6
+sleep 4
+sleep 4;./102-led 7
+sleep 4
+sleep 4;./102-led 8
+sleep 4
+sleep 4
+sleep 4;./102-led 9
+sleep 4
+sleep 4;./102-led 10
+sleep 4
+sleep 4;./102-led 11
+sleep 4
+sleep 4;./102-led 12
+sleep 4
+

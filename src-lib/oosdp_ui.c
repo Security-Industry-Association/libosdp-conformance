@@ -363,7 +363,9 @@ int
   (int
      command,
   OSDP_CONTEXT
-     *context)
+     *context,
+  char
+    *details)
 
 { /* process_command */
 
@@ -650,6 +652,36 @@ fprintf (stderr, "fixme: RND.A\n");
           fprintf (stderr, "Requesting PD Ident\n");
       };
       status = ST_OK;
+      break;
+    case OSDP_CMDB_LED:
+      {
+        OSDP_RDR_LED_CTL
+          led_control_message;
+
+        memset (&led_control_message, 0, sizeof (led_control_message));
+        /*
+          assume reader 0
+          assume LED 0
+          assume permanent (templ control 0)
+          assume on time is 3 sec (30x100 ms)
+          assume off time is 1 sec (10x100 ms)
+          assume on LED color is RED
+          assume off LED color is BLACK
+        */
+        led_control_message.perm_control = OSDP_LED_SET;
+        led_control_message.perm_on_time = 30;
+        led_control_message.perm_off_time = 10;
+        led_control_message.perm_on_color = OSDP_LEDCOLOR_RED;
+        led_control_message.perm_off_color = OSDP_LEDCOLOR_BLACK;
+        current_length = 0;
+        status = send_message (context,
+          OSDP_LED, p_card.addr, &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message);
+        osdp_conformance.cmd_led.test_status =
+          OCONFORM_EXERCISED;
+        if (context->verbosity > 3)
+          fprintf (stderr, "Requesting LED tmp ctl %02x perm ctl %02x perm color %02x\n",
+            0, 0, 0);
+      };
       break;
     case OSDP_CMDB_OUT:
       {
