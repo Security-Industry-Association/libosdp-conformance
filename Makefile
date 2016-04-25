@@ -18,6 +18,7 @@ build:	all
 	(cd src-485; make build; cd ..)
 	(cd src-tls; make build; cd ..)
 	(cd src-ui; make build; cd ..)
+	(cd test; make build-test; cd ..)
 
 release:	build
 	tar czvf release-libosdp.tgz opt/*

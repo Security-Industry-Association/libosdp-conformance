@@ -49,6 +49,9 @@ build:	all
 	cp ${SCRIPTS} ../opt/open-osdp/bin
 	cp ${PROGS} ../opt/open-osdp/bin
 
+build-test:	build
+	(cd ../test; make build-test)
+
 open-osdp-CP-status:	open-osdp-CP-status.o Makefile
 	${CC} -o open-osdp-CP-status -g open-osdp-CP-status.o -lrt
 
