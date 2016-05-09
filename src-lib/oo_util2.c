@@ -685,6 +685,21 @@ fprintf (stderr, "processing value %s\n",
     strcpy (p_card.filename, this_value);
   }; 
 
+  // parameter "serial_speed"
+  if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
+  {
+    strcpy (field, "serial_speed");
+    found_field = 1;
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    strcpy (this_value, json_string_value (value));
+    strcpy (ctx->serial_speed, this_value);
+  }; 
+
   // parameter "raw_value"
 
   if (status EQUALS ST_OK)

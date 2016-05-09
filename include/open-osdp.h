@@ -291,6 +291,8 @@ typedef struct osdp_context
     slow_timer;
   int
     disable_certificate_checking;
+  char
+    serial_speed [1024];
 } OSDP_CONTEXT;
 
 #define OSDP_ROLE_CP      (0)

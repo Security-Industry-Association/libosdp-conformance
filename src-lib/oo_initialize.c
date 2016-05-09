@@ -88,14 +88,53 @@ fprintf (stderr, "tcgetattr returned %d\n", status_io);
     status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
 fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
 
-    status_io = cfsetispeed (&(context->tio), B9600);
-fprintf (stderr, "cfsetispeed returned %d\n", status_io);
-    status_io = cfsetospeed (&(context->tio), B9600);
-fprintf (stderr, "cfsetospeed returned %d\n", status_io);
-    status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
-fprintf (stderr, "tcsetattr returned %d\n", status_io);
-    if (status_io != 0)
-      status = ST_SERIAL_SET_ERR;
+{
+  int serial_speed_cfg_value;
+  int known_speed;
+
+  known_speed = 1;
+  serial_speed_cfg_value = B9600;
+
+  if (strcmp (context->serial_speed, "9600") EQUALS 0)
+  {
+    serial_speed_cfg_value = B9600;
+    known_speed = 1;
+  }
+  if (strcmp (context->serial_speed, "19200") EQUALS 0)
+  {
+    serial_speed_cfg_value = B19200;
+    known_speed = 1;
+  }
+  if (strcmp (context->serial_speed, "38400") EQUALS 0)
+  {
+    serial_speed_cfg_value = B38400;
+    known_speed = 1;
+  }
+  if (strcmp (context->serial_speed, "57600") EQUALS 0)
+  {
+    serial_speed_cfg_value = B57600;
+    known_speed = 1;
+  }
+  if (strcmp (context->serial_speed, "115200") EQUALS 0)
+  {
+    serial_speed_cfg_value = B115200;
+    known_speed = 1;
+  }
+  if (!known_speed)
+  {
+    serial_speed_cfg_value = B9600;
+    fprintf (stderr, "Unknown speed (%s), using 9600 BPS\n",
+      context->serial_speed);
+  };
+  status_io = cfsetispeed (&(context->tio), serial_speed_cfg_value);
+  fprintf (stderr, "cfsetispeed returned %d\n", status_io);
+  status_io = cfsetospeed (&(context->tio), serial_speed_cfg_value);
+  fprintf (stderr, "cfsetospeed returned %d\n", status_io);
+  status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
+  fprintf (stderr, "tcsetattr returned %d\n", status_io);
+  if (status_io != 0)
+    status = ST_SERIAL_SET_ERR;
+};
   };
 
   return (status);
