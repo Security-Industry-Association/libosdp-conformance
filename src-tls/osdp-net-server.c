@@ -32,6 +32,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/un.h>
+#include <errno.h>
 
 
 #include <gnutls/gnutls.h>
@@ -81,8 +82,8 @@ OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 OSDP_PARAMETERS
   p_card;
-struct sockaddr_in
-  sa_serv;
+struct sockaddr_in6
+  sa_serv6;
 char
   *tag;
 gnutls_session_t
@@ -258,20 +259,32 @@ int
       NULL);
 
     gnutls_certificate_set_dh_params(x509_cred, dh_params);
-    listen_sd = socket (AF_INET, SOCK_STREAM, 0);
+
+    // prepare socket.  specify ipv6 so it's v4/v6 bilingual
+    listen_sd = socket (AF_INET6, SOCK_STREAM, 0);
     if (listen_sd EQUALS -1)
+{
+  fprintf (stderr, "socket errno was %d\n", errno);
       status = ST_OSDP_TLS_SOCKET_ERR;;
+};
   };
   if (status EQUALS ST_OK)
   {
+    /*
+      listen for incoming connection, v4/v6 style.
+      note sa_serv6 structure is used even if it's a v4 connection.
+      listens on any available IP ("in6addr_any")
+      note bind recasts to old style struct sockaddr
+    */
     optval = 1;
-    memset (&sa_serv, '\0', sizeof(sa_serv));
-    sa_serv.sin_family = AF_INET;
-    sa_serv.sin_addr.s_addr = INADDR_ANY;
-    sa_serv.sin_port = htons(config.listen_sap);
+    memset (&sa_serv6, '\0', sizeof(sa_serv6));
+    sa_serv6.sin6_family = AF_INET6;
+    sa_serv6.sin6_addr = in6addr_any;
+    sa_serv6.sin6_port = htons(config.listen_sap);
     setsockopt (listen_sd, SOL_SOCKET, SO_REUSEADDR, (void *) &optval,
       sizeof(int));
-    status_sock = bind (listen_sd, (struct sockaddr *) &sa_serv, sizeof(sa_serv));
+    status_sock = bind (listen_sd, (struct sockaddr *) &sa_serv6,
+      sizeof(sa_serv6));
     if (status_sock EQUALS -1)
       status = ST_OSDP_TLS_BIND_ERR;
   };
