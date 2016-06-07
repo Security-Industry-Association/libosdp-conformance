@@ -1,7 +1,7 @@
 /*
   oosdp_ui - UI routines for open-osdp
 
-  (C)2014-2015 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)2014-2016 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -88,90 +88,6 @@ char
   };
   return (response);
 } /* conformance_status */
-
-
-int
-  display_menu
-    (int
-       menu)
-
-{ /* display_menu */
-
-  char
-    prompt [1024];
-  int
-    status;
-  char
-    tstr [1024];
-
-
-  status = ST_OK;
-  strcpy (prompt, "");
-  strcpy (tstr, "");
-  switch (menu)
-  {
-  case OSDP_MENU_TOP:
-    printf ("Main Menu.\n");
-    printf ("1: CP Diagnostics.\n");
-    printf ("2: PD Diagnostics.\n");
-    printf ("7: Dump Status.\n");
-    printf ("8: Set-up.\n");
-    printf ("9: Exit.\n");
-    break;
-
-  case OSDP_MENU_CP_DIAG:
-    printf ("CP Diagnostics.\n");
-    printf ("1: Send POLL\n");
-    printf ("2: Request PD Ident\n");
-    printf ("3: Request Capabilities\n");
-    printf ("4: Set Communications\n");
-    printf ("5: Request Local Status Report\n");
-    printf ("6: Request Reader Status\n");
-#if 0
-    printf ("7: Initiate Secure Channel\n");
-#endif
-    printf ("8: Request Credentials A Data (multi-part)\n");
-    printf ("9: Exit.\n");
-    break;
-
-  case OSDP_MENU_PD_DIAG:
-    printf ("PD Diagnostics.\n");
-    printf ("1: Respond power was reset\n");
-    printf ("2: Present card\n");
-    printf ("9: Exit.\n");
-    break;
-
-  case OSDP_MENU_SETUP:
-    printf ("Set-Up.\n");
-    printf ("81: Set Role as CP.\n");
-    printf ("82: Set Role as PD.\n");
-    printf ("83: Set PD Address.\n");
-    printf (" 9: Exit.\n");
-    break;
-
-  default:
-    status = ST_BAD_MENU;
-    break;
-  };
-  if (context.role EQUALS OSDP_ROLE_CP)
-  {
-    sprintf (tstr, "(CP, Dest PD:0x%02x)", p_card.addr);
-    strcat (prompt, tstr);
-  }
-  else if (context.role EQUALS OSDP_ROLE_PD)
-  {
-    sprintf (tstr, "(PD:0x%02x)", p_card.addr);
-    strcat (prompt, tstr);
-  }
-  else
-  {
-    sprintf (tstr, "Monitor");
-    strcat (prompt, tstr);
-  };
-  printf ("%s--> Enter menu/item number.\n", prompt);
-  return (status);
-
-} /* display_menu */
 
 
 void
@@ -396,9 +312,6 @@ int
     context->role = OSDP_ROLE_CP;
     switch (command)
     {
-    case OSDP_CMD_CAP:
-      break;
-
     case OSDP_CMD_CP_SEND_POLL:
       current_length = 0;
       status = send_message (context,
@@ -430,27 +343,6 @@ int
           OSDP_MFG, p_card.addr, &current_length, sizeof (mmsg), (unsigned char *)&mmsg);
 #endif
 status = -1;
-      };
-      break;
-
-    case OSDP_CMD_IDENT:
-      {
-        unsigned char
-          param [1];
-
-        current_length = 0;
-        /*
-          osdp_ID takes one argment, a one byte value of 0 indicating
-          "send Standard PD ID Block"
-        */
-        param [0] = 0;
-        current_length = 0;
-        status = send_message (context,
-          OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
-        osdp_conformance.cmd_id.test_status =
-          OCONFORM_EXERCISED;
-        if (context->verbosity > 2)
-          fprintf (stderr, "Requesting PD Ident\n");
       };
       break;
 
@@ -491,24 +383,6 @@ status = -1;
         fprintf (stderr, "Requesting (External) Reader (Tamper) Status\n");
       break;
 
-    case OSDP_CMD_INIT_SECURE:
-      {
-        unsigned char
-          sec_blk [1];
-
-        status = ST_OK;
-        current_length = 0;
-        sec_blk [0] = OSDP_KEY_SCBK_D;
-        strncpy ((char *)(context->random_value), "12345678", 8);
-fprintf (stderr, "fixme: RND.A\n");
-        status = send_secure_message (context,
-          OSDP_CHLNG, p_card.addr, &current_length, 
-          sizeof (context->random_value), context->random_value,
-          OSDP_SEC_SCS_11, sizeof (sec_blk), sec_blk);
-        if (context->verbosity > 2)
-          fprintf (stderr, "Initiating Secure Channel\n");
-      };
-      break;
 
     case OSDP_CMD_EXIT:
       context->current_menu = OSDP_MENU_TOP;
@@ -548,35 +422,11 @@ fprintf (stderr, "fixme: RND.A\n");
     };
     processed = 1;
   };
-  if ((!processed) && (context->current_menu EQUALS OSDP_MENU_SETUP))
-  {
-    switch (command)
-    {
-    case OSDP_CMD_SET_CP:
-      context->role = OSDP_ROLE_CP;
-      fprintf (context->log, "%s\n", "Role set to CP");
-      status = ST_OK;
-      break;
-    case OSDP_CMD_SET_PD:
-      context->role = OSDP_ROLE_PD;
-      fprintf (context->log, "%s\n", "Role set to PD");
-      status = ST_OK;
-      break;
-    case OSDP_CMD_EXIT:
-      context->current_menu = OSDP_MENU_TOP;
-      status = ST_OK;
-      break;
-    default:
-      status = ST_CMD_UNKNOWN;
-      break;
-    };
-    processed = 1;
-  };
   if ((!processed) &&(context->current_menu EQUALS OSDP_MENU_TOP))
   {
     switch (command)
     {
-    // breech-loaded cases
+    // breech-loaded cases.  by convention these occur at the top of the old menu structure for transitional purposes.
 
     case OSDP_CMDB_CAPAS:
       {
@@ -653,6 +503,27 @@ fprintf (stderr, "fixme: RND.A\n");
       };
       status = ST_OK;
       break;
+
+    case OSDP_CMDB_INIT_SECURE:
+      {
+        unsigned char
+          sec_blk [1];
+
+        status = ST_OK;
+        current_length = 0;
+        sec_blk [0] = OSDP_KEY_SCBK_D;
+        strncpy ((char *)(context->random_value), "12345678", 8);
+        if (context->verbosity > 2)
+          fprintf (stderr, "using SCBK-D, hard-coded RND.A to 12345678\n");
+        status = send_secure_message (context,
+          OSDP_CHLNG, p_card.addr, &current_length, 
+          sizeof (context->random_value), context->random_value,
+          OSDP_SEC_SCS_11, sizeof (sec_blk), sec_blk);
+        if (context->verbosity > 2)
+          fprintf (stderr, "Initiating Secure Channel\n");
+      };
+      break;
+
     case OSDP_CMDB_LED:
       {
         OSDP_RDR_LED_CTL

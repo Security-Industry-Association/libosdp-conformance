@@ -177,8 +177,6 @@ printf ("bef sec block to new length %d.\n", new_length);
   // low order byte first
   *(crc_check+1) = (0xff00 & parsed_crc) >> 8;
   *(crc_check) = (0x00ff & parsed_crc);
-printf ("adding 2 crc was %d\n",
-  new_length);
   new_length ++;
   new_length ++;
 }
@@ -195,14 +193,6 @@ printf ("adding 2 crc was %d\n",
     new_length ++;
   };
 
-  if (context.verbosity > 4)
-  {
-    fprintf (stderr,
-      "build: sequence %d. new_length %d. whole_msg_lth %d.\n",
-      sequence, new_length, whole_msg_lth);
-fflush (stderr);
-  }
-  
   *updated_length = new_length;
   return (status);
 
@@ -238,7 +228,7 @@ int
 
 { /* send_secure_message */
 
-  char
+  unsigned char
     buf [2];
   int
     status;
@@ -283,12 +273,12 @@ if (context->verbosity > 3)
     };
     buf [0] = 0xff;
     // send start-of-message marker (0xff)
-    write (context->fd, buf, 1);
+    send_osdp_data (context, &(buf[0]), 1);
 
     if (context->verbosity > 4)
-      fprintf (stderr, "sending(secure) %d\n", *current_length);
+      fprintf (context->log, "send_secure_message: sending(secure) %d\n", *current_length);
        
-    write (context->fd, test_blk, *current_length);
+    send_osdp_data (context, test_blk, *current_length);
   };
   return (status);
 

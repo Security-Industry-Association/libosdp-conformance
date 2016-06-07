@@ -1,7 +1,7 @@
 /*
   oosdp-util - open osdp utility routines
 
-  (C)2014-2015 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)2014-2016 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -324,29 +324,22 @@ int
     }
     else
     {
-
-{
-  unsigned char *p;
-  p = m->ptr;
-  printf ("p %lx\n",
-    (unsigned long)p);
-};
+fprintf (stderr, "Parsing security block...\n");
 //vegas      m -> cmd_payload = m->ptr + sizeof (OSDP_HDR) + 1; // STUB for sec hdr.
-{
-  unsigned char * cpl;
-  cpl = m->ptr + sizeof (OSDP_HDR)+1;
-  printf ("c pl %lx\n", (unsigned long)cpl);
-};
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       sec_blk_length = (unsigned)*(m->ptr + 5);
       m -> cmd_payload = m->ptr + 5 + sec_blk_length;
+
+      // whole thing less 5 hdr less 1 cmd less sec blk less 2 crc
       msg_data_length = msg_data_length - 6 - sec_blk_length - 2;
-        // whole thing less 5 hdr less 1 cmd less sec blk less 2 crc
-fflush (stdout);fflush (stderr);
-if (context->verbosity > 3)
-{
-  fprintf (stderr, "sec blk lth %d\n", sec_blk_length);
-};
+
+      fflush (stdout);fflush (stderr);
+      if (context->verbosity > 3)
+      {
+        fprintf (stderr, "sec blk lth %d\n", sec_blk_length);
+      };
+fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
+  msg_data_length, sec_blk_length, *(m->cmd_payload));
     };
 
     // extract the command
@@ -466,6 +459,8 @@ if (context->verbosity > 3)
         };
       };
       break;
+
+// OSDP_CHLNG
 
     case OSDP_MFG:
       m->data_payload = m->cmd_payload + 1;
@@ -929,46 +924,71 @@ fprintf (stderr, "2 pdcap\n");
 
     case OSDP_CHLNG:
       {
+        int
+          nak;
         unsigned char
-          ccrypt_response [32];
-        unsigned char
-          cuid [8];
-        unsigned char
-          sec_blk [1];
+          osdp_nak_response_data [2];
 
         status = ST_OK;
-        sec_blk [0] = OSDP_KEY_SCBK_D;
-      current_length = 0;
-      memcpy (context->challenge, msg->data_payload, 8);
-      {
-        int
-          idx;
-
-        fprintf (context->log, "Challenge:");
-        for (idx=0; idx<8; idx++)
+        if (!context->secure_channel_use[OO_SCS_USE_ENABLED])
+          nak = 1;
+        if (nak)
         {
-          fprintf (context->log, " %02x", context->challenge [idx]);
+          current_length = 0;
+          osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+          osdp_nak_response_data [1] = 0xff;
+          status = send_message (context,
+            OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
+          context->sent_naks ++;
+          osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+          if (context->verbosity > 2)
+          {
+            fprintf (context->log, "Responding with OSDP NAK\n");
+            fprintf (stderr, "CMD %02x Unknown\n", msg->msg_cmd);
+          };
         };
-        fprintf (context->log, "\n");
-      };
+        if (!nak)
+        {
+          unsigned char
+            ccrypt_response [32];
+          unsigned char
+            cuid [8];
+          unsigned char
+            sec_blk [1];
+
+          sec_blk [0] = OSDP_KEY_SCBK_D;
+          current_length = 0;
+          memcpy (context->challenge, msg->data_payload, 8);
+          {
+            int
+              idx;
+
+            fprintf (context->log, "Challenge:");
+            for (idx=0; idx<8; idx++)
+            {
+              fprintf (context->log, " %02x", context->challenge [idx]);
+            };
+            fprintf (context->log, "\n");
+          };
 printf ("challenged saved \n");
 
-      // put together response to challenge.  need random, need cUID
+          // put together response to challenge.  need random, need cUID
 
-      strncpy ((char *)(context->random_value), "abcdefgh", 8);
+          strncpy ((char *)(context->random_value), "abcdefgh", 8);
 printf ("fixme: RND.B\n");
-      memcpy (cuid+0, context->vendor_code, 3);
-      cuid [3] = context->model;
-      cuid [4] = context->version;
-      memcpy (cuid+5, context->serial_number, 3);
-        memcpy (ccrypt_response+0, cuid, 8);
-        memcpy (ccrypt_response+8, context->random_value, 8);
+          memcpy (cuid+0, context->vendor_code, 3);
+          cuid [3] = context->model;
+          cuid [4] = context->version;
+          memcpy (cuid+5, context->serial_number, 3);
+          memcpy (ccrypt_response+0, cuid, 8);
+          memcpy (ccrypt_response+8, context->random_value, 8);
 printf ("fixme: client cryptogram\n");
-        memset (ccrypt_response+16, 17, 16);
-        status = send_secure_message (context,
-          OSDP_CCRYPT, p_card.addr, &current_length, 
-          sizeof (ccrypt_response), ccrypt_response,
-          OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
+          memset (ccrypt_response+16, 17, 16);
+          status = send_secure_message (context,
+            OSDP_CCRYPT, p_card.addr, &current_length, 
+            sizeof (ccrypt_response), ccrypt_response,
+            OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
+        };
       };
       break;
 
@@ -1198,6 +1218,8 @@ status = -1;
         unsigned char
           osdp_nak_response_data [2];
         current_length = 0;
+        osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+        osdp_nak_response_data [1] = 0xff;
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
         context->sent_naks ++;
@@ -1268,8 +1290,8 @@ send OSDP_SCRYPT
       status = ST_OK;
       if (context->verbosity > 2)
       {
-        sprintf (tlogmsg, "osdp_NAK: Error Code %02x",
-          *(0+msg->data_payload));
+        sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
+          *(0+msg->data_payload), *(1+msg->data_payload));
         fprintf (context->log, "%s\n", tlogmsg);
         fprintf (stderr, "%s\n", tlogmsg);
       };

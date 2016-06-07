@@ -1,7 +1,10 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+
+  Support provided by the Security Industry Association
+  http://www.securityindustry.org
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -130,6 +133,22 @@ int
           this_command);
     };
   }; 
+
+  // initiate secure channel
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "initiate_secure_channel";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_INIT_SECURE;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+
 
   // LED output
 

@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for open osdp
 
-  (C)Copyright 2014-2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2014-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -84,12 +84,16 @@
 #define OSDP_BUSY     (0x79) // yes it's a reply
 #define OSDP_MFGREP   (0x90)
 
+// NAK error codes
+#define OO_NAK_UNK_CMD (1)
+
 #define OSDP_MENU_TOP     (0x0000)
 #define OSDP_MENU_CP_DIAG (0x0100)
 #define OSDP_MENU_PD_DIAG (0x0200)
 #define OSDP_MENU_SETUP   (0x0800)
 
 // commands used through breech-loading interface
+// by convention starts above 1000
 #define OSDP_CMDB_DUMP_STATUS  (1001)
 #define OSDP_CMDB_SEND_POLL    (1002)
 #define OSDP_CMDB_IDENT        (1003)
@@ -98,6 +102,7 @@
 #define OSDP_CMDB_PRESENT_CARD (1006)
 #define OSDP_CMDB_OUT          (1007)
 #define OSDP_CMDB_LED          (1008)
+#define OSDP_CMDB_INIT_SECURE  (1009)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -108,7 +113,6 @@
 #define OSDP_CMD_COMSET       (4)
 #define OSDP_CMD_LCL_STAT     (5)
 #define OSDP_CMD_RDR_STAT     (6)
-#define OSDP_CMD_INIT_SECURE  (7)
 #define OSDP_CMD_GET_CREDS_A  (8)
 
 // PD Diags
@@ -293,7 +297,12 @@ typedef struct osdp_context
     disable_certificate_checking;
   char
     serial_speed [1024];
+  int
+    secure_channel_use [3]; // disabled=0/enabled=1, install=0/normal=1, strict=0/relaxed=1
 } OSDP_CONTEXT;
+
+#define OO_SCS_USE_DISABLED (0)
+#define OO_SCS_USE_ENABLED (1)
 
 #define OSDP_ROLE_CP      (0)
 #define OSDP_ROLE_PD      (1)

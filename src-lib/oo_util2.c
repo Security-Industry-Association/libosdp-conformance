@@ -842,6 +842,11 @@ int
   status = ST_OK;
   true_dest = dest_addr;
   *current_length = 0;
+  if (context->verbosity > 3)
+  {
+    if (command EQUALS OSDP_NAK)
+      fprintf (stderr, "NAK being sent...%02x\n", *data);
+  };
   status = osdp_build_message
     (test_blk, // message itself
     current_length, // returned message length in bytes
