@@ -930,7 +930,8 @@ fprintf (stderr, "2 pdcap\n");
           osdp_nak_response_data [2];
 
         status = ST_OK;
-        if (!context->secure_channel_use[OO_SCS_USE_ENABLED])
+        nak = 0;
+        if (OO_SCS_USE_ENABLED != context->secure_channel_use[OO_SCU_ENAB])
           nak = 1;
         if (nak)
         {

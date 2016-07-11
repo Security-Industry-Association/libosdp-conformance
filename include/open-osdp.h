@@ -301,8 +301,16 @@ typedef struct osdp_context
     secure_channel_use [3]; // disabled=0/enabled=1, install=0/normal=1, strict=0/relaxed=1
 } OSDP_CONTEXT;
 
+#define OO_SCU_ENAB (0)
+#define OO_SCU_INST (1)
+#define OO_SCU_POL  (2)
+
 #define OO_SCS_USE_DISABLED (0)
 #define OO_SCS_USE_ENABLED (1)
+#define OO_SECURE_INSTALL (0)
+#define OO_SECURE_NORMAL (1)
+#define OO_SECPOL_STRICT (0)
+#define OO_SECPOL_RELAXED (1)
 
 #define OSDP_ROLE_CP      (0)
 #define OSDP_ROLE_PD      (1)

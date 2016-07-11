@@ -568,7 +568,12 @@ int
     p_card.poll = i;
   }; 
 
+  // secure_channel (enabled or disabled)
+  // secure_install (normal or install)
+  // secure_transmit (relaxed or strict)
+
   // parameter "slow_timer"
+
 
   if (status EQUALS ST_OK)
   {
