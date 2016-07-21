@@ -261,7 +261,7 @@ int
     gnutls_certificate_set_dh_params(x509_cred, dh_params);
 
     // prepare socket.  specify ipv6 so it's v4/v6 bilingual
-    listen_sd = socket (AF_INET6, SOCK_STREAM, 0);
+    listen_sd = socket (PF_INET6, SOCK_STREAM, 0);
     if (listen_sd EQUALS -1)
 {
   fprintf (stderr, "socket errno was %d\n", errno);

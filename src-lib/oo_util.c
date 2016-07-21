@@ -31,7 +31,6 @@
 
 #include <osdp-tls.h>
 #include <open-osdp.h>
-#include <aes.h>
 #include <osdp_conformance.h>
 
 
@@ -1249,7 +1248,7 @@ status = -1;
     case OSDP_CCRYPT:
       {
         unsigned char
-          scrypt_response [KEY_128];
+          scrypt_response [OSDP_KEY_SIZE];
         unsigned char
           sec_blk [1];
 

@@ -42,6 +42,9 @@
 #define OSDP_SEC_SCS_12 (0x12)
 #define OSDP_SEC_SCS_13 (0x13)
 
+// for Secure Channel
+#define OSDP_KEY_SIZE (128)
+
 // OSDP commands
 // 0x6c - 0x 6f
 // 0x70 - 0x79

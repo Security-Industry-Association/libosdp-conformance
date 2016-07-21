@@ -31,6 +31,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/un.h>
+#include <netdb.h>
 
 
 #include <gnutls/gnutls.h>
@@ -69,8 +70,6 @@ time_t
   previous_time;
 int
   request_immediate_poll;
-struct sockaddr_in
-  sa_serv;
 char
   *tag;
 gnutls_session_t
@@ -201,7 +200,7 @@ config->listen_sap = 10443;
 
   if (status EQUALS ST_OK)
   {
-    fprintf (stderr, "osdp-net-server (TLS) version %s\n",
+    fprintf (stderr, "osdp-net-server(TLS version) %s\n",
       config->version);
     if (context.role EQUALS OSDP_ROLE_CP)
     {
@@ -223,6 +222,7 @@ config->listen_sap = 10443;
 
 } /* initialize */
 
+ 
 int
   init_tls_client
     (void)
@@ -264,15 +264,16 @@ int
 
     if (!context.disable_certificate_checking)
       gnutls_certificate_set_x509_key_file (xcred, 
-        "/opt/open-osdp/etc/client_cert.pem", "/opt/open-osdp/etc/client_key.pem",
+        "/opt/open-osdp/etc/client_cert.pem",
+        "/opt/open-osdp/etc/client_key.pem",
         GNUTLS_X509_FMT_PEM); 
 
     /* Initialize TLS session 
      */
     gnutls_init(&tls_session, GNUTLS_CLIENT);
 
-fprintf (stderr, "fqdn is %s\n",
-  context.fqdn);
+    fprintf (stderr, "fqdn is %s\n",
+      context.fqdn);
     gnutls_session_set_ptr(tls_session, (void *) context.fqdn);
 
     gnutls_server_name_set(tls_session, GNUTLS_NAME_DNS, "my_host_name",
@@ -648,38 +649,71 @@ int
 } /* main for osdp-net-client */
 
 
-int tcp_connect(void)
-{
-        const char *PORT =
-"10443";
-// "5556";
-//        const char *SERVER = "127.0.0.1";
-        int err, sd;
-        struct sockaddr_in sa;
+int
+  send_osdp_data
+    (OSDP_CONTEXT
+      *context,
+    unsigned char
+      *buf,
+    int
+      lth)
+
+{ /* send_osdp_data */
+
+  gnutls_record_send (tls_session, buf, lth);
+  return (ST_OK);
+
+} /* send_osdp_data */
 
 
-fprintf (context.log, "Connecting to %s Port %s\n",
-  context.network_address,
-  PORT);
-        /* connects to server
-         */
-        sd = socket(AF_INET, SOCK_STREAM, 0);
+int
+  tcp_connect
+    (void)
 
-        memset(&sa, '\0', sizeof(sa));
-        sa.sin_family = AF_INET;
-        sa.sin_port = htons(atoi(PORT));
-        inet_pton(AF_INET, context.network_address, &sa.sin_addr);
+{ /* tcp_connect */
 
-        err = connect(sd, (struct sockaddr *) &sa, sizeof(sa));
-        if (err < 0) {
-                fprintf(stderr, "Connect error\n");
-                exit(1);
-        }
-
-        return sd;
-}
+  struct addrinfo
+    *addr;
+  const char *PORT =
+    "10443";
+  int err;
+  int
+    sd;
+  struct sockaddr_in6
+    *socket_address;
+  int
+    status_getaddr;
 
 
+  fprintf (context.log, "Connecting to %s Port %s\n",
+    context.network_address,
+    PORT);
+
+  // fill in address from FQDN.  Use the v4/v6 generic getaddrinfo call.
+  status_getaddr = getaddrinfo (context.fqdn, PORT, NULL, &addr); 
+  if (status_getaddr)
+  {
+    err = -1;
+    fprintf (stderr, "getaddrinfo returned %s for %s\n",
+      gai_strerror (status_getaddr), context.fqdn);
+  }
+  else
+  {
+    // now set up the socket.  "addr" had info from the address resolution
+    // note tha getaddrinfo set up the port number ("service")
+    sd = socket (addr->ai_family, addr->ai_socktype, addr->ai_protocol);
+
+    socket_address = (struct sockaddr_in6 *)addr->ai_addr; 
+    err = connect (sd, (struct sockaddr *)socket_address, addr->ai_addrlen);
+  };
+  if (err < 0) {
+    fprintf(stderr, "Connect error\n");
+    exit(1);
+  }
+
+  return sd;
+
+} /* tcp_connect */
 
 
 /* This function will verify the peer's certificate, and check
@@ -751,21 +785,4 @@ int _verify_certificate_callback(gnutls_session_t session)
         /* notify gnutls to continue handshake normally */
         return 0;
 }
-
-
-int
-  send_osdp_data
-    (OSDP_CONTEXT
-      *context,
-    unsigned char
-      *buf,
-    int
-      lth)
-
-{ /* send_osdp_data */
-
-  gnutls_record_send (tls_session, buf, lth);
-  return (ST_OK);
-
-} /* send_osdp_data */
 
