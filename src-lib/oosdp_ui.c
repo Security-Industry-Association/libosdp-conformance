@@ -595,6 +595,25 @@ status = -1;
         fprintf (stderr, "On-demand polling\n");
       status = ST_OK;
       break;
+    case OSDP_CMDB_TEXT:
+      {
+        OSDP_TEXT_HEADER
+          otxt;
+
+        otxt.reader = 0;
+        otxt.tc = 0;
+        otxt.tsec = 0;
+        otxt.row = 0;
+        otxt.col = 0;
+        otxt.length = strlen (context->text);
+        memcpy (otxt.text, context->text, 1024);
+        current_length = 0;
+        status = send_message (context,
+          OSDP_TEXT, p_card.addr, &current_length,
+          sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
+          (unsigned char *)&otxt);
+      };
+      break;
 
     // menu (keyboard-driven) cases
 

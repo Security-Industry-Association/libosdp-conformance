@@ -19,6 +19,7 @@
 
 
 CC=clang
+LDFLAGS=-g -L /tester/current/lib
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
   start-CP-tcp-client start-CP-485 start-PD-tcp-server start-PD-485 \
@@ -56,7 +57,8 @@ open-osdp-CP-status:	open-osdp-CP-status.o Makefile
 	${CC} -o open-osdp-CP-status -g open-osdp-CP-status.o -lrt
 
 open-osdp-PD-status:	open-osdp-PD-status.o Makefile
-	${CC} -o open-osdp-PD-status -g open-osdp-PD-status.o -lrt
+	${CC} ${LDFLAGS} -o open-osdp-PD-status open-osdp-PD-status.o \
+	  -ljansson -lrt
 
 send-osdp-command:	send-osdp-command.o Makefile
 	${CC} -o send-osdp-command -g send-osdp-command.o

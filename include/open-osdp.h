@@ -106,6 +106,7 @@
 #define OSDP_CMDB_OUT          (1007)
 #define OSDP_CMDB_LED          (1008)
 #define OSDP_CMDB_INIT_SECURE  (1009)
+#define OSDP_CMDB_TEXT         (1010)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -188,12 +189,15 @@ typedef struct osdp_out_state
 typedef struct osdp_context
 {
   int
-    verbosity;
+    current_menu;
   char
     log_path [1024];
-//  int mode;
+  char
+    text [1024];
+
   int
-    current_menu;
+    verbosity;
+//  int mode;
   int
     next_sequence;
   int
@@ -455,6 +459,25 @@ typedef struct osdp_rdr_led_ctl
 #define OSDP_LEDCOLOR_AMBER (3)
 #define OSDP_LEDCOLOR_BLUE (4)
 
+typedef struct osdp_text_hdr
+{
+  unsigned char
+    reader;
+  unsigned char
+    tc;
+  unsigned char
+    tsec;
+  unsigned char
+    row;
+  unsigned char
+    col;
+  unsigned char
+    length;
+  char
+    text [1024];
+} OSDP_TEXT_HEADER;
+
+
 
 typedef struct osdp_msg
 {
@@ -587,6 +610,7 @@ int background (OSDP_CONTEXT *context);
 unsigned char checksum (unsigned char *msg, int length);
 int calc_parity (unsigned short value, int length, int sense);
 int display_menu (int menu);
+void display_sim_reader (OSDP_CONTEXT *ctx, char *str);
 int fasc_n_75_to_string (char * s, long int *sample_1);
 int next_sequence (OSDP_CONTEXT *ctx);
 int initialize_osdp (OSDP_CONTEXT *ctx);

@@ -47,6 +47,8 @@ int
   FILE
     *cmdf;
   char
+    current_command [1024];
+  char
     field [1024];
   char
     json_string [16384];
@@ -93,8 +95,21 @@ int
     {
       strcpy (field, "command");
       value = json_object_get (root, field);
+      strcpy (current_command, json_string_value (value));
       if (!json_is_string (value))
         status = ST_CMD_INVALID;
+    };
+  };
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "text"))
+    {
+char field [1024];
+json_t *value;
+      strcpy (field, "message");
+      value = json_object_get (root, field);
+      if (json_is_string (value))
+        strcpy (ctx->text, json_string_value (value));
     };
   };
   if (status EQUALS ST_OK)
@@ -144,6 +159,19 @@ int
     {
       cmd->command = OSDP_CMDB_INIT_SECURE;
       if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "text";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_TEXT;
+      if (ctx->verbosity > 4)
         fprintf (stderr, "command was %s\n",
           this_command);
     };

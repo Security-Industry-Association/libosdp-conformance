@@ -531,12 +531,19 @@ int
     current_length;
   int
     status;
+  int
+    text_length;
   char
     tlogmsg  [1024];
 
 
   status = ST_OK;
   osdp_conformance.cmd_text.test_status = OCONFORM_EXERCISED;
+
+  memset (ctx->text, 0, sizeof (ctx->text));
+  text_length = (unsigned char) *(msg->data_payload+5);
+  strncpy (ctx->text, (char *)(msg->data_payload+6), text_length);
+
   fprintf (ctx->log, "Text:");
   fprintf (ctx->log,
     " Rdr %x tc %x tsec %x Row %x Col %x Lth %x\n",
@@ -545,7 +552,7 @@ int
 
   memset (tlogmsg, 0, sizeof (tlogmsg));
 fflush (ctx->log);
-  strncpy (tlogmsg, (char *)(msg->data_payload+6), (int)*(msg->data_payload+5));
+  strncpy (tlogmsg, (char *)(msg->data_payload+6), text_length);
   fprintf (ctx->log, "Text: %s\n", tlogmsg);
 
   // we always ack the TEXT command regardless of param errors

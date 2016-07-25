@@ -80,6 +80,9 @@ int
     fprintf (sf, "{\n");
     fprintf (sf, "      \"last_update\" : \"%s\",\n",
       current_date_string);
+    if (strlen (ctx->text) > 0)
+      fprintf (sf, "\"text\" : \"%s\",\n",
+        ctx->text);
     fprintf (sf, "             \"role\" : \"%d\",\n",
       ctx->role);
     fprintf (sf, "                \"#\" : \"0=CP 1=PD 2=MON\",\n");
