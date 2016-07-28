@@ -1,0 +1,6 @@
+{
+   "role" : "MONITOR"
+  ,"serial_device" : "/dev/ttyUSB0"
+  ,"speed" : "9600"
+  ,"verbosity" : "3"
+}
