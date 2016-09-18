@@ -145,7 +145,7 @@ int
 
   memset (&context, 0, sizeof (context));
   strcpy (context.init_parameters_path, "open-osdp-params.json");
-  strcpy (context.log_path, "open_osdp.log");
+  strcpy (context.log_path, "open-osdp.log");
 
   // if there's an argument it is the config file path
   if (argc > 1)
@@ -571,7 +571,7 @@ int
             status = ST_OSDP_TLS_ERROR;
           if (status EQUALS ST_OK)
           {
-            if (context.verbosity > 4)
+            if (context.verbosity > 8)
               fprintf (stderr, "%d bytes received via TLS:\n",
                 status_tls);
 

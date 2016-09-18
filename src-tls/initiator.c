@@ -3,7 +3,7 @@
 
   (because cleaning up the init code for TLS was more work.)
 
-  (C)Copyright 2014-2015 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)Copyright 2014-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org

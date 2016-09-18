@@ -451,7 +451,7 @@ int
           if (status EQUALS ST_OK)
           {
             if (context.verbosity > 4)
-              fprintf (stderr, "%d bytes received via TLS:\n",
+              fprintf (stderr, "%d bytes received via TCP:\n",
                 status_tls);
 
             // append buffer to osdp buffer
