@@ -259,10 +259,14 @@ int
     current_raw_time;
   struct tm
     *current_cooked_time;
+  int
+    llogtype;
   char
     logmsg [1024];
   char
     prefix [1024];
+  char
+    *role_tag;
   int
     status;
   char
@@ -271,7 +275,19 @@ int
 
   status = ST_OK;
   prefix [0] = 0;
-  if (logtype == OSDP_LOG_STRING)
+  llogtype = logtype;
+  role_tag = "";
+  if (logtype EQUALS OSDP_LOG_STRING_CP)
+  {
+    role_tag = "CP";
+    llogtype = OSDP_LOG_STRING;
+  };
+  if (logtype EQUALS OSDP_LOG_STRING_PD)
+  {
+    role_tag = "PD";
+    llogtype = OSDP_LOG_STRING;
+  };
+  if (llogtype == OSDP_LOG_STRING)
   {
     struct timespec
       current_time_fine;
@@ -280,12 +296,15 @@ int
     (void) time (&current_raw_time);
     strcpy (timestamp, ctime (&current_raw_time));
     current_cooked_time = localtime (&current_raw_time);
-    sprintf (timestamp, "OSDP FRM:%04d DATE:%04d%02d%02d %02d%02d%02d ",
+    sprintf (timestamp,
+"OSDP %s Frame-in:%04d Timestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
+      role_tag,
      context->packets_received,
      1900+current_cooked_time->tm_year, current_cooked_time->tm_mon,
      current_cooked_time->tm_mday,
      current_cooked_time->tm_hour, current_cooked_time->tm_min, 
-     current_cooked_time->tm_sec);
+     current_cooked_time->tm_sec,
+     current_time_fine.tv_sec, current_time_fine.tv_nsec);
   };
   strcpy (logmsg, message);
   if (context->role == OSDP_ROLE_MONITOR)
