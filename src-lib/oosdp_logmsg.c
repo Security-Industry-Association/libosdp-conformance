@@ -257,6 +257,8 @@ int
 
   time_t
     current_raw_time;
+  struct tm
+    *current_cooked_time;
   char
     logmsg [1024];
   char
@@ -277,22 +279,22 @@ int
     clock_gettime (CLOCK_REALTIME, &current_time_fine);
     (void) time (&current_raw_time);
     strcpy (timestamp, ctime (&current_raw_time));
-    sprintf (timestamp, "%09ld.%09ld %s",
-      (unsigned long int)current_time_fine.tv_sec, current_time_fine.tv_nsec,
-      asctime (localtime (&current_raw_time)));
-    timestamp [strlen (timestamp)-1] = 0; // trim trailing newline
-
-    sprintf (prefix, "%s (Rcvd Frame %6d)\n", timestamp,
-      context->packets_received);
+    current_cooked_time = localtime (&current_raw_time);
+    sprintf (timestamp, "OSDP FRM:%04d DATE:%04d%02d%02d %02d%02d%02d ",
+     context->packets_received,
+     1900+current_cooked_time->tm_year, current_cooked_time->tm_mon,
+     current_cooked_time->tm_mday,
+     current_cooked_time->tm_hour, current_cooked_time->tm_min, 
+     current_cooked_time->tm_sec);
   };
   strcpy (logmsg, message);
   if (context->role == OSDP_ROLE_MONITOR)
   {
-    fprintf (context->log, "%s%s", prefix, logmsg);
+    fprintf (context->log, "%s%s", timestamp, logmsg);
   }
   else
     if (context->verbosity >= level)
-      fprintf (context->log, "%s%s", prefix, logmsg);
+      fprintf (context->log, "%s%s", timestamp, logmsg);
   
   return (status);
 

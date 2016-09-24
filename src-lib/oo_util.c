@@ -370,12 +370,26 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
           strcpy (dirtag, "PD");
         else
           strcpy (dirtag, "CP");
-        sprintf (tlogmsg,
-"OSDP (From %s): A %02x Len=%d. CTRL %02x",
-          dirtag,
-//          *p1, *(p1+1), *(p1+2), *(p1+3), (*(p1+3))*256 + *(p1+2), *(p1+4));
-          *(p1+1), (*(p1+3))*256 + *(p1+2), *(p1+4));
+        sprintf (tlogmsg, "%s:\n",
+          dirtag);
+        if (context->verbosity > 8)
+        {
+          int i;
+          char line [1024];
+          int len;
+          char octet [8];
+          len = (*(p1+3))*256+*(p1+2);
+          strcpy (line, "      Raw: ");
+          for (i=0; i<len; i++)
+          {
+            sprintf (octet, " %02x", *(p1+i));
+            strcat (line, octet);
+          };
+          strcat (line, "\n");
+          strcat (tlogmsg, line);
+        };
         status = oosdp_log (context, OSDP_LOG_STRING, 1, tlogmsg);
+      
         p2 = p1+5;
         if (p->ctrl & 0x08)
         {
@@ -384,9 +398,7 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
             *(p1+5), *(p1+6), *(p1+7));
           p2 = p1+5+*(p1+5); // before-secblk and secblk
         };
-        fprintf (context->log,
-          "   CMND/REPLY %02x\n",
-          *p2);
+        // was fprintf (context->log, "   CMND/REPLY %02x\n", *p2);
         if (!m_dump)
         {
           if (msg_data_length)
@@ -684,8 +696,8 @@ if (m->lth == 7)
       char
         log_line [1024];
 
-      sprintf (log_line, " Msg: %s -%s", tlogmsg2, tlogmsg);
-      sprintf (tlogmsg2, " Seq:%02x Ck %x Sec %x CRC: %04x",
+      sprintf (log_line, "  Message: %s Addr=%s", tlogmsg2, tlogmsg);
+      sprintf (tlogmsg2, " Seq:%02x ChkType %x Sec %x CRC: %04x",
         msg_sqn, msg_check_type, msg_scb, wire_crc);
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
