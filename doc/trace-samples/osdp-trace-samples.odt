@@ -1,0 +1,12 @@
+﻿OSDP Trace Samples
+
+Here's a proposed list of trace samples:
+
+sample of poll/ack
+sample of PD identification
+sample of card data being returned
+sample of tamper event
+sample of secure channel initiation
+sample of ficam challenge/response sequence
+sample of ficam chuid/fascn/guid read
+
