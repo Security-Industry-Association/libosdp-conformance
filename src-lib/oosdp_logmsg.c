@@ -219,7 +219,7 @@ if (identf != NULL)
 };
 };
     sprintf (tlogmsg, 
-"PD Identification\n OUI %02x-%02x-%02x Model %d Ver %d SN %02x%02x%02x%02x FW %d.%d Build %d\n",
+"  PD Identification\n    OUI %02x-%02x-%02x Model %d Ver %d SN %02x%02x%02x%02x FW %d.%d Build %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1),
         *(msg->data_payload + 2), *(msg->data_payload + 3),
         *(msg->data_payload + 4), *(msg->data_payload + 5),
@@ -277,6 +277,7 @@ int
   prefix [0] = 0;
   llogtype = logtype;
   role_tag = "";
+  strcpy (timestamp, "");
   if (logtype EQUALS OSDP_LOG_STRING_CP)
   {
     role_tag = "CP";
@@ -300,7 +301,7 @@ int
 "OSDP %s Frame-in:%04d Timestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
       role_tag,
      context->packets_received,
-     1900+current_cooked_time->tm_year, current_cooked_time->tm_mon,
+     1900+current_cooked_time->tm_year, 1+current_cooked_time->tm_mon,
      current_cooked_time->tm_mday,
      current_cooked_time->tm_hour, current_cooked_time->tm_min, 
      current_cooked_time->tm_sec,
@@ -309,11 +310,16 @@ int
   strcpy (logmsg, message);
   if (context->role == OSDP_ROLE_MONITOR)
   {
+    fflush (context->log);
     fprintf (context->log, "%s%s", timestamp, logmsg);
+    fflush (context->log);
   }
   else
     if (context->verbosity >= level)
+    {
       fprintf (context->log, "%s%s", timestamp, logmsg);
+      fflush (context->log);
+    };
   
   return (status);
 

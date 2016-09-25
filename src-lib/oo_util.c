@@ -1,5 +1,5 @@
 /*
-  oosdp-util - open osdp utility routines
+  oo_util - open osdp utility routines
 
   (C)2014-2016 Smithee Spelvin Agnew & Plinge, Inc.
 
@@ -345,6 +345,8 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
     returned_hdr -> command = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->command;
 
+fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
+  m->msg_cmd);
     if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
     {
       sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
@@ -726,7 +728,12 @@ if (m->lth == 7)
         status = ST_NOT_MY_ADDR;
       };
     if (context->role EQUALS OSDP_ROLE_MONITOR)
+    {
+      // pretty print the message if there are juicy details.
+      status = monitor_osdp_message (context, m);
+
       status = ST_MONITOR_ONLY;
+    };
   };
 
   // if there was an error dump the log buffer

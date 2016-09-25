@@ -74,13 +74,11 @@ void
   sprintf (preserve, "%s_%02d",
     context.command_path,
     context.cmd_hist_counter);
-  // was sudo -n
   sprintf (command,
-    "chmod 777 %s",
+    "sudo -n chmod 777 %s",
     context.command_path);
   system (command);
-  // was sudo -n
-  sprintf (command, "mv %s %s",
+  sprintf (command, "sudo -n mv %s %s",
     context.command_path,
     preserve);
   system (command);

@@ -364,8 +364,11 @@ typedef struct osdp_parameters
 #define PARMV_FILENAME        (22)
 #define PARMV_ROLE            (13)
 
-#define OSDP_LOG_STRING      (1)
-#define OSDP_LOG_NOTIMESTAMP (2)
+// Log format: 0x80 addde if notimestamp; low 4 bits are a type field.
+#define OSDP_LOG_NOTIMESTAMP (0x80)
+#define OSDP_LOG_STRING      (0x00)
+#define OSDP_LOG_STRING_CP   (3)
+#define OSDP_LOG_STRING_PD   (4)
 
 #define OOSDP_MSG_PD_IDENT  (1)
 #define OOSDP_MSG_KEYPAD    (2)

@@ -189,9 +189,9 @@ int
   context->fw_version [0] = OSDP_VERSION_MAJOR;
   context->fw_version [1] = m_version_minor;
   context->fw_version [2] = m_build;
-  context->vendor_code [0] = 0x0A;
+  context->vendor_code [0] = 0x08;
   context->vendor_code [1] = 0x00;
-  context->vendor_code [2] = 0x17;
+  context->vendor_code [2] = 0x1b;
   strcpy (context->fqdn, "perim-0000.example.com");
   m_idle_timeout = 29;
   m_check = OSDP_CRC;
