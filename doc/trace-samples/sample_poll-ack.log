@@ -1,0 +1,40 @@
+OSDP PD Frame-in:0005 Timestamp:20160824-104927 (Sec/Nanosec: 1474739367 131021517)
+      Raw: 53 80 08 00 07 40 0a f9
+  Message: osdp_ACK    Addr:00 Lth:8. CTRL 07 Cmd 40 Seq:03 Sec 0 CRC f90a(4)
+OSDP CP Frame-in:0006 Timestamp:20160824-104931 (Sec/Nanosec: 1474739371 47553911)
+      Raw: 53 00 08 00 05 60 da 99
+  Message: osdp_POLL   Addr:00 Lth:8. CTRL 05 Cmd 60 Seq:01 Sec 0 CRC 99da(4)
+OSDP PD Frame-in:0007 Timestamp:20160824-104931 (Sec/Nanosec: 1474739371 57347661)
+      Raw: 53 80 08 00 05 40 68 9f
+  Message: osdp_ACK    Addr:00 Lth:8. CTRL 05 Cmd 40 Seq:01 Sec 0 CRC 9f68(4)
+OSDP CP Frame-in:0008 Timestamp:20160824-104935 (Sec/Nanosec: 1474739375 75618128)
+      Raw: 53 00 08 00 06 60 89 cc
+  Message: osdp_POLL   Addr:00 Lth:8. CTRL 06 Cmd 60 Seq:02 Sec 0 CRC cc89(4)
+OSDP PD Frame-in:0009 Timestamp:20160824-104935 (Sec/Nanosec: 1474739375 85639430)
+      Raw: 53 80 08 00 06 40 3b ca
+  Message: osdp_ACK    Addr:00 Lth:8. CTRL 06 Cmd 40 Seq:02 Sec 0 CRC ca3b(4)
+OSDP CP Frame-in:0010 Timestamp:20160824-104939 (Sec/Nanosec: 1474739379 102758127)
+      Raw: 53 00 08 00 07 60 b8 ff
+  Message: osdp_POLL   Addr:00 Lth:8. CTRL 07 Cmd 60 Seq:03 Sec 0 CRC ffb8(4)
+OSDP PD Frame-in:0011 Timestamp:20160824-104939 (Sec/Nanosec: 1474739379 112772345)
+      Raw: 53 80 08 00 07 40 0a f9
+  Message: osdp_ACK    Addr:00 Lth:8. CTRL 07 Cmd 40 Seq:03 Sec 0 CRC f90a(4)
+OSDP CP Frame-in:0012 Timestamp:20160824-104943 (Sec/Nanosec: 1474739383 131441094)
+      Raw: 53 00 08 00 05 60 da 99
+  Message: osdp_POLL   Addr:00 Lth:8. CTRL 05 Cmd 60 Seq:01 Sec 0 CRC 99da(4)
+OSDP PD Frame-in:0013 Timestamp:20160824-104943 (Sec/Nanosec: 1474739383 141440261)
+      Raw: 53 80 08 00 05 40 68 9f
+  Message: osdp_ACK    Addr:00 Lth:8. CTRL 05 Cmd 40 Seq:01 Sec 0 CRC 9f68(4)
+OSDP CP Frame-in:0014 Timestamp:20160824-104947 (Sec/Nanosec: 1474739387 57466301)
+      Raw: 53 00 08 00 06 60 89 cc
+  Message: osdp_POLL   Addr:00 Lth:8. CTRL 06 Cmd 60 Seq:02 Sec 0 CRC cc89(4)
+OSDP PD Frame-in:0015 Timestamp:20160824-104947 (Sec/Nanosec: 1474739387 68811092)
+      Raw: 53 80 08 00 06 40 3b ca
+  Message: osdp_ACK    Addr:00 Lth:8. CTRL 06 Cmd 40 Seq:02 Sec 0 CRC ca3b(4)
+OSDP CP Frame-in:0016 Timestamp:20160824-104951 (Sec/Nanosec: 1474739391 84880049)
+      Raw: 53 00 08 00 07 60 b8 ff
+  Message: osdp_POLL   Addr:00 Lth:8. CTRL 07 Cmd 60 Seq:03 Sec 0 CRC ffb8(4)
+OSDP PD Frame-in:0017 Timestamp:20160824-104951 (Sec/Nanosec: 1474739391 96350570)
+      Raw: 53 80 08 00 07 40 0a f9
+  Message: osdp_ACK    Addr:00 Lth:8. CTRL 07 Cmd 40 Seq:03 Sec 0 CRC f90a(4)
+
