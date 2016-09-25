@@ -1,5 +1,7 @@
 Changes in 1.00 Build 11
 
+changed OUI to 0A0017 (locally assigned.)
+
 changed open_osdp.log to open-osdp.log
 
 fixed Ident messages in monitor mode
