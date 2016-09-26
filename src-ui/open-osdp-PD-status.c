@@ -53,6 +53,8 @@ void
   json_t
     *value;
 
+  unsigned int
+    led_color;
   int
     pd_address;
 
@@ -70,6 +72,23 @@ void
       status = ST_CMD_ERROR;
     };
   }; 
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "led_color_00");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    unsigned int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr+1, "%x", &i);
+fprintf (stdout, "led color %06x\n", i);
+    led_color = i;
+  };
   if (status EQUALS ST_OK)
   {
     found_field = 1;
@@ -101,6 +120,8 @@ void
   printf ("libosdp PD Reader<BR>\n");
   printf ("A: %02x<BR>\n",
     pd_address);
+printf ("<BR><SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
+  led_color);
   printf ("Message Text: %s<BR>\n",
     ctx->text);
 }

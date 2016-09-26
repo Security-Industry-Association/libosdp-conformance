@@ -1,5 +1,5 @@
 /*
-  oo_util - open osdp utility routines
+  oosdp-util - open osdp utility routines
 
   (C)2014-2016 Smithee Spelvin Agnew & Plinge, Inc.
 
@@ -40,6 +40,13 @@ extern OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 extern OSDP_PARAMETERS
   p_card;
+unsigned int
+  web_color_lookup [16] = {
+    0x000000, 0xFF0000, 0x00FF00, 0x008080,
+    0x444444, 0x550101, 0x660101, 0x770101,
+    0x0000FF, 0x010101, 0x010101, 0x010101,
+    0x010101, 0x010101, 0x010101, 0x010101,
+  };
 time_t
   previous_time;
 char
@@ -345,8 +352,6 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
     returned_hdr -> command = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->command;
 
-fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
-  m->msg_cmd);
     if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
     {
       sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
@@ -356,43 +361,43 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
     if ((context->verbosity > 4) || ((m->msg_cmd != OSDP_POLL) &&
        (m->msg_cmd != OSDP_ACK)))
       {
-        int
-          i;
         char
-          line [1024];
-        int
-          log_msg_for;
+          dirtag [1024];
+        int i;
         unsigned char
           *p1;
         unsigned char
           *p2;
+        char
+          tlogmsg [1024];
 
 
+        strcpy (tlogmsg, "");
         p1 = m->ptr;
-        log_msg_for = OSDP_LOG_STRING;
         if (*(p1+1) & 0x80)
-        {
-          log_msg_for = OSDP_LOG_STRING_PD;
-        }
+          strcpy (dirtag, "PD");
         else
-        {
-          log_msg_for = OSDP_LOG_STRING_CP;
-        };
+          strcpy (dirtag, "CP");
         if (context->verbosity > 8)
         {
           int i;
+          char line [1024];
           int len;
           char octet [8];
           len = (*(p1+3))*256+*(p1+2);
-          strcpy (line, "      Raw:");
+          strcpy (line, "      Raw: ");
           for (i=0; i<len; i++)
           {
             sprintf (octet, " %02x", *(p1+i));
             strcat (line, octet);
           };
           strcat (line, "\n");
-          status = oosdp_log (context, log_msg_for, 1, line);
+          strcat (tlogmsg, line);
         };
+        if (0 EQUALS strcmp (dirtag, "CP"))
+          status = oosdp_log (context, OSDP_LOG_STRING_CP, 1, tlogmsg);
+        else
+          status = oosdp_log (context, OSDP_LOG_STRING_PD, 1, tlogmsg);
       
         p2 = p1+5;
         if (p->ctrl & 0x08)
@@ -444,7 +449,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       m->data_payload = NULL;
       msg_data_length = 0;
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_ACK   ");
+        strcpy (tlogmsg2, "osdp_ACK");
       context->pd_acks ++;
       osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
@@ -456,7 +461,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       m->data_payload = NULL;
       msg_data_length = 0;
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_BUSY  ");
+        strcpy (tlogmsg2, "osdp_BUSY");
       osdp_conformance.rep_busy.test_status = OCONFORM_EXERCISED;
       break;
 
@@ -466,11 +471,11 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       {
         if (context->role EQUALS OSDP_ROLE_PD)
         {
-          strcpy (tlogmsg2, "osdp_CHLNG ");
+          strcpy (tlogmsg2, "osdp_CHLNG");
         }
         else
         {
-          strcpy (tlogmsg2, "osdp_CCRYPT ");
+          strcpy (tlogmsg2, "osdp_CCRYPT");
         };
       };
       break;
@@ -482,7 +487,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_MFG   ");
+        strcpy (tlogmsg2, "osdp_MFG");
       break;
 
     case OSDP_NAK:
@@ -491,7 +496,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       context->sent_naks ++;
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_NAK   ");
+        strcpy (tlogmsg2, "osdp_NAK");
       break;
 
     case OSDP_BUZ:
@@ -499,7 +504,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_BUZ   ");
+        strcpy (tlogmsg2, "osdp_BUZ");
       break;
 
     case OSDP_CAP:
@@ -507,7 +512,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_CAP   ");
+        strcpy (tlogmsg2, "osdp_CAP");
       break;
 
     case OSDP_COM:
@@ -515,7 +520,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_COM   ");
+        strcpy (tlogmsg2, "osdp_COM");
       break;
 
     case OSDP_COMSET:
@@ -530,7 +535,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_ID    ");
+        strcpy (tlogmsg2, "osdp_ID");
       break;
 
     case OSDP_KEYPAD:
@@ -546,14 +551,14 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_LED   ");
+        strcpy (tlogmsg2, "osdp_LED");
       break;
 
     case OSDP_LSTAT:
       m->data_payload = NULL;
       msg_data_length = 0;
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_LSTAT ");
+        strcpy (tlogmsg2, "osdp_LSTAT");
       break;
 
    case OSDP_LSTATR:
@@ -585,7 +590,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_OUT   ");
+        strcpy (tlogmsg2, "osdp_OUT");
       break;
 
     case OSDP_PDCAP:
@@ -593,7 +598,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_PDCAP ");
+        strcpy (tlogmsg2, "osdp_PDCAP");
       osdp_conformance.cmd_pdcap.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_device_capas.test_status = OCONFORM_EXERCISED;
       break;
@@ -604,7 +609,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
 // ASSUMES NO SECURITY
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_PDID  ");
+        strcpy (tlogmsg2, "osdp_PDID");
       osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;
@@ -613,7 +618,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       m->data_payload = NULL;
       msg_data_length = 0;
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_POLL  ");
+        strcpy (tlogmsg2, "osdp_POLL");
       context->cp_polls ++;
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -624,14 +629,14 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_RAW   ");
+        strcpy (tlogmsg2, "osdp_RAW");
       break;
 
     case OSDP_RSTAT:
       m->data_payload = NULL;
       msg_data_length = 0;
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_RSTAT ");
+        strcpy (tlogmsg2, "osdp_RSTAT");
       break;
 
     case OSDP_RSTATR:
@@ -647,7 +652,7 @@ fprintf (stderr, "oo_util.c: m->msg_cmd 0x%02x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_TEXT  ");
+        strcpy (tlogmsg2, "osdp_TEXT");
       break;
     };
 
@@ -701,8 +706,8 @@ if (m->lth == 7)
         log_line [1024];
 
       sprintf (log_line, "  Message: %s %s", tlogmsg2, tlogmsg);
-      sprintf (tlogmsg2, " Seq:%02x Sec %x CRC %04x(%d)",
-        msg_sqn, msg_scb, wire_crc, msg_check_type);
+      sprintf (tlogmsg2, " Seq:%02x ChkType %x Sec %x CRC: %04x",
+        msg_sqn, msg_check_type, msg_scb, wire_crc);
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
         (returned_hdr->command != OSDP_ACK)) ||
@@ -729,8 +734,8 @@ if (m->lth == 7)
       };
     if (context->role EQUALS OSDP_ROLE_MONITOR)
     {
-      // pretty print the message if there are juicy details.
-      status = monitor_osdp_message (context, m);
+      // pretty print the message if tehre are juicy details.
+      (void)monitor_osdp_message (context, m);
 
       status = ST_MONITOR_ONLY;
     };
@@ -1047,6 +1052,10 @@ printf ("fixme: client cryptogram\n");
     break;
 
     case OSDP_LED:
+      /*
+        There are 256 LED's.  They all use the colors in the spec.
+        They switch on or off.  They don't blink.
+      */
       {
         int
           count;
@@ -1066,28 +1075,14 @@ printf ("fixme: client cryptogram\n");
           fprintf (context->log, "[%02d] Rdr %d LED %d Tcmd %d Pcmd %d\n",
             i, led_ctl->reader, led_ctl->led, led_ctl->temp_control,
             led_ctl->perm_control);
-#if 0
-  unsigned char
-    temp_on;
-  unsigned char
-    temp_off;
-  unsigned char
-    temp_on_color;
-  unsigned char
-    temp_off_color;
-  unsigned char
-    temp_timer_lsb;
-  unsigned char
-    temp_timer_msb;
-  unsigned char
-    perm_on_time;
-  unsigned char
-    perm_off_time;
-  unsigned char
-    perm_on_color;
-  unsigned char
-    perm_off_color;
-#endif
+          if (led_ctl->reader EQUALS 0)
+            if (led_ctl->perm_control EQUALS 1)
+            {
+              context->led [led_ctl->led].state = OSDP_LED_ACTIVATED;
+              context->led [led_ctl->led].web_color =
+                web_color_lookup [led_ctl->perm_on_color];
+            };
+          led_ctl = led_ctl + sizeof(OSDP_RDR_LED_CTL);
         };
 
         // we always ack the LED command regardless of how many LED's

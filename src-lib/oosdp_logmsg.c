@@ -262,8 +262,6 @@ int
   int
     llogtype;
   char
-    logmsg [1024];
-  char
     prefix [1024];
   char
     *role_tag;
@@ -295,7 +293,6 @@ int
 
     clock_gettime (CLOCK_REALTIME, &current_time_fine);
     (void) time (&current_raw_time);
-    strcpy (timestamp, ctime (&current_raw_time));
     current_cooked_time = localtime (&current_raw_time);
     sprintf (timestamp,
 "OSDP %s Frame-in:%04d Timestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
@@ -307,17 +304,15 @@ int
      current_cooked_time->tm_sec,
      current_time_fine.tv_sec, current_time_fine.tv_nsec);
   };
-  strcpy (logmsg, message);
   if (context->role == OSDP_ROLE_MONITOR)
   {
-    fflush (context->log);
-    fprintf (context->log, "%s%s", timestamp, logmsg);
+    fprintf (context->log, "%s%s", timestamp, message);
     fflush (context->log);
   }
   else
     if (context->verbosity >= level)
     {
-      fprintf (context->log, "%s%s", timestamp, logmsg);
+      fprintf (context->log, "%s%s", timestamp, message);
       fflush (context->log);
     };
   

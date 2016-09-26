@@ -94,9 +94,17 @@ int
       ctx->pd_acks);
     fprintf (sf, "        \"sent_naks\" : \"%d\",\n",
       ctx->sent_naks);
+    for (j=0; j<OSDP_MAX_LED; j++)
+    {
+      if (ctx->led [j].state EQUALS OSDP_LED_ACTIVATED)
+        fprintf (sf,
+                 "     led_color_%02d\" : \"#%06x\",\n",
+        j, ctx->led [j].web_color);
+    };
     for (j=0; j<OSDP_MAX_OUT; j++)
     {
-      fprintf (sf, "       \"out-%02d\" : \"%d\",\n",
+      fprintf (sf,
+                 "        \"out-%02d\" : \"%d\",\n",
         j, ctx->out [j].current);
     };
     fprintf (sf, "     \"power_report\" : \"%d\",\n",
