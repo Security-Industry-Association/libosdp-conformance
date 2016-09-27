@@ -186,6 +186,17 @@ typedef struct osdp_out_state
 } OSDP_OUT_STATE;
 #define OSDP_MAX_OUT (16)
 
+typedef struct osdp_led_state
+{
+  int
+    state;
+  unsigned int
+    web_color;
+} OSDP_LED_STATE;
+#define OSDP_MAX_LED (256)
+#define OSDP_LED_ACTIVATED   (1)
+#define OSDP_LED_DEACTIVATED (0)
+
 typedef struct osdp_context
 {
   int
@@ -194,6 +205,9 @@ typedef struct osdp_context
     log_path [1024];
   char
     text [1024];
+
+  OSDP_LED_STATE
+    led [OSDP_MAX_LED];
 
   int
     verbosity;

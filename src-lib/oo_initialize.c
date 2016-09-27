@@ -120,6 +120,11 @@ fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
     serial_speed_cfg_value = B115200;
     known_speed = 1;
   }
+  if (strcmp (context->serial_speed, "230400") EQUALS 0)
+  {
+    serial_speed_cfg_value = B230400;
+    known_speed = 1;
+  }
   if (!known_speed)
   {
     serial_speed_cfg_value = B9600;
