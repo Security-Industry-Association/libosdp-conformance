@@ -98,7 +98,7 @@ int
     {
       if (ctx->led [j].state EQUALS OSDP_LED_ACTIVATED)
         fprintf (sf,
-                 "     led_color_%02d\" : \"#%06x\",\n",
+                 "     \"led_color_%02d\" : \"#%06x\",\n",
         j, ctx->led [j].web_color);
     };
     for (j=0; j<OSDP_MAX_OUT; j++)
