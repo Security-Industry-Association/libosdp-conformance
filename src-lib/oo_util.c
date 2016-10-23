@@ -1332,6 +1332,9 @@ send OSDP_SCRYPT
         *(msg->data_payload + 0), *(msg->data_payload + 1));
       osdp_conformance.rep_local_stat.test_status =
         OCONFORM_EXERCISED;
+      if (*(msg->data_payload) > 0)
+        osdp_conformance.rep_reader_tamper.test_status =
+          OCONFORM_EXERCISED;
       break;
 
     case OSDP_MFGREP:

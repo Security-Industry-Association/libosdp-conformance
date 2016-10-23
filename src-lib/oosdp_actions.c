@@ -258,7 +258,7 @@ int
   if (ctx->tamper EQUALS 1)
   {
     done = 1;
-    ctx->tamper = 0;
+    ctx->tamper = 1;
     osdp_lstat_response_data [ 0] = ctx->tamper;
     current_length = 0;
     status = send_message (ctx,
