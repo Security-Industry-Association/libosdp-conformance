@@ -330,9 +330,10 @@ int
         this is the newer multi-part message for bigger credential responses,
         like a FICAM CHUID.
       */
-      done = 1;
       if (ctx->creds_a_avail > 0)
       {
+        done = 1;
+
         // send another mfgrep message back and update things.
 
         memset (&mmsg, 0, sizeof (mmsg));
