@@ -293,6 +293,18 @@ json_t *value;
           this_command);
     };
   }; 
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "tamper";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_TAMPER;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
   if (cmdf != NULL)
     fclose (cmdf);
   return (status);

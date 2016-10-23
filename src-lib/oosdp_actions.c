@@ -226,6 +226,8 @@ int
     creds_buffer_a_next;
   int
     current_length;
+  int
+    done;
   OSDP_MULTI_HDR
     mmsg;
   unsigned char
@@ -241,6 +243,7 @@ int
 
 
   status = ST_OK;
+  done = 0;
 
   // i.e. we GOT a poll
   osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
@@ -252,8 +255,26 @@ int
 
     if there was a power report return that.
   */
+  if (ctx->tamper EQUALS 1)
+  {
+    done = 1;
+    ctx->tamper = 0;
+    osdp_lstat_response_data [ 0] = ctx->tamper;
+    current_length = 0;
+    status = send_message (ctx,
+      OSDP_LSTATR, p_card.addr, &current_length,
+      sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
+    osdp_conformance.rep_reader_tamper.test_status =
+      OCONFORM_EXERCISED;
+    if (ctx->verbosity > 2)
+    {
+      sprintf (tlogmsg, "Responding with OSDP_LSTATR (Tamper)");
+      fprintf (ctx->log, "%s\n", tlogmsg);
+    };
+  };
   if (ctx->power_report EQUALS 1)
   {
+    done = 1;
     // power change not yet reported
     ctx->power_report = 0;
     osdp_lstat_response_data [ 0] = ctx->tamper;
@@ -270,11 +291,11 @@ int
       fprintf (ctx->log, "%s\n", tlogmsg);
     };
   }
-  else
+  if (!done)
   {
     /*
-      the presence of card data to return is indicated because either the "raw" buffer or the "big" 
-      buffer is marked as non-empty when you get here.
+      the presence of card data to return is indicated because either the
+      "raw" buffer or the "big" buffer is marked as non-empty when you get here.
     */
     /*
       if there's card data to return, do that.
@@ -282,6 +303,7 @@ int
     */
     if (ctx->card_data_valid > 0)
     {
+      done = 1;
       // send data if it's there (value is number of bits)
       osdp_raw_data [ 0] = 0; // one reader, reader 0
       osdp_raw_data [ 1] = 0; 
@@ -308,6 +330,7 @@ int
         this is the newer multi-part message for bigger credential responses,
         like a FICAM CHUID.
       */
+      done = 1;
       if (ctx->creds_a_avail > 0)
       {
         // send another mfgrep message back and update things.
@@ -356,7 +379,9 @@ int
         creds_buffer_a_next = creds_buffer_a_next + to_send;
         };
       }
-      else
+    };
+  };
+  if (!done)
       {
         /*
           if all else isn't interesting return a plain ack
@@ -373,8 +398,6 @@ int
           fprintf (ctx->log, "%s\n", tlogmsg);
         };
       };
-    };
-  };
 
   // update status json
   if (status EQUALS ST_OK)

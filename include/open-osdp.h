@@ -107,6 +107,7 @@
 #define OSDP_CMDB_LED          (1008)
 #define OSDP_CMDB_INIT_SECURE  (1009)
 #define OSDP_CMDB_TEXT         (1010)
+#define OSDP_CMDB_TAMPER       (1011)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)

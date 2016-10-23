@@ -96,17 +96,6 @@ void
     OSDP_INTEROP_ASSESSMENT *oconf)
 
 { /* dump_conformance */
-  int
-    profile_total2;
-  int
-    profile_total3;
-  int
-    profile_total4;
-
-
-  profile_total2 = 17;
-  profile_total3 = 19;
-  profile_total4 = 17;
 
   oconf->pass = 0;
   oconf->fail = 0;
@@ -182,13 +171,24 @@ void
   fprintf (ctx->log, "2.17 Large Data Messages                %s\n",
 "???"); //    conformance_status (oconf->channel_access.test_status));
 
+//  23
+
   fprintf (ctx->log, "3.1  Poll                               %s\n",
     conformance_status (oconf->cmd_poll.test_status));
   fprintf (ctx->log, "3.2  ID Report Request                  %s\n",
     conformance_status (oconf->cmd_id.test_status));
   fprintf (ctx->log, "3.3  Peripheral Device Capabilities Req %s\n",
     conformance_status (oconf->cmd_pdcap.test_status));
-
+  fprintf (ctx->log, "3.4  Diagnostic Function Request        %s\n",
+    conformance_status (oconf->cmd_diag.test_status));
+  fprintf (ctx->log, "3.5  Local Status Report Request        %s\n",
+    conformance_status (oconf->cmd_lstat.test_status));
+  fprintf (ctx->log, "3.6  Input Status Report Request        %s\n",
+    conformance_status (oconf->cmd_istat.test_status));
+  fprintf (ctx->log, "3.7  Output Status Report Request        %s\n",
+    conformance_status (oconf->cmd_ostat.test_status));
+  fprintf (ctx->log, "3.8  Reader Status Report Request        %s\n",
+    conformance_status (oconf->cmd_rstat.test_status));
   fprintf (ctx->log, "3.9  Output Control Command             %s\n",
     conformance_status (oconf->cmd_out.test_status));
   fprintf (ctx->log, "3.10 Reader LED Control Command         %s\n",
@@ -215,6 +215,7 @@ void
   fprintf (ctx->log, "3.22 Maximum Accetpable Reply Size      %s\n",
 "???");//    conformance_status (oconf->cmd_led.test_status));
 
+// 10 11 12 13 14 15 16
   fprintf (ctx->log, "4.1  General Ack Nothing to Report      %s\n",
     conformance_status (oconf->rep_ack.test_status));
   fprintf (ctx->log, "4.2  Negative Ack Error Response        %s\n",
@@ -225,8 +226,12 @@ void
     conformance_status (oconf->rep_device_capas.test_status));
   fprintf (ctx->log, "4.5  Local Status Report                %s\n",
     conformance_status (oconf->rep_local_stat.test_status));
+  fprintf (ctx->log, "4.6  Input Status Report                %s\n",
+    conformance_status (oconf->rep_input_stat.test_status));
   fprintf (ctx->log, "4.7  Output Status                      %s\n",
     conformance_status (oconf->rep_output_stat.test_status));
+  fprintf (ctx->log, "4.8  Reader Tamper Status               %s\n",
+    conformance_status (oconf->rep_reader_tamper.test_status));
   fprintf (ctx->log, "4.9  Card Data Report, Raw Bit Array    %s\n",
     conformance_status (oconf->rep_raw.test_status));
 
@@ -241,13 +246,7 @@ void
   OSDP_CONFORM rep_comm;                // 4.12
   OSDP_CONFORM rep_scan_send;           // 4.13
   OSDP_CONFORM rep_scan_match;          // 4.14
-  // 3.x
-  OSDP_CONFORM cmd_diag;                // 3.4
-  OSDP_CONFORM cmd_lstat;               // 3.5
-  OSDP_CONFORM cmd_istat;               // 3.6
-  OSDP_CONFORM cmd_ostat;               // 3.7
 
-  OSDP_CONFORM cmd_rstat;               // 3.8
   OSDP_CONFORM cmd_out;                 // 3.9
   OSDP_CONFORM cmd_led;                 // 3.10
   OSDP_CONFORM cmd_buz;                 // 3.11
@@ -261,9 +260,6 @@ void
   // 3.x partial...
 
 #endif
-  fprintf (ctx->log,
-    "Profile: Basic (Section 2: %d Section 3: %d Section 4: %d)\n",
-    profile_total2,  profile_total3, profile_total4);
   fprintf (ctx->log,
     "Passed: %d Failed: %d Untested: %d\n",
     oconf->pass, oconf->fail, oconf->untested);
@@ -594,6 +590,10 @@ status = -1;
         OSDP_POLL, p_card.addr, &current_length, 0, NULL);
       if (context->verbosity > 3)
         fprintf (stderr, "On-demand polling\n");
+      status = ST_OK;
+      break;
+    case OSDP_CMDB_TAMPER:
+      context->tamper = 1;
       status = ST_OK;
       break;
     case OSDP_CMDB_TEXT:
