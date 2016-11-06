@@ -30,6 +30,8 @@
 #include <open-osdp.h>
 
 extern OSDP_CONTEXT context;
+extern OSDP_PARAMETERS
+  p_card;
 
 char
   *osdp_pdcap_function
@@ -297,21 +299,25 @@ int
   };
   if (llogtype == OSDP_LOG_STRING)
   {
+    char address_suffix [1024];
     struct timespec
       current_time_fine;
 
     clock_gettime (CLOCK_REALTIME, &current_time_fine);
     (void) time (&current_raw_time);
     current_cooked_time = localtime (&current_raw_time);
+if (strcmp ("CP", role_tag)==0)
+  strcpy (address_suffix, "");
+else
+  sprintf (address_suffix, " A=%02x(hex)", p_card.addr);
     sprintf (timestamp,
-"OSDP %s Frame-in:%04d Timestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
-      role_tag,
-     context->packets_received,
-     1900+current_cooked_time->tm_year, 1+current_cooked_time->tm_mon,
-     current_cooked_time->tm_mday,
-     current_cooked_time->tm_hour, current_cooked_time->tm_min, 
-     current_cooked_time->tm_sec,
-     current_time_fine.tv_sec, current_time_fine.tv_nsec);
+"OSDP %s Frame-in:%04d%s\nTimestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
+      role_tag, context->packets_received, address_suffix,
+      1900+current_cooked_time->tm_year, 1+current_cooked_time->tm_mon,
+      current_cooked_time->tm_mday,
+      current_cooked_time->tm_hour, current_cooked_time->tm_min, 
+      current_cooked_time->tm_sec,
+      current_time_fine.tv_sec, current_time_fine.tv_nsec);
   };
   if (context->role == OSDP_ROLE_MONITOR)
   {

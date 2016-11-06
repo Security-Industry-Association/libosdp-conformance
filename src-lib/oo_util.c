@@ -421,6 +421,7 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
           {
             fprintf (context->log, " %02x", *(i+p1));
           };
+          fprintf (context->log, "\n");
 
           fprintf (context->log, " Raw data: ");
           for (i=0; i<msg_lth; i++)
