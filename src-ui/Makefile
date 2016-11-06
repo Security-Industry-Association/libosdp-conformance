@@ -23,7 +23,8 @@ LDFLAGS=-g -L /tester/current/lib
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
   start-CP-tcp-client start-CP-485 start-PD-tcp-server start-PD-485 \
-  start-CP-net-client start-PD-net-server 
+  start-CP-net-client start-PD-net-server start-MON-485 \
+  tail-MON-log tail-CP-log
 
 PROGS = open-osdp-kick
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
@@ -96,4 +97,13 @@ open-osdp-PD-status.o:	open-osdp-PD-status.c
 send-osdp-command.o:	send-osdp-command.c
 	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
 	  send-osdp-command.c
+
+tail-CP-log:	tail-CP-log.sh
+	cp tail-CP-log.sh tail-CP-log
+
+start-MON-485:	start-MON-485.sh
+	cp start-MON-485.sh start-MON-485
+
+tail-MON-log:	tail-MON-log.sh
+	cp tail-MON-log.sh tail-MON-log
 
