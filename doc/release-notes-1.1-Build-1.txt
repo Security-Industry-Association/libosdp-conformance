@@ -1,0 +1,7 @@
+Changes in 1.1 Build 1
+
+Add Monitor control in UI.
+Add mode decoding of capabilities.
+Fix logging to show PD address on inbound packets in CP log.
+Really change OUI to 0A0017
+

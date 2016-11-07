@@ -27,7 +27,8 @@ CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
   tail-MON-log tail-CP-log shutdown-osdp
 
 PROGS = open-osdp-kick
-PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html
+PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
+  open-osdp-MON.html
 SCRIPTS = exec-CPtcpclient exec-CP485 exec-PD485 exec-PDtcpserver HUP-CP HUP-PD \
   STOP-CP STOP-PD \
   set-pid \

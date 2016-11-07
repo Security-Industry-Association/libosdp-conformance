@@ -58,12 +58,32 @@ char
   case 5:
     strcpy (funcname, "Reader Audible Output");
     break;
-
+  case 6:
+    strcpy (funcname, "Reader Text Output");
+    break;
+  case 7:
+    strcpy (funcname, "Time Keeping");
+    break;
+  case 8:
+    strcpy (funcname, "Check Character Support");
+    break;
+  case 9:
+    strcpy (funcname, "Communication Security");
+    break;
   case 10:
     strcpy (funcname, "Receive Buffer Size");
     break;
   case 11:
     strcpy (funcname, "Max Multi-Part Size");
+    break;
+  case 12:
+    strcpy (funcname, "Smart Card Support");
+    break;
+  case 13:
+    strcpy (funcname, "Readers");
+    break;
+  case 14:
+    strcpy (funcname, "Biometrics");
     break;
   };
   return (funcname);

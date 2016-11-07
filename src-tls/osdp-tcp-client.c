@@ -141,7 +141,8 @@ int
       strcpy (current_network_address, argv [2]);
   };
 
-  sprintf (config->version, "v1.00-Build%d", OSDP_VERSION_BUILD);
+  sprintf (config->version, "v%d.%d-Build%d",
+    OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
   strcpy (config->ca_file, OSDP_LCL_CA_KEYS);
 // sets port
 config->listen_sap = 10001;

@@ -140,7 +140,8 @@ int
   {
     strcpy (context.init_parameters_path, argv [1]);
   };
-  sprintf (config->version, "v1.00-Build%d", OSDP_VERSION_BUILD);
+  sprintf (config->version, "v%d.%d-Build%d",
+    OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
   strcpy (config->cert_file, OSDP_LCL_SERVER_CERT);
   strcpy (config->key_file, OSDP_LCL_SERVER_KEY);
 // sets port
