@@ -4,4 +4,5 @@ Add Monitor control in UI.
 Add mode decoding of capabilities.
 Fix logging to show PD address on inbound packets in CP log.
 Really change OUI to 0A0017
+change to stop/start server processes and server itself in html pages
 
