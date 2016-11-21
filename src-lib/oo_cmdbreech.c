@@ -109,7 +109,10 @@ json_t *value;
       strcpy (field, "message");
       value = json_object_get (root, field);
       if (json_is_string (value))
+      {
         strcpy (ctx->text, json_string_value (value));
+        cmd->command = OSDP_CMDB_TEXT;
+      };
     };
   };
   if (status EQUALS ST_OK)

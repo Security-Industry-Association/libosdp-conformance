@@ -1,0 +1,21 @@
+#!/bin/bash
+set -x
+SET_PD_ADDRESS=write-params
+DELAY=8
+${SET_PD_ADDRESS} 0; killall open-osdp;/opt/open-osdp/bin/open-osdp
+./3-identify
+sleep ${DELAY}
+${SET_PD_ADDRESS} 1; killall open-osdp;/opt/open-osdp/bin/open-osdp
+./3-identify
+sleep ${DELAY}
+${SET_PD_ADDRESS} 2; killall open-osdp;/opt/open-osdp/bin/open-osdp
+./3-identify
+sleep ${DELAY}
+${SET_PD_ADDRESS} 3; killall open-osdp;/opt/open-osdp/bin/open-osdp
+./3-identify
+sleep ${DELAY}
+${SET_PD_ADDRESS} 4; killall open-osdp;/opt/open-osdp/bin/open-osdp
+./3-identify
+sleep ${DELAY}
+ls -l ident*json
+

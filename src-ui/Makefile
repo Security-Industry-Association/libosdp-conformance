@@ -33,7 +33,8 @@ SCRIPTS = exec-CPtcpclient exec-CP485 exec-PD485 exec-PDtcpserver HUP-CP HUP-PD 
   STOP-CP STOP-PD \
   set-pid \
   write-osdp-CP-command write-osdp-PD-command \
-  exec-CPnetclient exec-PDnetserver
+  exec-CPnetclient exec-PDnetserver \
+  3-identify run-address-scan write-params
 
 all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS}
 

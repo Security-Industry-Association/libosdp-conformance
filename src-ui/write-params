@@ -1,0 +1,16 @@
+#!/bin/bash
+ROLE=CP
+DEST_ADDR=10.2.0.219
+DEST_FQDN=east
+echo >open-osdp-parms_new.json \
+  "{ \"role\" : \"${ROLE}\", \"network_address\":\"${DEST_ADDR}\","
+echo >>open-osdp-parms_new.json \
+  "  \"fqdn\":\"${DEST_FQDN}\""
+echo >>open-osdp-parms_new.json \
+  " ,\"address\":\"$1\""
+echo >>open-osdp-parms_new.json \
+  ",\"poll\":\"1\",\"timeout\":\"3\",\"verbosity\":\"9\"}"
+#killall open-osdp
+#cp open-osdp-parms_new.json open-osdp-params.json
+#/opt/open-osdp/bin/open-osdp >stdout 2>stderr &
+
