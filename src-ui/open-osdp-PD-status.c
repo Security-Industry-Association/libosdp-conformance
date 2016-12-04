@@ -62,6 +62,7 @@ void
   status = ST_OK;
   found_field = 0;
   pd_address = 0;
+  led_color = 0;
   if (status EQUALS ST_OK)
   {
     root = json_loads (buffer, 0, &status_json);
