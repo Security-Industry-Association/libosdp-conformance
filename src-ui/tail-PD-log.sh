@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 echo "Content-type: text/html"
 echo ""
 
-echo "<HTML><HEAD><TITLE>Last 100 lines of CP log</TITLE>"
+echo "<HTML><HEAD><TITLE>Last 100 lines of PD log</TITLE>"
 echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
-echo "Stopping server in 30 seconds"
+date
+sudo -n tail -100 /opt/open-osdp/run/PD/open-osdp.log
 echo "</BODY></HTML>"
-sleep 30
-sudo -n poweroff
+
 

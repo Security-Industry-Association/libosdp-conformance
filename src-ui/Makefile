@@ -1,6 +1,6 @@
 # Make file for osdp-ui
 
-#  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+#  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -24,7 +24,8 @@ LDFLAGS=-g -L /tester/current/lib
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
   start-CP-tcp-client start-CP-485 start-PD-tcp-server start-PD-485 \
   start-CP-net-client start-PD-net-server start-MON-485 \
-  tail-MON-log tail-CP-log shutdown-osdp
+  tail-CP-log tail-MON-log tail-PD-log \
+  shutdown-osdp vm-status
 
 PROGS = open-osdp-kick
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
@@ -109,6 +110,12 @@ start-MON-485:	start-MON-485.sh
 tail-MON-log:	tail-MON-log.sh
 	cp tail-MON-log.sh tail-MON-log
 
+tail-PD-log:	tail-PD-log.sh
+	cp tail-PD-log.sh tail-PD-log
+
 shutdown-osdp:	shutdown-osdp.sh
 	cp shutdown-osdp.sh shutdown-osdp
+
+vm-status:	vm-status.sh
+	cp vm-status.sh vm-status
 
