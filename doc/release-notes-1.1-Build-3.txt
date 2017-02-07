@@ -1,0 +1,4 @@
+Changes in 1.1 Build 3
+
+Add USB set-up helpers in web UI
+
