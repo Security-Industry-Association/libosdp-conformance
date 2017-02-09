@@ -1,3 +1,5 @@
+# libosdp-conformance top level make file
+
 # Makefile for libosdp
 
 all:
