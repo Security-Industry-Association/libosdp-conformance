@@ -1,7 +1,7 @@
 /*
-  open-osdp.h - definitions for open osdp
+  open-osdp.h - definitions for libosdp
 
-  (C)Copyright 2014-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
