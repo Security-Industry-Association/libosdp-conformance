@@ -22,11 +22,11 @@ CC=clang
 LDFLAGS=-g -L /tester/current/lib
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
-  start-CP-485 start-PD-tcp-server start-PD-485 \
-  start-CP-net-client start-PD-net-server start-MON-485 \
+  start-CP-485 start-PD-485 start-MON-485 \
   tail-CP-log tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
-TLS_CGIPROGS = start-CP-tcp-client
+TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
+  start-PD-net-server start-PD-tcp-server
 
 PROGS = open-osdp-kick
 TLS_PROGS = 
@@ -46,6 +46,7 @@ all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS}
 
 clean:
 	rm -f core *.o ${CGIPROGS} ${PROGS}
+	rm -f core *.o ${TLS_CGIPROGS} ${TLS_PROGS}
 	rm -rf ../opt/open-osdp
 
 build:	all
