@@ -1,7 +1,7 @@
 /*
   oo_initialize - init code for OSDP
 
-  (C)Copyright 2014-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -29,9 +29,6 @@
 #include <errno.h>
 #include <time.h>
 #include <unistd.h>
-
-
-#include <gnutls/gnutls.h>
 
 
 #include <osdp-tls.h>

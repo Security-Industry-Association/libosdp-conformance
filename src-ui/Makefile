@@ -22,20 +22,25 @@ CC=clang
 LDFLAGS=-g -L /tester/current/lib
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
-  start-CP-tcp-client start-CP-485 start-PD-tcp-server start-PD-485 \
+  start-CP-485 start-PD-tcp-server start-PD-485 \
   start-CP-net-client start-PD-net-server start-MON-485 \
   tail-CP-log tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
+TLS_CGIPROGS = start-CP-tcp-client
 
 PROGS = open-osdp-kick
+TLS_PROGS = 
+
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
   open-osdp-MON.html
-SCRIPTS = exec-CPtcpclient exec-CP485 exec-PD485 exec-PDtcpserver HUP-CP HUP-PD \
+TLS_PAGES = 
+
+SCRIPTS = exec-CP485 exec-PD485 HUP-CP HUP-PD \
   STOP-CP STOP-PD \
   set-pid \
   write-osdp-CP-command write-osdp-PD-command \
-  exec-CPnetclient exec-PDnetserver \
   3-identify run-address-scan write-params
+TLS_SCRIPTS = exec-CPnetclient exec-CPtcpclient exec-PDnetserver exec-PDtcpserver
 
 all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS}
 
@@ -53,6 +58,12 @@ build:	all
 	cp ${CGIPROGS} ../opt/open-osdp/cgi-bin
 	cp ${SCRIPTS} ../opt/open-osdp/bin
 	cp ${PROGS} ../opt/open-osdp/bin
+
+build-tls:	${TLS_CGIPROGS} ${TLS_PAGES} ${TLS_SCRIPTS} ${TLS_PROGS} build
+	# (no TLS pages) cp ${TLS_PAGES} ../opt/open-osdp/www
+	cp ${TLS_CGIPROGS} ../opt/open-osdp/cgi-bin
+	cp ${TLS_SCRIPTS} ../opt/open-osdp/bin
+	# (no TLS programs) cp ${TLS_PROGS} ../opt/open-osdp/bin
 
 build-test:	build
 	(cd ../test; make build-test)

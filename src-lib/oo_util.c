@@ -1,7 +1,7 @@
 /*
   oosdp-util - open osdp utility routines
 
-  (C)2014-2016 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -24,9 +24,6 @@
 #include <memory.h>
 #include <unistd.h>
 #include <time.h>
-
-
-#include <gnutls/gnutls.h>
 
 
 #include <osdp-tls.h>

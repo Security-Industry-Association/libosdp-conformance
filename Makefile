@@ -1,12 +1,19 @@
 # libosdp-conformance top level make file
 
+# This makes the RS-485 version.  To make the TLS version,
+# you need to explicitly do "make osdp-tls"
+
 # Makefile for libosdp
 
 all:
 	(cd src-lib; make all; cd ..)
 	(cd src-485; make all; cd ..)
-	(cd src-tls; make all; cd ..)
 	(cd src-ui; make all; cd ..)
+
+osdp-tls:	all
+	(cd src-tls; make all; cd ..)
+	(cd src-tls; make build; cd ..)
+	(cd src-ui; make build-tls; cd ..)
 
 clean:
 	(cd src-lib; make clean; cd ..)
@@ -18,7 +25,6 @@ clean:
 build:	all
 	(cd src-lib; make build; cd ..)
 	(cd src-485; make build; cd ..)
-	(cd src-tls; make build; cd ..)
 	(cd src-ui; make build; cd ..)
 	(cd test; make build-test; cd ..)
 

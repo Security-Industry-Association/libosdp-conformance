@@ -1,7 +1,7 @@
 /*
   oosdp-logmsg - open osdp log message routines
 
-  (C)Copyright 2014-2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -21,9 +21,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-
-
-#include <gnutls/gnutls.h>
 
 
 #include <osdp-tls.h>

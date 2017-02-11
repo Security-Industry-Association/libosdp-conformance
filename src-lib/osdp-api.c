@@ -1,7 +1,7 @@
 /*
   osdp-api - bits to implement HUP-based "API"
 
-  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,15 +22,11 @@
 #include <unistd.h>
 
 
-#include <gnutls/gnutls.h>
-
-
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 
 
-//extern OSDP_TLS_CONFIG config;
 extern OSDP_CONTEXT
   context;
 

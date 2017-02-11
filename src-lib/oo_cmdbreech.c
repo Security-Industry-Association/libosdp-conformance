@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -24,7 +24,6 @@
 
 
 #include <jansson.h>
-#include <gnutls/gnutls.h>
 
 
 #include <osdp-tls.h>
