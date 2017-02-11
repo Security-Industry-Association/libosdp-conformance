@@ -1,4 +1,0 @@
-add templates from hjort/pgafis
-maybe add netpgm
-create test from pgafis template sample 101_1.pgm?
-

@@ -1,0 +1,10 @@
+Release 1.0 Build 2 libosdp-conformance
+
+Changes in 1.0 Build 2
+
+Removed TLS dependancy.  Top level make should build fine without gnutls.
+
+Updated documentation in doc/build
+
+NOTE: still running in temporary repo, expect this repo to move once again to security-industry-association.
+

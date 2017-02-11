@@ -1,0 +1,42 @@
+this is to 
+Build Instructions for libosdp-conformance
+
+This assumes you are building in a Debian/Ubuntu/Devuan environment but it 
+should look like fairly normal Linux tools.
+
+Set-up:
+- performed standard debian update and package set-up
+  apt-get update
+  apt-get upgrade
+  apt-get install build-essential
+  apt-get install clang lzip pkg-config libgmp3-dev libgmpxx4ldbl screen
+  apt-get install tcpdump gdb apache2 git
+
+- install the dev package for jansson
+- for TLS, install the dev package for libtasn, nettle, and gnutls.  gnutls' package
+  installer will pull in libtasn and nettle if needed.
+
+Build:
+WARNING THIS WILL CHANGE WHEN THE REPO MOVES TO THE SIA REPO
+(assumes you are user "osdp" when you do this, and have "sudo".)
+
+  git clone https://github.com/smithee-solutions/libosdp-conformance
+  make clean
+  make release
+  cd /
+  sudo tar xzvf /home/osdp/setup/libosdp/release-libosdp.tgz
+
+Installation:
+- added osdp to sudoers
+- added ifconfig command to /etc/rc.local to hard-code eth0 to 10.0.0.200
+
+To work as a reader:
+set up to run as PD
+    cd /opt/open-osdp/run/PD
+    cp /home/osdp/setup/libosdp/doc/open-osdp-params-PD.json open-osdp-params.json
+
+To work as a panel:
+set up to run as CP
+    cd /opt/open-osdp/run/CP
+    cp /home/osdp/setup/libosdp/doc/open-osdp-params-CP.json open-osdp-params.json
+
