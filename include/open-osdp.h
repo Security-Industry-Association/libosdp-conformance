@@ -223,6 +223,8 @@ typedef struct osdp_context
     role;
   FILE
     *log;
+  FILE
+    *report;
   int
     idle_time;
   int

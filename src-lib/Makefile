@@ -31,11 +31,13 @@ clean:
 	rm -f core *.o ${OUTLIB}
 
 libosdp.a:	oo_initialize.o oo_process.o oo_util.o oo_util2.o \
-	  oo_cmdbreech.o oosdp_actions.o oosdp_crc.o oosdp_files.o oosdp_logmsg.o \
+	  oo_cmdbreech.o oosdp_actions.o oosdp_crc.o oosdp_conformance.o \
+	  oosdp_files.o oosdp_logmsg.o \
 	  oosdp_secure.o oosdp_ui.o osdp-api.o
 	ar r libosdp.a \
 	  oo_cmdbreech.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
-	  oosdp_actions.o oosdp_crc.o oosdp_files.o oosdp_logmsg.o oosdp_secure.o oosdp_ui.o \
+	  oosdp_actions.o oosdp_conformance.o oosdp_crc.o oosdp_files.o \
+	  oosdp_logmsg.o oosdp_secure.o oosdp_ui.o \
 	  osdp-api.o
 
 oo_cmdbreech.o:	oo_cmdbreech.c ../include/open-osdp.h
@@ -61,6 +63,10 @@ oo_util2.o:	oo_util2.c ../include/open-osdp.h
 oosdp_actions.o:	oosdp_actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_actions.c
+
+oosdp_conformance.o:	oosdp_conformance.c
+	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
+	  oosdp_conformance.c
 
 oosdp_crc.o:	oosdp_crc.c
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \

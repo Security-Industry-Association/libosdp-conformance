@@ -101,3 +101,10 @@ typedef struct osdp_interop_assessment
 } OSDP_INTEROP_ASSESSMENT;
 
 #define PARAM_MMT (3) // minimum message thresshold
+
+
+void
+  dump_conformance
+    (OSDP_CONTEXT *ctx,
+    OSDP_INTEROP_ASSESSMENT *oconf);
+
