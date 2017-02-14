@@ -26,6 +26,8 @@ build:	all
 	(cd src-lib; make build; cd ..)
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)
+	cp doc/config-samples/open-osdp-params-MON.json \
+	  opt/open-osdp/run/MON/open-osdp-params.json
 	(cd test; make build-test; cd ..)
 
 release:	build

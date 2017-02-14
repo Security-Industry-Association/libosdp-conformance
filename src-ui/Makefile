@@ -36,7 +36,7 @@ PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
 TLS_PAGES = 
 
 SCRIPTS = exec-CP485 exec-PD485 HUP-CP HUP-PD \
-  STOP-CP STOP-PD \
+  STOP-CP STOP-MON STOP-PD \
   set-pid \
   write-osdp-CP-command write-osdp-PD-command \
   3-identify run-address-scan write-params
@@ -54,6 +54,7 @@ build:	all
 	mkdir -p ../opt/open-osdp/cgi-bin
 	mkdir -p ../opt/open-osdp/www
 	mkdir -p ../opt/open-osdp/run/CP
+	mkdir -p ../opt/open-osdp/run/MON
 	mkdir -p ../opt/open-osdp/run/PD
 	cp ${PAGES} ../opt/open-osdp/www
 	cp ${CGIPROGS} ../opt/open-osdp/cgi-bin

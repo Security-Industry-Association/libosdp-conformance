@@ -1,7 +1,7 @@
 /*
   open-osdp-kick - kick the OSDP process in the Unix socket
 
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -36,8 +36,12 @@ int main(int argc, char *argv[]) {
 
   tag = "CP";
   if (argc > 1)
+  {
+    if (strcmp (argv [1], "MON") == 0)
+      tag = "MON";
     if (strcmp (argv [1], "PD") == 0)
       tag = "PD";
+  };
   sprintf (socket_path,
     "/opt/open-osdp/run/%s/open-osdp-control",
     tag);
