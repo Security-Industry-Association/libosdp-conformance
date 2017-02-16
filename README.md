@@ -1,5 +1,2 @@
-Open source OSDP implementation.  Includes RS-485 and TLS.  
-This is the conformance test tool variant.
-
-See doc/conformance/README-conformance.txt
-
+# libosdp-conformance
+Conformance testing plans and tools for SIA OSDP. For more information about OSDP visit www.securityindustry.org/OSDP
