@@ -1,0 +1,6 @@
+Release 1.0 Build 3 libosdp-conformance
+
+Changes in 1.0 Build 3
+
+froze tree for 16 Feb 2017 OSDP conference call.
+
