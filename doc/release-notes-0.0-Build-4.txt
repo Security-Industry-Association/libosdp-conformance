@@ -1,0 +1,9 @@
+Release 0.0 Build 4 libosdp-conformance
+
+Changes in 0.0 Build 4
+
+finished one pass basic profile tests
+updated release process to include binary
+reset revision number to 0.0 build 4 consistently
+
+

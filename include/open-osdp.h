@@ -343,9 +343,9 @@ typedef struct osdp_context
 #define OSDP_CHECKSUM (0)
 #define OSDP_CRC (1)
 
-#define OSDP_VERSION_MAJOR (1)
+#define OSDP_VERSION_MAJOR (0)
 #define OSDP_VERSION_MINOR (0)
-#define OSDP_VERSION_BUILD (3)
+#define OSDP_VERSION_BUILD (4)
 
 typedef struct osdp_parameters
 {
