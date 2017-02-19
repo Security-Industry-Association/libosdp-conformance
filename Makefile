@@ -21,6 +21,7 @@ clean:
 	(cd src-tls; make clean; cd ..)
 	(cd src-ui; make clean; cd ..)
 	rm -f release-libosdp.tgz
+	rm -rf opt
 
 build:	all
 	(cd src-lib; make build; cd ..)
