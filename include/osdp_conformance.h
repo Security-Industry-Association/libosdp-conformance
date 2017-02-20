@@ -22,6 +22,7 @@
 #define OCONFORM_EXERCISED    (1)
 #define OCONFORM_EX_GOOD_ONLY (2)
 #define OCONFORM_FAIL         (3)
+#define OCONFORM_SKIP         (4)
 
 typedef struct osdp_conform
 {
@@ -37,6 +38,8 @@ typedef struct osdp_interop_assessment
     fail;
   int
     untested;
+  int
+    skipped;
   int
     conforming_messages;
   int
@@ -65,7 +68,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_id;                  // 3.2
   OSDP_CONFORM cmd_pdcap;               // 3.3
   OSDP_CONFORM cmd_diag;                // 3.4
-  OSDP_CONFORM cmd_lstat;               // 3.5
+  OSDP_CONFORM cmd_lstat;               // 3-5-1
   OSDP_CONFORM cmd_istat;               // 3.6
   OSDP_CONFORM cmd_ostat;               // 3.7
   OSDP_CONFORM cmd_rstat;               // 3.8
@@ -87,11 +90,14 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_nak;                 // 4.2
   OSDP_CONFORM rep_device_ident;        // 4.3
   OSDP_CONFORM rep_device_capas;        // 4.4
-  OSDP_CONFORM rep_local_stat;          // 4.5
+  OSDP_CONFORM resp_lstatr;             // 4-5-1
+  OSDP_CONFORM resp_lstatr_tamper;      // 4-5-2
+  OSDP_CONFORM resp_lstatr_power;       // 4-5-3
   OSDP_CONFORM rep_input_stat;          // 4.6
   OSDP_CONFORM rep_output_stat;         // 4.7
+  OSDP_CONFORM resp_ostatr;             // 4-7-1
+  OSDP_CONFORM resp_ostatr_poll;        // 4-7-2
   OSDP_CONFORM resp_rstatr;             // 4-8-1
-  OSDP_CONFORM rep_reader_tamper;       // 4.8
   OSDP_CONFORM rep_raw;                 // 4.9
   OSDP_CONFORM rep_formatted;           // 4.10
   OSDP_CONFORM rep_keypad;              // 4.11

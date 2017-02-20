@@ -84,6 +84,7 @@ void
   oconf->pass = 0;
   oconf->fail = 0;
   oconf->untested = 0;
+  oconf->skipped = 0;
 
   // fill in results for "minimal message threshhold" case
 
@@ -214,27 +215,39 @@ void
     conformance_status (oconf->rep_device_ident.test_status));
   fprintf (ctx->log, "4.4  Device Capabilities Report         %s\n",
     conformance_status (oconf->rep_device_capas.test_status));
-  fprintf (ctx->log, "4.5  Local Status Report                %s\n",
-    conformance_status (oconf->rep_local_stat.test_status));
-  fprintf (ctx->log, "4.6  Input Status Report                %s\n",
-    conformance_status (oconf->rep_input_stat.test_status));
-  fprintf (ctx->log, "4.7  Output Status                      %s\n",
-    conformance_status (oconf->rep_output_stat.test_status));
-  fprintf (ctx->log, "4.8  Reader Tamper Status               %s\n",
-    conformance_status (oconf->rep_reader_tamper.test_status));
-  fprintf (ctx->log, "4.9  Card Data Report, Raw Bit Array    %s\n",
-    conformance_status (oconf->rep_raw.test_status));
-
-  fprintf (ctx->log, "4.17 PD Busy Reply                      %s\n",
-    conformance_status (oconf->rep_busy.test_status));
 
   LOG_REPORT ((log_string,
-"4-8-1 osdp_RSTATR %s\n",
+"4-5-1 osdp_LSTATR Local Status Report %s",
+    conformance_status (oconf->resp_lstatr.test_status)));
+  LOG_REPORT ((log_string,
+"4-5-2 osdp_LSTATR Tamper              %s",
+    conformance_status (oconf->resp_lstatr_tamper.test_status)));
+  LOG_REPORT ((log_string,
+"4-5-3 osdp_LSTATR Power               %s",
+    conformance_status (oconf->resp_lstatr_power.test_status)));
+
+  LOG_REPORT ((log_string,
+"4-6-1 osdp_ISTATR Input Status Report %s",
+    conformance_status (oconf->rep_input_stat.test_status)));
+
+  LOG_REPORT ((log_string,
+"4-7-1 osdp_OSTATR                     %s",
+    conformance_status (oconf->resp_ostatr.test_status)));
+  LOG_REPORT ((log_string,
+"4-7-2 osdp_OSTATR for POLL            %s",
+    conformance_status (oconf->resp_ostatr_poll.test_status)));
+
+  LOG_REPORT ((log_string,
+"4-8-1 osdp_RSTATR                     %s",
     conformance_status (oconf->resp_rstatr.test_status)));
 
   fprintf (ctx->log,
-    "Passed: %d Failed: %d Untested: %d\n",
-    oconf->pass, oconf->fail, oconf->untested);
+"4.9  Card Data Report, Raw Bit Array  %s\n",
+    conformance_status (oconf->rep_raw.test_status));
+
+  fprintf (ctx->log,
+    "\n===>Passed: %d Failed: %d Untested: %d Skipped: %d<===\n",
+    oconf->pass, oconf->fail, oconf->untested, oconf->skipped);
   fprintf (ctx->log, "---end of report---\n");
 fprintf (ctx->log, "mmt %d of %d\n",
   oconf->conforming_messages,

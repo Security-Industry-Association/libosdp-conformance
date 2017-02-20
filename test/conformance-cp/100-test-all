@@ -3,9 +3,21 @@ set -x
 echo start CP
 echo sleep to stabilize
 sleep 5
-echo request 4-8-1
+echo executing test 4-5-1
+/opt/osdp-conformance/do-command local_status
+echo request test 4-5-2
+/opt/osdp-conformance/request-exercise-PD 4-5-2
+echo request test 4-5-3
+/opt/osdp-conformance/request-exercise-PD 4-5-3
+echo requesting test 4-6-1
+/opt/osdp-conformance/request-exercise-PD 4-6-1
+echo executing test 4-7-1
+/opt/osdp-conformance/do-command outstat
+echo request test 4-7-2
+/opt/osdp-conformance/request-exercise-PD 4-7-2
+echo request test 4-8-1
 /opt/osdp-conformance/request-exercise-PD 4-8-1
-echo generate report
-echo FIXME run report command
-echo FIXME copy /opt/osdp-conformance/log/report.txt to date stamped file
+echo generate test report
+/opt/osdp-conformance/do-command dump_status
+cp /opt/osdp-conformance/log/report.txt osdp-conformance-report_`date +%F_%H_%M`.txt
 

@@ -251,6 +251,7 @@ status = -1;
         status = ST_OK;
       };
       break;
+
     case OSDP_CMDB_IDENT:
       {
         unsigned char
@@ -291,6 +292,27 @@ status = -1;
         if (context->verbosity > 2)
           fprintf (stderr, "Initiating Secure Channel\n");
       };
+      break;
+
+    case OSDP_CMDB_LSTAT:
+      {
+        unsigned char
+          param [1];
+
+        current_length = 0;
+        /*
+          osdp_LSTAT requires no arguments.
+        */
+        param [0] = 0;
+        current_length = 0;
+        status = send_message (context,
+          OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
+        osdp_conformance.cmd_lstat.test_status =
+          OCONFORM_EXERCISED;
+        if (context->verbosity > 3)
+          fprintf (stderr, "Requesting Local Status\n");
+      };
+      status = ST_OK;
       break;
 
     case OSDP_CMDB_LED:

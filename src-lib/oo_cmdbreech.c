@@ -166,6 +166,21 @@ json_t *value;
     };
   }; 
 
+  // request local status
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "local_status";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_LSTAT;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));

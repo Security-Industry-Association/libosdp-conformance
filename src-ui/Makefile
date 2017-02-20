@@ -33,7 +33,7 @@ PROGS = open-osdp-kick
 TLS_PROGS = 
 
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
-  open-osdp-MON.html
+  open-osdp-MON.html osdp-conformance-CP.html
 TLS_PAGES = 
 
 SCRIPTS = exec-CP485 exec-PD485 HUP-CP HUP-PD \

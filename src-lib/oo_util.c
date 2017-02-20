@@ -1105,92 +1105,6 @@ printf ("fixme: client cryptogram\n");
       status = action_osdp_POLL (context, msg);
       break;
 
-#if 0
-    case 9999: /* OSDP_POLL: */
-    status = ST_OK;
-    if (context->power_report EQUALS 1)
-    {
-      unsigned char
-        osdp_lstat_response_data [2];
-
-      // power change not yet reported
-      context->power_report = 0;
-      osdp_lstat_response_data [ 0] = context->tamper;
-      osdp_lstat_response_data [ 1] = 1; // report power failure
-      current_length = 0;
-      status = send_message (context,
-        OSDP_LSTATR, p_card.addr, &current_length,
-        sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-      osdp_conformance.rep_local_stat.test_status =
-        OCONFORM_EXERCISED;
-      if (context->verbosity > 2)
-      {
-        sprintf (logmsg, "Responding with OSDP_LSTAT (Power)");
-        fprintf (context->log, "%s\n", logmsg);
-      };
-    }
-    else
-    {
-      if (context->card_data_valid > 0)
-      {
-        unsigned char
-          osdp_raw_data [4+1024];
-
-        int raw_lth;
-
-      // send data if it's there (value is number of bits)
-      osdp_raw_data [ 0] = 0; // one reader, reader 0
-      osdp_raw_data [ 1] = 0; 
-      osdp_raw_data [ 2] = p_card.bits;
-      osdp_raw_data [ 3] = 0;
-      raw_lth = 4;
-      memcpy (osdp_raw_data+4, p_card.value, p_card.value_len);
-{
-  char tlogmsg [1024];
-  sprintf (tlogmsg, "bits %d. length %d. first 3 bytes %02x:%02x:%02x",
-    p_card.bits, p_card.value_len, p_card.value[0],
-    p_card.value[1], p_card.value[2]);
-fprintf (stderr, "%s\n", tlogmsg);
-  status = oosdp_log (context, OSDP_LOG_STRING, 1, tlogmsg);
-};
-      raw_lth = raw_lth + p_card.value_len;
-      current_length = 0;
-      status = send_message (context,
-        OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data);
-      if (context->verbosity > 2)
-      {
-int i;
-char c;
-        sprintf (logmsg, "Responding with cardholder data (%d bits)",
-          p_card.bits);
-        for (i=0; i<p_card.value_len; i++)
-        {
-          c = ':';
-          if (((1+i) % 4) EQUALS 0)
-            c = ' ';
-          if (i EQUALS 0)
-           c = ' ';
-          sprintf (tlogmsg2, "%c%02x", c, p_card.value[i]);
-          strcat (tlogmsg, tlogmsg2);
-        };
-        strcat (logmsg, tlogmsg);
-        fprintf (context->log, "%s\n", logmsg);
-        logmsg[0]=0;tlogmsg[0]=0;tlogmsg2[0]=0;
-      };
-        context->card_data_valid = 0;
-      }
-      else
-      {
-        current_length = 0;
-        status = send_message
-          (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
-        context->pd_acks ++;
-        if (context->verbosity > 4)
-          fprintf (stderr, "Responding with OSDP_ACK\n");
-      };
-    };
-    break;
-# endif
 // OLD OSDP_POLL
 
     case OSDP_LSTAT:
@@ -1330,10 +1244,13 @@ send OSDP_SCRYPT
       fprintf (context->log,
         " Tamper %d Power %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1));
-      osdp_conformance.rep_local_stat.test_status =
+      osdp_conformance.resp_lstatr.test_status =
         OCONFORM_EXERCISED;
       if (*(msg->data_payload) > 0)
-        osdp_conformance.rep_reader_tamper.test_status =
+        osdp_conformance.resp_lstatr_tamper.test_status =
+          OCONFORM_EXERCISED;
+      if (*(msg->data_payload + 1) > 0)
+        osdp_conformance.resp_lstatr_power.test_status =
           OCONFORM_EXERCISED;
       break;
 

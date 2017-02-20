@@ -261,7 +261,7 @@ int
     status = send_message (ctx,
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-    osdp_conformance.rep_reader_tamper.test_status =
+    osdp_conformance.resp_lstatr_tamper.test_status =
       OCONFORM_EXERCISED;
     if (ctx->verbosity > 2)
     {
@@ -280,7 +280,7 @@ int
     status = send_message (ctx,
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-    osdp_conformance.rep_local_stat.test_status =
+    osdp_conformance.resp_lstatr_power.test_status =
       OCONFORM_EXERCISED;
     if (ctx->verbosity > 2)
     {
