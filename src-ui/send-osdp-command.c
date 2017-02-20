@@ -46,7 +46,13 @@ int
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {
     printf ("<HTML><HEAD><TITLE>open-osdp CP console</TITLE>");
-    printf ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");
+#ifdef OSDP_CONFORMANCE
+    printf
+("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\">");
+#else
+    printf
+("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");
+#endif
     printf ("</HEAD><BODY>");
     strcpy (command, arguments+strlen(tag));
     // send the CP daemon a command
