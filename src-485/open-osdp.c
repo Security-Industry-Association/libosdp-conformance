@@ -115,6 +115,7 @@ int
     memset (&context, 0, sizeof (context));
     strcpy (context.init_parameters_path, "open-osdp-params.json");
     strcpy (context.log_path, "open-osdp.log");
+    context.report = fopen ("/opt/osdp-conformance/log/report.log", "w");
 
     // if there's an argument it is the config file path
     if (argc > 1)

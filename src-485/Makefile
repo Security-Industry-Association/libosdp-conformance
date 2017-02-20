@@ -18,7 +18,7 @@
 #  limitations under the License.  
 
 CC=clang
-CFLAGS=-I /tester/current/include
+CFLAGS=-DOSDP_CONFORMANCE -I /tester/current/include
 LDFLAGS=-L /tester/current/lib
 
 PROGS = open-osdp
@@ -29,6 +29,7 @@ clean:
 	rm -f core *.o ${PROGS}
 
 build:	all
+	mkdir -p ../opt/open-osdp/log
 	mkdir -p ../opt/open-osdp/bin
 	cp ${PROGS} ../opt/open-osdp/bin
 

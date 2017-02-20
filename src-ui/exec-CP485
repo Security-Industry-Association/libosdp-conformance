@@ -19,7 +19,7 @@ echo Content-type: text/html
 echo
 echo "<HTML><HEAD><TITLE>Start open-osdp as CP using RS-485</TITLE></HEAD><BODY>"
 echo "<META HTTP-EQUIV=\"REFRESH\""
-echo " CONTENT=\"1;URL=/open-osdp-CP.html\">"
+echo " CONTENT=\"1;URL=/osdp-conformance-CP.html\">"
 echo "<PRE>"
 echo
 cd /opt/open-osdp/run/CP

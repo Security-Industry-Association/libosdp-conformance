@@ -18,7 +18,8 @@
 #  limitations under the License.
 
 
-CC=clang
+CFLAGS=-DOSDP_CONFORMANCE
+CC=clang ${CFLAGS}
 LDFLAGS=-g -L /tester/current/lib
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \

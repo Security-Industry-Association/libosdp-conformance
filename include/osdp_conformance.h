@@ -90,6 +90,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_local_stat;          // 4.5
   OSDP_CONFORM rep_input_stat;          // 4.6
   OSDP_CONFORM rep_output_stat;         // 4.7
+  OSDP_CONFORM resp_rstatr;             // 4-8-1
   OSDP_CONFORM rep_reader_tamper;       // 4.8
   OSDP_CONFORM rep_raw;                 // 4.9
   OSDP_CONFORM rep_formatted;           // 4.10

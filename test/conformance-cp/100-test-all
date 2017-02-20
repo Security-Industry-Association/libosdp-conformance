@@ -1,0 +1,11 @@
+#!/bin/bash
+set -x
+echo start CP
+echo sleep to stabilize
+sleep 5
+echo request 4-8-1
+/opt/osdp-conformance/request-exercise-PD 4-8-1
+echo generate report
+echo FIXME run report command
+echo FIXME copy /opt/osdp-conformance/log/report.txt to date stamped file
+

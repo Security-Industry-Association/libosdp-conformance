@@ -1,5 +1,5 @@
 /*
-  oosdp-util - open osdp utility routines
+  oo_util - open osdp utility routines
 
   (C)2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
@@ -638,9 +638,11 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       break;
 
     case OSDP_RSTATR:
+      // sending osdp_RSTATR
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      osdp_conformance.resp_rstatr.test_status = OCONFORM_EXERCISED;
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_RSTATR");
       break;
@@ -1425,11 +1427,13 @@ printf ("MMSG DONE\n");
       break;
 
     case OSDP_RSTATR:
+      // received osdp_RSTATR
       status = ST_OK;
       fprintf (context->log, "Reader Tamper Status Report:");
       fprintf (context->log,
         " Ext Rdr %d\n",
         *(msg->data_payload + 0));
+      osdp_conformance.resp_rstatr.test_status = OCONFORM_EXERCISED;
       break;
     };
   } /* role CP */

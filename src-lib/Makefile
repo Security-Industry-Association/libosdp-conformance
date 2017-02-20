@@ -1,6 +1,6 @@
 # Make file for libosdp
 
-#  (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+#  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -20,7 +20,7 @@
 
 OUTLIB=libosdp.a
 CC=clang
-CFLAGS=-I /tester/current/include
+CFLAGS=-DOSDP_CONFORMANCE -I /tester/current/include
 
 
 all:	${OUTLIB}

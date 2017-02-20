@@ -227,29 +227,11 @@ void
 
   fprintf (ctx->log, "4.17 PD Busy Reply                      %s\n",
     conformance_status (oconf->rep_busy.test_status));
-#if 0
-  //OSDP_CONFORM rep_input_stat;          // 4.6
-  OSDP_CONFORM rep_reader_tamper;       // 4.8
-  OSDP_CONFORM rep_raw;                 // 4.9
-  OSDP_CONFORM rep_formatted;           // 4.10
-  OSDP_CONFORM rep_keypad;              // 4.11
-  OSDP_CONFORM rep_comm;                // 4.12
-  OSDP_CONFORM rep_scan_send;           // 4.13
-  OSDP_CONFORM rep_scan_match;          // 4.14
 
-  OSDP_CONFORM cmd_out;                 // 3.9
-  OSDP_CONFORM cmd_led;                 // 3.10
-  OSDP_CONFORM cmd_buz;                 // 3.11
-  OSDP_CONFORM cmd_text;                // 3.12
-  OSDP_CONFORM cmd_comset;              // 3.13
-  OSDP_CONFORM cmd_prompt;              // 3.16
-  OSDP_CONFORM cmd_bioread;             // 3.17
-  OSDP_CONFORM cmd_biomatch;            // 3.18
-  OSDP_CONFORM cmd_cont;                // 3.19
-  OSDP_CONFORM cmd_mfg;                 // 3.20
-  // 3.x partial...
+  LOG_REPORT ((log_string,
+"4-8-1 osdp_RSTATR %s\n",
+    conformance_status (oconf->resp_rstatr.test_status)));
 
-#endif
   fprintf (ctx->log,
     "Passed: %d Failed: %d Untested: %d\n",
     oconf->pass, oconf->fail, oconf->untested);
