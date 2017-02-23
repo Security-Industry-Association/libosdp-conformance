@@ -296,14 +296,10 @@ status = -1;
 
     case OSDP_CMDB_LSTAT:
       {
-        unsigned char
-          param [1];
-
         current_length = 0;
         /*
           osdp_LSTAT requires no arguments.
         */
-        param [0] = 0;
         current_length = 0;
         status = send_message (context,
           OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);

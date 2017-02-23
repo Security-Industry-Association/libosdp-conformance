@@ -42,8 +42,6 @@ int
 
 { /* write_status */
 
-  int
-    count;
   char
     current_date_string [1024];
   time_t
@@ -125,7 +123,6 @@ int
     // copy in all the octets holding the bits.
 
     memset (val, 0, sizeof (val));
-    count = 0;
     fprintf (sf, "  \"raw_data_bits\" : \"%d\",\n",
       ctx->last_raw_read_bits);
     for (i=0; i<(7+ctx->last_raw_read_bits)/8; i++)

@@ -147,8 +147,6 @@ int
     *sf;
   int
     status;
-  int
-    status_io;
 
 
   status = ST_OK;
@@ -161,7 +159,7 @@ int
   sf = fopen ("/opt/open-osdp/run/PD/open-osdp-status.json", "r");
   if (sf != NULL)
   {
-    status_io = fread (buffer, sizeof (buffer [0]), sizeof (buffer), sf);
+    (void) fread (buffer, sizeof (buffer [0]), sizeof (buffer), sf);
     fclose (sf);
   };
   clock_gettime (CLOCK_REALTIME, &current_time_fine);

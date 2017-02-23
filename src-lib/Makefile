@@ -19,7 +19,11 @@
 
 
 OUTLIB=libosdp.a
-CC=clang
+
+# built with gcc.  note it also builds with clang.
+CC=gcc
+#CC=clang
+
 CFLAGS=-DOSDP_CONFORMANCE -I /tester/current/include
 
 

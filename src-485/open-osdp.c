@@ -176,8 +176,6 @@ int
   fd_set
     readfds;
   int
-    nfds;
-  int
     scount;
   const sigset_t
     sigmask;
@@ -209,8 +207,6 @@ int
     char
       sn [1024];
     int
-      snl;
-    int
       status_socket;
     struct sockaddr_un
       usock;
@@ -218,7 +214,6 @@ int
 
     memset (sn, 0, sizeof (1024));
     sprintf (sn, OSDP_LCL_UNIX_SOCKET, tag);
-    snl = strlen (sn);
 
     ufd = socket (AF_UNIX, SOCK_STREAM, 0);
     if (ufd != -1)
@@ -247,7 +242,6 @@ check_serial (&context);
 
     // do a select waiting for RS-485 serial input (or a HUP)
 
-    nfds = 0;
     FD_ZERO (&readfds);
     FD_SET (ufd, &readfds);
     FD_SET (context.fd, &readfds);

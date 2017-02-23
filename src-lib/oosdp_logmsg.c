@@ -290,8 +290,6 @@ int
   int
     llogtype;
   char
-    prefix [1024];
-  char
     *role_tag;
   int
     status;
@@ -300,7 +298,6 @@ int
 
 
   status = ST_OK;
-  prefix [0] = 0;
   llogtype = logtype;
   role_tag = "";
   strcpy (timestamp, "");

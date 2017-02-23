@@ -363,8 +363,6 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
         int i;
         unsigned char
           *p1;
-        unsigned char
-          *p2;
         char
           tlogmsg [1024];
 
@@ -396,15 +394,14 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
         else
           status = oosdp_log (context, OSDP_LOG_STRING_PD, 1, tlogmsg);
       
-        p2 = p1+5;
+        // p2 = p1+5; // command/reply
         if (p->ctrl & 0x08)
         {
           fprintf (context->log,
             "  SEC_BLK_LEN %02x SEC_BLK_TYPE %02x SEC_BLK_DATA[0] %02x\n",
             *(p1+5), *(p1+6), *(p1+7));
-          p2 = p1+5+*(p1+5); // before-secblk and secblk
+          // p2 = p1+5+*(p1+5); // before-secblk and secblk
         };
-        // was fprintf (context->log, "   CMND/REPLY %02x\n", *p2);
         if (!m_dump)
         {
           if (msg_data_length)

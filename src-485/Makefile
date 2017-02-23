@@ -17,7 +17,9 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.  
 
-CC=clang
+# built with gcc.  note it also builds with clang.
+CC=gcc
+#CC=clang
 CFLAGS=-DOSDP_CONFORMANCE -I /tester/current/include
 LDFLAGS=-L /tester/current/lib
 

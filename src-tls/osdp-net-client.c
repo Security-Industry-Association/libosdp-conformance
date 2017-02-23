@@ -339,7 +339,6 @@ int
 { /* local_socket_setup */
 
   struct sockaddr_un usock;
-  int snl;
   char sn [1024];
   int
     status;
@@ -358,7 +357,6 @@ int
   else
     tag = "PD";
   sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
-  snl = strlen (sn);
 
   ufd = socket (AF_UNIX, SOCK_STREAM, 0);
   if (ufd != -1)

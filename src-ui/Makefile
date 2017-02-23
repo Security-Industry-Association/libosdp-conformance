@@ -18,8 +18,11 @@
 #  limitations under the License.
 
 
+# built with gcc.  note it also builds with clang.
+
 CFLAGS=-DOSDP_CONFORMANCE
-CC=clang ${CFLAGS}
+CC=gcc ${CFLAGS}
+#CC=clang ${CFLAGS}
 LDFLAGS=-g -L /tester/current/lib
 
 CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \

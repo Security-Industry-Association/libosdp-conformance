@@ -18,7 +18,10 @@
 #  limitations under the License.
 
 
-CC=clang
+# built with gcc.  note it also builds with clang.
+
+CC=gcc
+#CC=clang
 CFLAGS=-I /tester/current/include
 LDFLAGS=-L /tester/current/lib
 
