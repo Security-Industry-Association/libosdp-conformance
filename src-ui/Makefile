@@ -51,25 +51,25 @@ all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS}
 clean:
 	rm -f core *.o ${CGIPROGS} ${PROGS}
 	rm -f core *.o ${TLS_CGIPROGS} ${TLS_PROGS}
-	rm -rf ../opt/open-osdp
+	rm -rf ../opt/osdp-conformance
 
 build:	all
-	mkdir -p ../opt/open-osdp/bin
-	mkdir -p ../opt/open-osdp/cgi-bin
-	mkdir -p ../opt/open-osdp/www
-	mkdir -p ../opt/open-osdp/run/CP
-	mkdir -p ../opt/open-osdp/run/MON
-	mkdir -p ../opt/open-osdp/run/PD
-	cp ${PAGES} ../opt/open-osdp/www
-	cp ${CGIPROGS} ../opt/open-osdp/cgi-bin
-	cp ${SCRIPTS} ../opt/open-osdp/bin
-	cp ${PROGS} ../opt/open-osdp/bin
+	mkdir -p ../opt/osdp-conformance/bin
+	mkdir -p ../opt/osdp-conformance/cgi-bin
+	mkdir -p ../opt/osdp-conformance/www
+	mkdir -p ../opt/osdp-conformance/run/CP
+	mkdir -p ../opt/osdp-conformance/run/MON
+	mkdir -p ../opt/osdp-conformance/run/PD
+	cp ${PAGES} ../opt/osdp-conformance/www
+	cp ${CGIPROGS} ../opt/osdp-conformance/cgi-bin
+	cp ${SCRIPTS} ../opt/osdp-conformance/bin
+	cp ${PROGS} ../opt/osdp-conformance/bin
 
 build-tls:	${TLS_CGIPROGS} ${TLS_PAGES} ${TLS_SCRIPTS} ${TLS_PROGS} build
-	# (no TLS pages) cp ${TLS_PAGES} ../opt/open-osdp/www
-	cp ${TLS_CGIPROGS} ../opt/open-osdp/cgi-bin
-	cp ${TLS_SCRIPTS} ../opt/open-osdp/bin
-	# (no TLS programs) cp ${TLS_PROGS} ../opt/open-osdp/bin
+	# (no TLS pages) cp ${TLS_PAGES} ../opt/osdp-conformance/www
+	cp ${TLS_CGIPROGS} ../opt/osdp-conformance/cgi-bin
+	cp ${TLS_SCRIPTS} ../opt/osdp-conformance/bin
+	# (no TLS programs) cp ${TLS_PROGS} ../opt/osdp-conformance/bin
 
 build-test:	build
 	(cd ../test; make build-test)

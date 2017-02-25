@@ -20,17 +20,24 @@ clean:
 	(cd src-485; make clean; cd ..)
 	(cd src-tls; make clean; cd ..)
 	(cd src-ui; make clean; cd ..)
-	rm -f release-libosdp.tgz
+	rm -f release-osdp-conformance.tgz
 	rm -rf opt
 
 build:	all
+	mkdir -p opt/osdp-conformance/run/CP
+	mkdir -p opt/osdp-conformance/run/MON
+	mkdir -p opt/osdp-conformance/run/PD
 	(cd src-lib; make build; cd ..)
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)
+	cp doc/config-samples/open-osdp-params-CP.json \
+	  opt/osdp-conformance/run/CP/open-osdp-params.json
 	cp doc/config-samples/open-osdp-params-MON.json \
-	  opt/open-osdp/run/MON/open-osdp-params.json
+	  opt/osdp-conformance/run/MON/open-osdp-params.json
+	cp doc/config-samples/open-osdp-params-PD.json \
+	  opt/osdp-conformance/run/PD/open-osdp-params.json
 	(cd test; make build-test; cd ..)
 
 release:	build
-	tar czvf release-libosdp.tgz opt/*
+	tar czvf release-osdp-conformance.tgz opt/*
 

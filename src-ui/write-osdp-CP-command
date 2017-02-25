@@ -1,6 +1,6 @@
 #!/bin/bash
-CMDPATH=/opt/open-osdp/run/CP/open_osdp_command.json
-mkdir -p /opt/open-osdp/run/CP
+CMDPATH=/opt/osdp-conformance/run/CP/open_osdp_command.json
+mkdir -p /opt/osdp-conformance/run/CP
 echo  >${CMDPATH} "{"
 echo >>${CMDPATH} "  \"command\" : \"$1\""
 echo >>${CMDPATH} "}"

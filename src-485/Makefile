@@ -31,9 +31,9 @@ clean:
 	rm -f core *.o ${PROGS}
 
 build:	all
-	mkdir -p ../opt/open-osdp/log
-	mkdir -p ../opt/open-osdp/bin
-	cp ${PROGS} ../opt/open-osdp/bin
+	mkdir -p ../opt/osdp-conformance/log
+	mkdir -p ../opt/osdp-conformance/bin
+	cp ${PROGS} ../opt/osdp-conformance/bin
 
 open-osdp:	open-osdp.o Makefile ../src-lib/libosdp.a
 	${CC} ${LDFLAGS} -o open-osdp -g open-osdp.o \
