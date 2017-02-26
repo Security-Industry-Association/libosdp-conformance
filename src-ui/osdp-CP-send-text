@@ -1,10 +1,10 @@
 #!/bin/bash
-CMDPATH=/opt/open-osdp/run/CP/open_osdp_command.json
-mkdir -p /opt/open-osdp/run/CP
+CMDPATH=/opt/osdp-conformance/run/CP/open_osdp_command.json
+mkdir -p /opt/osdp-conformance/run/CP
 echo  >${CMDPATH} "{"
 echo >>${CMDPATH} "  \"command\" : \"text\","
 echo >>${CMDPATH} "  \"message\" : \"$1\""
 echo >>${CMDPATH} "}"
-/opt/open-osdp/bin/open-osdp-kick CP <${CMDPATH}
+/opt/osdp-conformance/bin/open-osdp-kick CP <${CMDPATH}
 
 

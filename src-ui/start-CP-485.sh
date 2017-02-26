@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,13 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cd /opt/open-osdp/run/CP
+cd /opt/osdp-conformance/run/CP
 sudo -n killall open-osdp
-sudo -n /opt/open-osdp/bin/exec-CP485
+sudo -n /opt/osdp-conformance/bin/exec-CP485
 echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>start CP RS-485 Server</TITLE>"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\">");
+echo "</HEAD>"
 echo "<BODY><PRE>"
 echo "open-osdp started in CP run directory"
 echo "</BODY></HTML>"

@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
       tag = "PD";
   };
   sprintf (socket_path,
-    "/opt/open-osdp/run/%s/open-osdp-control",
+    "/opt/osdp-conformance/run/%s/open-osdp-control",
     tag);
 
   if ( (fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {

@@ -31,11 +31,11 @@ build:	all
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)
 	cp doc/config-samples/open-osdp-params-CP.json \
-	  opt/osdp-conformance/run/CP/open-osdp-params.json
+	  opt/osdp-conformance/run/CP/
 	cp doc/config-samples/open-osdp-params-MON.json \
-	  opt/osdp-conformance/run/MON/open-osdp-params.json
+	  opt/osdp-conformance/run/MON/
 	cp doc/config-samples/open-osdp-params-PD.json \
-	  opt/osdp-conformance/run/PD/open-osdp-params.json
+	  opt/osdp-conformance/run/PD/
 	(cd test; make build-test; cd ..)
 
 release:	build

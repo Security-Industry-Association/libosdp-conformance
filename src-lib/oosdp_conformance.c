@@ -127,128 +127,251 @@ void
 }; 
   LOG_REPORT ((log_string, "Conformance Report:"));
 
-  LOG_REPORT ((log_string, "2.1  Physical Interface                 %s",
+  LOG_REPORT ((log_string,
+"2-1-1  Physical Interface                 %s",
     conformance_status (oconf->physical_interface.test_status)));
-  LOG_REPORT ((log_string, "2.2  Signalling                         %s",
+  LOG_REPORT ((log_string,
+"2-1-2  Frame Check                        %s",
+    conformance_status (oconf->frame_check.test_status)));
+  LOG_REPORT ((log_string,
+"2-1-3  CRC Check                          %s",
+    conformance_status (oconf->crc_check.test_status)));
+  LOG_REPORT ((log_string,
+"2-1-4  Checksum Check                     %s",
+    conformance_status (oconf->checksum_check.test_status)));
+  LOG_REPORT ((log_string,
+"2-1-5  Header Control Bits                %s",
+    conformance_status (oconf->header_ctl_bits.test_status)));
+  LOG_REPORT ((log_string,
+"2-1-6  Address valid                      %s",
+    conformance_status (oconf->address_valid.test_status)));
+  LOG_REPORT ((log_string,
+"2-1-7  Sequence number                    %s",
+    conformance_status (oconf->sequence_number.test_status)));
+  LOG_REPORT ((log_string,
+"2-1-8  NAK use                            %s",
+    conformance_status (oconf->nak_use.test_status)));
+  LOG_REPORT ((log_string,
+"2-2-1  Signalling                         %s",
     conformance_status (oconf->signalling.test_status)));
-  LOG_REPORT ((log_string, "2.3  Character Encoding                 %s",
+  LOG_REPORT ((log_string,
+"2-2-2  Alt speed 2                        %s",
+    conformance_status (oconf->alt_speed_2.test_status)));
+  LOG_REPORT ((log_string,
+"2-2-3  Alt speed 3                        %s",
+    conformance_status (oconf->alt_speed_2.test_status)));
+  LOG_REPORT ((log_string,
+"2-3-1  Character Encoding                 %s",
     conformance_status (oconf->character_encoding.test_status)));
-  LOG_REPORT ((log_string, "2.4  Channel Access                     %s",
+  LOG_REPORT ((log_string,
+"2-4-1  Channel Access                     %s",
     conformance_status (oconf->channel_access.test_status)));
-  LOG_REPORT ((log_string, "2.5  Multi-byte Data Encoding           %s",
+  LOG_REPORT ((log_string,
+"2-4-2  Timeout resend                     %s",
+    conformance_status (oconf->timeout_resend.test_status)));
+  LOG_REPORT ((log_string,
+"2-4-3  Busy resend                        %s",
+    conformance_status (oconf->busy_resend.test_status)));
+  LOG_REPORT ((log_string,
+"2-4-4  New on busy                        %s",
+    conformance_status (oconf->new_on_busy.test_status)));
+  LOG_REPORT ((log_string,
+"2-5-1  Multi-byte Data Encoding           %s",
     conformance_status (oconf->multibyte_data_encoding.test_status)));
-  LOG_REPORT ((log_string, "2.6  Packet Size Limits                 %s",
-"???")); //    conformance_status (oconf->channel_access.test_status));
-  LOG_REPORT ((log_string, "2.7  Timing                             %s",
-    "Not implemented in open-osdp"));
-  LOG_REPORT ((log_string, "2.8  Message Synchronization            %s",
-    "Not implemented in open-osdp"));
-  LOG_REPORT ((log_string, "2.9  Packet Formats                     %s",
+  LOG_REPORT ((log_string,
+"2-6-1  Packet Size Limits                 %s",
+    conformance_status (oconf->packet_size_limits.test_status)));
+  LOG_REPORT ((log_string,
+"2-6-2  Packet size from PD                %s",
+    conformance_status (oconf->packet_size_from_pd.test_status)));
+  LOG_REPORT ((log_string,
+"2-6-3  Packet size stress CP              %s",
+    conformance_status (oconf->packet_size_stress_cp.test_status)));
+  LOG_REPORT ((log_string,
+"2-7-1  Timing                             %s",
+    conformance_status (oconf->timing.test_status)));
+  LOG_REPORT ((log_string,
+"2-7-2  Max delay                          %s",
+    conformance_status (oconf->timing.test_status)));
+  LOG_REPORT ((log_string,
+"2-7-3  Offline test                       %s",
+    conformance_status (oconf->offline_test.test_status)));
+// ???
+  LOG_REPORT ((log_string,
+"2-8-1  Message Synchronization            %s",
+    conformance_status (oconf->message_synchronization.test_status)));
+  LOG_REPORT ((log_string,
+"2-9-1  Packet Formats                     %s",
     conformance_status (oconf->packet_format.test_status)));
-  LOG_REPORT ((log_string, "2.10 SOM - Start of Message             %s",
+  LOG_REPORT ((log_string,
+"2-10-1 SOM Start of Message               %s",
     conformance_status (oconf->SOM.test_status)));
-  LOG_REPORT ((log_string, "2.11 ADDR - Address                     %s",
-"???")); //    conformance_status (oconf->channel_access.test_status));
-  LOG_REPORT ((log_string, "2.12 LEN - Length                       %s",
+  LOG_REPORT ((log_string,
+"2-11-1 ADDR                               %s",
+    conformance_status (oconf->ADDR.test_status)));
+  LOG_REPORT ((log_string,
+"2-11-2 Address 2                          %s",
+    conformance_status (oconf->address_2.test_status)));
+  LOG_REPORT ((log_string,
+"2-11-3 Address 3                          %s",
+    conformance_status (oconf->address_3.test_status)));
+  LOG_REPORT ((log_string,
+"2-12-1 LEN                                %s",
     conformance_status (oconf->LEN.test_status)));
-  LOG_REPORT ((log_string, "2.13 CTRL - Control                     %s",
+  LOG_REPORT ((log_string,
+"2-13-1 CTRL                               %s",
     conformance_status (oconf->CTRL.test_status)));
-  LOG_REPORT ((log_string, "2.14 Security Block (hdr process only)  %s",
+  LOG_REPORT ((log_string,
+"2-13-2 Control 2                          %s",
+    conformance_status (oconf->control_2.test_status)));
+  LOG_REPORT ((log_string,
+"2-13-3 Control 3                          %s",
+    conformance_status (oconf->control_3.test_status)));
+  LOG_REPORT ((log_string,
+"2-14-1 Security Block (hdr process only)  %s",
     conformance_status (oconf->security_block.test_status)));
-  LOG_REPORT ((log_string, "2.15 CMND/REPLY - Command/Reply Code    %s",
+  LOG_REPORT ((log_string,
+"2-15-1 CMND/REPLY - Command/Reply Code    %s",
     conformance_status (oconf->CMND_REPLY.test_status)));
-  LOG_REPORT ((log_string, "2.16 CHKSUM/CRC16 - Message Check Codes %s",
+  LOG_REPORT ((log_string,
+"2-15-2 CMND/REPLY - Command/Reply Code    %s",
+    conformance_status (oconf->invalid_command.test_status)));
+  LOG_REPORT ((log_string,
+"2-16-1 CHKSUM/CRC16                       %s",
     conformance_status (oconf->CHKSUM_CRC16.test_status)));
-  LOG_REPORT ((log_string, "2.17 Large Data Messages                %s",
-"???")); //    conformance_status (oconf->channel_access.test_status));
-
-//  23
-
-  LOG_REPORT ((log_string, "3.1  Poll                               %s\n",
-    conformance_status (oconf->cmd_poll.test_status)));
-  LOG_REPORT ((log_string, "3.2  ID Report Request                  %s\n",
-    conformance_status (oconf->cmd_id.test_status)));
-  LOG_REPORT ((log_string, "3.3  Peripheral Device Capabilities Req %s\n",
-    conformance_status (oconf->cmd_pdcap.test_status)));
-  LOG_REPORT ((log_string, "3.4  Diagnostic Function Request        %s\n",
-    conformance_status (oconf->cmd_diag.test_status)));
-  LOG_REPORT ((log_string, "3.5  Local Status Report Request        %s\n",
-    conformance_status (oconf->cmd_lstat.test_status)));
-  LOG_REPORT ((log_string, "3.6  Input Status Report Request        %s\n",
-    conformance_status (oconf->cmd_istat.test_status)));
-  LOG_REPORT ((log_string, "3.7  Output Status Report Request        %s\n",
-    conformance_status (oconf->cmd_ostat.test_status)));
-  LOG_REPORT ((log_string, "3.8  Reader Status Report Request        %s\n",
-    conformance_status (oconf->cmd_rstat.test_status)));
-  LOG_REPORT ((log_string, "3.9  Output Control Command             %s\n",
-    conformance_status (oconf->cmd_out.test_status)));
-  LOG_REPORT ((log_string, "3.10 Reader LED Control Command         %s\n",
-    conformance_status (oconf->cmd_led.test_status)));
-  LOG_REPORT ((log_string, "3.11 Reader Buzzer Control Command      %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.12 Reader Text Output Command         %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.13 (Deprecated)\n"));
-  LOG_REPORT ((log_string, "3.14 Communication Configuration Cmd    %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.15 (Deprecated)\n"));
-  LOG_REPORT ((log_string, "3.16 Set Automatic Rdr Prompt Strings   %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.17 Scan and Send Biometric Template   %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.18 Scan and Match Biometric Template  %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.19 (Deprecated)\n"));
-  LOG_REPORT ((log_string, "3.20 Manufacturer Specific Command      %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.21 Stop Multi Part Message            %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.22 Maximum Accetpable Reply Size      %s\n",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-
-// 10 11 12 13 14 15 16
-  fprintf (ctx->log, "4.1  General Ack Nothing to Report      %s\n",
-    conformance_status (oconf->rep_ack.test_status));
-  fprintf (ctx->log, "4.2  Negative Ack Error Response        %s\n",
-    conformance_status (oconf->rep_nak.test_status));
-  fprintf (ctx->log, "4.3  Device Identification Report       %s\n",
-    conformance_status (oconf->rep_device_ident.test_status));
-  fprintf (ctx->log, "4.4  Device Capabilities Report         %s\n",
-    conformance_status (oconf->rep_device_capas.test_status));
+  LOG_REPORT ((log_string,
+"2-16-2 Checksum                           %s",
+    conformance_status (oconf->checksum.test_status)));
+  LOG_REPORT ((log_string,
+"2-17-1 Large Data Messages                %s",
+"???")); //    conformance_status (oconf->channel_access.test_status)));
 
   LOG_REPORT ((log_string,
-"4-5-1 osdp_LSTATR Local Status Report %s",
+"3-1-1  Poll                               %s",
+    conformance_status (oconf->cmd_poll.test_status)));
+  LOG_REPORT ((log_string,
+"3-1-2  Poll raw                           %s",
+    conformance_status (oconf->cmd_poll_raw.test_status)));
+  LOG_REPORT ((log_string,
+"3-1-3  Poll response 3                    %s",
+    conformance_status (oconf->cmd_poll_raw.test_status)));
+  LOG_REPORT ((log_string,
+"3-1-4  Poll response 4                    %s",
+    conformance_status (oconf->cmd_poll_raw.test_status)));
+  LOG_REPORT ((log_string,
+"3-2-1  ID Report Request                  %s",
+    conformance_status (oconf->cmd_id.test_status)));
+  LOG_REPORT ((log_string,
+"3-3-1  Peripheral Device Capabilities Req %s",
+    conformance_status (oconf->cmd_pdcap.test_status)));
+  LOG_REPORT ((log_string,
+"3-4-1  Diagnostic Function Request        %s",
+    conformance_status (oconf->cmd_diag.test_status)));
+  LOG_REPORT ((log_string,
+"3-5-1  Local Status Report Request        %s",
+    conformance_status (oconf->cmd_lstat.test_status)));
+  LOG_REPORT ((log_string,
+"3-6-1  Input Status Report Request        %s",
+    conformance_status (oconf->cmd_istat.test_status)));
+  LOG_REPORT ((log_string,
+"3-7-1  Output Status Report Request       %s",
+    conformance_status (oconf->cmd_ostat.test_status)));
+  LOG_REPORT ((log_string,
+"3-7-2  Ostat ack                          %s",
+    conformance_status (oconf->cmd_ostat_ack.test_status)));
+  LOG_REPORT ((log_string,
+"3-8-1  Reader Status Report Request       %s",
+    conformance_status (oconf->cmd_rstat.test_status)));
+  LOG_REPORT ((log_string,
+"3-9-1  Output Control Command             %s",
+    conformance_status (oconf->cmd_out.test_status)));
+  LOG_REPORT ((log_string, "3.10 Reader LED Control Command         %s",
+    conformance_status (oconf->cmd_led.test_status)));
+  LOG_REPORT ((log_string, "3.11 Reader Buzzer Control Command      %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.12 Reader Text Output Command         %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.13 (Deprecated)"));
+  LOG_REPORT ((log_string, "3.14 Communication Configuration Cmd    %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.15 (Deprecated)"));
+  LOG_REPORT ((log_string, "3.16 Set Automatic Rdr Prompt Strings   %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.17 Scan and Send Biometric Template   %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.18 Scan and Match Biometric Template  %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.19 (Deprecated)"));
+  LOG_REPORT ((log_string, "3.20 Manufacturer Specific Command      %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.21 Stop Multi Part Message            %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string, "3.22 Maximum Accetpable Reply Size      %s",
+"???"));//    conformance_status (oconf->cmd_led.test_status));
+
+  LOG_REPORT ((log_string,
+"4-1-1  General Ack Nothing to Report      %s",
+    conformance_status (oconf->rep_ack.test_status)));
+  LOG_REPORT ((log_string,
+"4-2-1  Negative Ack Error Response        %s",
+    conformance_status (oconf->rep_nak.test_status)));
+  LOG_REPORT ((log_string,
+"4-3-1  Device Identification Report       %s",
+    conformance_status (oconf->rep_device_ident.test_status)));
+  LOG_REPORT ((log_string,
+"4-3-2  Ident report consistent            %s",
+    conformance_status (oconf->rep_ident_consistent.test_status)));
+  LOG_REPORT ((log_string,
+"4-4-1  Device Capabilities Report         %s",
+    conformance_status (oconf->rep_device_capas.test_status)));
+  LOG_REPORT ((log_string,
+"4-4-2  Capabilities report consistent     %s",
+    conformance_status (oconf->rep_capas_consistent.test_status)));
+  LOG_REPORT ((log_string,
+"4-5-1 osdp_LSTATR Local Status Report     %s",
     conformance_status (oconf->resp_lstatr.test_status)));
   LOG_REPORT ((log_string,
-"4-5-2 osdp_LSTATR Tamper              %s",
+"4-5-2 osdp_LSTATR Tamper                  %s",
     conformance_status (oconf->resp_lstatr_tamper.test_status)));
   LOG_REPORT ((log_string,
-"4-5-3 osdp_LSTATR Power               %s",
+"4-5-3 osdp_LSTATR Power                   %s",
     conformance_status (oconf->resp_lstatr_power.test_status)));
-
   LOG_REPORT ((log_string,
-"4-6-1 osdp_ISTATR Input Status Report %s",
+"4-6-1 osdp_ISTATR Input Status Report     %s",
     conformance_status (oconf->rep_input_stat.test_status)));
-
   LOG_REPORT ((log_string,
-"4-7-1 osdp_OSTATR                     %s",
-    conformance_status (oconf->resp_ostatr.test_status)));
+"4-6-2 Input report consistent             %s",
+    conformance_status (oconf->rep_input_stat.test_status)));
   LOG_REPORT ((log_string,
-"4-7-2 osdp_OSTATR for POLL            %s",
+"4-7-1 osdp_OSTATR                         %s",
+    conformance_status (oconf->rep_output_stat.test_status)));
+  LOG_REPORT ((log_string,
+"4-7-2 osdp_OSTATR for POLL                %s",
     conformance_status (oconf->resp_ostatr_poll.test_status)));
-
   LOG_REPORT ((log_string,
-"4-8-1 osdp_RSTATR                     %s",
+"4-7-3 osdp_OSTATR for POLL                %s",
+    conformance_status (oconf->resp_ostatr_range.test_status)));
+  LOG_REPORT ((log_string,
+"4-8-1 osdp_RSTATR                         %s",
     conformance_status (oconf->resp_rstatr.test_status)));
 
-  fprintf (ctx->log,
-"4.9  Card Data Report, Raw Bit Array  %s\n",
-    conformance_status (oconf->rep_raw.test_status));
-
-  fprintf (ctx->log,
-    "\n===>Passed: %d Failed: %d Untested: %d Skipped: %d<===\n",
-    oconf->pass, oconf->fail, oconf->untested, oconf->skipped);
-  fprintf (ctx->log, "---end of report---\n");
+  LOG_REPORT ((log_string,
+"=== Passed:   %d",
+    oconf->pass));
+  LOG_REPORT ((log_string,
+"    Failed:   %d",
+    oconf->fail));
+  LOG_REPORT ((log_string,
+"    Untested: %d",
+    oconf->untested));
+  LOG_REPORT ((log_string,
+"    Skipped:  %d",
+    oconf->skipped));
+  LOG_REPORT ((log_string,
+"    Total:    %d",
+    oconf->pass + oconf->fail + oconf->untested + oconf->skipped));
+  LOG_REPORT ((log_string,
+    "---end of report---"));
 fprintf (ctx->log, "mmt %d of %d\n",
   oconf->conforming_messages,
   PARAM_MMT);

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,12 +17,12 @@
 echo "Content-type: text/html"
 echo ""
 
-echo "<HTML><HEAD><TITLE>Last 100 lines of CP log</TITLE>"
+echo "<HTML><HEAD><TITLE>Last 150 lines of CP log</TITLE>"
 echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
 date
-sudo -n tail -100 /opt/osdp-conformance/run/CP/open-osdp.log
+sudo -n tail -150 /opt/osdp-conformance/run/CP/open-osdp.log
 echo "</BODY></HTML>"
 
 

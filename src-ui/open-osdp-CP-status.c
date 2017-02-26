@@ -1,7 +1,7 @@
 /*
   open-osdp-CP-status - display CP status as refreshing HTML page
 
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -47,7 +47,7 @@ int
 
   status = ST_OK;
   printf ("Content-type: text/html\n\n");
-  printf ("<HTML><HEAD><TITLE>open-osdp CP Status</TITLE>");
+  printf ("<HTML><HEAD><TITLE>libosdp-conformance CP Status</TITLE>");
   printf ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;\">");
   printf ("</HEAD><BODY>");
 
@@ -63,7 +63,7 @@ int
   int status_io;
   char buffer [16384];
 
-  sf = fopen ("/opt/open-osdp/run/CP/open-osdp-status.json", "r");
+  sf = fopen ("/opt/osdp-conformance/run/CP/open-osdp-status.json", "r");
   if (sf != NULL)
   {
     status_io = fread (buffer, sizeof (buffer [0]), sizeof (buffer), sf);
