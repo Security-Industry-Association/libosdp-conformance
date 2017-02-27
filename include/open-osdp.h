@@ -21,6 +21,7 @@
 
 
 #include <termios.h>
+#include <time.h>
 
 
 #define EQUALS ==
@@ -111,6 +112,7 @@
 #define OSDP_CMDB_OSTAT        (1012)
 #define OSDP_CMDB_LSTAT        (1013)
 #define OSDP_CMDB_RSTAT        (1014)
+#define OSDP_CMDB_CONFORM_2_6_1 (1015)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -201,6 +203,23 @@ typedef struct osdp_led_state
 #define OSDP_LED_ACTIVATED   (1)
 #define OSDP_LED_DEACTIVATED (0)
 
+typedef struct osdp_timer
+{
+  time_t
+    i_sec;
+  long
+    i_nsec;
+  time_t
+    current_seconds;
+  long
+    current_nanoseconds;
+  int
+    status;
+} OSDP_TIMER;
+// possible values for status
+#define OSDP_TIMER_RUNNING   (0)
+#define OSDP_TIMER_RESTARTED (1)
+
 typedef struct osdp_context
 {
   int
@@ -229,7 +248,11 @@ typedef struct osdp_context
   FILE
     *report;
   int
-    idle_time;
+    timer_count;
+  OSDP_TIMER
+    timer [2];
+  int
+    last_errno;
   int
     tamper;
   int
@@ -616,8 +639,6 @@ int
 int
   m_build;
 int
-  m_idle_timeout;
-int
   m_check;
 int
   m_dump;
@@ -648,7 +669,7 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
-int osdp_timeout (OSDP_CONTEXT *ctx, long int *last_time_check);
+int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
 int parse_message (OSDP_CONTEXT *context, OSDP_MSG *m, OSDP_HDR *h);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context, char *details);

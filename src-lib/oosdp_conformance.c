@@ -49,6 +49,10 @@ char
 
   switch (cstat)
   {
+  case OCONFORM_SKIP:
+    strcpy (response, "Skipped");
+    osdp_conformance.skipped ++;
+    break;
   case OCONFORM_UNTESTED:
     strcpy (response, "Untested");
     osdp_conformance.untested ++;
@@ -86,16 +90,23 @@ void
   oconf->untested = 0;
   oconf->skipped = 0;
 
+  // skip the ones we don't do now.
+  oconf->character_encoding.test_status =
+    OCONFORM_SKIP;
+  oconf->multibyte_data_encoding.test_status =
+    OCONFORM_SKIP;
+  oconf->packet_size_stress_cp.test_status =
+    OCONFORM_SKIP;
+
   // fill in results for "minimal message threshhold" case
 
   if (oconf->conforming_messages >= PARAM_MMT)
   {
     oconf->physical_interface.test_status =
       OCONFORM_EXERCISED;
-    oconf->signalling.test_status =
-      OCONFORM_EXERCISED;
-    oconf->character_encoding.test_status =
-      OCONFORM_EXERCISED;
+    if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
+      oconf->signalling.test_status =
+        OCONFORM_EXERCISED;
     oconf->channel_access.test_status =
       OCONFORM_EXERCISED;
     oconf->packet_format.test_status =
@@ -131,35 +142,17 @@ void
 "2-1-1  Physical Interface                 %s",
     conformance_status (oconf->physical_interface.test_status)));
   LOG_REPORT ((log_string,
-"2-1-2  Frame Check                        %s",
-    conformance_status (oconf->frame_check.test_status)));
-  LOG_REPORT ((log_string,
-"2-1-3  CRC Check                          %s",
-    conformance_status (oconf->crc_check.test_status)));
-  LOG_REPORT ((log_string,
-"2-1-4  Checksum Check                     %s",
-    conformance_status (oconf->checksum_check.test_status)));
-  LOG_REPORT ((log_string,
-"2-1-5  Header Control Bits                %s",
-    conformance_status (oconf->header_ctl_bits.test_status)));
-  LOG_REPORT ((log_string,
-"2-1-6  Address valid                      %s",
-    conformance_status (oconf->address_valid.test_status)));
-  LOG_REPORT ((log_string,
-"2-1-7  Sequence number                    %s",
-    conformance_status (oconf->sequence_number.test_status)));
-  LOG_REPORT ((log_string,
-"2-1-8  NAK use                            %s",
-    conformance_status (oconf->nak_use.test_status)));
-  LOG_REPORT ((log_string,
-"2-2-1  Signalling                         %s",
+"2-2-1  Signalling (9600)                  %s",
     conformance_status (oconf->signalling.test_status)));
   LOG_REPORT ((log_string,
-"2-2-2  Alt speed 2                        %s",
+"2-2-2  Signalling (19200)                 %s",
     conformance_status (oconf->alt_speed_2.test_status)));
   LOG_REPORT ((log_string,
-"2-2-3  Alt speed 3                        %s",
-    conformance_status (oconf->alt_speed_2.test_status)));
+"2-2-3  Signalling (38400)                 %s",
+    conformance_status (oconf->alt_speed_3.test_status)));
+  LOG_REPORT ((log_string,
+"2-2-4  Signalling (115200)                %s",
+    conformance_status (oconf->alt_speed_4.test_status)));
   LOG_REPORT ((log_string,
 "2-3-1  Character Encoding                 %s",
     conformance_status (oconf->character_encoding.test_status)));
@@ -206,6 +199,9 @@ void
   LOG_REPORT ((log_string,
 "2-10-1 SOM Start of Message               %s",
     conformance_status (oconf->SOM.test_status)));
+  LOG_REPORT ((log_string,
+"2-10-2 SOM sent                           %s",
+    conformance_status (oconf->SOM_sent.test_status)));
   LOG_REPORT ((log_string,
 "2-11-1 ADDR                               %s",
     conformance_status (oconf->ADDR.test_status)));

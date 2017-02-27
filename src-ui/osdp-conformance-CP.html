@@ -1,84 +1,86 @@
 <HTML>
 <HEAD>
-<TITLE>PD CONFORMANCE 0.0 Build 5</TITLE>
+<TITLE>Test PD CONFORMANCE 0.0 Build 5</TITLE>
 </HEAD>
 <BODY>
-<H3>PD Conformance 0.0 Build 5</H3>
-Tester
-<A HREF="#control">control</A>
-options at bottom of page.
-<TABLE>
-<CAPTION>Test Group 2 Protocol [2]</CAPTION>
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
+<H3>Test PD Conformance (0.0 Build 5)</H3>
+
+<P ALIGN="RIGHT">
+Generate
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
+Display
+<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
+Last 100 lines of CP
+<A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A> ::
+<A HREF="/cgi-bin/start-CP-485">Start</A> CP ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP ::
+<A HREF="/cgi-bin/shutdown-osdp">Stop</A> Server</P>
+
+<TABLE><CAPTION>Test Group 2 Protocol [2]</CAPTION><COL WIDTH="75">
+<COL WIDTH="200"> <COL WIDTH="75"> <COL WIDTH="200"> <COL WIDTH="75">
+<COL WIDTH="200"> <COL WIDTH="75"> <COL WIDTH="200">
+<TR> <TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH> </TR>
 <TR>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
+<TD ALIGN="CENTER">2-1-1</TD>
+  <TD>Physical Interface [4]</TD>
+<TD ALIGN="CENTER">2-2-1</TD>
+  <TD>Signalling (9600) [4]</TD>
+<TD ALIGN="RIGHT">2-2-2</TD>
+  <TD ALIGN="RIGHT"><FONT SIZE=-3>Signalling (19200)</FONT></TD>
+<TD ALIGN="RIGHT">2-2-3</TD>
+  <TD ALIGN="RIGHT"><FONT SIZE=-3>Signalling (38400)</FONT></TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT">2-1-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Physical Interface</TD>
-<TD ALIGN="RIGHT">2-1-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>frame check</TD>
-<TD ALIGN="RIGHT">2-1-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>CRC Check</TD>
-<TD ALIGN="RIGHT">2-1-4</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>checksum check</TD>
-</TR>
-<TR>
-<TD ALIGN="RIGHT">2-1-5</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>header control bits sane</TD>
-<TD ALIGN="RIGHT">2-1-6</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>address valid</TD>
-<TD ALIGN="RIGHT">2-1-7</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>sequence number use</TD>
-<TD ALIGN="RIGHT">2-1-8</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>NAK use</TD>
-</TR>
-<TR>
-<TD ALIGN="RIGHT">2-2-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Signalling</TD>
-<TD ALIGN="RIGHT">2-2-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>alt speed</TD>
-<TD ALIGN="RIGHT">2-2-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>alt speed</TD>
-<TD ALIGN="RIGHT">2-3-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>encoding</TD>
-</TR>
-<TR>
+<TD ALIGN="RIGHT">2-2-4</TD>
+  <TD ALIGN="RIGHT"><FONT SIZE=-3>Signalling (115200)</FONT></TD>
+<TD ALIGN="CENTER">2-3-1</TD>
+  <TD>Encoding [5]</TD>
 <TD ALIGN="RIGHT">2-4-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Channel Access</TD>
 <TD ALIGN="RIGHT">2-4-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>resend on timeout</TD>
-<TD ALIGN="RIGHT">2-4-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>resend on busy</TD>
-<TD ALIGN="RIGHT">2-4-4</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>send new on busy</TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT">2-5-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>multi byte data encoding</TD>
-<TD ALIGN="RIGHT">2-6-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>packet size limit cp-to-pd</TD>
+<TD ALIGN="RIGHT">2-4-3</TD>
+  <TD ALIGN="RIGHT"><FONT SIZE=-3>resend on busy</TD>
+<TD ALIGN="RIGHT">2-4-4</TD>
+  <TD ALIGN="RIGHT"><FONT SIZE=-3>send new on busy</TD>
+<TD ALIGN="CENTER">2-5-1</TD>
+  <TD>Multi byte data encoding</TD>
+<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_6_1">
+  2-6-1</A></TD>
+  <TD>Packet size limit (send)</TD>
+</TR>
 <TD ALIGN="RIGHT">2-6-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>packet size limit pd to cp</TD>
-<TD ALIGN="RIGHT">2-6-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>packet size stress pd to cp</TD>
-</TR>
-<TR>
+<TD ALIGN="CENTER">2-6-3</TD>
+  <TD>Packet size stress pd to cp [6]</TD>
 <TD ALIGN="RIGHT">2-7-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>timing</TD>
 <TD ALIGN="RIGHT">2-7-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>max delay</TD>
+</TR>
+<TR>
 <TD ALIGN="RIGHT">2-7-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>offline test</TD>
 <TD ALIGN="RIGHT">2-8-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>synchronization</TD>
+<TD ALIGN="CENTER">2-9-1</TD><TD>Packet format [4]</TD>
+<TD ALIGN="CENTER">2-10-1</TD><TD>SOM [4]</TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT">2-9-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>packet format</TD>
-<TD ALIGN="RIGHT">2-10-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>SOM</TD>
+<TD ALIGN="CENTER">2-10-2</TD><TD>SOM sent [4]</TD>
 <TD ALIGN="RIGHT">2-11-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Address</TD>
 <TD ALIGN="RIGHT">2-11-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Address 2</TD>
+<TD ALIGN="RIGHT"> 2-11-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Address 3</TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT"> 2-11-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Address 3</TD>
 <TD ALIGN="RIGHT"> 2-12-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Length </TD>
 <TD ALIGN="RIGHT"> 2-13-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Control field </TD>
 <TD ALIGN="RIGHT"> 2-13-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Ctl 2 </TD>
+<TD ALIGN="RIGHT"> 2-13-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Ctl 3 </TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT"> 2-13-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Ctl 3 </TD>
 <TD ALIGN="RIGHT"> 2-14-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>security block </TD>
 <TD ALIGN="RIGHT"> 2-15-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>valid command</TD>
 <TD ALIGN="RIGHT"> 2-15-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>invalid command</TD>
+<TD ALIGN="RIGHT"> 2-16-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>CRC</TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT"> 2-16-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>CRC</TD>
 <TD ALIGN="RIGHT"> 2-16-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>checksum</TD>
 </TR>
 </TABLE>
@@ -181,6 +183,8 @@ options at bottom of page.
 <LI>Test groups numbered to match Peripheral Profile</LI>
 <LI>(4-7-2) Induce digital output to test</LI>
 <LI>Runs automatically upon receipt of message</LI>
+<LI>Not implemented at this time</LI>
+<LI>Not applicable in this role</LI>
 </OL>
 </P>
 <A name="control"><EM>Controls</EM></A>

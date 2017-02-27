@@ -91,6 +91,9 @@ fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
 
   known_speed = 1;
   serial_speed_cfg_value = B9600;
+  // if speed wasn't set use the default of 9600
+  if (strlen (context->serial_speed) EQUALS 0)
+    strcpy (context->serial_speed, "9600");
 
   if (strcmp (context->serial_speed, "9600") EQUALS 0)
   {
@@ -195,19 +198,33 @@ int
   context->vendor_code [1] = 0x00;
   context->vendor_code [2] = 0x17;
   strcpy (context->fqdn, "perim-0000.example.com");
-  m_idle_timeout = 29;
   m_check = OSDP_CRC;
   m_dump = 0;
   strcpy (p_card.filename, "/dev/ttyUSB0");
   context->next_sequence = 0;
 
+  // timer set-up
+
   previous_time = 0;
+  context->timer_count = 2;
+  context->timer [0].i_sec = 1;
+  context->timer [0].i_nsec = 0;
+  context->timer [1].i_sec = 0;
+  context->timer [1].i_nsec = 0; // for 200 milliseconds it would be 200000000l;
+  {
+    struct timespec resolution;
+
+    clock_getres (CLOCK_REALTIME, &resolution);
+    fprintf (stderr, "Clock resolution is %ld seconds/%ld nanoseconds\n",
+      resolution.tv_sec, resolution.tv_nsec);
+  };
+
+  // logging set-up
 
   context->log = fopen (context->log_path, "w");
   if (context->log EQUALS NULL)
     status = ST_LOG_OPEN_ERR;
 
-//was ok here
   if (status EQUALS ST_OK)
   {
     /*

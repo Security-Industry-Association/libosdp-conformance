@@ -48,16 +48,10 @@ typedef struct osdp_interop_assessment
   // 2-x
 
   OSDP_CONFORM physical_interface;      // 2-1-1
-  OSDP_CONFORM frame_check;             // 2-1-2
-  OSDP_CONFORM crc_check;               // 2-1-3
-  OSDP_CONFORM checksum_check;          // 2-1-4
-  OSDP_CONFORM header_ctl_bits;         // 2-1-5
-  OSDP_CONFORM address_valid;           // 2-1-6
-  OSDP_CONFORM sequence_number;         // 2-1-7
-  OSDP_CONFORM nak_use;                 // 2-1-8
   OSDP_CONFORM signalling;              // 2-2-1
   OSDP_CONFORM alt_speed_2;             // 2-2-2
   OSDP_CONFORM alt_speed_3;             // 2-2-3
+  OSDP_CONFORM alt_speed_4;             // 2-2-4
   OSDP_CONFORM character_encoding;      // 2-3-1
   OSDP_CONFORM channel_access;          // 2-4-1
   OSDP_CONFORM timeout_resend;          // 2-4-2
@@ -73,6 +67,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM message_synchronization; // 2-8-1
   OSDP_CONFORM packet_format;           // 2-9-1
   OSDP_CONFORM SOM;                     // 2-10-1
+  OSDP_CONFORM SOM_sent;                // 2-10-2
   OSDP_CONFORM ADDR;                    // 2-11-1
   OSDP_CONFORM address_2;               // 2-11-2
   OSDP_CONFORM address_3;               // 2-11-3
@@ -138,7 +133,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_busy;                // 4.17
 } OSDP_INTEROP_ASSESSMENT;
 
-#define PARAM_MMT (3) // minimum message thresshold
+#define PARAM_MMT (8) // minimum message thresshold
 
 
 void

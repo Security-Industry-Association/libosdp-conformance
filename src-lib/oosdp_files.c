@@ -67,7 +67,7 @@ int
     strcpy (tag, "PD");
   else
     strcpy (tag, "CP");
-  sprintf (statfile, "/opt/open-osdp/run/%s/open-osdp-status.json",
+  sprintf (statfile, "/opt/osdp-conformance/run/%s/open-osdp-status.json",
     tag);
   sf = fopen (statfile, "w");
   if (sf != NULL)
@@ -111,8 +111,8 @@ int
       ctx->verbosity);
     fprintf (sf, "              \"crc\" : \"%d\",\n",
       m_check);
-    fprintf (sf, "          \"timeout\" : \"%d\",\n",
-      m_idle_timeout);
+    fprintf (sf, "          \"timeout\" : \"%ld\",\n",
+      ctx->timer[0].i_sec);
     fprintf (sf, "             \"poll\" : \"%d\",\n",
       p_card.poll);
     fprintf (sf, "             \"dump\" : \"%d\",\n",

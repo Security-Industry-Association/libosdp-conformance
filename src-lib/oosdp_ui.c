@@ -195,6 +195,32 @@ status = -1;
   {
     switch (command)
     {
+
+// conformance specific commands.
+
+    case OSDP_CMDB_CONFORM_2_6_1:
+      {
+        OSDP_TEXT_HEADER
+          otxt;
+
+        otxt.reader = 0;
+        otxt.tc = 0;
+        otxt.tsec = 0;
+        otxt.row = 0;
+        otxt.col = 0;
+        otxt.length = strlen (context->text);
+        memcpy (otxt.text, context->text, 1024);
+        current_length = 0;
+        status = send_message (context,
+          OSDP_TEXT, p_card.addr, &current_length,
+          sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
+          (unsigned char *)&otxt);
+        osdp_conformance.packet_size_limits.test_status =
+          OCONFORM_EXERCISED;
+        status = ST_OK;
+      };
+      break;
+
     // breech-loaded cases.  by convention these occur at the top of the old menu structure for transitional purposes.
 
     case OSDP_CMDB_CAPAS:
@@ -220,8 +246,8 @@ status = -1;
 "Role: %d (0=CP,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
          context->role, m_check);
       fprintf (stderr,
-"  Timeout %02d(%d.) Dump %d Debug %d.\n",
-         m_idle_timeout, p_card.poll, m_dump, context->verbosity);
+"  Timeout %ld(%d.) Dump %d Debug %d.\n",
+         context->timer[0].i_sec, p_card.poll, m_dump, context->verbosity);
       fprintf (stderr,
 " PwrRpt %d Special-1 %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report, context->special_1,
@@ -407,53 +433,6 @@ status = -1;
       };
       break;
 
-    // menu (keyboard-driven) cases
-
-    case OSDP_CMD_CP_DIAG:
-      context->current_menu = OSDP_MENU_CP_DIAG;
-      status = ST_OK;
-      break;
-    case OSDP_CMD_PD_DIAG:
-      context->current_menu = OSDP_MENU_PD_DIAG;
-      status = ST_OK;
-      break;
-    case OSDP_CMD_DUMP_STATUS:
-      fprintf (stderr,
-"Role: %d (0=CP,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
-         context->role, m_check);
-      fprintf (stderr,
-"  Timeout %02d(%d.) Dump %d Debug %d.\n",
-         m_idle_timeout, p_card.poll, m_dump, context->verbosity);
-      fprintf (stderr,
-" PwrRpt %d Special-1 %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
-         context->power_report, context->special_1,
-         context->cp_polls, context->pd_acks, context->sent_naks,
-         context->checksum_errs);
-      if (context->role EQUALS OSDP_ROLE_PD)
-      {
-        fprintf (stderr, "PD Address 0x%02x ", p_card.addr);
-      };
-      {
-        int count;
-        int i;
-        count = 0;
-        if (osdp_buf.next > 0)
-          count = osdp_buf.next;
-        fprintf (stderr, "Buffer had %d bytes\n", count);
-        for (i=0; i<count; i++)
-          fprintf (stderr, " %02x", osdp_buf.buf [i]);
-        fprintf (stderr, "\n");
-        status = ST_OK;
-      };
-      dump_conformance (context, &osdp_conformance);
-      break;
-    case OSDP_CMD_EXIT:
-      status = ST_EXIT;
-      break;
-    case 8:
-      context->current_menu = OSDP_MENU_SETUP;
-      status = ST_OK;
-      break;
     default:
       status = ST_CMD_UNKNOWN;
       break;

@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
+#include <errno.h>
 
 
 #include <jansson.h>
@@ -59,7 +60,6 @@ int
 
 
   status = ST_OK;
-  osdp_reset_background_timer (context);
   if (context->role EQUALS OSDP_ROLE_CP)
   {
     current_length = 0;
@@ -334,36 +334,37 @@ int
 } /* next_sequence */
 
 
-void
-  osdp_reset_background_timer
-  (OSDP_CONTEXT
-    *ctx)
-
-{ /* osdp_reset_background_timer */
-
-  ctx->idle_time = 0;
-
-} /* osdp_reset_background_timer */
-
-
 int
   osdp_timeout
     (OSDP_CONTEXT
       *ctx,
-    long int
-      *last_time_check)
+    struct timespec
+      *last_time_ex)
 
 { /* osdp_timeout */
 
-  time_t
-    current_time;
+  long
+    delta_nanotime;
   int
     delta_time;
   int
+    i;
+  int
     return_value;
+  int
+    status_posix;
+  struct timespec
+    time_spec;
 
 
   return_value = 0;
+  status_posix = clock_gettime (CLOCK_REALTIME, &time_spec);
+  if (status_posix == -1)
+    ctx->last_errno = errno;
+
+#if 0
+  time_t
+    current_time;
   current_time = time (NULL);
   if (*last_time_check != current_time)
   {
@@ -379,6 +380,56 @@ int
       };
     };
   };
+#endif
+
+  // update timers (new style)
+
+  for (i=0; i<ctx->timer_count; i++)
+  {
+    ctx->timer [i].status = OSDP_TIMER_RUNNING;
+    if (ctx->timer [i].i_sec > 0)
+    {
+      // it's a 1-second resolution timer
+
+      delta_time = time_spec.tv_sec - last_time_ex->tv_sec;
+      if (delta_time > 0)
+      {
+        if (ctx->timer [i].current_seconds >= delta_time)
+          ctx->timer [i].current_seconds =
+            ctx->timer [i].current_seconds - delta_time;
+        else
+          ctx->timer [i].current_seconds =  0;
+      };
+      if (ctx->timer [i].current_seconds == 0)
+      {
+        return_value = 1;
+        ctx->timer [i].current_seconds = ctx->timer [i].i_sec;
+        ctx->timer [i].status = OSDP_TIMER_RESTARTED;
+      };
+    };
+    if (ctx->timer [i].i_nsec > 0)
+    {
+      // it's a nanosecond resolution timer
+
+      delta_nanotime = time_spec.tv_nsec - last_time_ex->tv_nsec;
+      if (delta_nanotime > 0)
+      {
+        if (ctx->timer [i].current_nanoseconds >= delta_nanotime)
+          ctx->timer [i].current_nanoseconds =
+            ctx->timer [i].current_nanoseconds - delta_nanotime;
+        else
+          ctx->timer [i].current_nanoseconds =  0;
+      };
+      if (ctx->timer [i].current_nanoseconds == 0)
+      {
+        return_value = 1;
+        ctx->timer [i].current_nanoseconds = ctx->timer [i].i_nsec;
+        ctx->timer [i].status = OSDP_TIMER_RESTARTED;
+      };
+    };
+  };
+  last_time_ex->tv_sec = time_spec.tv_sec;;
+  last_time_ex->tv_nsec = time_spec.tv_nsec;;
   return (return_value);
 
 } /* osdp_timeout */
@@ -607,7 +658,8 @@ int
     int i;
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
-    m_idle_timeout = i;
+    // inter-poll delay time is by convention "timer 0", in seconds.
+    context.timer [0].i_sec = i;
   }; 
 
   // parameter "verbosity"
@@ -767,7 +819,6 @@ int
   ctx->cparm = PARAMETER_NONE;
   ctx->cparm_v = PARMV_NONE;
 
-  m_idle_timeout = p_card.poll;
   status = parse_json (ctx);
 //  status = parse_xml (test_buffer, sizeof (test_buffer));
 
@@ -862,8 +913,7 @@ int
     0); // no security
   if (status EQUALS ST_OK)
   {
-  if (context->verbosity > 4)
-    if (1 /* m_dump */ )
+    if (context->verbosity > 4)
     {
       int
         i;
@@ -873,11 +923,18 @@ int
          fprintf (context->log, " %02x", test_blk [i]);
        fprintf (context->log, "\n");
     };
+
+    // update statistics
+
+    if (command EQUALS OSDP_POLL)
+      context->cp_polls ++;
+
     buf [0] = 0xff;
     // send start-of-message marker (0xff)
     status = send_osdp_data (context, buf, 1);
 
-    status = send_osdp_data (context, test_blk, *current_length);
+    if (status EQUALS ST_OK)
+      status = send_osdp_data (context, test_blk, *current_length);
   };
   return (status);
 

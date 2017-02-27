@@ -3,6 +3,8 @@ set -x
 echo start CP
 echo sleep to stabilize
 sleep 5
+echo executing test 2-6-1
+/opt/osdp-conformance/do-command conform_2_6_1
 echo executing test 4-5-1
 /opt/osdp-conformance/do-command local_status
 echo request test 4-5-2

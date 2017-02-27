@@ -224,7 +224,7 @@ int
     msg = (OSDP_MSG *) aux;
     oh = (OSDP_HDR *)(msg->ptr);
     sprintf (filename, 
-      "/opt/open-osdp/run/CP/ident_from_PD%02x.json",
+      "/opt/osdp-conformance/run/CP/ident_from_PD%02x.json",
       (0x7f&oh->addr));
     identf = fopen (filename, "w");
     if (identf != NULL)

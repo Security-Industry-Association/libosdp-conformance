@@ -101,10 +101,21 @@ int
   };
   if (status EQUALS ST_OK)
   {
+    if (0 EQUALS strcmp (current_command, "conform_2_6_1"))
+    {
+      cmd->command = OSDP_CMDB_CONFORM_2_6_1;
+      strcpy (ctx->text,
+" ***OSDP CONFORMANCE TEST*** 45678901234567890123456789012345678901234567890123456789012345678901234567890");
+    };
+  };
+  if (status EQUALS ST_OK)
+  {
     if (0 EQUALS strcmp (current_command, "text"))
     {
-char field [1024];
-json_t *value;
+      char
+        field [1024];
+      json_t
+        *value;
       strcpy (field, "message");
       value = json_object_get (root, field);
       if (json_is_string (value))
@@ -180,20 +191,6 @@ json_t *value;
           this_command);
     };
   }; 
-
-  if (status EQUALS ST_OK)
-  {
-    strcpy (this_command, json_string_value (value));
-    test_command = "text";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
-    {
-      cmd->command = OSDP_CMDB_TEXT;
-      if (ctx->verbosity > 4)
-        fprintf (stderr, "command was %s\n",
-          this_command);
-    };
-  }; 
-
 
   // LED output
 

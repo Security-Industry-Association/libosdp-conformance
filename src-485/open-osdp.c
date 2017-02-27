@@ -41,8 +41,8 @@ int
   check_for_command;
 OSDP_CONTEXT
   context;
-long int
-  last_time_check;
+struct timespec
+  last_time_check_ex;
 OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
@@ -107,9 +107,6 @@ int
   status = ST_OK;
   check_for_command = 0;
 
-  m_idle_timeout = 30;
-
-  last_time_check = time (NULL);
   if (status EQUALS ST_OK)
   {
     memset (&context, 0, sizeof (context));
@@ -276,8 +273,17 @@ check_serial (&context);
     if (status_select EQUALS 0)
     {
       status = ST_OK;
-      if (osdp_timeout (&context, &last_time_check))
-        status = background (&context);
+      if (osdp_timeout (&context, &last_time_check_ex))
+      {
+        // if timer 0 expired dump the status
+        if (context.timer[0].status EQUALS OSDP_TIMER_RESTARTED)
+          status = write_status (&context);
+
+        // if "the timer" went off, do the background process
+
+        if (status EQUALS ST_OK)
+          status = background (&context);
+      };
     };
 
     // if there was data at the 485 file descriptor, process it.
