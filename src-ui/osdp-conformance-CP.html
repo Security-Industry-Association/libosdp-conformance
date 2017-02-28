@@ -9,8 +9,10 @@
 Generate
 <A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
 Display
+<A HREF="/cgi-bin/conformance-report">report</A> ::
+Display CP
 <A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
-Last 100 lines of CP
+Recent CP
 <A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A> ::
 <A HREF="/cgi-bin/start-CP-485">Start</A> CP ::
 <A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP ::
@@ -26,62 +28,90 @@ Last 100 lines of CP
   <TD>Physical Interface [4]</TD>
 <TD ALIGN="CENTER">2-2-1</TD>
   <TD>Signalling (9600) [4]</TD>
-<TD ALIGN="RIGHT">2-2-2</TD>
-  <TD ALIGN="RIGHT"><FONT SIZE=-3>Signalling (19200)</FONT></TD>
-<TD ALIGN="RIGHT">2-2-3</TD>
-  <TD ALIGN="RIGHT"><FONT SIZE=-3>Signalling (38400)</FONT></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-2-2</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Signalling (19200)</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-2-3</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Signalling (38400)</SPAN></TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT">2-2-4</TD>
-  <TD ALIGN="RIGHT"><FONT SIZE=-3>Signalling (115200)</FONT></TD>
-<TD ALIGN="CENTER">2-3-1</TD>
-  <TD>Encoding [5]</TD>
-<TD ALIGN="RIGHT">2-4-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Channel Access</TD>
-<TD ALIGN="RIGHT">2-4-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>resend on timeout</TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-2-4</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Signalling (115200)</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-3-1</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Encoding</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-1</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Channel Access</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-2</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">resend on timeout</SPAN></TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT">2-4-3</TD>
-  <TD ALIGN="RIGHT"><FONT SIZE=-3>resend on busy</TD>
-<TD ALIGN="RIGHT">2-4-4</TD>
-  <TD ALIGN="RIGHT"><FONT SIZE=-3>send new on busy</TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-3</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">resend on busy</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-4</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">send new on busy</SPAN></TD>
 <TD ALIGN="CENTER">2-5-1</TD>
-  <TD>Multi byte data encoding</TD>
+  <TD>Multi byte data encoding [4]</TD>
 <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_6_1">
   2-6-1</A></TD>
   <TD>Packet size limit (send)</TD>
 </TR>
-<TD ALIGN="RIGHT">2-6-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>packet size limit pd to cp</TD>
-<TD ALIGN="CENTER">2-6-3</TD>
-  <TD>Packet size stress pd to cp [6]</TD>
-<TD ALIGN="RIGHT">2-7-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>timing</TD>
-<TD ALIGN="RIGHT">2-7-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>max delay</TD>
+<TR>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-2</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  packet size limit pd to cp</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-3</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  Packet size stress pd to cp</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-1</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  timing</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-2</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  max delay</SPAN></TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT">2-7-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>offline test</TD>
-<TD ALIGN="RIGHT">2-8-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>synchronization</TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-3</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  offline test</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-8-1</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  synchronization</SPAN></TD>
 <TD ALIGN="CENTER">2-9-1</TD><TD>Packet format [4]</TD>
 <TD ALIGN="CENTER">2-10-1</TD><TD>SOM [4]</TD>
 </TR>
 <TR>
 <TD ALIGN="CENTER">2-10-2</TD><TD>SOM sent [4]</TD>
-<TD ALIGN="RIGHT">2-11-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Address</TD>
-<TD ALIGN="RIGHT">2-11-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Address 2</TD>
-<TD ALIGN="RIGHT"> 2-11-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Address 3</TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-11-1</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Address</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-11-2</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Address 2</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-11-3</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">7F Comset</SPAN></TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT"> 2-12-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Length </TD>
-<TD ALIGN="RIGHT"> 2-13-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Control field </TD>
-<TD ALIGN="RIGHT"> 2-13-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Ctl 2 </TD>
-<TD ALIGN="RIGHT"> 2-13-3</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>Ctl 3 </TD>
+<TD ALIGN="CENTER"> 2-12-1</TD><TD>Length [4]</TD>
+<TD ALIGN="CENTER">2-13-1</TD>
+  <TD>Control field [4]</TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-13-2</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Secure control block</SPAN></TD>
+<TD ALIGN="CENTER">2-13-3</TD>
+  <TD>SCB absent [4]</TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT"> 2-14-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>security block </TD>
-<TD ALIGN="RIGHT"> 2-15-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>valid command</TD>
-<TD ALIGN="RIGHT"> 2-15-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>invalid command</TD>
-<TD ALIGN="RIGHT"> 2-16-1</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>CRC</TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-13-4</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">Sequence numbers</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-14-1</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">security block</SPAN></TD>
+<TD ALIGN="CENTER">2-15-1</TD>
+  <TD>Valid command [4]</TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-15-2</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  invalid command</SPAN></TD>
 </TR>
 <TR>
-<TD ALIGN="RIGHT"> 2-16-2</TD><TD ALIGN="RIGHT"><FONT SIZE=-3>checksum</TD>
+<TD ALIGN="CENTER">2-16-1</TD>
+  <TD>CRC [4]</TD>
+<TD ALIGN="CENTER">2-16-2</TD>
+  <TD>checksum [4]</TD>
 </TR>
 </TABLE>
 <TABLE>
@@ -183,21 +213,20 @@ Last 100 lines of CP
 <LI>Test groups numbered to match Peripheral Profile</LI>
 <LI>(4-7-2) Induce digital output to test</LI>
 <LI>Runs automatically upon receipt of message</LI>
-<LI>Not implemented at this time</LI>
-<LI>Not applicable in this role</LI>
 </OL>
-</P>
-<A name="control"><EM>Controls</EM></A>
-<P>
-Generate
+<P ALIGN="RIGHT">
+<A name="control_bottom"></A> Generate
 <A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
 Display
+<A HREF="/cgi-bin/conformance-report">report</A> ::
+Display CP
 <A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
-Last 100 lines of CP
+Recent CP
 <A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A> ::
-CP (Panel) - <A HREF="/cgi-bin/start-CP-485">Start</A> RS-485 OSDP (RS-485 master) ::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> OSDP ::
+<A HREF="/cgi-bin/start-CP-485">Start</A> CP ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP ::
 <A HREF="/cgi-bin/shutdown-osdp">Stop</A> Server</P>
+
 </BODY>
 </HTML>
 

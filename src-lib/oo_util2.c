@@ -313,7 +313,6 @@ int
 
 { /* next_sequence */
 
-
   static int
     current_sequence;
 

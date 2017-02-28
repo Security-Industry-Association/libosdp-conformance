@@ -74,7 +74,8 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM LEN;                     // 2-12-1
   OSDP_CONFORM CTRL;                    // 2-13-1
   OSDP_CONFORM control_2;               // 2-13-2
-  OSDP_CONFORM control_3;               // 2-13-3
+  OSDP_CONFORM scb_absent;              // 2-13-3
+  OSDP_CONFORM ctl_seq;                 // 2-13-4
   OSDP_CONFORM security_block;          // 2-14-1
   OSDP_CONFORM CMND_REPLY;              // 2-15-1
   OSDP_CONFORM invalid_command;         // 2-15-2

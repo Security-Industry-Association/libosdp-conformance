@@ -91,9 +91,13 @@ void
   oconf->skipped = 0;
 
   // skip the ones we don't do now.
+  oconf->address_3.test_status =
+    OCONFORM_SKIP;
+  oconf->channel_access.test_status =
+    OCONFORM_SKIP;
   oconf->character_encoding.test_status =
     OCONFORM_SKIP;
-  oconf->multibyte_data_encoding.test_status =
+  oconf->control_2.test_status =
     OCONFORM_SKIP;
   oconf->packet_size_stress_cp.test_status =
     OCONFORM_SKIP;
@@ -107,11 +111,11 @@ void
     if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
       oconf->signalling.test_status =
         OCONFORM_EXERCISED;
-    oconf->channel_access.test_status =
-      OCONFORM_EXERCISED;
     oconf->packet_format.test_status =
       OCONFORM_EXERCISED;
     oconf->SOM.test_status =
+      OCONFORM_EXERCISED;
+    oconf->SOM_sent.test_status =
       OCONFORM_EXERCISED;
     oconf->LEN.test_status =
       OCONFORM_EXERCISED;
@@ -119,16 +123,8 @@ void
       OCONFORM_EXERCISED;
     oconf->CTRL.test_status =
       OCONFORM_EXERCISED;
-    oconf->security_block.test_status =
-      OCONFORM_EXERCISED;
     oconf->CHKSUM_CRC16.test_status =
       OCONFORM_EXERCISED;
-    if (oconf->last_unknown_command EQUALS OSDP_POLL)
-      oconf->CMND_REPLY.test_status =
-        OCONFORM_EXERCISED;
-    else
-      oconf->CMND_REPLY.test_status =
-        OCONFORM_FAIL;
   };
 
 #define LOG_REPORT(lfargs) {\
@@ -209,7 +205,7 @@ void
 "2-11-2 Address 2                          %s",
     conformance_status (oconf->address_2.test_status)));
   LOG_REPORT ((log_string,
-"2-11-3 Address 3                          %s",
+"2-11-3 7F Comset                          %s",
     conformance_status (oconf->address_3.test_status)));
   LOG_REPORT ((log_string,
 "2-12-1 LEN                                %s",
@@ -218,19 +214,22 @@ void
 "2-13-1 CTRL                               %s",
     conformance_status (oconf->CTRL.test_status)));
   LOG_REPORT ((log_string,
-"2-13-2 Control 2                          %s",
+"2-13-2 Secure Control Block [5]           %s",
     conformance_status (oconf->control_2.test_status)));
   LOG_REPORT ((log_string,
-"2-13-3 Control 3                          %s",
-    conformance_status (oconf->control_3.test_status)));
+"2-13-3 SCB absent                         %s",
+    conformance_status (oconf->scb_absent.test_status)));
+  LOG_REPORT ((log_string,
+"2-13-4 Sequence numbers                   %s",
+    conformance_status (oconf->ctl_seq.test_status)));
   LOG_REPORT ((log_string,
 "2-14-1 Security Block (hdr process only)  %s",
     conformance_status (oconf->security_block.test_status)));
   LOG_REPORT ((log_string,
-"2-15-1 CMND/REPLY - Command/Reply Code    %s",
+"2-15-1 Incoming C/R valid                 %s",
     conformance_status (oconf->CMND_REPLY.test_status)));
   LOG_REPORT ((log_string,
-"2-15-2 CMND/REPLY - Command/Reply Code    %s",
+"2-15-2 No invalid C/R received            %s",
     conformance_status (oconf->invalid_command.test_status)));
   LOG_REPORT ((log_string,
 "2-16-1 CHKSUM/CRC16                       %s",
@@ -302,7 +301,7 @@ void
 "???"));//    conformance_status (oconf->cmd_led.test_status));
   LOG_REPORT ((log_string, "3.21 Stop Multi Part Message            %s",
 "???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.22 Maximum Accetpable Reply Size      %s",
+  LOG_REPORT ((log_string, "3.22 Maximum Acceptable Reply Size      %s",
 "???"));//    conformance_status (oconf->cmd_led.test_status));
 
   LOG_REPORT ((log_string,

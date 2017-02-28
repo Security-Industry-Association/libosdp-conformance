@@ -217,6 +217,7 @@ status = -1;
           (unsigned char *)&otxt);
         osdp_conformance.packet_size_limits.test_status =
           OCONFORM_EXERCISED;
+fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         status = ST_OK;
       };
       break;

@@ -261,7 +261,12 @@ int
 
   msg_check_type = (p->ctrl) & 0x04;
   if (msg_check_type EQUALS 0)
+  {
     m->check_size = 1;
+    osdp_conformance.checksum.test_status =
+      OCONFORM_EXERCISED;
+fprintf (stderr, "parsed a checksum header\n");
+  }
   else
   {
     m->check_size = 2;
@@ -324,6 +329,12 @@ int
       m -> cmd_payload = m->ptr + 5;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+
+      // really was a 0 in the Security Control Block marker, in unencrypted 
+      // messages.  sanity check for conformance.
+
+      osdp_conformance.scb_absent.test_status =
+        OCONFORM_EXERCISED;
     }
     else
     {
@@ -427,17 +438,18 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       };
 
     // go check the command field
-    osdp_conformance.CMND_REPLY.test_status = OCONFORM_EX_GOOD_ONLY;
     switch (returned_hdr->command)
     {
     default:
-      osdp_conformance.CMND_REPLY.test_status = OCONFORM_UNTESTED;
       //status = ST_PARSE_UNKNOWN_CMD;
       m->data_payload = m->cmd_payload + 1;
       fprintf (stderr, "Unknown command, default msg_data_length was %d\n",
         msg_data_length);
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
+
+      // if we don't recognize the command/reply code it fails 2-15-1
+      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
       break;
 
     case OSDP_ACK:
