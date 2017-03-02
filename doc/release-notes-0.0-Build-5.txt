@@ -2,6 +2,8 @@ Release 0.0 Build 5 libosdp-conformance
 
 Changes in 0.0 Build 5
 
+added build in structions in doc/build
+
 tests in group 2 for peripheral implemented or wholly stubbed out.
 tests in group 3 and 4 partially populated
 UI for report generation filled in

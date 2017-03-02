@@ -1,0 +1,16 @@
+conformance runbook for 0.0 build 5
+
+set up as the CP
+set up the DUT as the PD
+configure the DUT e.g. for address 0, 9600 bps
+start the CP
+check status to make sure it's run at least 8 packets each way
+shell in
+cd to /opt/osdp-conformance/run/CP
+run the script:
+  sudo /opt/osdp-conformance/bin/100-test-all
+retrieve the report from /opt/osdp-conformance/log/report.txt or the dated files the
+  script places in the current directory.
+
+check the "stderr" log file and open-osdp.log for anomalies and to conform behavior.
+
