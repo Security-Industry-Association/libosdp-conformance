@@ -36,6 +36,9 @@ extern OSDP_INTEROP_ASSESSMENT
 char
   log_string [1024];
 
+// code to configure tests to skip
+#include <osdp-SKIP.c>
+
 
 char
   *conformance_status
@@ -66,7 +69,7 @@ char
     osdp_conformance.pass ++;
     break;
   case OCONFORM_FAIL:
-    strcpy (response, "Failed)");
+    strcpy (response, "Failed");
     osdp_conformance.fail ++;
     break;
   default:
@@ -90,17 +93,7 @@ void
   oconf->untested = 0;
   oconf->skipped = 0;
 
-  // skip the ones we don't do now.
-  oconf->address_3.test_status =
-    OCONFORM_SKIP;
-  oconf->channel_access.test_status =
-    OCONFORM_SKIP;
-  oconf->character_encoding.test_status =
-    OCONFORM_SKIP;
-  oconf->control_2.test_status =
-    OCONFORM_SKIP;
-  oconf->packet_size_stress_cp.test_status =
-    OCONFORM_SKIP;
+  skip_conformance_tests (ctx, oconf);
 
   // fill in results for "minimal message threshhold" case
 
@@ -132,6 +125,11 @@ void
   fprintf (ctx->log, "%s\n", log_string); fflush (ctx->log); \
   fprintf (ctx->report, "%s\n", log_string); fflush (ctx->report);\
 }; 
+
+  ctx->report = fopen ("/opt/osdp-conformance/log/report.log", "w");
+fprintf (stderr, "log handle %x report handle %x\n",
+  (int)ctx->log, (int)ctx->report);
+
   LOG_REPORT ((log_string, "Conformance Report:"));
 
   LOG_REPORT ((log_string,
@@ -185,7 +183,6 @@ void
   LOG_REPORT ((log_string,
 "2-7-3  Offline test                       %s",
     conformance_status (oconf->offline_test.test_status)));
-// ???
   LOG_REPORT ((log_string,
 "2-8-1  Message Synchronization            %s",
     conformance_status (oconf->message_synchronization.test_status)));
@@ -239,7 +236,7 @@ void
     conformance_status (oconf->checksum.test_status)));
   LOG_REPORT ((log_string,
 "2-17-1 Large Data Messages                %s",
-"???")); //    conformance_status (oconf->channel_access.test_status)));
+    conformance_status (oconf->multipart.test_status)));
 
   LOG_REPORT ((log_string,
 "3-1-1  Poll                               %s",
@@ -283,22 +280,19 @@ void
   LOG_REPORT ((log_string, "3.10 Reader LED Control Command         %s",
     conformance_status (oconf->cmd_led.test_status)));
   LOG_REPORT ((log_string, "3.11 Reader Buzzer Control Command      %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
+    conformance_status (oconf->cmd_buz.test_status)));
   LOG_REPORT ((log_string, "3.12 Reader Text Output Command         %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.13 (Deprecated)"));
+    conformance_status (oconf->cmd_text.test_status)));
   LOG_REPORT ((log_string, "3.14 Communication Configuration Cmd    %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.15 (Deprecated)"));
+    conformance_status (oconf->cmd_comset.test_status)));
   LOG_REPORT ((log_string, "3.16 Set Automatic Rdr Prompt Strings   %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
+    conformance_status (oconf->cmd_prompt.test_status)));
   LOG_REPORT ((log_string, "3.17 Scan and Send Biometric Template   %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
+    conformance_status (oconf->cmd_bioread.test_status)));
   LOG_REPORT ((log_string, "3.18 Scan and Match Biometric Template  %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.19 (Deprecated)"));
+    conformance_status (oconf->cmd_biomatch.test_status)));
   LOG_REPORT ((log_string, "3.20 Manufacturer Specific Command      %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
+    conformance_status (oconf->cmd_mfg.test_status)));
   LOG_REPORT ((log_string, "3.21 Stop Multi Part Message            %s",
 "???"));//    conformance_status (oconf->cmd_led.test_status));
   LOG_REPORT ((log_string, "3.22 Maximum Acceptable Reply Size      %s",
@@ -370,6 +364,8 @@ void
 fprintf (ctx->log, "mmt %d of %d\n",
   oconf->conforming_messages,
   PARAM_MMT);
+  if (ctx->report != NULL)
+    fclose (ctx->report);
 
 } /* dump_conformance */
 

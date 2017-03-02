@@ -621,26 +621,6 @@ int
   // secure_install (normal or install)
   // secure_transmit (relaxed or strict)
 
-  // parameter "slow_timer"
-
-
-  if (status EQUALS ST_OK)
-  {
-    found_field = 1;
-    strcpy (field, "slow_timer");
-    value = json_object_get (root, field);
-    if (!json_is_string (value))
-      found_field = 0;
-  };
-  if (found_field)
-  {
-    char vstr [1024];
-    int i;
-    strcpy (vstr, json_string_value (value));
-    sscanf (vstr, "%d", &i);
-    context.slow_timer = i;
-  }; 
-
   // parameter "timeout"
 
   if (status EQUALS ST_OK)
@@ -935,6 +915,9 @@ int
     if (status EQUALS ST_OK)
       status = send_osdp_data (context, test_blk, *current_length);
   };
+  if (status EQUALS ST_OK)
+    context->last_command_sent = command;
+
   return (status);
 
 } /* send_message */

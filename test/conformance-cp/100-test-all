@@ -1,12 +1,29 @@
 #!/bin/bash
 set -x
+rm -vf /opt/osdp-conformance/log/report.log
 echo start CP
 echo sleep to stabilize
 sleep 5
 echo executing test 2-6-1
-/opt/osdp-conformance/do-command conform_2_6_1
-echo executing test 4-5-1
-/opt/osdp-conformance/do-command local_status
+bash /opt/osdp-conformance/bin/do-CP-command conform_2_6_1
+echo executing test 3-2-1
+bash /opt/osdp-conformance/bin/do-CP-command identify
+echo executing test 3-3-1
+bash /opt/osdp-conformance/bin/do-CP-command capabilities
+echo executing test 3-5-1
+/opt/osdp-conformance/bin/do-CP-command local_status
+echo executing test 3-6-1
+/opt/osdp-conformance/bin/do-CP-command input_status
+echo executing test 3-7-1
+/opt/osdp-conformance/bin/do-CP-command output_status
+echo executing test 3-8-1
+/opt/osdp-conformance/bin/do-CP-command reader_status
+echo executing test 3-9-1
+/opt/osdp-conformance/bin/do-CP-command conform_3_9_1
+echo request test 4-5-2
+echo request test 4-5-2
+echo executing test 3-7-1
+/opt/osdp-conformance/bin/do-CP-command output_status
 echo request test 4-5-2
 /opt/osdp-conformance/request-exercise-PD 4-5-2
 echo request test 4-5-3
@@ -14,12 +31,15 @@ echo request test 4-5-3
 echo requesting test 4-6-1
 /opt/osdp-conformance/request-exercise-PD 4-6-1
 echo executing test 4-7-1
-/opt/osdp-conformance/do-command outstat
+/opt/osdp-conformance/bin/do-CP-command outstat
 echo request test 4-7-2
 /opt/osdp-conformance/request-exercise-PD 4-7-2
 echo request test 4-8-1
 /opt/osdp-conformance/request-exercise-PD 4-8-1
 echo generate test report
-/opt/osdp-conformance/do-command dump_status
-cp /opt/osdp-conformance/log/report.txt osdp-conformance-report_`date +%F_%H_%M`.txt
+bash /opt/osdp-conformance/bin/do-CP-command dump_status
+#sleep 5
+cp /opt/osdp-conformance/log/report.log osdp-conformance-report_`date +%F_%H_%M`.txt
+ls -l 
+
 

@@ -23,6 +23,11 @@
 #include <termios.h>
 #include <time.h>
 
+#define OSDP_PROFILE_PERIPHERAL (0)
+#define OSDP_PROFILE_BASIC      (1)
+#define OSDP_PROFILE_BIO        (2)
+#define OSDP_PROFILE_PIV        (3)
+
 
 #define EQUALS ==
 
@@ -108,11 +113,12 @@
 #define OSDP_CMDB_LED          (1008)
 #define OSDP_CMDB_INIT_SECURE  (1009)
 #define OSDP_CMDB_TEXT         (1010)
-#define OSDP_CMDB_TAMPER       (1011)
-#define OSDP_CMDB_OSTAT        (1012)
-#define OSDP_CMDB_LSTAT        (1013)
-#define OSDP_CMDB_RSTAT        (1014)
+#define OSDP_CMDB_TAMPER        (1011)
+#define OSDP_CMDB_OSTAT         (1012)
+#define OSDP_CMDB_LSTAT         (1013)
+#define OSDP_CMDB_RSTAT         (1014)
 #define OSDP_CMDB_CONFORM_2_6_1 (1015)
+#define OSDP_CMDB_ISTAT         (1016)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -237,12 +243,16 @@ typedef struct osdp_context
 //  int mode;
   int
     next_sequence;
+  char
+    last_command_sent;
   int
     fd;
   struct termios
     tio;
   int
     role;
+  int
+    profile;
   FILE
     *log;
   FILE
@@ -341,8 +351,6 @@ typedef struct osdp_context
     last_raw_read_bits;
   char
     last_raw_read_data [1024];
-  int
-    slow_timer;
   int
     disable_certificate_checking;
   char

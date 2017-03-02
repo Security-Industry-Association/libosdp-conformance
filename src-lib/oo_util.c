@@ -458,8 +458,14 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ACK");
       context->pd_acks ++;
+
       osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
+
+      // if we just got an ack for an OSTAT mark that too.
+      if (context->last_command_sent EQUALS OSDP_OSTAT)
+        osdp_conformance.cmd_ostat_ack.test_status = OCONFORM_EXERCISED;
+
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
       break;
@@ -617,7 +623,8 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
 // ASSUMES NO SECURITY
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDID");
-      osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
+      if (context->last_command_sent EQUALS OSDP_ID)
+        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;
 
@@ -652,6 +659,9 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       osdp_conformance.resp_rstatr.test_status = OCONFORM_EXERCISED;
+      // if this is in response to an RSTAT then mark that too.
+      if (context->last_command_sent EQUALS OSDP_RSTAT)
+        osdp_conformance.cmd_rstat.test_status = OCONFORM_EXERCISED;
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_RSTATR");
       break;
@@ -1235,6 +1245,20 @@ send OSDP_SCRYPT
         fprintf (stderr, "%s\n", tlogmsg);
       };
       osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+
+      // if the PD NAK'd an ID fail the test.
+      if (context->last_command_sent EQUALS OSDP_ID)
+        osdp_conformance.cmd_id.test_status = OCONFORM_FAIL;
+      // if the PD NAK'd an ISTAT fail the test.
+      if (context->last_command_sent EQUALS OSDP_ISTAT)
+        osdp_conformance.cmd_istat.test_status = OCONFORM_FAIL;
+      // if the PD NAK'd an LSTAT fail the test.
+      if (context->last_command_sent EQUALS OSDP_LSTAT)
+        osdp_conformance.cmd_lstat.test_status = OCONFORM_FAIL;
+      // if the PD NAK'd a CAP fail the test.
+      if (context->last_command_sent EQUALS OSDP_CAP)
+        osdp_conformance.cmd_pdcap.test_status = OCONFORM_FAIL;
+
       break;
 
     case OSDP_COM:
@@ -1325,6 +1349,11 @@ printf ("MMSG DONE\n");
 
     case OSDP_OSTATR:
       osdp_conformance.rep_output_stat.test_status = OCONFORM_EXERCISED;
+
+      // if this is in response to an OSTAT then mark that too.
+      if (context->last_command_sent EQUALS OSDP_OSTAT)
+        osdp_conformance.cmd_ostat.test_status = OCONFORM_EXERCISED;
+
       status = oosdp_make_message (OOSDP_MSG_OUT_STATUS, tlogmsg, msg);
       fprintf (context->log, "%s\n", tlogmsg);
       break;

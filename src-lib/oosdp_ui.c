@@ -143,16 +143,6 @@ status = -1;
         fprintf (stderr, "Requesting Capabilities Report\n");
       break;
 
-    case OSDP_CMD_RDR_STAT:
-      status = ST_OK;
-      current_length = 0;
-      status = send_message (context,
-        OSDP_RSTAT, p_card.addr, &current_length, 0, NULL);
-      if (context->verbosity > 2)
-        fprintf (stderr, "Requesting (External) Reader (Tamper) Status\n");
-      break;
-
-
     case OSDP_CMD_EXIT:
       context->current_menu = OSDP_MENU_TOP;
       status = ST_OK;
@@ -233,8 +223,6 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         param [0] = 0;
         status = send_message (context,
           OSDP_CAP, p_card.addr, &current_length, sizeof (param), param);
-        osdp_conformance.cmd_pdcap.test_status =
-          OCONFORM_EXERCISED;
         if (context->verbosity > 2)
           fprintf (stderr, "Requesting Capabilities Report\n");
       };
@@ -293,8 +281,6 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         current_length = 0;
         status = send_message (context,
           OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
-        osdp_conformance.cmd_id.test_status =
-          OCONFORM_EXERCISED;
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting PD Ident\n");
       };
@@ -321,6 +307,21 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       };
       break;
 
+    case OSDP_CMDB_ISTAT:
+      {
+        current_length = 0;
+        /*
+          osdp_ISTAT requires no arguments.
+        */
+        current_length = 0;
+        status = send_message (context,
+          OSDP_ISTAT, p_card.addr, &current_length, 0, NULL);
+        if (context->verbosity > 3)
+          fprintf (stderr, "Requesting Input Status\n");
+      };
+      status = ST_OK;
+      break;
+
     case OSDP_CMDB_LSTAT:
       {
         current_length = 0;
@@ -330,8 +331,6 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         current_length = 0;
         status = send_message (context,
           OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
-        osdp_conformance.cmd_lstat.test_status =
-          OCONFORM_EXERCISED;
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting Local Status\n");
       };
@@ -387,6 +386,7 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         status = ST_OK;
       };
       break;
+
     case OSDP_CMDB_PRESENT_CARD:
       /*
         use card data from loaded config
@@ -398,10 +398,21 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
           context->card_data_valid, context->creds_a_avail);
       status = ST_OK;
       break;
+
     case OSDP_CMDB_RESET_POWER:
       context->power_report = 1;
       status = ST_OK;
       break;
+
+    case OSDP_CMDB_RSTAT:
+      status = ST_OK;
+      current_length = 0;
+      status = send_message (context,
+        OSDP_RSTAT, p_card.addr, &current_length, 0, NULL);
+      if (context->verbosity > 2)
+        fprintf (stderr, "Requesting (External) Reader (Tamper) Status\n");
+      break;
+
     case OSDP_CMDB_SEND_POLL:
       current_length = 0;
       status = send_message (context,
@@ -410,10 +421,12 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         fprintf (stderr, "On-demand polling\n");
       status = ST_OK;
       break;
+
     case OSDP_CMDB_TAMPER:
       context->tamper = 1;
       status = ST_OK;
       break;
+
     case OSDP_CMDB_TEXT:
       {
         OSDP_TEXT_HEADER

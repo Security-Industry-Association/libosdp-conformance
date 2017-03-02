@@ -68,8 +68,8 @@ oosdp_actions.o:	oosdp_actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_actions.c
 
-oosdp_conformance.o:	oosdp_conformance.c
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
+oosdp_conformance.o:	oosdp_conformance.c osdp-SKIP.c
+	${CC} ${CFLAGS} -c -g -I../include -I. -Wall -Werror \
 	  oosdp_conformance.c
 
 oosdp_crc.o:	oosdp_crc.c

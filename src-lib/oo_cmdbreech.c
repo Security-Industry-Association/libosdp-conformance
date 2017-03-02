@@ -177,6 +177,21 @@ int
     };
   }; 
 
+  // request input status
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "input_status";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_ISTAT;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+
   // request local status
 
   if (status EQUALS ST_OK)
@@ -283,6 +298,22 @@ int
           this_command);
     };
   }; 
+
+  // request (attached) reader status
+
+  if (status EQUALS ST_OK)
+  {
+    strcpy (this_command, json_string_value (value));
+    test_command = "reader_status";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_RSTAT;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));

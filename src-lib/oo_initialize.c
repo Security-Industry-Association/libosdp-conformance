@@ -183,9 +183,6 @@ int
   status = ST_OK;
   memset (&osdp_conformance, 0, sizeof (osdp_conformance));
 
-  // assume all incoming commands are ok until we see a bad one.
-  osdp_conformance.CMND_REPLY.test_status = OCONFORM_EXERCISED;
-
   osdp_conformance.last_unknown_command = OSDP_POLL;
   context->mmsgbuf = multipart_message_buffer_1;
   memset (&p_card, 0, sizeof (p_card));

@@ -26,8 +26,11 @@
 
 #include <osdp-tls.h>
 #include <open-osdp.h>
+#include <osdp_conformance.h>
 
 
+extern OSDP_INTEROP_ASSESSMENT
+  osdp_conformance;
 extern OSDP_CONTEXT
   context;
 char
@@ -51,6 +54,9 @@ int
   OSDP_BUFFER
     temp_buffer;
 
+
+  // assume all incoming commands are ok until we see a bad one.
+  osdp_conformance.CMND_REPLY.test_status = OCONFORM_EXERCISED;
 
   memset (&msg, 0, sizeof (msg));
 
