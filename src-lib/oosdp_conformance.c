@@ -127,8 +127,6 @@ void
 }; 
 
   ctx->report = fopen ("/opt/osdp-conformance/log/report.log", "w");
-fprintf (stderr, "log handle %x report handle %x\n",
-  (int)ctx->log, (int)ctx->report);
 
   LOG_REPORT ((log_string, "Conformance Report:"));
 
