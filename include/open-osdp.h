@@ -1,5 +1,5 @@
 /*
-  open-osdp.h - definitions for libosdp
+  open-osdp.h - definitions for libosdp-conformance
 
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
@@ -23,7 +23,12 @@
 #include <termios.h>
 #include <time.h>
 
-#define OSDP_PROFILE_PERIPHERAL (0)
+#define OSDP_VERSION_MAJOR ( 0)
+#define OSDP_VERSION_MINOR ( 1)
+#define OSDP_VERSION_BUILD ( 1)
+
+#define OSDP_PROFILE_PERIPHERAL_TEST_PD (0x0)
+#define OSDP_PROFILE_PERIPHERAL_TEST_CP (0x102)
 #define OSDP_PROFILE_BASIC      (1)
 #define OSDP_PROFILE_BIO        (2)
 #define OSDP_PROFILE_PIV        (3)
@@ -376,10 +381,6 @@ typedef struct osdp_context
 
 #define OSDP_CHECKSUM (0)
 #define OSDP_CRC (1)
-
-#define OSDP_VERSION_MAJOR (0)
-#define OSDP_VERSION_MINOR (0)
-#define OSDP_VERSION_BUILD (5)
 
 typedef struct osdp_parameters
 {

@@ -22,7 +22,7 @@ void
   oconf->cmd_diag.test_status =
     OCONFORM_SKIP;
 
-  if (ctx->profile EQUALS OSDP_PROFILE_PERIPHERAL)
+  if (ctx->profile EQUALS OSDP_PROFILE_PERIPHERAL_TEST_PD)
   {
     oconf->channel_access.test_status = OCONFORM_SKIP;
     oconf->cmd_led.test_status = OCONFORM_SKIP;
