@@ -10,7 +10,7 @@ all:
 	(cd src-485; make all; cd ..)
 	(cd src-ui; make all; cd ..)
 
-osdp-tls:	all
+osdp-tls:	release
 	(cd src-tls; make all; cd ..)
 	(cd src-tls; make build; cd ..)
 	(cd src-ui; make build-tls; cd ..)
