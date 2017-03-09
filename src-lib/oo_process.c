@@ -69,6 +69,21 @@ int
   {
     status = process_osdp_message (&context, &msg);
   };
+  // things may have changed.  after processing this incoming message
+  // adjust for changes.
+  p_card.addr = context.new_address;
+
+  // do special things for tests in progress.
+
+  if (0 EQUALS strcmp (context.test_in_progress, "2-2-2"))
+  {
+    if (osdp_conformance.conforming_messages > PARAM_MMT)
+    {
+      osdp_conformance.alt_speed_2.test_status = OCONFORM_EXERCISED;
+      SET_PASS ((&context), "2-2-2");
+      context.test_in_progress [0] = 0;
+    };
+  };
 
   // move the existing buffer up to the front if it was unknown, not mine,
   // monitor only, or processed

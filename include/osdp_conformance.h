@@ -136,6 +136,27 @@ typedef struct osdp_interop_assessment
 
 #define PARAM_MMT (8) // minimum message thresshold
 
+#define SET_PASS(ctx,testnum) \
+  { \
+    fprintf (stderr, \
+      "********Test %s PASSED********\n", \
+      testnum); \
+    fprintf (ctx->log, \
+      "********Test %s PASSED********\n", \
+      testnum); \
+    ctx->test_in_progress [0] = 0; \
+  };
+#define SET_FAIL(ctx,testnum) \
+  { \
+    fprintf (stderr, \
+      "********Test %s FAILED********\n", \
+      testnum); \
+    fprintf (ctx->log, \
+      "********Test %s FAILED********\n", \
+      testnum); \
+    ctx->test_in_progress [0] = 0; \
+  };
+
 
 void
   dump_conformance

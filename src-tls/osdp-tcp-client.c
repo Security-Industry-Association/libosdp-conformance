@@ -64,8 +64,8 @@ OSDP_OUT_CMD
   current_output_command [16];
 int
   current_sd; // current socket for tcp connection
-long int
-  last_time_check;
+struct timespec
+  last_time_check_ex;
 OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
@@ -129,7 +129,7 @@ int
 
   memset (&context, 0, sizeof (context));
   strcpy (context.init_parameters_path, "open-osdp-params.json");
-  strcpy (context.log_path, "open_osdp.log");
+  strcpy (context.log_path, "open-osdp.log");
 
   // if there's an argument it is the config file path
   if (argc > 1)
@@ -146,9 +146,6 @@ int
   strcpy (config->ca_file, OSDP_LCL_CA_KEYS);
 // sets port
 config->listen_sap = 10001;
-
-
-  m_idle_timeout = 30;
 
   //strcpy (specified_passphrase, "speakFriend&3ntr");
   strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
@@ -174,7 +171,7 @@ config->listen_sap = 10001;
   };
 
   // init timer
-  last_time_check = time (NULL);
+  memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
 
   if (strlen (current_network_address) > 0)
     strcpy (context.network_address, current_network_address);
@@ -260,7 +257,7 @@ int
     tag = "CP";
   else
     tag = "PD";
-  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
+  sprintf (sn, "/opt/osdp-conformance/run/%s/open-osdp-control", tag);
 
   ufd = socket (AF_UNIX, SOCK_STREAM, 0);
   if (ufd != -1)
@@ -349,6 +346,8 @@ int
   };
   if (status EQUALS ST_OK)
   {
+    memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
+
     done_tls = 0; // assume not done unless some bad status
 
     status = init_tls_client ();
@@ -405,8 +404,6 @@ int
                 status_io = read (c1, cmdbuf, sizeof (cmdbuf));
                 if (status_io > 0)
                 {
-                  fprintf (stderr, "cmd buf %02x%02x\n",
-                    cmdbuf [0], cmdbuf [1]);
                   close (c1);
 
                   status = process_current_command ();
@@ -430,7 +427,7 @@ int
           {
             if ((context.role EQUALS OSDP_ROLE_CP) && context.authenticated)
             {
-              if (osdp_timeout (&context, &last_time_check) ||
+              if (osdp_timeout (&context, &last_time_check_ex) ||
                 request_immediate_poll)
               {
                 status = background (&context);

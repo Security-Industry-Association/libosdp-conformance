@@ -58,8 +58,8 @@ OSDP_OUT_CMD
   current_output_command [16];
 gnutls_dh_params_t
   dh_params;
-long int
-  last_time_check;
+struct timespec
+  last_time_check_ex;
 OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
@@ -163,9 +163,6 @@ int
 // sets port
 config->listen_sap = 10443;
 
-
-  m_idle_timeout = 30;
-
   strcpy (specified_passphrase, "speakFriend&3ntr");
 
   if (status EQUALS ST_OK)
@@ -187,9 +184,6 @@ config->listen_sap = 10443;
       tag, my_pid);
     system (command);
   };
-
-  // init timer
-  last_time_check = time (NULL);
 
   if (strlen (current_network_address) > 0)
     strcpy (context.network_address, current_network_address);
@@ -443,6 +437,8 @@ int
   status = initialize (&config, argc, argv);
   if (status EQUALS ST_OK)
   {
+    memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
+
     if (context.disable_certificate_checking)
       fprintf (stderr, "WARNING: Certificate checking disabled.\n");
     status = local_socket_setup (&ufd);
@@ -514,8 +510,6 @@ int
                 status_io = read (c1, cmdbuf, sizeof (cmdbuf));
                 if (status_io > 0)
                 {
-                  fprintf (stderr, "cmd buf %02x%02x\n",
-                    cmdbuf [0], cmdbuf [1]);
                   close (c1);
 
                   status = process_current_command ();
@@ -531,18 +525,17 @@ int
             // pselect returned no fd's
             if (context.role EQUALS OSDP_ROLE_CP)
             {
-			/*
-			  if timed out due to inactivity or requested,
-			  run the background poller.
-			*/
-			if ((osdp_timeout (&context, &last_time_check)) ||
-			  (request_immediate_poll))
-			{
-			  if (context.authenticated)
-			    status = background (&context);
-			  request_immediate_poll = 0;
-			};
-		      };
+              /*
+                if timed out due to inactivity or requested,
+                run the background poller.
+              */
+              if (osdp_timeout (&context, &last_time_check_ex) || request_immediate_poll)
+              {
+                if (context.authenticated)
+                  status = background (&context);
+                request_immediate_poll = 0;
+              };
+            };
           };
 
           // idle processing
@@ -551,7 +544,7 @@ int
           {
             if ((context.role EQUALS OSDP_ROLE_CP) && context.authenticated)
             {
-              if (osdp_timeout (&context, &last_time_check) ||
+              if (osdp_timeout (&context, &last_time_check_ex) ||
                 request_immediate_poll)
               {
                 status = background (&context);

@@ -191,6 +191,7 @@ int
 
   status = ST_OK;
   status = initialize (argc, argv);
+  memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
   done = 0;
   fprintf (stderr, "role %02x\n",
     context.role);

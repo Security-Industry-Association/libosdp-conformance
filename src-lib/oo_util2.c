@@ -317,17 +317,28 @@ int
     current_sequence;
 
 
-  // the current value is returned. might be 0 (if this is the first message)
+  /*
+    if the last thing we got was a NAK we do not increment the sequence number.
+    (TODO: confirm this is true for all NAK types.)
+  */
+  if (ctx->last_response_received != OSDP_NAK)
+  {
+    // the current value is returned. might be 0 (if this is the first message)
 
-  current_sequence = ctx->next_sequence;
+    current_sequence = ctx->next_sequence;
 
-  // increment sequence, skipping 1 (per spec)
+    // increment sequence, skipping 1 (per spec)
 
-  ctx->next_sequence++;
-  if (ctx->next_sequence > 3)
-    ctx->next_sequence = 1;
-  if (ctx->special_1 EQUALS 1)
-    current_sequence = 0;
+    ctx->next_sequence++;
+    if (ctx->next_sequence > 3)
+      ctx->next_sequence = 1;
+  }
+  else
+  {
+    if (ctx->verbosity > 2)
+      fprintf (ctx->log, "Last in was NAK, sequence stays at %d\n",
+        ctx->next_sequence);
+  };
   return (current_sequence);
 
 } /* next_sequence */

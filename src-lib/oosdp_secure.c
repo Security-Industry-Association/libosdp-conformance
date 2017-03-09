@@ -237,8 +237,6 @@ int
 
   status = ST_OK;
   true_dest = dest_addr;
-  if (context->special_1 EQUALS 1)
-    true_dest = 0x7f;
   *current_length = 0;
 if (context->verbosity > 3)
 {

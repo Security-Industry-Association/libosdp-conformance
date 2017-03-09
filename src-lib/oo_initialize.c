@@ -271,9 +271,6 @@ int
 
   fprintf (context->log, "Verbosity set to %d.\n",
     context->verbosity);
-  if (context->special_1 != 0)
-    fprintf (context->log, "SPECIAL Processing (%d) Enabled\n",
-      context->special_1);
   {
     int idx;
     char logmsg [1024];

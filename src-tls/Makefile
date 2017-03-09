@@ -35,8 +35,8 @@ clean:
 	rm -f core *.o ${PROGS}
 
 build:	all
-	mkdir -p ../opt/open-osdp/bin
-	cp ${PROGS} ../opt/open-osdp/bin
+	mkdir -p ../opt/osdp-conformance/bin
+	cp ${PROGS} ../opt/osdp-conformance/bin
 
 initiator:	initiator.o Makefile
 	${CC} ${LDFLAGS} -o initiator -g initiator.o 

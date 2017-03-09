@@ -113,17 +113,18 @@
 #define OSDP_CMDB_IDENT        (1003)
 #define OSDP_CMDB_CAPAS        (1004)
 #define OSDP_CMDB_RESET_POWER  (1005)
-#define OSDP_CMDB_PRESENT_CARD (1006)
-#define OSDP_CMDB_OUT          (1007)
-#define OSDP_CMDB_LED          (1008)
-#define OSDP_CMDB_INIT_SECURE  (1009)
-#define OSDP_CMDB_TEXT         (1010)
+#define OSDP_CMDB_PRESENT_CARD  (1006)
+#define OSDP_CMDB_OUT           (1007)
+#define OSDP_CMDB_LED           (1008)
+#define OSDP_CMDB_INIT_SECURE   (1009)
+#define OSDP_CMDB_TEXT          (1010)
 #define OSDP_CMDB_TAMPER        (1011)
 #define OSDP_CMDB_OSTAT         (1012)
 #define OSDP_CMDB_LSTAT         (1013)
 #define OSDP_CMDB_RSTAT         (1014)
 #define OSDP_CMDB_CONFORM_2_6_1 (1015)
 #define OSDP_CMDB_ISTAT         (1016)
+#define OSDP_CMDB_COMSET        (1017)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -250,6 +251,12 @@ typedef struct osdp_context
     next_sequence;
   char
     last_command_sent;
+  char
+    last_response_received;
+  char
+    new_address;
+  char
+    test_in_progress [32];
   int
     fd;
   struct termios
@@ -292,8 +299,6 @@ typedef struct osdp_context
     checksum_errs;
   char
     init_command [1024];
-  int
-    special_1;
   int
     cparm;
   int
@@ -354,6 +359,8 @@ typedef struct osdp_context
     fqdn [1024];
   int
     last_raw_read_bits;
+  int
+    slow_timer;
   char
     last_raw_read_data [1024];
   int
@@ -642,6 +649,8 @@ typedef struct osdp_multi_hdr
 #define ST_OUT_UNKNOWN               (45)
 #define ST_OSDP_NET_ERROR            (46)
 #define ST_OSDP_NET_CLOSED           (47)
+#define ST_OSDP_BAD_SEQUENCE         (48)
+#define ST_OSDP_BAD_SEQUENCE_BUSY    (49)
 
 int
   m_version_minor;

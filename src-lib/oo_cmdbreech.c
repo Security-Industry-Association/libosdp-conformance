@@ -137,6 +137,43 @@ int
           this_command);
     };
   }; 
+
+  // COMSET.  takes two option arguments, "new_address" and "new_speed".
+  // default for new_address is 0x00, default for new_speed is 9600
+
+  if (status EQUALS ST_OK)
+  {
+    int
+      i;
+    char
+      vstr [1024];
+
+    strcpy (this_command, json_string_value (value));
+    test_command = "comset";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    {
+      cmd->command = OSDP_CMDB_COMSET;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+
+      value = json_object_get (root, "new_address");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        cmd->details [0] = i;
+      };
+      value = json_object_get (root, "new_speed");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        *(int *) &(cmd->details [4]) = i; // by convention bytes 4,5,6,7 are the speed.
+      };
+    };
+  }; 
+
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));

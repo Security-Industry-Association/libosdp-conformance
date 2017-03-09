@@ -263,9 +263,10 @@ int
   if (msg_check_type EQUALS 0)
   {
     m->check_size = 1;
+    m_check = OSDP_CHECKSUM; // Issue #11
     osdp_conformance.checksum.test_status =
       OCONFORM_EXERCISED;
-fprintf (stderr, "parsed a checksum header\n");
+    fprintf (stderr, "parsed a checksum header\n");
   }
   else
   {
@@ -450,6 +451,7 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
 
       // if we don't recognize the command/reply code it fails 2-15-1
       osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
+      SET_FAIL ((context), "2-15-1");
       break;
 
     case OSDP_ACK:
@@ -1183,6 +1185,7 @@ status = -1;
   } /* role PD */
   if (context -> role EQUALS OSDP_ROLE_CP)
   {
+    context->last_response_received = msg->msg_cmd;
     switch (msg->msg_cmd)
     {
     case OSDP_ACK:
@@ -1248,16 +1251,28 @@ send OSDP_SCRYPT
 
       // if the PD NAK'd an ID fail the test.
       if (context->last_command_sent EQUALS OSDP_ID)
+      {
         osdp_conformance.cmd_id.test_status = OCONFORM_FAIL;
+        SET_FAIL ((context), ".cmd_id");
+      };
       // if the PD NAK'd an ISTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_ISTAT)
+      {
         osdp_conformance.cmd_istat.test_status = OCONFORM_FAIL;
+        SET_FAIL ((context), ".cmd_istat");
+      };
       // if the PD NAK'd an LSTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_LSTAT)
+      {
         osdp_conformance.cmd_lstat.test_status = OCONFORM_FAIL;
+        SET_FAIL ((context), ".cmd_lstat");
+      };
       // if the PD NAK'd a CAP fail the test.
       if (context->last_command_sent EQUALS OSDP_CAP)
+      {
         osdp_conformance.cmd_pdcap.test_status = OCONFORM_FAIL;
+        SET_FAIL ((context), ".cmd_pdcap");
+      };
 
       break;
 

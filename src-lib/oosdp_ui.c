@@ -228,6 +228,35 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       };
       status = ST_OK;
       break;
+
+    case OSDP_CMDB_COMSET:
+      {
+        unsigned char
+          param [5];
+        int
+          new_speed;
+
+        current_length = 0;
+        new_speed = 0;
+        memcpy (&new_speed, details+4, 4);
+        param [0] = details [0];
+        param [1] =        new_speed & 0xff;
+        param [2] =     (new_speed & 0xff00) >> 8;
+        param [3] =   (new_speed & 0xff0000) >> 16;
+        param [4] = (new_speed & 0xff000000) >> 24;
+        status = send_message (context,
+          OSDP_COMSET, p_card.addr, &current_length, sizeof (param), param);
+        sprintf (context->serial_speed, "%d", new_speed);
+        if (context->verbosity > 2)
+          fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
+            param [0], context->serial_speed);
+        context->new_address = param [0];
+        status = init_serial (context, p_card.filename);
+      };
+  
+      status = ST_OK;
+      break;
+
     case OSDP_CMDB_DUMP_STATUS:
 #if 1
 //0
@@ -238,8 +267,8 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
 "  Timeout %ld(%d.) Dump %d Debug %d.\n",
          context->timer[0].i_sec, p_card.poll, m_dump, context->verbosity);
       fprintf (stderr,
-" PwrRpt %d Special-1 %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
-         context->power_report, context->special_1,
+" PwrRpt %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
+         context->power_report,
          context->cp_polls, context->pd_acks, context->sent_naks,
          context->checksum_errs);
       if (context->role EQUALS OSDP_ROLE_PD)

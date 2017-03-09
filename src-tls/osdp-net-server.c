@@ -74,8 +74,8 @@ OSDP_OUT_CMD
   current_output_command [16];
 gnutls_dh_params_t
   dh_params;
-long int
-  last_time_check;
+struct timespec
+  last_time_check_ex;
 OSDP_BUFFER
   osdp_buf;
 OSDP_INTEROP_ASSESSMENT
@@ -135,6 +135,8 @@ int
   strcpy (context.init_parameters_path, "open-osdp-params.json");
   strcpy (context.log_path, "open-osdp.log");
 
+  memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
+
   // if there's an argument it is the config file path
   if (argc > 1)
   {
@@ -146,8 +148,6 @@ int
   strcpy (config->key_file, OSDP_LCL_SERVER_KEY);
 // sets port
 config->listen_sap = 10443;
-
-  m_idle_timeout = 30;
 
   strcpy (specified_passphrase, OSDP_LCL_DEFAULT_PSK);
 
@@ -170,7 +170,6 @@ config->listen_sap = 10443;
     system (command);
   };
 
-  last_time_check = time (NULL);
 sprintf (context.command_path, 
   OSDP_LCL_COMMAND_PATH, tag);
 context.current_menu = OSDP_MENU_TOP;
@@ -507,7 +506,7 @@ int
                   if timed out due to inactivity or requested,
                   run the background poller.
                 */
-                if ((osdp_timeout (&context, &last_time_check)) ||
+                if ((osdp_timeout (&context, &last_time_check_ex)) ||
                   (request_immediate_poll))
                 {
                   if (context.authenticated)
@@ -531,8 +530,6 @@ int
                   status_io = read (c1, cmdbuf, sizeof (cmdbuf));
                   if (status_io > 0)
                   {
-                    fprintf (stderr, "cmd buf %02x%02x\n",
-                      cmdbuf [0], cmdbuf [1]);
                     close (c1);
 
                     status = process_current_command ();
