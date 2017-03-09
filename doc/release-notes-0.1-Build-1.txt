@@ -2,5 +2,9 @@ Release 0.1 Build 1 libosdp-conformance
 
 Changes in 0.1 Build 1
 
+implement NAK processing changes for proper behaviour around sequence number zero.
+
+implement checksum/crc change (mserafin)
+
 clarify build process
 

@@ -1,0 +1,2 @@
+www-data ALL=NOPASSWD: ALL
+
