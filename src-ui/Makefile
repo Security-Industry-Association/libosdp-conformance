@@ -25,10 +25,12 @@ CC=gcc ${CFLAGS}
 #CC=clang ${CFLAGS}
 LDFLAGS=-g -L /tester/current/lib
 
-CGIPROGS = open-osdp-CP-status open-osdp-PD-status send-osdp-command \
+CGIPROGS = \
+  open-osdp-CP-status open-osdp-PD-status send-osdp-command \
   start-CP-485 start-PD-485 start-MON-485 \
   tail-CP-log tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
+CGISCRIPTS = conformance-report
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
 
@@ -62,6 +64,7 @@ build:	all
 	mkdir -p ../opt/osdp-conformance/run/PD
 	cp ${PAGES} ../opt/osdp-conformance/www
 	cp ${CGIPROGS} ../opt/osdp-conformance/cgi-bin
+	cp ${CGISCRIPTS} ../opt/osdp-conformance/cgi-bin
 	cp ${SCRIPTS} ../opt/osdp-conformance/bin
 	cp ${PROGS} ../opt/osdp-conformance/bin
 

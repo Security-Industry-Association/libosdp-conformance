@@ -6,5 +6,5 @@ implement NAK processing changes for proper behaviour around sequence number zer
 
 implement checksum/crc change (mserafin)
 
-clarify build process
+clarify build process; clarify linux platform integration
 
