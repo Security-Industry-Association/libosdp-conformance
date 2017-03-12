@@ -268,10 +268,10 @@ void
     conformance_status (oconf->cmd_poll_raw.test_status)));
   LOG_REPORT ((log_string,
 "3-1-3  Poll response 3                    %s",
-    conformance_status (oconf->cmd_poll_raw.test_status)));
+    conformance_status (oconf->cmd_poll_response_3.test_status)));
   LOG_REPORT ((log_string,
 "3-1-4  Poll response 4                    %s",
-    conformance_status (oconf->cmd_poll_raw.test_status)));
+    conformance_status (oconf->cmd_poll_response_4.test_status)));
   LOG_REPORT ((log_string,
 "3-2-1  ID Report Request                  %s",
     conformance_status (oconf->cmd_id.test_status)));
@@ -299,26 +299,39 @@ void
   LOG_REPORT ((log_string,
 "3-9-1  Output Control Command             %s",
     conformance_status (oconf->cmd_out.test_status)));
-  LOG_REPORT ((log_string, "3.10 Reader LED Control Command         %s",
+  LOG_REPORT ((log_string,
+"3-10-1 LED Control                        %s",
     conformance_status (oconf->cmd_led.test_status)));
-  LOG_REPORT ((log_string, "3.11 Reader Buzzer Control Command      %s",
+  LOG_REPORT ((log_string,
+"3-11-1 Buzzer Control                     %s",
     conformance_status (oconf->cmd_buz.test_status)));
-  LOG_REPORT ((log_string, "3.12 Reader Text Output Command         %s",
+  LOG_REPORT ((log_string,
+"3-12-1 Text output                        %s",
     conformance_status (oconf->cmd_text.test_status)));
-  LOG_REPORT ((log_string, "3.14 Communication Configuration Cmd    %s",
+  LOG_REPORT ((log_string,
+"3-14-1 COMSET                             %s",
     conformance_status (oconf->cmd_comset.test_status)));
-  LOG_REPORT ((log_string, "3.16 Set Automatic Rdr Prompt Strings   %s",
+  LOG_REPORT ((log_string,
+"3-16-1 Reader Prompt                      %s",
     conformance_status (oconf->cmd_prompt.test_status)));
-  LOG_REPORT ((log_string, "3.17 Scan and Send Biometric Template   %s",
+  LOG_REPORT ((log_string,
+"3-17-1 Scan and send bio template         %s",
     conformance_status (oconf->cmd_bioread.test_status)));
-  LOG_REPORT ((log_string, "3.18 Scan and Match Biometric Template  %s",
+  LOG_REPORT ((log_string,
+"3-18-1 Scan and match bio template        %s",
     conformance_status (oconf->cmd_biomatch.test_status)));
-  LOG_REPORT ((log_string, "3.20 Manufacturer Specific Command      %s",
+  LOG_REPORT ((log_string,
+"3-19-1 Multipart message continuation      %s",
+    conformance_status (oconf->cmd_cont.test_status)));
+  LOG_REPORT ((log_string,
+"3-20-1 Manufacturer specific command       %s",
     conformance_status (oconf->cmd_mfg.test_status)));
-  LOG_REPORT ((log_string, "3.21 Stop Multi Part Message            %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
-  LOG_REPORT ((log_string, "3.22 Maximum Acceptable Reply Size      %s",
-"???"));//    conformance_status (oconf->cmd_led.test_status));
+  LOG_REPORT ((log_string,
+"3-21-1 Stop multipart message              %s",
+    conformance_status (oconf->cmd_stop_multi.test_status)));
+  LOG_REPORT ((log_string,
+"3-22-1 Maximum acceptable reply size       %s",
+    conformance_status (oconf->cmd_max_rec.test_status)));
 
   LOG_REPORT ((log_string,
 "4-1-1  General Ack Nothing to Report      %s",
@@ -354,19 +367,19 @@ void
 "4-6-2 Input report consistent             %s",
     conformance_status (oconf->rep_input_stat.test_status)));
   LOG_REPORT ((log_string,
-"4-7-1 osdp_OSTATR                         %s",
+"4-7-1  osdp_OSTATR                        %s",
     conformance_status (oconf->rep_output_stat.test_status)));
   LOG_REPORT ((log_string,
-"4-7-2 osdp_OSTATR for POLL                %s",
+"4-7-2  osdp_OSTATR for POLL               %s",
     conformance_status (oconf->resp_ostatr_poll.test_status)));
   LOG_REPORT ((log_string,
-"4-7-3 osdp_OSTATR for POLL                %s",
+"4-7-3  osdp_OSTATR for POLL               %s",
     conformance_status (oconf->resp_ostatr_range.test_status)));
   LOG_REPORT ((log_string,
-"4-8-1 osdp_RSTATR                         %s",
+"4-8-1  osdp_RSTATR                        %s",
     conformance_status (oconf->resp_rstatr.test_status)));
   LOG_REPORT ((log_string,
-"4-9-1 RAW Read                            %s",
+"4-9-1  RAW Read                           %s",
     conformance_status (oconf->rep_raw.test_status)));
   LOG_REPORT ((log_string,
 "4-10-1 Formatted Read                     %s",
@@ -375,7 +388,7 @@ void
 "4-11-1 Keypad input                       %s",
     conformance_status (oconf->rep_keypad.test_status)));
   LOG_REPORT ((log_string,
-"4-12-1 osdp_RSTATR                        %s",
+"4-12-1 COM Report                         %s",
     conformance_status (oconf->rep_comm.test_status)));
   LOG_REPORT ((log_string,
 "4-13-1 Biometrics Read                    %s",
@@ -387,10 +400,7 @@ void
 "4-15-1 Mfg Response                       %s",
     conformance_status (oconf->resp_mfg.test_status)));
   LOG_REPORT ((log_string,
-"4-16-1 Mfg 2                              %s",
-    conformance_status (oconf->resp_mfg2.test_status)));
-  LOG_REPORT ((log_string,
-"4-17-1 Busy                               %s",
+"4-16-1 Busy                               %s",
     conformance_status (oconf->resp_busy.test_status)));
 
   LOG_REPORT ((log_string,

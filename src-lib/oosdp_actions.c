@@ -429,6 +429,7 @@ int
 
   status = ST_OK;
   osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
+  osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
   processed = 0;
   raw_data = msg->data_payload + 4;
   /*

@@ -76,111 +76,6 @@ int
     processed = 1;
     status = ST_OK;
   };
-  if ((!processed) && (context->current_menu EQUALS OSDP_MENU_CP_DIAG))
-  {
-    context->role = OSDP_ROLE_CP;
-    switch (command)
-    {
-    case OSDP_CMD_CP_SEND_POLL:
-      current_length = 0;
-      status = send_message (context,
-        OSDP_POLL, p_card.addr, &current_length, 0, NULL);
-      if (context->verbosity > 2)
-        fprintf (stderr, "Polling\n");
-      break;
-
-    case OSDP_CMD_GET_CREDS_A:
-      {
-#if 0
-        OSDP_MULTI_GETPIV
-          mmsg;
-
-        current_length = 0;
-        memset (&mmsg, 0, sizeof (mmsg));
-        mmsg.oui [0] = 0x08;
-        mmsg.oui [0] = 0x00;
-        mmsg.oui [0] = 0x1b;
-        mmsg.total = htons (16); // container tag plus data tag
-        mmsg.offset = 0;
-        mmsg.length = htons (16); // container tag plus data tag
-        mmsg.cmd = 0;
-        mmsg.container_tag [0] = 0x00;
-        mmsg.container_tag [1] = 0x00;
-        mmsg.container_tag [2] = 0x00;
-        mmsg.data_tag [0] = 0x00;
-        status = send_message (context,
-          OSDP_MFG, p_card.addr, &current_length, sizeof (mmsg), (unsigned char *)&mmsg);
-#endif
-status = -1;
-      };
-      break;
-
-    case OSDP_CMD_COMSET:
-      {
-       unsigned char
-         param [5];
-
-        current_length = 0;
-        param [0] = p_card.addr; // set to PD 1
-        param [1] = 0x00ff & 9600; // hard-code tp 9600 BPS
-        param [2] = (0xff00 & 9600) >> 8;
-        param [3] = 0;
-        param [4] = 0;
-        status = send_message (context, OSDP_COMSET, 0x7f,
-          &current_length, sizeof (param), param);
-        if (context->verbosity > 2)
-          fprintf (context->log, "COM Set: PD %d, Speed %d.\n",
-            param [0], 9600);
-      };
-      break;
-
-    case OSDP_CMD_LCL_STAT:
-      status = ST_OK;
-      current_length = 0;
-      status = send_message (context,
-        OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
-      if (context->verbosity > 2)
-        fprintf (stderr, "Requesting Capabilities Report\n");
-      break;
-
-    case OSDP_CMD_EXIT:
-      context->current_menu = OSDP_MENU_TOP;
-      status = ST_OK;
-      break;
-
-    default:
-      status = ST_CMD_UNKNOWN;
-      break;
-    };
-    processed = 1;
-  };
-  if ((!processed) && (context->current_menu EQUALS OSDP_MENU_PD_DIAG))
-  {
-    context->role = OSDP_ROLE_PD;
-    switch (command)
-    {
-    case OSDP_CMD_PD_POWER:
-      context->power_report = 1;
-      status = ST_OK;
-      break;
-    case OSDP_CMD_PD_CARD_PRESENT:
-      status = ST_OK;
-      /*
-        use card data from loaded config
-      */
-      context->card_data_valid = p_card.bits;
-      context->creds_a_avail = creds_buffer_a_lth;
-      if (context->verbosity > 2)
-        fprintf (context->log, "Presenting card data (raw: %d, Creds A: %d)\n",
-          context->card_data_valid, context->creds_a_avail);
-      break;
-    case OSDP_CMD_EXIT:
-      context->current_menu = OSDP_MENU_TOP;
-      status = ST_OK;
-      break;
-    };
-    processed = 1;
-  };
   if ((!processed) &&(context->current_menu EQUALS OSDP_MENU_TOP))
   {
     switch (command)
@@ -360,6 +255,8 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         current_length = 0;
         status = send_message (context,
           OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
+        osdp_conformance.cmd_lstat.test_status =
+          OCONFORM_EXERCISED;
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting Local Status\n");
       };
@@ -397,6 +294,22 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
             0, 0, 0);
       };
       break;
+
+    case OSDP_CMDB_OSTAT:
+      {
+        current_length = 0;
+        /*
+          osdp_OSTAT requires no arguments.
+        */
+        current_length = 0;
+        status = send_message (context,
+          OSDP_OSTAT, p_card.addr, &current_length, 0, NULL);
+        if (context->verbosity > 3)
+          fprintf (stderr, "Requesting Output Status\n");
+      };
+      status = ST_OK;
+      break;
+
     case OSDP_CMDB_OUT:
       {
         OSDP_OUT_MSG

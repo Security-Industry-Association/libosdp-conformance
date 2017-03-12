@@ -592,6 +592,13 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
         strcpy (tlogmsg2, "osdp_MFGREP");
       break;
 
+    case OSDP_OSTAT:
+      m->data_payload = NULL;
+      msg_data_length = 0;
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_OSTAT");
+      break;
+
     case OSDP_OSTATR:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
@@ -755,7 +762,7 @@ if (m->lth == 7)
       };
     if (context->role EQUALS OSDP_ROLE_MONITOR)
     {
-      // pretty print the message if tehre are juicy details.
+      // pretty print the message if there are juicy details.
       (void)monitor_osdp_message (context, m);
 
       status = ST_MONITOR_ONLY;

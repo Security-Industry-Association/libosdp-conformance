@@ -41,6 +41,8 @@ extern OSDP_CONTEXT
   context;
 extern OSDP_PARAMETERS
   p_card;
+char
+  tlogmsg [1024];
 
 
 void start_element (void *data, const char *element, const char **attribute);
@@ -887,6 +889,7 @@ int
   status = ST_OK;
   true_dest = dest_addr;
   *current_length = 0;
+
   if (context->verbosity > 3)
   {
     if (command EQUALS OSDP_NAK)
@@ -903,6 +906,31 @@ int
     0); // no security
   if (status EQUALS ST_OK)
   {
+
+    // if (context->verbosity > 3)
+    {
+      OSDP_MSG
+        m;
+      OSDP_HDR
+        returned_hdr;
+      int
+        status_monitor;
+
+      memset (&m, 0, sizeof (m));
+
+      m.ptr = test_blk; // marshalled outbound message
+      m.lth = *current_length;
+
+      status_monitor = parse_message (context, &m, &returned_hdr);
+      if (context->verbosity > 8)
+        if (status_monitor != ST_OK)
+        {
+          sprintf (tlogmsg,"parse_message for monitoring returned %d.\n",
+            status_monitor);
+          status = oosdp_log (context, OSDP_LOG_STRING_CP, 1, tlogmsg);
+        };
+      (void)monitor_osdp_message (context, &m);
+    };
     if (context->verbosity > 4)
     {
       int

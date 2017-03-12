@@ -281,9 +281,8 @@ int
     char
       vstr [1024];
 
-    strcpy (this_command, json_string_value (value));
     test_command = "output";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    if (0 EQUALS strcmp (current_command, test_command))
     {
       cmd->command = OSDP_CMDB_OUT;
       if (ctx->verbosity > 3)
@@ -321,6 +320,20 @@ int
       };
     };
   }; 
+
+  // request output status
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "output_status"))
+    {
+      cmd->command = OSDP_CMDB_OSTAT;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+
   if (status EQUALS ST_OK)
   {
     value = json_object_get (root, "command");
