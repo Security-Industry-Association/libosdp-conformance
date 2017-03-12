@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cd /opt/open-osdp/run/CP
+cd /opt/osdp-conformance/run/CP
 sudo -n killall osdp-tcp-client
-sudo -n /opt/open-osdp/bin/exec-CPtcpclient
+sudo -n /opt/osdp-conformance/bin/exec-CPtcpclient
 echo "Content-type: text/html"
 echo ""
 
@@ -24,5 +24,7 @@ echo "<HTML><HEAD><TITLE>start CP tcp client</TITLE>"
 echo "<BODY><PRE>"
 echo "osdp-tcp-client started in CP run directory"
 echo "</BODY></HTML>"
+
+#!/bin/bash
 
 

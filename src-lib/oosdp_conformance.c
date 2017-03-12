@@ -88,10 +88,30 @@ void
 
 { /* dump_conformance */
 
+  char
+    *profile_tag;
+  char
+    *role_tag;
+
+
   oconf->pass = 0;
   oconf->fail = 0;
   oconf->untested = 0;
   oconf->skipped = 0;
+
+  if (ctx->role EQUALS OSDP_ROLE_PD)
+    role_tag = "CP";
+  else
+    role_tag = "PD";
+  profile_tag = "Unknown";
+  if (ctx->profile EQUALS OSDP_PROFILE_PERIPHERAL_TEST_PD)
+    profile_tag = "Peripheral (testing PD)";
+  if (ctx->profile EQUALS OSDP_PROFILE_BASIC)
+    profile_tag = "Basic";
+  if (ctx->profile EQUALS OSDP_PROFILE_BIO)
+    profile_tag = "Biometrics";
+  if (ctx->profile EQUALS OSDP_PROFILE_PIV)
+    profile_tag = "PIV";
 
   skip_conformance_tests (ctx, oconf);
 
@@ -129,6 +149,10 @@ void
   ctx->report = fopen ("/opt/osdp-conformance/log/report.log", "w");
 
   LOG_REPORT ((log_string, "Conformance Report:"));
+  LOG_REPORT ((log_string,
+    "Testing %s with %s Profile\n", role_tag, profile_tag));
+  LOG_REPORT ((log_string, "Version: %d.%d Build %d\n",
+    ctx->fw_version [0], ctx->fw_version [1], ctx->fw_version [2]));
 
   LOG_REPORT ((log_string,
 "2-1-1  Physical Interface                 %s",
@@ -341,6 +365,33 @@ void
   LOG_REPORT ((log_string,
 "4-8-1 osdp_RSTATR                         %s",
     conformance_status (oconf->resp_rstatr.test_status)));
+  LOG_REPORT ((log_string,
+"4-9-1 RAW Read                            %s",
+    conformance_status (oconf->rep_raw.test_status)));
+  LOG_REPORT ((log_string,
+"4-10-1 Formatted Read                     %s",
+    conformance_status (oconf->rep_formatted.test_status)));
+  LOG_REPORT ((log_string,
+"4-11-1 Keypad input                       %s",
+    conformance_status (oconf->rep_keypad.test_status)));
+  LOG_REPORT ((log_string,
+"4-12-1 osdp_RSTATR                        %s",
+    conformance_status (oconf->rep_comm.test_status)));
+  LOG_REPORT ((log_string,
+"4-13-1 Biometrics Read                    %s",
+    conformance_status (oconf->rep_scan_send.test_status)));
+  LOG_REPORT ((log_string,
+"4-14-1 Biometrics Match                   %s",
+    conformance_status (oconf->rep_scan_match.test_status)));
+  LOG_REPORT ((log_string,
+"4-15-1 Mfg Response                       %s",
+    conformance_status (oconf->resp_mfg.test_status)));
+  LOG_REPORT ((log_string,
+"4-16-1 Mfg 2                              %s",
+    conformance_status (oconf->resp_mfg2.test_status)));
+  LOG_REPORT ((log_string,
+"4-17-1 Busy                               %s",
+    conformance_status (oconf->resp_busy.test_status)));
 
   LOG_REPORT ((log_string,
 "=== Passed:   %d",
@@ -358,6 +409,10 @@ void
 "    Total:    %d",
     oconf->pass + oconf->fail + oconf->untested + oconf->skipped));
   LOG_REPORT ((log_string,
+    "Testing %s with %s Profile\n", role_tag, profile_tag));
+  LOG_REPORT ((log_string, "Version: %d.%d Build %d\n",
+    ctx->fw_version [0], ctx->fw_version [1], ctx->fw_version [2]));
+  LOG_REPORT ((log_string,
     "---end of report---"));
 fprintf (ctx->log, "mmt %d of %d\n",
   oconf->conforming_messages,
@@ -366,5 +421,4 @@ fprintf (ctx->log, "mmt %d of %d\n",
     fclose (ctx->report);
 
 } /* dump_conformance */
-
 

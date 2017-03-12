@@ -125,13 +125,15 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_ostatr_poll;        // 4-7-2
   OSDP_CONFORM resp_ostatr_range;       // 4-7-3
   OSDP_CONFORM resp_rstatr;             // 4-8-1
-  OSDP_CONFORM rep_raw;                 // 4.9
-  OSDP_CONFORM rep_formatted;           // 4.10
-  OSDP_CONFORM rep_keypad;              // 4.11
-  OSDP_CONFORM rep_comm;                // 4.12
-  OSDP_CONFORM rep_scan_send;           // 4.13
-  OSDP_CONFORM rep_scan_match;          // 4.14
-  OSDP_CONFORM rep_busy;                // 4.17
+  OSDP_CONFORM rep_raw;                 // 4-9
+  OSDP_CONFORM rep_formatted;           // 4-10-1
+  OSDP_CONFORM rep_keypad;              // 4-11
+  OSDP_CONFORM rep_comm;                // 4-12
+  OSDP_CONFORM rep_scan_send;           // 4-13
+  OSDP_CONFORM rep_scan_match;          // 4-14
+  OSDP_CONFORM resp_mfg;                // 4-15-1
+  OSDP_CONFORM resp_mfg2;               // 4-16-1
+  OSDP_CONFORM resp_busy;               // 4-17-1
 } OSDP_INTEROP_ASSESSMENT;
 
 #define PARAM_MMT (8) // minimum message thresshold

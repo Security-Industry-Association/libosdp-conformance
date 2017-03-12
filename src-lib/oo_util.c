@@ -477,7 +477,7 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       msg_data_length = 0;
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BUSY");
-      osdp_conformance.rep_busy.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.resp_busy.test_status = OCONFORM_EXERCISED;
       break;
 
     case OSDP_CCRYPT:

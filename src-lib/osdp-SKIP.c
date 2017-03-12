@@ -34,15 +34,24 @@ void
     oconf->cmd_biomatch.test_status = OCONFORM_SKIP;
     oconf->cmd_cont.test_status = OCONFORM_SKIP;
     oconf->cmd_mfg.test_status = OCONFORM_SKIP;
+
+    oconf->rep_formatted.test_status = OCONFORM_SKIP;
+    oconf->rep_scan_match.test_status = OCONFORM_SKIP;
+    oconf->rep_scan_send.test_status = OCONFORM_SKIP;
+    oconf->resp_mfg.test_status = OCONFORM_SKIP;
+    oconf->resp_mfg2.test_status = OCONFORM_SKIP;
   };
   if (ctx->profile EQUALS OSDP_PROFILE_BASIC)
   {
+    oconf->rep_formatted.test_status = OCONFORM_SKIP;
   };
   if (ctx->profile EQUALS OSDP_PROFILE_BIO)
   {
+    oconf->rep_formatted.test_status = OCONFORM_SKIP;
   };
   if (ctx->profile EQUALS OSDP_PROFILE_PIV)
   {
+    oconf->rep_formatted.test_status = OCONFORM_SKIP;
   };
 
 } /* skip_conformance_tests */

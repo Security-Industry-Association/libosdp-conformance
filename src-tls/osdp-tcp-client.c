@@ -430,6 +430,12 @@ int
               if (osdp_timeout (&context, &last_time_check_ex) ||
                 request_immediate_poll)
               {
+                // if timer 0 expired dump the status
+                if (context.timer[0].status EQUALS OSDP_TIMER_RESTARTED)
+                  status = write_status (&context);
+
+                // if "the timer" went off, do the background process
+
                 status = background (&context);
                 request_immediate_poll = 0;
               };
