@@ -68,6 +68,11 @@ int
     sprintf (command, context->init_command, device);
     system (command);
   };
+  if (context->fd != -1)
+  {
+    fprintf (stderr, "Closing %s\n", device);
+    close (context->fd);
+  };
   fprintf (stderr, "Opening %s\n", device);
   context->fd = open (device, O_RDWR | O_NONBLOCK);
   if (context->fd EQUALS -1)

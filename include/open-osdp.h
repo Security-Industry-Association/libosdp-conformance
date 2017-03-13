@@ -129,6 +129,10 @@
 #define OSDP_CMDB_CONFORM_2_6_1 (1015)
 #define OSDP_CMDB_ISTAT         (1016)
 #define OSDP_CMDB_COMSET        (1017)
+#define OSDP_CMDB_CONFORM_2_2_1 (1018)
+#define OSDP_CMDB_CONFORM_2_2_2 (1019)
+#define OSDP_CMDB_CONFORM_2_2_3 (1020)
+#define OSDP_CMDB_CONFORM_2_2_4 (1021)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -701,6 +705,7 @@ int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);
+int send_comset (OSDP_CONTEXT *ctx, unsigned char pd_address, char *speed_string);
 int send_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int *current_length, int data_length, unsigned char *data);
 int send_osdp_data (OSDP_CONTEXT *ctx, unsigned char *buf, int lth);

@@ -1,0 +1,14 @@
+#!/bin/bash
+set -x
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/run/CP/open_osdp_command.json
+mkdir -p ${OSDP_PATH}/run/CP
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"comset\","
+echo >>${CMDPATH} "  \"new_address\" : \"$2\","
+echo >>${CMDPATH} "  \"new_speed\" : \"$3\","
+echo >>${CMDPATH} "  \"#\" : \"created by 501 in test\""
+echo >>${CMDPATH} "}"
+
+${OSDP_PATH}/bin/HUP-CP
+

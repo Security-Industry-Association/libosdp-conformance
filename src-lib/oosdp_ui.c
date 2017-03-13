@@ -83,6 +83,27 @@ int
 
 // conformance specific commands.
 
+    case OSDP_CMDB_CONFORM_2_2_1:
+      strcpy (context->test_in_progress, "2-2-1");
+      osdp_conformance.signalling.test_status = OCONFORM_FAIL;
+      status = send_comset (context, p_card.addr, "9600");
+      break;
+    case OSDP_CMDB_CONFORM_2_2_2:
+      strcpy (context->test_in_progress, "2-2-2");
+      osdp_conformance.alt_speed_2.test_status = OCONFORM_FAIL;
+      status = send_comset (context, p_card.addr, "19200");
+      break;
+    case OSDP_CMDB_CONFORM_2_2_3:
+      strcpy (context->test_in_progress, "2-2-3");
+      osdp_conformance.alt_speed_3.test_status = OCONFORM_FAIL;
+      status = send_comset (context, p_card.addr, "38400");
+      break;
+    case OSDP_CMDB_CONFORM_2_2_4:
+      strcpy (context->test_in_progress, "2-2-4");
+      osdp_conformance.alt_speed_4.test_status = OCONFORM_FAIL;
+      status = send_comset (context, p_card.addr, "19200");
+      break;
+
     case OSDP_CMDB_CONFORM_2_6_1:
       {
         OSDP_TEXT_HEADER
@@ -146,6 +167,7 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
           fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
             param [0], context->serial_speed);
         context->new_address = param [0];
+        p_card.addr = context->new_address;
         status = init_serial (context, p_card.filename);
       };
   

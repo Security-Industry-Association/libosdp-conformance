@@ -853,6 +853,47 @@ int
 } /* read_config */
 
 
+int
+  send_comset
+    (OSDP_CONTEXT
+      *ctx,
+    unsigned char
+      pd_address,
+    char
+      *speed_string)
+
+{ /* send_comset */
+
+  int
+    current_length;
+  int
+    new_speed;
+  unsigned char
+    param [5];
+  int
+    status;
+
+
+  sscanf (speed_string, "%d", &new_speed);
+  param [0] = pd_address; // byte 0: new address
+  param [1] =        new_speed & 0xff;
+  param [2] =     (new_speed & 0xff00) >> 8;
+  param [3] =   (new_speed & 0xff0000) >> 16;
+  param [4] = (new_speed & 0xff000000) >> 24;
+  status = send_message (ctx,
+    OSDP_COMSET, p_card.addr, &current_length, sizeof (param), param);
+  sprintf (ctx->serial_speed, "%d", new_speed);
+  if (ctx->verbosity > 2)
+    fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",
+      param [0], ctx->serial_speed);
+  ctx->new_address = param [0];
+  p_card.addr = ctx->new_address;
+  status = init_serial (ctx, p_card.filename);
+  return (status);
+
+} /* send_comset */
+
+
 /*
   send_message - send an OSDP message
 
@@ -960,54 +1001,4 @@ int
   return (status);
 
 } /* send_message */
-
-
-void start_element
-  (void
-    *data,
-  const char
-    *element,
-  const char
-    **attribute)
-{ /* start_element */
-
-  switch (context.cparm)
-  {
-  case PARAMETER_NONE:
-    if (strcmp (element, "params") == 0)
-    {
-      context.cparm = PARAMETER_PARAMS;
-    };
-    break;
-  
-  case PARAMETER_PARAMS:
-    if (strcmp (element, "addr") == 0)
-    {
-      context.cparm_v = PARMV_ADDR;
-    };
-    if (strcmp (element, "bits") == 0)
-    {
-      context.cparm_v = PARMV_CARD_BITS;
-    };
-    if (strcmp (element, "filename") == 0)
-    {
-      context.cparm_v = PARMV_FILENAME;
-    };
-    if (strcmp (element, "poll") == 0)
-    {
-      context.cparm_v = PARMV_CP_POLL;
-    };
-    if (strcmp (element, "role") == 0)
-    {
-      context.cparm_v = PARMV_ROLE;
-    };
-    if (strcmp (element, "value") == 0)
-    {
-      context.cparm_v = PARMV_CARD_VALUE;
-    };
-    break;
-  };
-  depth++;
-
-} /* start_element */
 
