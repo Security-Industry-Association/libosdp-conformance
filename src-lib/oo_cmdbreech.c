@@ -33,6 +33,8 @@
 
 extern OSDP_OUT_CMD
   current_output_command [];
+extern OSDP_PARAMETERS
+  p_card;
 
 
 int
@@ -105,34 +107,47 @@ fprintf (stderr, "command path %s status now %d.\n",
     };
   };
 
+  // command capabilities
+
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_1"))
+    strcpy (this_command, json_string_value (value));
+    test_command = "capabilities";
+    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
-      cmd->command = OSDP_CMDB_CONFORM_2_2_1;
+      cmd->command = OSDP_CMDB_CAPAS;
+      if (ctx->verbosity > 4)
+        fprintf (stderr, "command was %s\n",
+          this_command);
     };
-  };
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_2"))
-    {
-      cmd->command = OSDP_CMDB_CONFORM_2_2_2;
-    };
-  };
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_3"))
-    {
-      cmd->command = OSDP_CMDB_CONFORM_2_2_3;
-    };
-  };
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_4"))
-    {
-      cmd->command = OSDP_CMDB_CONFORM_2_2_4;
-    };
-  };
+  }; 
+
+  // command conform_2_2_1
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_2_2_1")) {
+      cmd->command = OSDP_CMDB_CONFORM_2_2_1; }; };
+
+  // command conform_2_2_2
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_2_2_2")) {
+      cmd->command = OSDP_CMDB_CONFORM_2_2_2; }; };
+
+  // command conform_2_2_3
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_2_2_3")) {
+      cmd->command = OSDP_CMDB_CONFORM_2_2_3; }; };
+
+  // command conform_2_2_4
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_2_2_4")) {
+      cmd->command = OSDP_CMDB_CONFORM_2_2_4; }; };
+
+  // command conform_2_6_1
+
   if (status EQUALS ST_OK)
   {
     if (0 EQUALS strcmp (current_command, "conform_2_6_1"))
@@ -142,6 +157,21 @@ fprintf (stderr, "command path %s status now %d.\n",
 " ***OSDP CONFORMANCE TEST*** 45678901234567890123456789012345678901234567890123456789012345678901234567890");
     };
   };
+
+  // command conform_3_14_2 - corrupted COMSET
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "conform_3_14_2"))
+    {
+      cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
+
+      status = send_comset (ctx, p_card.addr, 0, "999999");
+    };
+  };
+
+  // command text
+
   if (status EQUALS ST_OK)
   {
     if (0 EQUALS strcmp (current_command, "text"))
@@ -159,18 +189,6 @@ fprintf (stderr, "command path %s status now %d.\n",
       };
     };
   };
-  if (status EQUALS ST_OK)
-  {
-    strcpy (this_command, json_string_value (value));
-    test_command = "capabilities";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
-    {
-      cmd->command = OSDP_CMDB_CAPAS;
-      if (ctx->verbosity > 4)
-        fprintf (stderr, "command was %s\n",
-          this_command);
-    };
-  }; 
 
   // COMSET.  takes two option arguments, "new_address" and "new_speed".
   // default for new_address is 0x00, default for new_speed is 9600
@@ -278,7 +296,7 @@ fprintf (stderr, "command path %s status now %d.\n",
     };
   }; 
 
-  // LED output
+  // command led
 
   if (status EQUALS ST_OK)
   {
@@ -447,6 +465,35 @@ fprintf (stderr, "command path %s status now %d.\n",
           this_command);
     };
   }; 
+
+
+  // command verbosity
+  // arg level - range 0-9
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "verbosity"))
+    {
+      int
+        i;
+      char
+        vstr [1024];
+
+      cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+
+      value = json_object_get (root, "level");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        ctx->verbosity = i;
+      };
+    };
+  }; 
+
   if (cmdf != NULL)
     fclose (cmdf);
   return (status);

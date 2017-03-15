@@ -30,7 +30,9 @@ CGIPROGS = \
   start-CP-485 start-PD-485 start-MON-485 \
   tail-CP-log tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
-CGISCRIPTS = conformance-report
+CGISCRIPTS = conformance-report \
+  do-CP-command \
+  do-comset do-confirm do-led do-text do-verbosity
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
 

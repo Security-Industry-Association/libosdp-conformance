@@ -882,6 +882,7 @@ int
   param [2] =     (new_speed & 0xff00) >> 8;
   param [3] =   (new_speed & 0xff0000) >> 16;
   param [4] = (new_speed & 0xff000000) >> 24;
+  osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
   status = send_message (ctx,
     OSDP_COMSET, pd_address, &current_length, sizeof (param), param);
   sprintf (ctx->serial_speed, "%d", new_speed);

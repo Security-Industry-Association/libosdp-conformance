@@ -152,36 +152,15 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
 
     case OSDP_CMDB_COMSET:
       {
-        unsigned char
-          param [5];
         int
           new_speed;
 
 
-if (0)
-{
-        current_length = 0;
-        new_speed = 0;
-        memcpy (&new_speed, details+4, 4);
-        param [0] = details [0];
-        param [1] =        new_speed & 0xff;
-        param [2] =     (new_speed & 0xff00) >> 8;
-        param [3] =   (new_speed & 0xff0000) >> 16;
-        param [4] = (new_speed & 0xff000000) >> 24;
-        status = send_message (context,
-          OSDP_COMSET, p_card.addr, &current_length, sizeof (param), param);
-        sprintf (context->serial_speed, "%d", new_speed);
-        if (context->verbosity > 2)
-          fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
-            param [0], context->serial_speed);
-        context->new_address = param [0];
-        p_card.addr = context->new_address;
-        status = init_serial (context, p_card.filename);
-};
         new_speed = 0;
         memcpy (&new_speed, details+4, 4);
         sprintf (context->serial_speed, "%d", new_speed);
         context->new_address = details [0];
+        osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
         if (context->verbosity > 2)
           fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
             context->new_address, context->serial_speed);

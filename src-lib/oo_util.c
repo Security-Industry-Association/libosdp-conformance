@@ -385,22 +385,6 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
           strcpy (dirtag, "PD");
         else
           strcpy (dirtag, "CP");
-        if (context->verbosity > 8)
-        {
-          int i;
-          char line [1024];
-          int len;
-          char octet [8];
-          len = (*(p1+3))*256+*(p1+2);
-          strcpy (line, "      Raw: ");
-          for (i=0; i<len; i++)
-          {
-            sprintf (octet, " %02x", *(p1+i));
-            strcat (line, octet);
-          };
-          strcat (line, "\n");
-          strcat (tlogmsg, line);
-        };
         if (0 EQUALS strcmp (dirtag, "CP"))
           status = oosdp_log (context, OSDP_LOG_STRING_CP, 1, tlogmsg);
         else
@@ -1284,6 +1268,7 @@ send OSDP_SCRYPT
 
     case OSDP_COM:
       status = ST_OK;
+      osdp_conformance.resp_com.test_status = OCONFORM_EXERCISED;
       if (context->verbosity > 2)
       {
         fprintf (stderr, "osdp_COM: Addr %02x Baud (m->l) %02x %02x %02x %02x\n",

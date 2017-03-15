@@ -256,7 +256,7 @@ void
 "2-11-1 ADDR                               %s",
     conformance_status (oconf->ADDR.test_status)));
   LOG_REPORT ((log_string,
-"2-11-2 Address 2                          %s",
+"2-11-2 No data on 7F                      %s",
     conformance_status (oconf->address_2.test_status)));
   LOG_REPORT ((log_string,
 "2-11-3 Config (0x7F) Address              %s",
@@ -427,7 +427,7 @@ void
     conformance_status (oconf->rep_keypad.test_status)));
   LOG_REPORT ((log_string,
 "4-12-1 COM Report                         %s",
-    conformance_status (oconf->rep_comm.test_status)));
+    conformance_status (oconf->resp_com.test_status)));
   LOG_REPORT ((log_string,
 "4-13-1 Biometrics Read                    %s",
     conformance_status (oconf->rep_scan_send.test_status)));
