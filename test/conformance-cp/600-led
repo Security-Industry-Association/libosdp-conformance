@@ -1,0 +1,36 @@
+#!/bin/bash
+set -x
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=/opt/osdp-conformance/run/CP/open_osdp_command.json
+SLEEPTIME=5
+echo "Reset LED color to continuous BLACK (0)"
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"0\""
+echo >>${CMDPATH} "}"
+${OSDP_PATH}/bin/HUP-CP
+echo sleeping...
+sleep ${SLEEPTIME}
+echo "Set LED color to continuous RED (1)"
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"1\""
+echo >>${CMDPATH} "}"
+${OSDP_PATH}/bin/HUP-CP
+echo sleeping...
+sleep ${SLEEPTIME}
+echo "Set LED color to continuous GREEN (2)"
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"2\""
+echo >>${CMDPATH} "}"
+${OSDP_PATH}/bin/HUP-CP
+echo sleeping...
+sleep ${SLEEPTIME}
+echo "Reset LED color to continuous BLACK (0)"
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"0\""
+echo >>${CMDPATH} "}"
+${OSDP_PATH}/bin/HUP-CP
+

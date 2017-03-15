@@ -86,22 +86,27 @@ int
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
       osdp_conformance.signalling.test_status = OCONFORM_FAIL;
-      status = send_comset (context, p_card.addr, "9600");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
+        "9600");
       break;
     case OSDP_CMDB_CONFORM_2_2_2:
       strcpy (context->test_in_progress, "2-2-2");
       osdp_conformance.alt_speed_2.test_status = OCONFORM_FAIL;
-      status = send_comset (context, p_card.addr, "19200");
+//      status = send_comset (context, p_card.addr, "19200");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
+        "19200");
       break;
     case OSDP_CMDB_CONFORM_2_2_3:
       strcpy (context->test_in_progress, "2-2-3");
       osdp_conformance.alt_speed_3.test_status = OCONFORM_FAIL;
-      status = send_comset (context, p_card.addr, "38400");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
+        "38400");
       break;
     case OSDP_CMDB_CONFORM_2_2_4:
       strcpy (context->test_in_progress, "2-2-4");
       osdp_conformance.alt_speed_4.test_status = OCONFORM_FAIL;
-      status = send_comset (context, p_card.addr, "19200");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
+        "115200");
       break;
 
     case OSDP_CMDB_CONFORM_2_6_1:
@@ -152,6 +157,9 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         int
           new_speed;
 
+
+if (0)
+{
         current_length = 0;
         new_speed = 0;
         memcpy (&new_speed, details+4, 4);
@@ -169,8 +177,17 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         context->new_address = param [0];
         p_card.addr = context->new_address;
         status = init_serial (context, p_card.filename);
+};
+        new_speed = 0;
+        memcpy (&new_speed, details+4, 4);
+        sprintf (context->serial_speed, "%d", new_speed);
+        context->new_address = details [0];
+        if (context->verbosity > 2)
+          fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
+            context->new_address, context->serial_speed);
+        status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, context->new_address,
+          context->serial_speed);
       };
-  
       status = ST_OK;
       break;
 
@@ -309,11 +326,9 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         current_length = 0;
         status = send_message (context,
           OSDP_LED, p_card.addr, &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message);
-        osdp_conformance.cmd_led.test_status =
-          OCONFORM_EXERCISED;
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting LED tmp ctl %02x perm ctl %02x perm color %02x\n",
-            0, 0, 0);
+            0, 0, led_control_message.perm_on_color);
       };
       break;
 

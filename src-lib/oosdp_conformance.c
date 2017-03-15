@@ -36,6 +36,41 @@ extern OSDP_INTEROP_ASSESSMENT
 char
   log_string [1024];
 
+// test control info
+typedef struct osdp_conformance_test
+{
+  char
+    *name;
+  unsigned char
+    *conformance;
+  int
+    test_for_peripheral;
+  int
+    test_for_basic;
+  int
+    test_for_biometrics;
+  int
+    test_for_piv;
+  int
+    test_for_transparent;
+} OSDP_CONFORMANCE_TEST;
+OSDP_CONFORMANCE_TEST
+  test_control [] =
+  {
+    { "3-10-1", &(osdp_conformance.cmd_led_red.test_status),
+      0, 0, 0, 0 }, // optional in all cases
+    { "3-10-2", &(osdp_conformance.cmd_led_green.test_status),
+      0, 0, 0, 0 }, // optional in all cases
+    { "3-12-1", &(osdp_conformance.cmd_text.test_status),
+      0, 0, 0, 0 }, // ??
+    { "3-21-1", &(osdp_conformance.cmd_stop_multi.test_status), 0, 0, 0, 0 }, //?
+    { "3-22-1", &(osdp_conformance.cmd_max_rec.test_status), 0, 0, 0, 0 }, //?
+    { "4-5-2", &(osdp_conformance.resp_lstatr_tamper.test_status), 1, 1, 1, 1 },
+    { "4-5-3", &(osdp_conformance.resp_lstatr_power.test_status), 1, 1, 1, 1 },
+    { "4-6-2", &(osdp_conformance.rep_input_consistent.test_status), 0, 0, 0, 0 }, //?
+    { NULL, NULL, 0, 0, 0, 0 }
+  };
+
 // code to configure tests to skip
 #include <osdp-SKIP.c>
 
@@ -224,8 +259,8 @@ void
 "2-11-2 Address 2                          %s",
     conformance_status (oconf->address_2.test_status)));
   LOG_REPORT ((log_string,
-"2-11-3 7F Comset                          %s",
-    conformance_status (oconf->address_3.test_status)));
+"2-11-3 Config (0x7F) Address              %s",
+    conformance_status (oconf->address_config.test_status)));
   LOG_REPORT ((log_string,
 "2-12-1 LEN                                %s",
     conformance_status (oconf->LEN.test_status)));
@@ -300,8 +335,11 @@ void
 "3-9-1  Output Control Command             %s",
     conformance_status (oconf->cmd_out.test_status)));
   LOG_REPORT ((log_string,
-"3-10-1 LED Control                        %s",
-    conformance_status (oconf->cmd_led.test_status)));
+"3-10-1 LED Test (Red)                     %s",
+    conformance_status (oconf->cmd_led_red.test_status)));
+  LOG_REPORT ((log_string,
+"3-10-2 LED Test (Green)                   %s",
+    conformance_status (oconf->cmd_led_green.test_status)));
   LOG_REPORT ((log_string,
 "3-11-1 Buzzer Control                     %s",
     conformance_status (oconf->cmd_buz.test_status)));
@@ -321,16 +359,16 @@ void
 "3-18-1 Scan and match bio template        %s",
     conformance_status (oconf->cmd_biomatch.test_status)));
   LOG_REPORT ((log_string,
-"3-19-1 Multipart message continuation      %s",
+"3-19-1 Multipart message continuation     %s",
     conformance_status (oconf->cmd_cont.test_status)));
   LOG_REPORT ((log_string,
-"3-20-1 Manufacturer specific command       %s",
+"3-20-1 Manufacturer specific command      %s",
     conformance_status (oconf->cmd_mfg.test_status)));
   LOG_REPORT ((log_string,
-"3-21-1 Stop multipart message              %s",
+"3-21-1 Stop multipart message             %s",
     conformance_status (oconf->cmd_stop_multi.test_status)));
   LOG_REPORT ((log_string,
-"3-22-1 Maximum acceptable reply size       %s",
+"3-22-1 Maximum acceptable reply size      %s",
     conformance_status (oconf->cmd_max_rec.test_status)));
 
   LOG_REPORT ((log_string,
@@ -352,19 +390,19 @@ void
 "4-4-2  Capabilities report consistent     %s",
     conformance_status (oconf->rep_capas_consistent.test_status)));
   LOG_REPORT ((log_string,
-"4-5-1 osdp_LSTATR Local Status Report     %s",
+"4-5-1  osdp_LSTATR Local Status Report    %s",
     conformance_status (oconf->resp_lstatr.test_status)));
   LOG_REPORT ((log_string,
-"4-5-2 osdp_LSTATR Tamper                  %s",
+"4-5-2  osdp_LSTATR Tamper                 %s",
     conformance_status (oconf->resp_lstatr_tamper.test_status)));
   LOG_REPORT ((log_string,
-"4-5-3 osdp_LSTATR Power                   %s",
+"4-5-3  osdp_LSTATR Power                  %s",
     conformance_status (oconf->resp_lstatr_power.test_status)));
   LOG_REPORT ((log_string,
-"4-6-1 osdp_ISTATR Input Status Report     %s",
+"4-6-1  osdp_ISTATR Input Status Report    %s",
     conformance_status (oconf->rep_input_stat.test_status)));
   LOG_REPORT ((log_string,
-"4-6-2 Input report consistent             %s",
+"4-6-2  Input report consistent            %s",
     conformance_status (oconf->rep_input_stat.test_status)));
   LOG_REPORT ((log_string,
 "4-7-1  osdp_OSTATR                        %s",
@@ -431,4 +469,38 @@ fprintf (ctx->log, "mmt %d of %d\n",
     fclose (ctx->report);
 
 } /* dump_conformance */
+
+int
+  osdp_conform_confirm
+    (char
+      *test)
+
+{ /* osdp_conform_confirm */
+
+  int
+    done;
+  int
+    idx;
+  int
+    status;
+
+
+  status = ST_OK;
+  idx = 0;
+  done = 0;
+  while (!done)
+  {
+    if (strcmp (test_control [idx].name, test) EQUALS 0)
+    {
+      *(test_control [idx].conformance) = OCONFORM_EXERCISED;
+      done = 1;
+    };
+    if (test_control [idx].name EQUALS NULL)
+      done = 1;
+    // yes, if we find nothing we'll still return OK
+    idx++;
+  };
+  return (status);
+
+} /* osdp_conform_confirm */
 

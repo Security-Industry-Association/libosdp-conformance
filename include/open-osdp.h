@@ -50,6 +50,8 @@
 #define C_SOM (0x53)
 #define C_OSDP_MARK (0xff) // used in OSDP TLS to poke CP
 
+#define OSDP_CONFIGURATION_ADDRESS (0x7F)
+
 #define OSDP_DEST_CP (0x00)
 
 #define OSDP_KEY_SCBK_D (0)
@@ -331,6 +333,9 @@ typedef struct osdp_context
     s_mac1 [8];
   unsigned char
     s_mac2 [8];
+
+  int
+    max_message; // max message from PD, if set
 
   // for multipart messages, in or out
   char
@@ -705,7 +710,9 @@ int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);
-int send_comset (OSDP_CONTEXT *ctx, unsigned char pd_address, char *speed_string);
+int send_comset
+  (OSDP_CONTEXT *ctx, unsigned char pd_address, unsigned char new_addr,
+  char *speed_string);
 int send_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int *current_length, int data_length, unsigned char *data);
 int send_osdp_data (OSDP_CONTEXT *ctx, unsigned char *buf, int lth);

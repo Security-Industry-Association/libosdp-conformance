@@ -20,9 +20,16 @@ echo executing test 3-8-1
 /opt/osdp-conformance/bin/do-CP-command reader_status
 echo executing test 3-9-1
 /opt/osdp-conformance/bin/do-CP-command conform_3_9_1
+echo executing test 3-12-1
+CMDPATH=/opt/osdp-conformance/run/CP/open_osdp_command.json
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"text\""
+echo >>${CMDPATH} "  ,\"message\" : \"TEST_3-12-1\""
+echo >>${CMDPATH} "}"
+/opt/osdp-conformance/bin/HUP-CP
+sleep 2
 echo request test 4-5-2
 echo request test 4-5-2
-echo executing test 3-7-1
 /opt/osdp-conformance/bin/do-CP-command output_status
 echo request test 4-5-2
 /opt/osdp-conformance/request-exercise-PD 4-5-2
@@ -36,9 +43,14 @@ echo request test 4-7-2
 /opt/osdp-conformance/request-exercise-PD 4-7-2
 echo request test 4-8-1
 /opt/osdp-conformance/request-exercise-PD 4-8-1
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"text\""
+echo >>${CMDPATH} "  ,\"message\" : \"Conformance_Test_Complete\""
+echo >>${CMDPATH} "}"
+/opt/osdp-conformance/bin/HUP-CP
+
 echo generate test report
 bash /opt/osdp-conformance/bin/do-CP-command dump_status
-#sleep 5
 cp /opt/osdp-conformance/log/report.log osdp-conformance-report_`date +%F_%H_%M`.txt
 ls -l 
 

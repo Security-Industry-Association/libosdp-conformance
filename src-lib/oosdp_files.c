@@ -84,8 +84,12 @@ int
     fprintf (sf, "             \"role\" : \"%d\",\n",
       ctx->role);
     fprintf (sf, "                \"#\" : \"0=CP 1=PD 2=MON\",\n");
+    fprintf (sf, "     \"serial_speed\" : \"%s\",\n",
+      ctx->serial_speed);
     fprintf (sf, "       \"pd_address\" : \"%02x\",\n",
       p_card.addr);
+    fprintf (sf, "\"max_pd_send\" : \"%d\",\n",
+      ctx->max_message);
     fprintf (sf, "         \"cp_polls\" : \"%d\",\n",
       ctx->cp_polls);
     fprintf (sf, "          \"pd_acks\" : \"%d\",\n",

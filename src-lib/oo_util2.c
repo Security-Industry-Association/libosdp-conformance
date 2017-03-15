@@ -859,6 +859,8 @@ int
       *ctx,
     unsigned char
       pd_address,
+    unsigned char
+      new_address,
     char
       *speed_string)
 
@@ -875,13 +877,13 @@ int
 
 
   sscanf (speed_string, "%d", &new_speed);
-  param [0] = pd_address; // byte 0: new address
+  param [0] = new_address; // byte 0: new address
   param [1] =        new_speed & 0xff;
   param [2] =     (new_speed & 0xff00) >> 8;
   param [3] =   (new_speed & 0xff0000) >> 16;
   param [4] = (new_speed & 0xff000000) >> 24;
   status = send_message (ctx,
-    OSDP_COMSET, p_card.addr, &current_length, sizeof (param), param);
+    OSDP_COMSET, pd_address, &current_length, sizeof (param), param);
   sprintf (ctx->serial_speed, "%d", new_speed);
   if (ctx->verbosity > 2)
     fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",

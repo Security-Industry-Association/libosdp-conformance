@@ -70,7 +70,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM SOM_sent;                // 2-10-2
   OSDP_CONFORM ADDR;                    // 2-11-1
   OSDP_CONFORM address_2;               // 2-11-2
-  OSDP_CONFORM address_3;               // 2-11-3
+  OSDP_CONFORM address_config;          // 2-11-3
   OSDP_CONFORM LEN;                     // 2-12-1
   OSDP_CONFORM CTRL;                    // 2-13-1
   OSDP_CONFORM control_2;               // 2-13-2
@@ -98,8 +98,8 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_ostat_ack;           // 3-7-2
   OSDP_CONFORM cmd_rstat;               // 3-8-1
   OSDP_CONFORM cmd_out;                 // 3-9-1
-  OSDP_CONFORM cmd_led;                 // 3-10-1
-  OSDP_CONFORM cmd_led_colors;          // 3-10-2
+  OSDP_CONFORM cmd_led_red;             // 3-10-1
+  OSDP_CONFORM cmd_led_green;           // 3-10-2
   OSDP_CONFORM cmd_buz;                 // 3-11-1
   OSDP_CONFORM cmd_text;                // 3-12-1
   OSDP_CONFORM cmd_comset;              // 3-13-1
@@ -166,4 +166,8 @@ void
   dump_conformance
     (OSDP_CONTEXT *ctx,
     OSDP_INTEROP_ASSESSMENT *oconf);
+int
+  osdp_conform_confirm
+    (char
+      *test);
 

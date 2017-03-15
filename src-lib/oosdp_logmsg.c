@@ -207,6 +207,7 @@ int
           break;
         case 11:
           value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
+          context.max_message = value; // SIDE EFFECT (naughty me) - sets value when displaying it.
           sprintf (tstr, "  [%02d] %s %d;\n",
             1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
           break;
@@ -257,7 +258,7 @@ int
     break;
 
   case OOSDP_MSG_PKT_STATS:
-    sprintf (tlogmsg, " CP Polls %6d PD Acks %6d Sent NAKs %6d CkSumErr %6d\n",
+    sprintf (tlogmsg, " CP Polls Sent %6d PD Acks %6d Sent NAKs %6d CkSumErr %6d\n",
       context.cp_polls, context.pd_acks, context.sent_naks,
       context.checksum_errs);
     break;

@@ -29,6 +29,8 @@ build:	all
 	mkdir -p opt/osdp-conformance/run/CP
 	mkdir -p opt/osdp-conformance/run/MON
 	mkdir -p opt/osdp-conformance/run/PD
+	mkdir -p opt/osdp-conformance/tmp
+	chmod 777 opt/osdp-conformance/tmp
 	(cd src-lib; make build; cd ..)
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)

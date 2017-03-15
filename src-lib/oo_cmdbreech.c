@@ -28,6 +28,7 @@
 
 #include <osdp-tls.h>
 #include <open-osdp.h>
+#include <osdp_conformance.h>
 
 
 extern OSDP_OUT_CMD
@@ -47,6 +48,8 @@ int
     *cmdf;
   char
     current_command [1024];
+  char
+    current_options [1024];
   char
     field [1024];
   char
@@ -80,6 +83,8 @@ int
     if (status_io <= 0)
       status = ST_CMD_UNDERFLOW;
   };
+fprintf (stderr, "command path %s status now %d.\n",
+  ctx->command_path, status);
 
   if (status EQUALS ST_OK)
   {
@@ -300,6 +305,19 @@ int
       };
     };
   }; 
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "operator_confirm"))
+    {
+      cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
+      value = json_object_get (root, "test");
+      if (json_is_string (value))
+      {
+        strcpy (current_options, json_string_value (value));
+        status = osdp_conform_confirm (current_options);
+      };
+    };
+  };
 
   // output (digital bits out)
 

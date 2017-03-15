@@ -80,6 +80,7 @@ int
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
       osdp_conformance.signalling.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
       SET_PASS ((&context), "2-2-1");
       context.test_in_progress [0] = 0;
     };
@@ -89,6 +90,7 @@ int
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
       osdp_conformance.alt_speed_2.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
       SET_PASS ((&context), "2-2-2");
       context.test_in_progress [0] = 0;
     };
@@ -98,6 +100,7 @@ int
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
       osdp_conformance.alt_speed_3.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
       SET_PASS ((&context), "2-2-3");
       context.test_in_progress [0] = 0;
     };
@@ -107,6 +110,7 @@ int
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
       osdp_conformance.alt_speed_4.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
       SET_PASS ((&context), "2-2-4");
       context.test_in_progress [0] = 0;
     };
