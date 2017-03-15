@@ -131,7 +131,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_raw;                 // 4-9
   OSDP_CONFORM rep_formatted;           // 4-10-1
   OSDP_CONFORM rep_keypad;              // 4-11
-  OSDP_CONFORM rep_comm;                // 4-12
+  OSDP_CONFORM resp_com;                // 4-12-1
   OSDP_CONFORM rep_scan_send;           // 4-13
   OSDP_CONFORM rep_scan_match;          // 4-14
   OSDP_CONFORM resp_mfg;                // 4-15-1

@@ -57,6 +57,47 @@ typedef struct osdp_conformance_test
 OSDP_CONFORMANCE_TEST
   test_control [] =
   {
+    { "2-1-1", &(osdp_conformance.physical_interface.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-2-1", &(osdp_conformance.signalling.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-2-2", &(osdp_conformance.alt_speed_2.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-2-3", &(osdp_conformance.alt_speed_3.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-2-4", &(osdp_conformance.alt_speed_4.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-3-1", &(osdp_conformance.character_encoding.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-4-1", &(osdp_conformance.channel_access.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-4-2", &(osdp_conformance.timeout_resend.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-4-3", &(osdp_conformance.busy_resend.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-4-4", &(osdp_conformance.new_on_busy.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-5-1", &(osdp_conformance.multibyte_data_encoding.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-6-1", &(osdp_conformance.packet_size_limits.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-6-2", &(osdp_conformance.packet_size_from_pd.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-6-3", &(osdp_conformance.packet_size_stress_cp.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-7-1", &(osdp_conformance.timing.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-7-2", &(osdp_conformance.max_delay.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-7-3", &(osdp_conformance.offline_test.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-8-1", &(osdp_conformance.message_synchronization.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-9-1", &(osdp_conformance.packet_format.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-10-1", &(osdp_conformance.SOM.test_status),
+      0, 0, 0, 0 }, // ??
+
     { "3-10-1", &(osdp_conformance.cmd_led_red.test_status),
       0, 0, 0, 0 }, // optional in all cases
     { "3-10-2", &(osdp_conformance.cmd_led_green.test_status),
