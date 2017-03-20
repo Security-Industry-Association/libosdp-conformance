@@ -1,6 +1,0 @@
-Release 0.0 Build 4 libosdp-conformance
-
-Changes in 0.0 Build 4
-
-finished one pass basic profile tests
-

@@ -1,0 +1,12 @@
+#!/bin/bash
+set -x
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=/opt/osdp-conformance/run/CP/open_osdp_command.json
+SLEEPTIME=5
+echo "Set LED color to continuous GREEN (2)"
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"2\""
+echo >>${CMDPATH} "}"
+${OSDP_PATH}/bin/HUP-CP
+

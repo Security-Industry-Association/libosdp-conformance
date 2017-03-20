@@ -428,8 +428,9 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
     default:
       //status = ST_PARSE_UNKNOWN_CMD;
       m->data_payload = m->cmd_payload + 1;
-      fprintf (stderr, "Unknown command, default msg_data_length was %d\n",
-        msg_data_length);
+      fprintf (stderr,
+        "Unknown command (%02x), default msg_data_length was %d\n",
+        returned_hdr->command, msg_data_length);
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
 
@@ -535,6 +536,21 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ID");
+      break;
+
+    case OSDP_ISTAT:
+      m->data_payload = NULL;
+      msg_data_length = 0;
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_ISTAT");
+      break;
+
+   case OSDP_ISTATR:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_ISTATR");
       break;
 
     case OSDP_KEYPAD:
@@ -839,6 +855,8 @@ int
 
 { /* process_osdp_message */
 
+  int
+    count;
   int
     current_length;
   int
@@ -1221,11 +1239,31 @@ send OSDP_SCRYPT
 
     case OSDP_KEYPAD:
       status = ST_OK;
-      sprintf (tlogmsg, "%02x %02x %02x",
+      sprintf (tlogmsg, "Reader: %d. Digits: %d. First Digit: 0x%02x",
           *(0+msg->data_payload),
           *(1+msg->data_payload),
           *(2+msg->data_payload));
       fprintf (context->log, "PD Keypad Buffer: %s\n", tlogmsg);
+      {
+        char temp [8];
+        memcpy (temp, context->last_keyboard_data, 7);
+        memcpy (context->last_keyboard_data+1, temp, 7);
+        context->last_keyboard_data [0] = *(2+msg->data_payload);
+      };
+      osdp_conformance.resp_keypad.test_status =
+        OCONFORM_EXERCISED;
+      break;
+
+    case OSDP_ISTATR:
+      status = ST_OK;
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - 8;
+      sprintf (tlogmsg, "count: %d. %02x %02x %02x %02x",
+        count, *(0+msg->data_payload), *(1+msg->data_payload),
+        *(2+msg->data_payload), *(3+msg->data_payload));
+      fprintf (context->log, "Input Status: %s\n", tlogmsg);
+      osdp_conformance.resp_input_stat.test_status =
+        OCONFORM_EXERCISED;
       break;
 
     case OSDP_NAK:

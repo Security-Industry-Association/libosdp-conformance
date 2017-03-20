@@ -261,6 +261,8 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting Input Status\n");
       };
+      osdp_conformance.cmd_istat.test_status =
+        OCONFORM_EXERCISED;
       status = ST_OK;
       break;
 
@@ -290,16 +292,14 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         /*
           assume reader 0
           assume LED 0
-          assume permanent (templ control 0)
+          assume permanent (temp control 0)
           assume on time is 3 sec (30x100 ms)
-          assume off time is 1 sec (10x100 ms)
-          assume on LED color is RED
+          assume off time is 0
           assume off LED color is BLACK
         */
         led_control_message.perm_control = OSDP_LED_SET;
         led_control_message.perm_on_time = 30;
-        led_control_message.perm_off_time = 10;
-//        led_control_message.perm_on_color = OSDP_LEDCOLOR_RED;
+        led_control_message.perm_off_time = 0;
         led_control_message.perm_on_color = details [0];
         led_control_message.perm_off_color = OSDP_LEDCOLOR_BLACK;
         current_length = 0;

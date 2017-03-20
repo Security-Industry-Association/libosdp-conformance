@@ -1,0 +1,15 @@
+Release 0.1 Build 2 libosdp-conformance
+
+Changes in 0.1 Build 2
+
+ISTATR works.
+Comset works.
+Changed LED test to be truly solid-on not blinking.
+Corrected bug that forced device address to 0.
+Fixed moderate/verbose verbosity setting.
+Fix build bug in 0.1 Build 1
+Added to UI.
+
+Known Issues
+Check issues list in github.
+

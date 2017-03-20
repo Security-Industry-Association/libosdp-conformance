@@ -25,7 +25,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 1)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_PROFILE_PERIPHERAL_TEST_PD (0x0000)
 #define OSDP_PROFILE_PERIPHERAL_TEST_CP (0x1000)
@@ -94,6 +94,7 @@
 #define OSDP_PDID     (0x45)
 #define OSDP_PDCAP    (0x46)
 #define OSDP_LSTATR   (0x48)
+#define OSDP_ISTATR   (0x49)
 #define OSDP_OSTATR   (0x4A)
 #define OSDP_RSTATR   (0x4B)
 #define OSDP_RAW      (0x50)
@@ -376,6 +377,8 @@ typedef struct osdp_context
     slow_timer;
   char
     last_raw_read_data [1024];
+  char
+    last_keyboard_data [8];
   int
     disable_certificate_checking;
   char

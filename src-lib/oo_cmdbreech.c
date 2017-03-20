@@ -200,14 +200,9 @@ fprintf (stderr, "command path %s status now %d.\n",
     char
       vstr [1024];
 
-    strcpy (this_command, json_string_value (value));
-    test_command = "comset";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    if (0 EQUALS strcmp (current_command, "comset"))
     {
       cmd->command = OSDP_CMDB_COMSET;
-      if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
 
       value = json_object_get (root, "new_address");
       if (json_is_string (value))
@@ -223,6 +218,10 @@ fprintf (stderr, "command path %s status now %d.\n",
         sscanf (vstr, "%d", &i);
         *(int *) &(cmd->details [4]) = i; // by convention bytes 4,5,6,7 are the speed.
       };
+      if (ctx->verbosity > 2)
+        fprintf (stderr, "Command COMSET Address %d Speed %d\n",
+          (int) (cmd->details [0]),
+          *(int *) &(cmd->details [4]));
     };
   }; 
 

@@ -121,8 +121,18 @@ int
       p_card.poll);
     fprintf (sf, "             \"dump\" : \"%d\",\n",
       m_dump);
-    fprintf (sf, "  \"checksum_errors\" : \"%d\",\n",
+    fprintf (sf,
+"  \"checksum_errors\" : \"%d\",\n",
       ctx->checksum_errs);
+
+    // copy in the keyboard "buffer"
+
+    fprintf (sf,
+"    \"keypad_last_8\" : \"%02x%02x- %02x%02x- %02x%02x- %02x%02x\",\n",
+      ctx->last_keyboard_data [0], ctx->last_keyboard_data [1],
+      ctx->last_keyboard_data [2], ctx->last_keyboard_data [3],
+      ctx->last_keyboard_data [4], ctx->last_keyboard_data [5],
+      ctx->last_keyboard_data [6], ctx->last_keyboard_data [7]);
 
     // copy in all the octets holding the bits.
 

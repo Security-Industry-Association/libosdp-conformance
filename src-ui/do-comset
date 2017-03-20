@@ -24,7 +24,8 @@ echo "<BR>"
 echo "<PRE>"
 date
 OSDP_PATH=/opt/osdp-conformance
-CMDPATH=${OSDP_PATH}/run/CP/open_osdp_command.json
+CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
 mkdir -p ${OSDP_PATH}/run/CP
 echo  >${CMDPATH} "{"
 echo >>${CMDPATH} "  \"command\" : \"comset\","
@@ -32,8 +33,10 @@ echo >>${CMDPATH} "  \"new_address\" : \"$1\","
 echo >>${CMDPATH} "  \"new_speed\" : \"$2\","
 echo >>${CMDPATH} "  \"#\" : \"created by do-comset from UI\""
 echo >>${CMDPATH} "}"
+echo wrote ${CMDPATH}
+sudo -n cp ${CMDPATH} ${CMDPATHX}
 
-${OSDP_PATH}/bin/HUP-CP
-sleep 5
+sudo -n ${OSDP_PATH}/bin/HUP-CP
+sleep 1
 echo "</PRE></BODY></HTML>"
 

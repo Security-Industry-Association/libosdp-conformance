@@ -1,9 +1,9 @@
 <HTML>
 <HEAD>
-<TITLE>Test PD CONFORMANCE 0.1 Build 1</TITLE>
+<TITLE>Test PD CONFORMANCE 0.1 Build 2</TITLE>
 </HEAD>
 <BODY>
-<H3>Test PD Conformance (0.1 Build 1)</H3>
+<H3>Test PD Conformance (0.1 Build 2)</H3>
 
 <P ALIGN="RIGHT">
 Generate
@@ -14,11 +14,13 @@ Display CP
 <A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
 Recent CP
 <A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A> ::
-<A HREF="/cgi-bin/do-verbosity?9">Moderate</A>/
+<A HREF="/cgi-bin/do-verbosity?3">Moderate</A>/
 <A HREF="/cgi-bin/do-verbosity?9">Verbose</A> logging<BR>
 <A HREF="/cgi-bin/start-CP-485">Start</A> CP ::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP ::
-<A HREF="/cgi-bin/shutdown-osdp">Stop</A> Server</P>
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP<BR>
+(<EM>more commands at bottom of
+<A HREF="#control_bottom">page</A></EM>)
+</P>
 
 <TABLE><CAPTION><B>Test Group 2 Protocol [2]</B></CAPTION>
 <COL WIDTH="75">
@@ -332,8 +334,10 @@ Recent CP
 <LI>Runs automatically upon receipt of message</LI>
 <LI>Click OK to confirm that test worked</LI>
 </OL>
-<P ALIGN="RIGHT">
-<A name="control_bottom"></A> Generate
+
+<P>
+<A name="control_bottom"></A>
+Generate
 <A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
 Display
 <A HREF="/cgi-bin/conformance-report">report</A> ::
@@ -341,9 +345,19 @@ Display CP
 <A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
 Recent CP
 <A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A> ::
+<A HREF="/cgi-bin/do-verbosity?3">Moderate</A>/
+<A HREF="/cgi-bin/do-verbosity?9">Verbose</A> logging<BR>
 <A HREF="/cgi-bin/start-CP-485">Start</A> CP ::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP ::
-<A HREF="/cgi-bin/shutdown-osdp">Stop</A> Server</P>
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP<BR>
+</P>
+<BR>
+COMSET
+   <A HREF="/cgi-bin/do-comset?0+9600">A=0,9600</A> 
+:: <A HREF="/cgi-bin/do-comset?1+9600">A=1,9600</A> 
+:: <A HREF="/cgi-bin/do-comset?0+115200">A=0,115200</A> 
+:: <A HREF="/cgi-bin/do-comset?1+115200">A=1,115200</A> 
+<BR>
+<A HREF="/cgi-bin/shutdown-osdp">Stop</A> Server
 </BODY>
 </HTML>
 

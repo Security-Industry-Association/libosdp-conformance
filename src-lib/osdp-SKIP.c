@@ -46,7 +46,7 @@ void
   oconf->rep_formatted.test_status = OCONFORM_SKIP;
   oconf->rep_ident_consistent.test_status =
     OCONFORM_SKIP;
-  oconf->rep_input_consistent.test_status =
+  oconf->resp_input_consistent.test_status =
     OCONFORM_SKIP;
   oconf->rep_scan_match.test_status = OCONFORM_SKIP;
   oconf->rep_scan_send.test_status = OCONFORM_SKIP;

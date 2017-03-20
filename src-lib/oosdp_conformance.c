@@ -104,11 +104,13 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0 }, // optional in all cases
     { "3-12-1", &(osdp_conformance.cmd_text.test_status),
       0, 0, 0, 0 }, // ??
-    { "3-21-1", &(osdp_conformance.cmd_stop_multi.test_status), 0, 0, 0, 0 }, //?
+    { "3-21-1", &(osdp_conformance.cmd_stop_multi.test_status),
+      0, 0, 0, 0 }, //?
     { "3-22-1", &(osdp_conformance.cmd_max_rec.test_status), 0, 0, 0, 0 }, //?
     { "4-5-2", &(osdp_conformance.resp_lstatr_tamper.test_status), 1, 1, 1, 1 },
     { "4-5-3", &(osdp_conformance.resp_lstatr_power.test_status), 1, 1, 1, 1 },
-    { "4-6-2", &(osdp_conformance.rep_input_consistent.test_status), 0, 0, 0, 0 }, //?
+    { "4-6-2", &(osdp_conformance.resp_input_consistent.test_status),
+      0, 0, 0, 0 }, //?
     { NULL, NULL, 0, 0, 0, 0 }
   };
 
@@ -440,11 +442,11 @@ void
 "4-5-3  osdp_LSTATR Power                  %s",
     conformance_status (oconf->resp_lstatr_power.test_status)));
   LOG_REPORT ((log_string,
-"4-6-1  osdp_ISTATR Input Status Report    %s",
-    conformance_status (oconf->rep_input_stat.test_status)));
+"4-6-1  Input Status Report                %s",
+    conformance_status (oconf->resp_input_stat.test_status)));
   LOG_REPORT ((log_string,
 "4-6-2  Input report consistent            %s",
-    conformance_status (oconf->rep_input_stat.test_status)));
+    conformance_status (oconf->resp_input_consistent.test_status)));
   LOG_REPORT ((log_string,
 "4-7-1  osdp_OSTATR                        %s",
     conformance_status (oconf->rep_output_stat.test_status)));
@@ -465,7 +467,7 @@ void
     conformance_status (oconf->rep_formatted.test_status)));
   LOG_REPORT ((log_string,
 "4-11-1 Keypad input                       %s",
-    conformance_status (oconf->rep_keypad.test_status)));
+    conformance_status (oconf->resp_keypad.test_status)));
   LOG_REPORT ((log_string,
 "4-12-1 COM Report                         %s",
     conformance_status (oconf->resp_com.test_status)));

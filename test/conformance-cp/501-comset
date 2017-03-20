@@ -14,22 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-echo "Content-type: text/html"
-echo ""
-
-echo "<HTML><HEAD><TITLE>COMSET</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\"><HEAD>"
-echo "<BODY>"
-echo "<BR>"
-echo "<PRE>"
-date
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
 sudo -n echo  >${CMDPATH} "{"
-sudo -n echo >>${CMDPATH} "   \"command\" : \"operator_confirm\"",
-sudo -n echo >>${CMDPATH} "  \"test\" : \"$1\"",
-sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-confirm from UI\""
+sudo -n echo >>${CMDPATH} "   \"command\" : \"comset\"",
+sudo -n echo >>${CMDPATH} "  \"new_address\" : \"$1\"",
+sudo -n echo >>${CMDPATH} "  \"new_speed\" : \"$2\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by 501-comset\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}
 
