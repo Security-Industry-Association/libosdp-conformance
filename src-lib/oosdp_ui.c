@@ -115,10 +115,10 @@ int
           otxt;
 
         otxt.reader = 0;
-        otxt.tc = 0;
+        otxt.tc = 2;
         otxt.tsec = 0;
-        otxt.row = 0;
-        otxt.col = 0;
+        otxt.row = 1;
+        otxt.col = 1;
         otxt.length = strlen (context->text);
         memcpy (otxt.text, context->text, 1024);
         current_length = 0;
@@ -164,8 +164,13 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         if (context->verbosity > 2)
           fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
             context->new_address, context->serial_speed);
-        status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, context->new_address,
-          context->serial_speed);
+        status = send_comset (context, OSDP_CONFIGURATION_ADDRESS,
+          context->new_address, context->serial_speed);
+
+        // reset protocol to beginning
+
+        context->next_sequence = 0;
+        context->last_response_received = 0;
       };
       status = ST_OK;
       break;
@@ -391,10 +396,10 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
           otxt;
 
         otxt.reader = 0;
-        otxt.tc = 0;
+        otxt.tc = 2;
         otxt.tsec = 0;
-        otxt.row = 0;
-        otxt.col = 0;
+        otxt.row = 1;
+        otxt.col = 1;
         otxt.length = strlen (context->text);
         memcpy (otxt.text, context->text, 1024);
         current_length = 0;

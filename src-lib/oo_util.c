@@ -821,7 +821,16 @@ int
     break;
 
   case OSDP_PDID:
+    // consistency check (test 4-3-2)
+
+    // OUI must not be zero
     status = oosdp_make_message (OOSDP_MSG_PD_IDENT, tlogmsg, msg);
+    if ((msg->data_payload [0] EQUALS 0) &&
+        (msg->data_payload [1] EQUALS 0) &&
+        (msg->data_payload [2] EQUALS 0))
+    {
+      SET_FAIL ((context), "4-3-2");
+    };
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;

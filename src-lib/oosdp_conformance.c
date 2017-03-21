@@ -31,6 +31,14 @@
 #include <osdp_conformance.h>
 
 
+int
+  osdp_test_set_status
+    (char
+      *test,
+    int
+      test_status);
+
+
 extern OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 char
@@ -425,7 +433,7 @@ void
     conformance_status (oconf->rep_device_ident.test_status)));
   LOG_REPORT ((log_string,
 "4-3-2  Ident report consistent            %s",
-    conformance_status (oconf->rep_ident_consistent.test_status)));
+    conformance_status (oconf->resp_ident_consistent.test_status)));
   LOG_REPORT ((log_string,
 "4-4-1  Device Capabilities Report         %s",
     conformance_status (oconf->rep_device_capas.test_status)));
@@ -513,12 +521,32 @@ fprintf (ctx->log, "mmt %d of %d\n",
 
 } /* dump_conformance */
 
+
 int
   osdp_conform_confirm
     (char
       *test)
+{
+  return (osdp_test_set_status (test, OCONFORM_EXERCISED));
+}
 
-{ /* osdp_conform_confirm */
+
+int
+  osdp_conform_fail
+    (char
+      *test)
+{
+  return (osdp_test_set_status (test, OCONFORM_FAIL));
+}
+
+int
+  osdp_test_set_status
+    (char
+      *test,
+    int
+      test_status)
+
+{ /* osdp_test_set_status */
 
   int
     done;
@@ -535,7 +563,7 @@ int
   {
     if (strcmp (test_control [idx].name, test) EQUALS 0)
     {
-      *(test_control [idx].conformance) = OCONFORM_EXERCISED;
+      *(test_control [idx].conformance) = test_status;
       done = 1;
     };
     if (test_control [idx].name EQUALS NULL)
@@ -545,5 +573,5 @@ int
   };
   return (status);
 
-} /* osdp_conform_confirm */
+} /* osdp_test_set_status */
 

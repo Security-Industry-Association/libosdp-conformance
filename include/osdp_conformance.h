@@ -116,7 +116,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_ack;                 // 4-1-1
   OSDP_CONFORM rep_nak;                 // 4-2-1
   OSDP_CONFORM rep_device_ident;        // 4-3-1
-  OSDP_CONFORM rep_ident_consistent;    // 4-3-2
+  OSDP_CONFORM resp_ident_consistent;   // 4-3-2
   OSDP_CONFORM rep_device_capas;        // 4-4-1
   OSDP_CONFORM rep_capas_consistent;    // 4-4-2
   OSDP_CONFORM resp_lstatr;             // 4-5-1
@@ -142,6 +142,7 @@ typedef struct osdp_interop_assessment
 
 #define SET_PASS(ctx,testnum) \
   { \
+    (void) osdp_conform_confirm (testnum); \
     fprintf (stderr, \
       "********Test %s PASSED********\n", \
       testnum); \
@@ -152,6 +153,7 @@ typedef struct osdp_interop_assessment
   };
 #define SET_FAIL(ctx,testnum) \
   { \
+    (void) osdp_conform_fail (testnum); \
     fprintf (stderr, \
       "********Test %s FAILED********\n", \
       testnum); \
@@ -168,6 +170,10 @@ void
     OSDP_INTEROP_ASSESSMENT *oconf);
 int
   osdp_conform_confirm
+    (char
+      *test);
+int
+  osdp_conform_fail
     (char
       *test);
 

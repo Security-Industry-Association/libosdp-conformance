@@ -50,9 +50,3 @@ echo >>${CMDPATH} "}"
 /opt/osdp-conformance/bin/HUP-CP
 sleep 2
 
-echo generate test report
-bash /opt/osdp-conformance/bin/do-CP-command dump_status
-cp /opt/osdp-conformance/log/report.log osdp-conformance-report_`date +%F_%H_%M`.txt
-ls -l 
-
-

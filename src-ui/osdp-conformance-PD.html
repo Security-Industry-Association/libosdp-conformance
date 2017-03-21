@@ -1,27 +1,30 @@
 <HTML>
 <HEAD>
-<TITLE>Test PD CONFORMANCE 0.1 Build 2</TITLE>
+<TITLE>Test CP CONFORMANCE 0.1 Build 2</TITLE>
 </HEAD>
 <BODY>
-<H3>Test PD Conformance (0.1 Build 2)</H3>
+<H3>Test CP Conformance (0.1 Build 2)</H3>
 
 <P ALIGN="RIGHT">
 Generate
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-dump_status">report</A> ::
 Display
 <A HREF="/cgi-bin/conformance-report">report</A> ::
-Display CP
-<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
-Recent CP
-<A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A> ::
+Display PD
+<A HREF="/cgi-bin/open-osdp-PD-status" target="_blank">status</A> ::
+Recent PD
+<A HREF="/cgi-bin/tail-PD-log" target="_blank">log</A> ::
 <A HREF="/cgi-bin/do-verbosity?3">Moderate</A>/
-<A HREF="/cgi-bin/do-verbosity?9">Verbose</A> logging<BR>
-<A HREF="/cgi-bin/start-CP-485">Start</A> CP ::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP<BR>
+<A HREF="/cgi-bin/do-verbosity?9">Verbose</A> logging<BR> ::
+<A HREF="/cgi-bin/start-PD-485">Start</A> PD ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-stop">Stop</A> PD<BR>
 (<EM>more commands at bottom of
 <A HREF="#control_bottom">page</A></EM>)
 </P>
 
+<HR>
+<HR>
+...work in progress...<BR>
 <TABLE><CAPTION><B>Test Group 2 Protocol [2]</B></CAPTION>
 <COL WIDTH="75">
   <COL WIDTH="200">
@@ -338,27 +341,18 @@ Recent CP
 <P>
 <A name="control_bottom"></A>
 Generate
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-dump_status">report</A> ::
 Display
 <A HREF="/cgi-bin/conformance-report">report</A> ::
 Display CP
-<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
+<A HREF="/cgi-bin/open-osdp-PD-status" target="_blank">status</A> ::
 Recent CP
-<A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A> ::
+<A HREF="/cgi-bin/tail-PD-log" target="_blank">log</A> ::
 <A HREF="/cgi-bin/do-verbosity?3">Moderate</A>/
-<A HREF="/cgi-bin/do-verbosity?9">Verbose</A> logging<BR>
-<A HREF="/cgi-bin/start-CP-485">Start</A> CP
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> CP<BR>
+<A HREF="/cgi-bin/do-verbosity?9">Verbose</A> logging<BR> ::
+<A HREF="/cgi-bin/start-PD-485">Start</A> PD ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-stop">Stop</A> PD<BR>
 </P>
-<BR>
-COMSET
-   <A HREF="/cgi-bin/do-comset?0+9600">A=0,9600</A> 
-:: <A HREF="/cgi-bin/do-comset?1+9600">A=1,9600</A> 
-:: <A HREF="/cgi-bin/do-comset?0+38400">A=0,38400</A> 
-:: <A HREF="/cgi-bin/do-comset?1+38400">A=1,38400</A> 
-:: <A HREF="/cgi-bin/do-comset?31+38400">A=31,38400</A> 
-:: <A HREF="/cgi-bin/do-comset?0+115200">A=0,115200</A> 
-:: <A HREF="/cgi-bin/do-comset?1+115200">A=1,115200</A> 
 <BR>
 <A HREF="/cgi-bin/shutdown-osdp">Stop</A> Server
 </BODY>
