@@ -17,19 +17,19 @@
 echo "Content-type: text/html"
 echo ""
 
-echo "<HTML><HEAD><TITLE>COMSET</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-CP.html\"><HEAD>"
+echo "<HTML><HEAD><TITLE>Activate buzzer</TITLE>"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\"><HEAD>"
 echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
 date
+echo "Activating buzzer"
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
 sudo -n echo  >${CMDPATH} "{"
-sudo -n echo >>${CMDPATH} "   \"command\" : \"led\"",
-sudo -n echo >>${CMDPATH} "  \"perm_on_color\" : \"$1\"",
-sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-led from UI\""
+sudo -n echo >>${CMDPATH} "   \"command\" : \"buzz\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-buzz from UI\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}
 

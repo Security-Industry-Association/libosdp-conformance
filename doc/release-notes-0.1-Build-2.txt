@@ -4,6 +4,7 @@ Changes in 0.1 Build 2
 
 ISTATR works.
 Comset works.
+Buzz works.
 4-3-2 works.
 Changed LED test to be truly solid-on not blinking.
 Corrected bug that forced device address to 0.
@@ -14,5 +15,6 @@ Added to UI.
 Known Issues
 Check issues list in github.
 NAK might have issues.
-comset/nak behavior sometimes causes it to send 0 crc
+on checksum-only devices (MRDT) can get wedged into NAK loop, likely
+due to sequence number issues.
 

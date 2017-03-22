@@ -105,6 +105,47 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0 }, // ??
     { "2-10-1", &(osdp_conformance.SOM.test_status),
       0, 0, 0, 0 }, // ??
+    { "2-10-2", &(osdp_conformance.SOM_sent.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-11-1", &(osdp_conformance.ADDR.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-11-2", &(osdp_conformance.address_2.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-11-3", &(osdp_conformance.address_config.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-12-1", &(osdp_conformance.LEN.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-13-1", &(osdp_conformance.CTRL.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-13-2", &(osdp_conformance.control_2.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-13-3", &(osdp_conformance.scb_absent.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-13-4", &(osdp_conformance.ctl_seq.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-14-1", &(osdp_conformance.security_block.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-15-1", &(osdp_conformance.CMND_REPLY.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-15-2", &(osdp_conformance.invalid_command.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-16-1", &(osdp_conformance.CHKSUM_CRC16.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-16-2", &(osdp_conformance.checksum.test_status),
+      0, 0, 0, 0 }, // ??
+    { "2-17-1", &(osdp_conformance.multipart.test_status),
+      0, 0, 0, 0 }, // ??
+
+    { "3-2-1", &(osdp_conformance.cmd_id.test_status),
+      0, 0, 0, 0 }, // optional in all cases
+    { "3-3-1", &(osdp_conformance.cmd_pdcap.test_status),
+      0, 0, 0, 0 }, // optional in all cases
+    { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
+      0, 0, 0, 0 }, // optional in all cases
+    { "3-5-1", &(osdp_conformance.cmd_lstat.test_status),
+      0, 0, 0, 0 }, // optional in all cases
+    { "3-6-1", &(osdp_conformance.cmd_istat.test_status),
+      0, 0, 0, 0 }, // optional in all cases
 
     { "3-10-1", &(osdp_conformance.cmd_led_red.test_status),
       0, 0, 0, 0 }, // optional in all cases
@@ -115,7 +156,22 @@ OSDP_CONFORMANCE_TEST
     { "3-21-1", &(osdp_conformance.cmd_stop_multi.test_status),
       0, 0, 0, 0 }, //?
     { "3-22-1", &(osdp_conformance.cmd_max_rec.test_status), 0, 0, 0, 0 }, //?
-    { "4-5-2", &(osdp_conformance.resp_lstatr_tamper.test_status), 1, 1, 1, 1 },
+
+    { "4-1-1", &(osdp_conformance.rep_ack.test_status),
+      1, 1, 1, 1 },
+    { "4-2-1", &(osdp_conformance.rep_nak.test_status),
+      1, 1, 1, 1 },
+    { "4-3-1", &(osdp_conformance.rep_device_ident.test_status),
+      1, 1, 1, 1 },
+    { "4-3-2", &(osdp_conformance.resp_ident_consistent.test_status),
+      1, 1, 1, 1 },
+    { "4-4-1", &(osdp_conformance.rep_device_capas.test_status),
+      1, 1, 1, 1 },
+    { "4-4-2", &(osdp_conformance.rep_capas_consistent.test_status),
+      1, 1, 1, 1 },
+    { "4-5-1", &(osdp_conformance.resp_lstatr.test_status),
+      1, 1, 1, 1 },
+
     { "4-5-3", &(osdp_conformance.resp_lstatr_power.test_status), 1, 1, 1, 1 },
     { "4-6-2", &(osdp_conformance.resp_input_consistent.test_status),
       0, 0, 0, 0 }, //?

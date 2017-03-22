@@ -54,8 +54,12 @@ int
     current_options [1024];
   char
     field [1024];
+  int
+    i;
   char
     json_string [16384];
+  json_t
+    *parameter;
   json_t
     *root;
   json_error_t
@@ -70,6 +74,8 @@ int
     this_command [1024];
   json_t
     *value;
+  char
+    vstr [1024];
 
 
   status = ST_CMD_PATH;
@@ -106,6 +112,46 @@ fprintf (stderr, "command path %s status now %d.\n",
         status = ST_CMD_INVALID;
     };
   };
+
+  // command buzz
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "buzz"))
+    {
+      cmd->command = OSDP_CMDB_BUZZ;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+
+      cmd->details [0] = 15;
+      cmd->details [1] = 15;
+      cmd->details [2] = 3;
+
+      parameter = json_object_get (root, "off_time");
+      if (json_is_string (parameter))
+      {
+        strcpy (vstr, json_string_value (parameter));
+        sscanf (vstr, "%d", &i);
+        cmd->details [1] = i;
+      };
+      parameter = json_object_get (root, "on_time");
+      if (json_is_string (parameter))
+      {
+        strcpy (vstr, json_string_value (parameter));
+        sscanf (vstr, "%d", &i);
+        cmd->details [0] = i;
+      };
+      parameter = json_object_get (root, "repeat");
+      if (json_is_string (parameter))
+      {
+        strcpy (vstr, json_string_value (parameter));
+        sscanf (vstr, "%d", &i);
+        cmd->details [2] = i;
+      };
+    };
+  }; 
+
 
   // command capabilities
 
@@ -195,10 +241,6 @@ fprintf (stderr, "command path %s status now %d.\n",
 
   if (status EQUALS ST_OK)
   {
-    int
-      i;
-    char
-      vstr [1024];
 
     if (0 EQUALS strcmp (current_command, "comset"))
     {
@@ -299,16 +341,11 @@ fprintf (stderr, "command path %s status now %d.\n",
 
   if (status EQUALS ST_OK)
   {
-    int
-      i;
-    char
-      vstr [1024];
-
-    strcpy (this_command, json_string_value (value));
-    test_command = "led";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    if (0 EQUALS strcmp (current_command, "led"))
     {
       cmd->command = OSDP_CMDB_LED;
+      cmd->details [1] = 0; // assume LED 0
+
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
@@ -319,6 +356,13 @@ fprintf (stderr, "command path %s status now %d.\n",
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         cmd->details [0] = i;
+      };
+      value = json_object_get (root, "led_number");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        cmd->details [1] = i;
       };
     };
   }; 

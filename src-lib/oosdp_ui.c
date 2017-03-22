@@ -133,7 +133,31 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       };
       break;
 
-    // breech-loaded cases.  by convention these occur at the top of the old menu structure for transitional purposes.
+    case OSDP_CMDB_BUZZ:
+      {
+        unsigned char
+          buzzer_control [5];
+
+        memset (&buzzer_control, 0, sizeof (buzzer_control));
+        /*
+          assume reader 0.
+          assume "standard" tone.
+        */
+        buzzer_control [0] = 0;
+        buzzer_control [1] = 2;  // default tone
+        buzzer_control [2] = details [0]; // 15x100 ms on
+        buzzer_control [3] = details [1]; // 15x100 ms off
+        buzzer_control [4] = details [2];  // repeat 3 times
+        if (context->verbosity > 3)
+          fprintf (stderr,
+"Requesting Buzz: tone %d on %d(x100ms) off %d(x100ms) repeat %d\n",
+            buzzer_control [1], buzzer_control [2],
+            buzzer_control [3], buzzer_control [4]);
+        current_length = 0;
+        status = send_message (context,
+          OSDP_BUZ, p_card.addr, &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control);
+      };
+      break;
 
     case OSDP_CMDB_CAPAS:
       {
@@ -302,6 +326,7 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
           assume off time is 0
           assume off LED color is BLACK
         */
+        led_control_message.led = details [1];
         led_control_message.perm_control = OSDP_LED_SET;
         led_control_message.perm_on_time = 30;
         led_control_message.perm_off_time = 0;

@@ -266,7 +266,6 @@ int
     m_check = OSDP_CHECKSUM; // Issue #11
     osdp_conformance.checksum.test_status =
       OCONFORM_EXERCISED;
-    fprintf (stderr, "parsed a checksum header\n");
   }
   else
   {
@@ -821,16 +820,7 @@ int
     break;
 
   case OSDP_PDID:
-    // consistency check (test 4-3-2)
-
-    // OUI must not be zero
     status = oosdp_make_message (OOSDP_MSG_PD_IDENT, tlogmsg, msg);
-    if ((msg->data_payload [0] EQUALS 0) &&
-        (msg->data_payload [1] EQUALS 0) &&
-        (msg->data_payload [2] EQUALS 0))
-    {
-      SET_FAIL ((context), "4-3-2");
-    };
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
@@ -1290,25 +1280,25 @@ send OSDP_SCRYPT
       if (context->last_command_sent EQUALS OSDP_ID)
       {
         osdp_conformance.cmd_id.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), ".cmd_id");
+        SET_FAIL ((context), "3-2-1");
       };
       // if the PD NAK'd an ISTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_ISTAT)
       {
         osdp_conformance.cmd_istat.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), ".cmd_istat");
+        SET_FAIL ((context), "3-6-1");
       };
       // if the PD NAK'd an LSTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_LSTAT)
       {
         osdp_conformance.cmd_lstat.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), ".cmd_lstat");
+        SET_FAIL ((context), "3-5-1");
       };
       // if the PD NAK'd a CAP fail the test.
       if (context->last_command_sent EQUALS OSDP_CAP)
       {
         osdp_conformance.cmd_pdcap.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), ".cmd_pdcap");
+        SET_FAIL ((context), "3-3-1");
       };
 
       break;
@@ -1420,6 +1410,17 @@ printf ("MMSG DONE\n");
       status = oosdp_make_message (OOSDP_MSG_PD_IDENT, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+
+      // consistency check (test 4-3-2)
+      // OUI must not be zero
+
+      if ((msg->data_payload [0] EQUALS 0) &&
+        (msg->data_payload [1] EQUALS 0) &&
+        (msg->data_payload [2] EQUALS 0))
+      {
+        SET_FAIL ((context), "4-3-2");
+      };
+
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;
 
