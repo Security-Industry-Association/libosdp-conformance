@@ -27,6 +27,10 @@
 #define OSDP_VERSION_MINOR ( 1)
 #define OSDP_VERSION_BUILD ( 2)
 
+// default configuration
+
+#define OOSDP_CFG_INPUTS (8)
+
 #define OSDP_PROFILE_PERIPHERAL_TEST_PD (0x0000)
 #define OSDP_PROFILE_PERIPHERAL_TEST_CP (0x1000)
 #define OSDP_PROFILE_BASIC_TEST_PD      (0x0100)
@@ -714,6 +718,7 @@ int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);
+int send_bio_read_template (OSDP_CONTEXT *ctx);
 int send_comset
   (OSDP_CONTEXT *ctx, unsigned char pd_address, unsigned char new_addr,
   char *speed_string);

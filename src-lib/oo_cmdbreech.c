@@ -113,6 +113,18 @@ fprintf (stderr, "command path %s status now %d.\n",
     };
   };
 
+  // command bio_read_template
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "buzz"))
+    {
+      cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
+
+      status = send_bio_read_template (ctx);
+    };
+  };
+
   // command buzz
 
   if (status EQUALS ST_OK)

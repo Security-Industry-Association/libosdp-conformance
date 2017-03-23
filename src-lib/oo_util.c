@@ -456,6 +456,14 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_BIOREAD:
+      m->data_payload = NULL;
+      msg_data_length = 0;
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_BIOREAD");
+      osdp_conformance.cmd_bioread.test_status = OCONFORM_EXERCISED;
+      break;
+
     case OSDP_BUSY:
       m->data_payload = NULL;
       msg_data_length = 0;
@@ -862,6 +870,8 @@ int
     i;
   char
     logmsg [1024];
+  unsigned char
+    osdp_nak_response_data [2];
   OSDP_HDR
     *oh;
   int
@@ -887,6 +897,37 @@ int
     };
     switch (msg->msg_cmd)
     {
+    case OSDP_BIOREAD:
+      sprintf (logmsg, "BIOREAD rdr=%02x type=%02x format=%02x quality=%02x\n",
+          *(msg->data_payload + 0), *(msg->data_payload + 1),
+          *(msg->data_payload + 2), *(msg->data_payload + 3));
+      fprintf (context->log, "%s", logmsg);
+      fprintf (stderr, "%s", logmsg);
+      logmsg[0]=0;
+
+      // we don't actually DO a biometrics read at this time, so NAK it.
+      {
+        current_length = 0;
+        osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+        osdp_nak_response_data [1] = 0xff;
+        status = send_message (context,
+          OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
+        context->sent_naks ++;
+        osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+        if (context->verbosity > 2)
+        {
+          fprintf (context->log, "Responding with OSDP NAK\n");
+          fprintf (stderr, "CMD %02x Unknown\n", msg->msg_cmd);
+        };
+      };
+      osdp_conformance.cmd_bioread.test_status =
+        OCONFORM_EXERCISED;
+      current_length = 0;
+      status = send_message
+        (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+      context->pd_acks ++;
+      break;
+
     case OSDP_BUZ:
       {
         sprintf (logmsg, "BUZZER %02x %02x %02x %02x %02x\n",
@@ -897,6 +938,8 @@ int
         fprintf (stderr, "%s", logmsg);
         logmsg[0]=0;
       };
+      osdp_conformance.cmd_buz.test_status =
+        OCONFORM_EXERCISED;
       current_length = 0;
       status = send_message
         (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
@@ -907,26 +950,26 @@ int
       {
         unsigned char
           osdp_cap_response_data [3*(14-1)] = {
-            1,2,8, // 8 inputs, on/of/nc/no
+            1,2,OOSDP_CFG_INPUTS, // 8 inputs, on/of/nc/no
             2,2,8, // 8 outputs, on/off/drive
-3,1,0, // 1024 bits max
+            3,1,0, // 1024 bits max
             4,1,8, // on/off only, 8 LED's
-5,1,1, // audible annunciator present, claim on/off only
-6,1,1, // 1 row of 16 characters
-//7 // assume 7 (time keeping) is deprecated
-8,1,0, // supports CRC-16
+            5,1,1, // audible annunciator present, claim on/off only
+            6,1,1, // 1 row of 16 characters
+            //7 // assume 7 (time keeping) is deprecated
+            8,1,0, // supports CRC-16
 #ifndef OSDP_SECURITY
-9,0,0, //no security
+            9,0,0, //no security
 #endif
 #if OSDP_SECURITY
-9,1,1, //SCBK_D, AES 128
+            9,1,1, //SCBK_D, AES 128
 #endif
-10,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // rec buf max
-11,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // largest msg
-12,0,0, // no smartcard
-13,0,0, // no keypad
-14,0,0  // no biometric
-};
+            10,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // rec buf max
+            11,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // largest msg
+            12,0,0, // no smartcard
+            13,0,0, // no keypad
+            14,0,0  // no biometric
+            };
 
         status = ST_OK;
         current_length = 0;
@@ -937,7 +980,6 @@ int
           OCONFORM_EXERCISED;
         osdp_conformance.rep_device_capas.test_status =
           OCONFORM_EXERCISED;
-fprintf (stderr, "2 pdcap\n");
         if (context->verbosity > 2)
           fprintf (stderr, "Responding with OSDP_PDCAP\n");
       };
@@ -979,8 +1021,6 @@ fprintf (stderr, "2 pdcap\n");
       {
         int
           nak;
-        unsigned char
-          osdp_nak_response_data [2];
 
         status = ST_OK;
         nak = 0;
@@ -1079,6 +1119,28 @@ printf ("fixme: client cryptogram\n");
       }
     break;
 
+    case OSDP_ISTAT:
+      status = ST_OK;
+      {
+        unsigned char
+          osdp_istat_response_data [OOSDP_CFG_INPUTS];
+
+        // hard code to show all inputs in '0' state.
+
+        memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
+        osdp_conformance.cmd_istat.test_status =
+          OCONFORM_EXERCISED;
+        current_length = 0;
+        status = send_message (context, OSDP_ISTATR, p_card.addr,
+          &current_length, sizeof (osdp_istat_response_data), osdp_istat_response_data);
+        if (context->verbosity > 2)
+        {
+          sprintf (logmsg, "Responding with OSDP_ISTAT (hard-coded all zeroes)");
+          fprintf (context->log, "%s\n", logmsg);
+        };
+      };
+      break;
+
     case OSDP_LED:
       /*
         There are 256 LED's.  They all use the colors in the spec.
@@ -1109,6 +1171,15 @@ printf ("fixme: client cryptogram\n");
               context->led [led_ctl->led].state = OSDP_LED_ACTIVATED;
               context->led [led_ctl->led].web_color =
                 web_color_lookup [led_ctl->perm_on_color];
+
+              // for conformance tests 3-10-1/3-10-2 we specifically look for LED 0 Color 1 (Red) or Color 2 (Green)
+
+              if (led_ctl->perm_on_color EQUALS 1)
+                osdp_conformance.cmd_led_red.test_status =
+                  OCONFORM_EXERCISED;
+              if (led_ctl->perm_on_color EQUALS 2)
+                osdp_conformance.cmd_led_green.test_status =
+                  OCONFORM_EXERCISED;
             };
           led_ctl = led_ctl + sizeof(OSDP_RDR_LED_CTL);
         };
@@ -1133,14 +1204,14 @@ printf ("fixme: client cryptogram\n");
       status = action_osdp_POLL (context, msg);
       break;
 
-// OLD OSDP_POLL
-
     case OSDP_LSTAT:
     status = ST_OK;
     {
       unsigned char
         osdp_lstat_response_data [2];
 
+      osdp_conformance.cmd_lstat.test_status =
+        OCONFORM_EXERCISED;
       osdp_lstat_response_data [ 0] = context->tamper;
       osdp_lstat_response_data [ 1] = context->power_report; // report power failure
       current_length = 0;
@@ -1320,6 +1391,8 @@ send OSDP_SCRYPT
       fprintf (context->log,
         " Tamper %d Power %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1));
+      osdp_conformance.cmd_poll_lstatr.test_status =
+        OCONFORM_EXERCISED; // 3-1-3
       osdp_conformance.resp_lstatr.test_status =
         OCONFORM_EXERCISED;
       if (*(msg->data_payload) > 0)

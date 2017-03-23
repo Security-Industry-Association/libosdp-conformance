@@ -14,13 +14,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cd /opt/open-osdp/run/PD
+cd /opt/osdp-conformance/run/PD
 sudo -n killall open-osdp
-sudo -n /opt/open-osdp/bin/exec-PD485
+sudo -n /opt/osdp-conformance/bin/exec-PD485
+sudo -n chmod 777 /opt/osdp-conformance/tmp
 echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>start PD RS-485 Server</TITLE>"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-PD.html\">"
 echo "<BODY><PRE>"
 echo "open-osdp started in PD run directory"
 echo "</BODY></HTML>"

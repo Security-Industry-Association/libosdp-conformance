@@ -17,11 +17,12 @@
 cd /opt/osdp-conformance/run/CP
 sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-CP485
+sudo -n chmod 777 /opt/osdp-conformance/tmp
 echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>start CP RS-485 Server</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\">"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"2;URL=/osdp-conformance-CP.html\">"
 echo "</HEAD>"
 echo "<BODY><PRE>"
 echo "open-osdp started in CP run directory"

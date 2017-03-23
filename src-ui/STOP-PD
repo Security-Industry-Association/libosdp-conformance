@@ -14,5 +14,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kill -9 `cat /opt/open-osdp/run/PD/osdp_pid`
+kill -9 `cat /opt/osdp-conformance/run/PD/osdp_pid`
 

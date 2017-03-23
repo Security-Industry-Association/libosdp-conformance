@@ -2,6 +2,9 @@ Release 0.1 Build 2 libosdp-conformance
 
 Changes in 0.1 Build 2
 
+most of CP testing works.  /osdp-conformance-PD.html is the control panel for
+the CP tester.
+
 ISTATR works.
 Comset works.
 Buzz works.
@@ -11,10 +14,19 @@ Corrected bug that forced device address to 0.
 Fixed moderate/verbose verbosity setting.
 Fix build bug in 0.1 Build 1
 Added to UI.
+bio reader testing partially implemented.
 
 Known Issues
 Check issues list in github.
 NAK might have issues.
 on checksum-only devices (MRDT) can get wedged into NAK loop, likely
 due to sequence number issues.
+punchlist for CP testing
+  comset
+  test 100 doesn't show ident
+  ostatr
+  groups 4,2
+  bad comset
+  ident ok if not fail
+  text out and buzz add "ok" link
 

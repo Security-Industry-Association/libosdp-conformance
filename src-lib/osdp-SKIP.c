@@ -19,8 +19,6 @@ void
   oconf->cmd_mfg.test_status = OCONFORM_SKIP;
   oconf->cmd_ostat_ack.test_status =
     OCONFORM_SKIP;
-  oconf->cmd_poll_response_3.test_status =
-    OCONFORM_SKIP;
   oconf->cmd_poll_response_4.test_status =
     OCONFORM_SKIP;
   oconf->cmd_prompt.test_status =

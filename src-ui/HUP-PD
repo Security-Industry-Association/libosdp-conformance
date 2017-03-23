@@ -1,4 +1,4 @@
 #!/bin/bash
 echo "00" >/tmp/1.in
-/opt/open-osdp/bin/open-osdp-kick PD </tmp/1.in
+/opt/osdp-conformance/bin/open-osdp-kick PD </tmp/1.in
 

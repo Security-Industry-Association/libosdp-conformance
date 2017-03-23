@@ -573,7 +573,6 @@ int
       *(msg->data_payload + 3), *(msg->data_payload + 4), *(msg->data_payload + 5));
 
   memset (tlogmsg, 0, sizeof (tlogmsg));
-fflush (ctx->log);
   strncpy (tlogmsg, (char *)(msg->data_payload+6), text_length);
   fprintf (ctx->log, "Text: %s\n", tlogmsg);
 

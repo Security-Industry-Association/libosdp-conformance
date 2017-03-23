@@ -87,7 +87,7 @@ typedef struct osdp_interop_assessment
 
   OSDP_CONFORM cmd_poll;                // 3-1-1
   OSDP_CONFORM cmd_poll_raw;            // 3-1-2
-  OSDP_CONFORM cmd_poll_response_3;     // 3-1-3
+  OSDP_CONFORM cmd_poll_lstatr;         // 3-1-3
   OSDP_CONFORM cmd_poll_response_4;     // 3-1-4
   OSDP_CONFORM cmd_id;                  // 3-2-1
   OSDP_CONFORM cmd_pdcap;               // 3-3-1

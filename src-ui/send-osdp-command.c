@@ -48,7 +48,7 @@ int
     printf ("<HTML><HEAD><TITLE>open-osdp CP console</TITLE>");
 #ifdef OSDP_CONFORMANCE
     printf
-("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\">");
+("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-CP.html\">");
 #else
     printf
 ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");
@@ -74,7 +74,7 @@ int
   {
     printf ("<HTML><HEAD><TITLE>open-osdp PD console</TITLE>");
     printf
-("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-PD.html\">");
+("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-PD.html\">");
     printf ("</HEAD><BODY>");
 
     strcpy (command, arguments+strlen(tag));

@@ -245,15 +245,7 @@ void
     role_tag = "CP";
   else
     role_tag = "PD";
-  profile_tag = "Unknown";
-  if (ctx->profile EQUALS OSDP_PROFILE_PERIPHERAL_TEST_PD)
-    profile_tag = "Peripheral (testing PD)";
-  if (ctx->profile EQUALS OSDP_PROFILE_BASIC)
-    profile_tag = "Basic";
-  if (ctx->profile EQUALS OSDP_PROFILE_BIO)
-    profile_tag = "Biometrics";
-  if (ctx->profile EQUALS OSDP_PROFILE_PIV)
-    profile_tag = "PIV";
+  profile_tag = "";
 
   skip_conformance_tests (ctx, oconf);
 
@@ -292,8 +284,8 @@ void
 
   LOG_REPORT ((log_string, "Conformance Report:"));
   LOG_REPORT ((log_string,
-    "Testing %s with %s Profile\n", role_tag, profile_tag));
-  LOG_REPORT ((log_string, "Version: %d.%d Build %d\n",
+    "Testing %s\n", role_tag));
+  LOG_REPORT ((log_string, "Conformance Tester Version: %d.%d Build %d\n",
     ctx->fw_version [0], ctx->fw_version [1], ctx->fw_version [2]));
 
   LOG_REPORT ((log_string,
@@ -410,7 +402,7 @@ void
     conformance_status (oconf->cmd_poll_raw.test_status)));
   LOG_REPORT ((log_string,
 "3-1-3  Poll response 3                    %s",
-    conformance_status (oconf->cmd_poll_response_3.test_status)));
+    conformance_status (oconf->cmd_poll_lstatr.test_status)));
   LOG_REPORT ((log_string,
 "3-1-4  Poll response 4                    %s",
     conformance_status (oconf->cmd_poll_response_4.test_status)));
