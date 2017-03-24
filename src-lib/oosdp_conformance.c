@@ -401,7 +401,7 @@ void
 "3-1-2  Poll raw                           %s",
     conformance_status (oconf->cmd_poll_raw.test_status)));
   LOG_REPORT ((log_string,
-"3-1-3  Poll response 3                    %s",
+"3-1-3  Poll lstatr                        %s",
     conformance_status (oconf->cmd_poll_lstatr.test_status)));
   LOG_REPORT ((log_string,
 "3-1-4  Poll response 4                    %s",

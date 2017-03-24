@@ -1130,6 +1130,8 @@ printf ("fixme: client cryptogram\n");
         memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
         osdp_conformance.cmd_istat.test_status =
           OCONFORM_EXERCISED;
+        osdp_conformance.resp_input_stat.test_status =
+          OCONFORM_EXERCISED;
         current_length = 0;
         status = send_message (context, OSDP_ISTATR, p_card.addr,
           &current_length, sizeof (osdp_istat_response_data), osdp_istat_response_data);

@@ -88,7 +88,7 @@ int
       ctx->serial_speed);
     fprintf (sf, "       \"pd_address\" : \"%02x\",\n",
       p_card.addr);
-    fprintf (sf, "\"max_pd_send\" : \"%d\",\n",
+    fprintf (sf,       "\"max_pd_send\" : \"%d\",\n",
       ctx->max_message);
     fprintf (sf, "         \"cp_polls\" : \"%d\",\n",
       ctx->cp_polls);

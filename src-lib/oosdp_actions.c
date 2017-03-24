@@ -380,22 +380,22 @@ int
     };
   };
   if (!done)
-      {
-        /*
-          if all else isn't interesting return a plain ack
-        */
-        current_length = 0;
-        status = send_message
-          (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
-        ctx->pd_acks ++;
-        osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
-        osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
-        if (ctx->verbosity > 4)
-        {
-          sprintf (tlogmsg, "Responding with OSDP_ACK");
-          fprintf (ctx->log, "%s\n", tlogmsg);
-        };
-      };
+  {
+    /*
+      if all else isn't interesting return a plain ack
+    */
+    current_length = 0;
+    status = send_message
+      (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+    ctx->pd_acks ++;
+    osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
+    osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
+    if (ctx->verbosity > 4)
+    {
+      sprintf (tlogmsg, "Responding with OSDP_ACK");
+      fprintf (ctx->log, "%s\n", tlogmsg);
+    };
+  };
 
   // update status json
   if (status EQUALS ST_OK)

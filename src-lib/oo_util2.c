@@ -967,6 +967,7 @@ int
 
   if (context->verbosity > 3)
   {
+    osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
     if (command EQUALS OSDP_NAK)
       fprintf (stderr, "NAK being sent...%02x\n", *data);
   };

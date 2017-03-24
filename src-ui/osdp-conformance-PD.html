@@ -146,6 +146,85 @@ Recent PD
     </TD>
 </TR>
 </TABLE>
+<TABLE>
+<CAPTION><B>Test Group 4 Responses [2]</B></CAPTION>
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<TR>
+<TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    4-1-1</TD>
+    <TD>
+    osdp_ACK [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    4-2-1</TD>
+    <TD>
+    osdp_NAK [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    4-3-1</TD>
+    <TD>
+    osdp_PDID [4]
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-3-2</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    PDID sanity check</SPAN>
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    4-4-1</TD>
+    <TD>
+    Capabilities Report [4]
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-4-2</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    PDCAP sanity check</SPAN>
+    </TD>
+  <TD ALIGN="center">
+    4-5-1</TD>
+    <TD>
+    osdp_LSTATR [4]
+    </TD>
+  <TD ALIGN="center">
+    4-5-2</TD>
+    <TD>
+    LSTATR Tamper [4]
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="center">
+    4-5-3</TD>
+    <TD>
+    LSTATR Power [4]
+    </TD>
+  <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-input_status">
+    4-6-1</A></TD>
+    <TD>
+    osdp_ISTATR
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-6-2</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    ISTATR sanity check</SPAN>
+    </TD>
+  <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-outstat">
+    4-7-1</A></TD>
+    <TD>
+    osdp_OSTATR
+    </TD>
+</TR>
+</TABLE>
 <HR>
 <HR>
 ...work in progress...<BR>
@@ -257,49 +336,17 @@ Recent PD
 </TABLE>
 <TABLE>
 <CAPTION><B>Test Group 4 Responses [2]</B></CAPTION>
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
 <TR>
 <TH>ID</TH> <TH>Description</TH>
 <TH>ID</TH> <TH>Description</TH>
 <TH>ID</TH> <TH>Description</TH>
 <TH>ID</TH> <TH>Description</TH>
-</TR>
-<TR>
-<TD ALIGN="center">4-1-1</TD><TD>osdp_ACK [4]</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-induce-NAK">
-  4-2-1</A></TD><TD>osdp_NAK</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">
-  4-3-1</A></TD><TD>osdp_PDID</TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-3-2</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    PDID sanity check</SPAN></TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
-    4-4-1</A></TD>
-    <TD>Capabilities Report</TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-4-2</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    PDCAP sanity check</SPAN></TD>
-<TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">4-5-1</A></TD><TD>osdp_LSTATR</TD>
-<TD ALIGN="center">4-5-2</TD><TD>LSTATR Tamper [4]</TD>
 </TR>
 
-<TR>
-<TD ALIGN="center">4-5-3</TD><TD>LSTATR Power [4]</TD>
-<TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-input_status">4-6-1</A></TD><TD>osdp_ISTATR</TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-6-2</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    ISTATR sanity check</SPAN></TD>
-<TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-outstat">4-7-1</A></TD><TD>osdp_OSTATR</TD>
-</TR>
 
 <TR>
 <TD ALIGN="center">4-7-2</TD><TD>OSTATR POLL [3]</TD>

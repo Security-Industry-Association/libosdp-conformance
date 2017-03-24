@@ -18,14 +18,17 @@ echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>COMSET</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\"><HEAD>"
+URL=/osdp-conformance-`cat /opt/osdp-conformance/etc/current_role`.html
+echo "<META HTTP-EQUIV=\"REFRESH\""
+echo "CONTENT=\"1;URL=${URL}\">"
+echo "<HEAD>"
 echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
 date
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
-CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/`cat /opt/osdp-conformance/etc/current_role`/open_osdp_command.json
 sudo -n echo  >${CMDPATH} "{"
 sudo -n echo >>${CMDPATH} "   \"command\" : \"verbosity\"",
 sudo -n echo >>${CMDPATH} "  \"level\" : \"$1\"",
@@ -33,7 +36,7 @@ sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-verbosity from UI\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}
 
-sudo -n ${OSDP_PATH}/bin/HUP-CP
+sudo -n ${OSDP_PATH}/bin/HUP-`cat /opt/osdp-conformance/etc/current_role`
 
 echo "Set verbosity to level $1"
 
