@@ -1,0 +1,77 @@
+#!/bin/bash
+set -x
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/run/CP/open_osdp_command.json
+rm -vf /opt/osdp-conformance/log/report.log
+echo start CP
+echo sleep to stabilize
+sleep 5
+echo executing test 2-6-1
+bash /opt/osdp-conformance/bin/do-CP-command conform_2_6_1
+echo executing test 3-2-1
+bash /opt/osdp-conformance/bin/do-CP-command identify
+echo executing test 3-3-1
+bash /opt/osdp-conformance/bin/do-CP-command capabilities
+echo executing test 3-5-1
+/opt/osdp-conformance/bin/do-CP-command local_status
+echo executing test 3-6-1
+/opt/osdp-conformance/bin/do-CP-command input_status
+echo executing test 3-7-1
+/opt/osdp-conformance/bin/do-CP-command output_status
+echo executing test 3-8-1
+/opt/osdp-conformance/bin/do-CP-command reader_status
+echo executing test 3-9-1
+/opt/osdp-conformance/bin/do-CP-command conform_3_9_1
+echo executing test 3-10-1
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"1\""
+echo >>${CMDPATH} "}"
+${OSDP_PATH}/bin/HUP-CP
+sleep 3
+echo executing test 3-10-2
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"led\""
+echo >>${CMDPATH} "  ,\"perm_on_color\" : \"2\""
+echo >>${CMDPATH} "}"
+${OSDP_PATH}/bin/HUP-CP
+sleep 3
+echo executing test 3-11-1
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"buzz\","
+echo >>${CMDPATH} "  \"on_time\" : \"1\","
+echo >>${CMDPATH} "  \"off_time\" : \"1\","
+echo >>${CMDPATH} "  \"repeat\" : \"3\","
+echo >>${CMDPATH} "  \"#\" : \"created by 100-test-all in test\""
+echo >>${CMDPATH} "}"
+/opt/osdp-conformance/bin/HUP-CP
+sleep 3
+echo executing test 3-12-1
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"text\""
+echo >>${CMDPATH} "  ,\"message\" : \"TEST_3-12-1\""
+echo >>${CMDPATH} "}"
+/opt/osdp-conformance/bin/HUP-CP
+sleep 2
+echo request test 4-5-2
+echo request test 4-5-2
+/opt/osdp-conformance/bin/do-CP-command output_status
+echo request test 4-5-2
+/opt/osdp-conformance/request-exercise-PD 4-5-2
+echo request test 4-5-3
+/opt/osdp-conformance/request-exercise-PD 4-5-3
+echo requesting test 4-6-1
+/opt/osdp-conformance/request-exercise-PD 4-6-1
+echo executing test 4-7-1
+/opt/osdp-conformance/bin/do-CP-command outstat
+echo request test 4-7-2
+/opt/osdp-conformance/request-exercise-PD 4-7-2
+echo request test 4-8-1
+/opt/osdp-conformance/request-exercise-PD 4-8-1
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"text\""
+echo >>${CMDPATH} "  ,\"message\" : \"Conformance_Test.Complete..!!!\""
+echo >>${CMDPATH} "}"
+/opt/osdp-conformance/bin/HUP-CP
+sleep 2
+

@@ -58,13 +58,188 @@ typedef struct osdp_conformance_test
   int
     test_for_biometrics;
   int
-    test_for_piv;
+    test_for_xpm;
   int
     test_for_transparent;
+  char
+    *description;
 } OSDP_CONFORMANCE_TEST;
 OSDP_CONFORMANCE_TEST
   test_control [] =
   {
+    { "2-1-1", &(osdp_conformance.physical_interface.test_status),
+      1, 0, 0, 0, 0, "---"},
+    { "2-2-1", &(osdp_conformance.signalling.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-2-2", &(osdp_conformance.alt_speed_2.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-2-3", &(osdp_conformance.alt_speed_3.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-2-4", &(osdp_conformance.alt_speed_4.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-3-1", &(osdp_conformance.character_encoding.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-4-1", &(osdp_conformance.channel_access.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-4-2", &(osdp_conformance.timeout_resend.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-4-3", &(osdp_conformance.busy_resend.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-4-4", &(osdp_conformance.new_on_busy.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-5-1", &(osdp_conformance.multibyte_data_encoding.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-6-1", &(osdp_conformance.packet_size_limits.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-6-2", &(osdp_conformance.packet_size_from_pd.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-6-3", &(osdp_conformance.packet_size_stress_cp.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-7-1", &(osdp_conformance.timing.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-7-2", &(osdp_conformance.max_delay.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-7-3", &(osdp_conformance.offline_test.test_status),
+      1, 0, 0, 0, 0, "---"}, // ??
+    { "2-8-1", &(osdp_conformance.message_synchronization.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-9-1", &(osdp_conformance.packet_format.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-10-1", &(osdp_conformance.SOM.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-10-2", &(osdp_conformance.SOM_sent.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-11-1", &(osdp_conformance.ADDR.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-11-2", &(osdp_conformance.address_2.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-11-3", &(osdp_conformance.address_config.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-12-1", &(osdp_conformance.LEN.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-13-1", &(osdp_conformance.CTRL.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-13-2", &(osdp_conformance.control_2.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-13-3", &(osdp_conformance.scb_absent.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-13-4", &(osdp_conformance.ctl_seq.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-14-1", &(osdp_conformance.security_block.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-15-1", &(osdp_conformance.CMND_REPLY.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-15-2", &(osdp_conformance.invalid_command.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-16-1", &(osdp_conformance.CHKSUM_CRC16.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-16-2", &(osdp_conformance.checksum.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-17-1", &(osdp_conformance.multipart.test_status),
+      0, 0, 0, 0, 0, "---"},
+
+    { "3-1-1", &(osdp_conformance.cmd_poll.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-1-2", &(osdp_conformance.cmd_poll_raw.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-1-3", &(osdp_conformance.cmd_poll_lstatr.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-1-4", &(osdp_conformance.cmd_poll_response_4.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-2-1", &(osdp_conformance.cmd_id.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-3-1", &(osdp_conformance.cmd_pdcap.test_status),
+      0, 0, 0, 0, 0, "---" }, // optional in all cases
+    { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
+      0, 0, 0, 0, 0, "---" }, // optional in all cases
+    { "3-5-1", &(osdp_conformance.cmd_lstat.test_status),
+      0, 0, 0, 0, 0, "---" }, // optional in all cases
+    { "3-6-1", &(osdp_conformance.cmd_istat.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-7-1", &(osdp_conformance.cmd_ostat.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-7-2", &(osdp_conformance.cmd_ostat_ack.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-8-1", &(osdp_conformance.cmd_rstat.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-9-1", &(osdp_conformance.cmd_out.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-10-1", &(osdp_conformance.cmd_led_red.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-10-2", &(osdp_conformance.cmd_led_green.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-11-1", &(osdp_conformance.cmd_buz.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-12-1", &(osdp_conformance.cmd_text.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-14-1", &(osdp_conformance.cmd_comset.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-16-1", &(osdp_conformance.cmd_prompt.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-17-1", &(osdp_conformance.cmd_bioread.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-18-1", &(osdp_conformance.cmd_biomatch.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-19-1", &(osdp_conformance.cmd_cont.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-20-1", &(osdp_conformance.cmd_mfg.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-21-1", &(osdp_conformance.cmd_stop_multi.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "3-22-1", &(osdp_conformance.cmd_max_rec.test_status),
+      0, 0, 0, 0, 0, "---" },
+
+    { "4-1-1", &(osdp_conformance.rep_ack.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-2-1", &(osdp_conformance.rep_nak.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-3-1", &(osdp_conformance.rep_device_ident.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-3-2", &(osdp_conformance.resp_ident_consistent.test_status),
+      1, 1, 1, 1, 0, "PDID consistent" },
+    { "4-4-1", &(osdp_conformance.rep_device_capas.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-4-2", &(osdp_conformance.rep_capas_consistent.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-5-1", &(osdp_conformance.resp_lstatr.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-5-2", &(osdp_conformance.resp_lstatr_tamper.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-5-3", &(osdp_conformance.resp_lstatr_power.test_status),
+      1, 1, 1, 1, 0, "---" },
+    { "4-6-1", &(osdp_conformance.resp_input_stat.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-6-2", &(osdp_conformance.resp_input_consistent.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-7-1", &(osdp_conformance.resp_output_stat.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-7-2", &(osdp_conformance.resp_ostatr_poll.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-7-3", &(osdp_conformance.resp_ostatr_range.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-8-1", &(osdp_conformance.resp_rstatr.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-9-1", &(osdp_conformance.rep_raw.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-10-1", &(osdp_conformance.rep_formatted.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-11-1", &(osdp_conformance.resp_keypad.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-11-1", &(osdp_conformance.resp_keypad.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-12-1", &(osdp_conformance.resp_com.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-13-1", &(osdp_conformance.rep_scan_send.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-14-1", &(osdp_conformance.rep_scan_match.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-15-1", &(osdp_conformance.resp_mfg.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { "4-16-1", &(osdp_conformance.resp_busy.test_status),
+      0, 0, 0, 0, 0, "---" },
+    { NULL, NULL, 0, 0, 0, 0, 0, "---" }
+
+#if 0
     { "2-1-1", &(osdp_conformance.physical_interface.test_status),
       0, 0, 0, 0 }, // ??
     { "2-2-1", &(osdp_conformance.signalling.test_status),
@@ -176,6 +351,7 @@ OSDP_CONFORMANCE_TEST
     { "4-6-2", &(osdp_conformance.resp_input_consistent.test_status),
       0, 0, 0, 0 }, //?
     { NULL, NULL, 0, 0, 0, 0 }
+#endif
   };
 
 // code to configure tests to skip
@@ -505,7 +681,7 @@ void
     conformance_status (oconf->resp_input_consistent.test_status)));
   LOG_REPORT ((log_string,
 "4-7-1  osdp_OSTATR                        %s",
-    conformance_status (oconf->rep_output_stat.test_status)));
+    conformance_status (oconf->resp_output_stat.test_status)));
   LOG_REPORT ((log_string,
 "4-7-2  osdp_OSTATR for POLL               %s",
     conformance_status (oconf->resp_ostatr_poll.test_status)));
@@ -615,7 +791,11 @@ int
       done = 1;
     };
     if (test_control [idx].name EQUALS NULL)
+    {
+      fprintf (stderr, "Cannot find test %s, not updated.\n",
+        test);
       done = 1;
+    };
     // yes, if we find nothing we'll still return OK
     idx++;
   };

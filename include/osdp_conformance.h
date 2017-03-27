@@ -124,7 +124,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_lstatr_power;       // 4-5-3
   OSDP_CONFORM resp_input_stat;         // 4-6-1
   OSDP_CONFORM resp_input_consistent;   // 4-6-2
-  OSDP_CONFORM rep_output_stat;         // 4-7-1
+  OSDP_CONFORM resp_output_stat;        // 4-7-1
   OSDP_CONFORM resp_ostatr_poll;        // 4-7-2
   OSDP_CONFORM resp_ostatr_range;       // 4-7-3
   OSDP_CONFORM resp_rstatr;             // 4-8-1

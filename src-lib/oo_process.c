@@ -67,6 +67,18 @@ int
     status = ST_SERIAL_IN;
   if (status EQUALS ST_OK)
   {
+if (context.verbosity > 8)
+{
+  int i;
+  fprintf (stderr, "Parsing input (%d. bytes):\n",
+    msg.lth);
+  for (i=0; i<msg.lth; i++)
+  {
+    fprintf (stderr, " %02x", osdp_buf->buf [i]);
+fflush (stderr);
+  };
+  fprintf (stderr, "\n");
+};
     status = process_osdp_message (&context, &msg);
   };
   // things may have changed.  after processing this incoming message

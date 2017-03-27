@@ -133,6 +133,13 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       };
       break;
 
+    case OSDP_CMDB_BUSY:
+      context->next_response = OSDP_BUSY;
+      if (context->verbosity > 2)
+        fprintf (stderr, "Declaring BUSY on next response\n");
+      status = ST_OK;
+      break;
+
     case OSDP_CMDB_BUZZ:
       {
         unsigned char

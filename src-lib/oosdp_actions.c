@@ -252,6 +252,24 @@ int
 
     if there was a power report return that.
   */
+  if (!done)
+  {
+    if (ctx->next_response EQUALS OSDP_BUSY)
+    {
+      ctx->next_response = 0;
+      done = 1;
+      current_length = 0;
+      status = send_message (ctx,
+        OSDP_BUSY, p_card.addr, &current_length,
+        0, NULL);
+      SET_PASS (ctx, "4-16-1");
+      if (ctx->verbosity > 2)
+      {
+        sprintf (tlogmsg, "Responding with OSDP_BUSY");
+        fprintf (ctx->log, "%s\n", tlogmsg);
+      };
+    };
+  };
   if (ctx->tamper EQUALS 1)
   {
     done = 1;
@@ -280,8 +298,8 @@ int
     status = send_message (ctx,
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-    osdp_conformance.resp_lstatr_power.test_status =
-      OCONFORM_EXERCISED;
+    SET_PASS (ctx, "3-1-3");
+    SET_PASS (ctx, "4-5-3");
     if (ctx->verbosity > 2)
     {
       sprintf (tlogmsg, "Responding with OSDP_LSTATR (Power)");

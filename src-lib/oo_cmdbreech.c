@@ -117,11 +117,24 @@ fprintf (stderr, "command path %s status now %d.\n",
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "buzz"))
+    if (0 EQUALS strcmp (current_command, "bio_read"))
     {
       cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
 
       status = send_bio_read_template (ctx);
+    };
+  };
+
+  // command busy
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "busy"))
+    {
+      cmd->command = OSDP_CMDB_BUSY;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
     };
   };
 
@@ -163,7 +176,6 @@ fprintf (stderr, "command path %s status now %d.\n",
       };
     };
   }; 
-
 
   // command capabilities
 

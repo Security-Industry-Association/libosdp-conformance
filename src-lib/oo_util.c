@@ -313,7 +313,7 @@ int
   {
     // first few fields are always in same place
     returned_hdr -> som = p->som;
-    returned_hdr -> addr = p->addr;
+    returned_hdr -> addr = 0x7f & p->addr; // low 7 bits are address
     returned_hdr -> len_lsb = p->len_lsb;
     returned_hdr -> len_msb = p->len_msb;
     returned_hdr -> ctrl = p->ctrl;
@@ -759,7 +759,7 @@ if (m->lth == 7)
     context->packets_received ++;
 
     if (context->role EQUALS OSDP_ROLE_PD)
-      if ((p_card.addr != p->addr) && (p->addr != 0x7f))
+      if ((p_card.addr != (0x7f & p->addr)) && (p->addr != 0x7f))
       {
         if (context->verbosity > 3)
           fprintf (stderr, "addr mismatch for: %02x me: %02x\n",
@@ -1111,6 +1111,7 @@ printf ("fixme: client cryptogram\n");
           sizeof (osdp_pdid_response_data), osdp_pdid_response_data);
         osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
         osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+        SET_PASS (context, "4-3-2");
         if (context->verbosity > 2)
         {
           sprintf (logmsg, "Responding with OSDP_PDID");
@@ -1222,9 +1223,11 @@ printf ("fixme: client cryptogram\n");
         sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
       if (context->verbosity > 2)
       {
-        sprintf (logmsg, "Responding with OSDP_LSTAT (Power)");
+        sprintf (logmsg, "Responding with OSDP_LSTATR (Power)");
         fprintf (context->log, "%s\n", logmsg);
       };
+      SET_PASS (context, "3-5-1");
+      SET_PASS (context, "4-5-1");
     };
     break;
 
@@ -1466,7 +1469,7 @@ printf ("MMSG DONE\n");
       break;
 
     case OSDP_OSTATR:
-      osdp_conformance.rep_output_stat.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.resp_output_stat.test_status = OCONFORM_EXERCISED;
 
       // if this is in response to an OSTAT then mark that too.
       if (context->last_command_sent EQUALS OSDP_OSTAT)
@@ -1494,6 +1497,10 @@ printf ("MMSG DONE\n");
         (msg->data_payload [2] EQUALS 0))
       {
         SET_FAIL ((context), "4-3-2");
+      }
+      else
+      {
+        SET_PASS ((context), "4-3-2");
       };
 
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;

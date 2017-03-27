@@ -1,0 +1,19 @@
+#!/bin/bash
+set -x
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/run/PD/open_osdp_command.json
+ROLE=PD
+SLEEPTIME=4
+echo executing test 3-1-3
+${OSDP_PATH}/bin/write-osdp-${ROLE}-command reset_power
+${OSDP_PATH}/bin/HUP-${ROLE}
+sleep ${SLEEPTIME}
+echo executing test 4-9-1
+${OSDP_PATH}/bin/write-osdp-${ROLE}-command present_card
+${OSDP_PATH}/bin/HUP-${ROLE}
+sleep ${SLEEPTIME}
+echo executing test 4-17-1
+${OSDP_PATH}/bin/write-osdp-${ROLE}-command busy
+${OSDP_PATH}/bin/HUP-${ROLE}
+sleep ${SLEEPTIME}
+
