@@ -114,30 +114,27 @@ int
   {
   case OOSDP_MSG_KEYPAD:
     {
-      char character;
-      char *keypad_map [] =
-      {"A", "B", "C", "D", "F1+F2", "F2+F3", "F3+F4", "F1+F4"};
-      char *keypad_string;
-      char tmpstr [1024];
+      int
+        i;
+      int
+        keycount;
+      char
+        tmpstr [1024];
 
       msg = (OSDP_MSG *) aux;
-      character = *(msg->data_payload+2);
-      tmpstr [1] = 0;
-      tmpstr [0] = character;
-      keypad_string = tmpstr;
-      if (character == 0x7f)
-        keypad_string = "*";
-      else
-        if (character == 0x0d)
-          keypad_string = "#";
-        else
-          if ((character >= 0x41) && (character <= 0x48))
-            keypad_string = keypad_map [character-0x41];
+      keycount = *(msg->data_payload+1);
+      memset (tmpstr, 0, sizeof (tmpstr));
+      memcpy (tmpstr, msg->data_payload+2, *(msg->data_payload+1));
+      for (i=0; i<keycount; i++)
+      {
+        if (tmpstr [i] EQUALS 0x7F)
+          tmpstr [i] = '#';
+        if (tmpstr [i] EQUALS 0x0D)
+          tmpstr [i] = '*';
+      };
       sprintf (tlogmsg,
-"Keypad Input Rdr %d Digit %s (%d digits.)",
-        *(msg->data_payload+0),
-        keypad_string,
-        *(msg->data_payload+1));
+"Keypad Input Rdr %d, %d digits: %s",
+        *(msg->data_payload+0), keycount, tmpstr);
     };
     break;
 

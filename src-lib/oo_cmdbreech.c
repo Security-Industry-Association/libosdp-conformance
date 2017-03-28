@@ -346,7 +346,29 @@ fprintf (stderr, "command path %s status now %d.\n",
     };
   }; 
 
-  // request local status
+  // command "keypad" - send keyboard input
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "keypad"))
+    {
+      cmd->command = OSDP_CMDB_KEYPAD;
+
+      value = json_object_get (root, "digits");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        if (strlen (vstr) > 9)
+        {
+          fprintf (stderr, "Too many digits in keypad input, truncating to first 9\n");
+          vstr [9] = 0;
+        };
+        memcpy (cmd->details, vstr, 9);
+      };
+    };
+  };
+
+  // command "local_status" - request local status
 
   if (status EQUALS ST_OK)
   {
@@ -361,7 +383,7 @@ fprintf (stderr, "command path %s status now %d.\n",
     };
   }; 
 
-  // command led
+  // command "led"
 
   if (status EQUALS ST_OK)
   {

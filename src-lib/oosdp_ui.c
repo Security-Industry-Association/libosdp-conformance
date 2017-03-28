@@ -302,6 +302,30 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       status = ST_OK;
       break;
 
+    case OSDP_CMDB_KEYPAD:
+      {
+        char
+          keypad_message [1+1+9+1]; // built for 9 digits
+
+        memset (&keypad_message, 0, sizeof (keypad_message));
+        /*
+          assume reader 0
+        */
+        keypad_message [0] = 0;
+        strcpy (keypad_message+2, details); // made to be 9 or less by input mechanism
+        keypad_message [1] = strlen (keypad_message+2);
+        current_length = 0;
+        // buffer size gets -1 'cause there was a null at the end to make the string stuff work.
+        status = send_message (context,
+          OSDP_KEYPAD, p_card.addr, &current_length, sizeof (keypad_message)-1, (unsigned char *)&keypad_message);
+        if (context->verbosity > 3)
+          fprintf (stderr, "Sending keypad response %s\n",
+            keypad_message+2);
+        SET_PASS (context, "4-11-1");
+      };
+      break;
+
+
     case OSDP_CMDB_LSTAT:
       {
         current_length = 0;

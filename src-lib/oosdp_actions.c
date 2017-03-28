@@ -299,6 +299,7 @@ int
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
     SET_PASS (ctx, "3-1-3");
+    SET_PASS (ctx, "4-5-1");
     SET_PASS (ctx, "4-5-3");
     if (ctx->verbosity > 2)
     {

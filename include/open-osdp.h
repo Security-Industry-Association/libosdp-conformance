@@ -142,6 +142,7 @@
 #define OSDP_CMDB_CONFORM_2_2_4 (1021)
 #define OSDP_CMDB_BUZZ          (1022)
 #define OSDP_CMDB_BUSY          (1023)
+#define OSDP_CMDB_KEYPAD        (1024)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)

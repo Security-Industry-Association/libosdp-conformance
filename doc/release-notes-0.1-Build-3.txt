@@ -4,6 +4,7 @@ Changes in 0.1 Build 3
 
 fix permissions issues in cgi scripts in 0.1.2
 CP testing (group 3) working
+keypad testing working
 
 Known Issues
 Check issues list in github.
@@ -12,8 +13,6 @@ on checksum-only devices (MRDT) can get wedged into NAK loop, likely
 due to sequence number issues.
 punchlist for CP testing
   comset
-  group 2
   bad comset
-  ident ok if not fail
   text out and buzz add "ok" link
 
