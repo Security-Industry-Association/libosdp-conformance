@@ -110,7 +110,8 @@
 #define OSDP_MFGREP   (0x90)
 
 // NAK error codes
-#define OO_NAK_UNK_CMD (1)
+#define OO_NAK_CHECK_CRC (1)
+#define OO_NAK_UNK_CMD   (3)
 
 #define OSDP_MENU_TOP     (0x0000)
 #define OSDP_MENU_CP_DIAG (0x0100)
@@ -271,6 +272,8 @@ typedef struct osdp_context
     next_response;
   char
     last_command_sent;
+  char
+    last_nak_error;
   char
     last_response_received;
   char

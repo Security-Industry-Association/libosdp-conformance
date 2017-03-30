@@ -1,11 +1,9 @@
 # Make file for test directory of libosdp
 
-CP_SHELL_SCRIPTS=cp-tests/102-led
+SHELL_SCRIPTS=conformance/100-cp-test conformance/150-cp-comset \
+  conformance/200-pd-test
 
-build-test:	${CP_SHELL_SCRIPTS}
+build-test:	${SHELL_SCRIPTS}
 	mkdir -p ../opt/osdp-conformance/bin
-	cp ${CP_SHELL_SCRIPTS} ../opt/osdp-conformance/bin
-
-cp-tests/102-led:
-	(cd cp-tests; make build-test)
+	cp ${SHELL_SCRIPTS} ../opt/osdp-conformance/bin
 

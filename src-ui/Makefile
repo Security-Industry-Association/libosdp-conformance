@@ -31,7 +31,8 @@ CGIPROGS = \
   tail-CP-log tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
 CGISCRIPTS = conformance-report \
-  do-buzz do-comset do-confirm do-led do-text do-verbosity
+  do-buzz do-comset do-confirm do-led do-text do-verbosity \
+  conformance-CP-comset conformance-testing-CP conformance-testing-PD
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
 
@@ -39,7 +40,8 @@ PROGS = open-osdp-kick
 TLS_PROGS = 
 
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
-  open-osdp-MON.html osdp-conformance-CP.html osdp-conformance-PD.html
+  open-osdp-MON.html osdp-conformance-CP.html osdp-conformance-PD.html \
+  index-conformance.html
 TLS_PAGES = 
 
 SCRIPTS = clean-run do-CP-command exec-CP485 exec-PD485 HUP-CP HUP-PD \

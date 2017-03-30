@@ -169,7 +169,7 @@ OSDP_CONFORMANCE_TEST
     { "3-10-2", &(osdp_conformance.cmd_led_green.test_status),
       0, 0, 0, 0, 0, "---" },
     { "3-11-1", &(osdp_conformance.cmd_buz.test_status),
-      0, 0, 0, 0, 0, "---" },
+      0, 0, 0, 0, 0, "Buzzer control" },
     { "3-12-1", &(osdp_conformance.cmd_text.test_status),
       0, 0, 0, 0, 0, "---" },
     { "3-14-1", &(osdp_conformance.cmd_comset.test_status),

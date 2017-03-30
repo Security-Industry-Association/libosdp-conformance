@@ -1343,6 +1343,8 @@ send OSDP_SCRYPT
 
     case OSDP_NAK:
       status = ST_OK;
+      context->last_nak_error = *(0+msg->data_payload);
+
       if (context->verbosity > 2)
       {
         sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
@@ -1376,7 +1378,6 @@ send OSDP_SCRYPT
         osdp_conformance.cmd_pdcap.test_status = OCONFORM_FAIL;
         SET_FAIL ((context), "3-3-1");
       };
-
       break;
 
     case OSDP_COM:

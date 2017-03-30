@@ -5,6 +5,7 @@ Changes in 0.1 Build 3
 fix permissions issues in cgi scripts in 0.1.2
 CP testing (group 3) working
 keypad testing working
+change NAK behavior to not increment IF it's a CRC error (only)
 
 Known Issues
 Check issues list in github.

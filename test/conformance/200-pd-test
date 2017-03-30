@@ -1,0 +1,33 @@
+#!/bin/bash
+set -x
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/run/PD/open_osdp_command.json
+ROLE=PD
+SLEEPTIME=4
+echo executing test 3-1-3
+${OSDP_PATH}/bin/write-osdp-${ROLE}-command reset_power
+${OSDP_PATH}/bin/HUP-${ROLE}
+sleep ${SLEEPTIME}
+
+# keep 4-9-1 and 4-11-1 together in case it matters
+echo executing test 4-9-1
+${OSDP_PATH}/bin/write-osdp-${ROLE}-command present_card
+${OSDP_PATH}/bin/HUP-${ROLE}
+sleep ${SLEEPTIME}
+DIGITS=1234
+CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/PD/open_osdp_command.json
+sudo -n echo  >${CMDPATH} "{"
+sudo -n echo >>${CMDPATH} "   \"command\" : \"keypad\"",
+sudo -n echo >>${CMDPATH} "  \"digits\" : \"${DIGITS}\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by 89-keypad from UI\""
+sudo -n echo >>${CMDPATH} "}"
+sudo -n cp ${CMDPATH} ${CMDPATHX}
+${OSDP_PATH}/bin/HUP-${ROLE}
+sleep ${SLEEPTIME}
+
+echo executing test 4-16-1
+${OSDP_PATH}/bin/write-osdp-${ROLE}-command busy
+${OSDP_PATH}/bin/HUP-${ROLE}
+sleep ${SLEEPTIME}
+

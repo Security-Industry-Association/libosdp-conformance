@@ -317,13 +317,21 @@ int
 
   static int
     current_sequence;
+  int
+    do_increment;
 
 
-  /*
-    if the last thing we got was a NAK we do not increment the sequence number.
-    (TODO: confirm this is true for all NAK types.)
-  */
+  do_increment = 1;
   if (ctx->last_response_received != OSDP_NAK)
+    do_increment = 1;
+  else
+  {
+    // if the last thing was a NAK and a CRC error don't increment
+    if (ctx->last_nak_error EQUALS OO_NAK_CHECK_CRC)
+      do_increment = 0;
+  };
+  
+  if (do_increment)
   {
     // the current value is returned. might be 0 (if this is the first message)
 
@@ -338,7 +346,7 @@ int
   else
   {
     if (ctx->verbosity > 2)
-      fprintf (ctx->log, "Last in was NAK, sequence stays at %d\n",
+      fprintf (ctx->log, "Last in was NAK/Err=1, sequence stays at %d\n",
         ctx->next_sequence);
   };
   return (current_sequence);

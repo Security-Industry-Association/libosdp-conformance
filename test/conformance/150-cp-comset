@@ -1,0 +1,19 @@
+#!/bin/bash
+set -x
+echo executing test 2-2-2
+bash /opt/osdp-conformance/bin/do-CP-command conform_2_2_2
+echo sleep to resync at new speed
+sleep 5
+echo executing test 2-2-3
+bash /opt/osdp-conformance/bin/do-CP-command conform_2_2_3
+echo sleep to resync at new speed
+sleep 5
+echo executing test 2-2-4
+bash /opt/osdp-conformance/bin/do-CP-command conform_2_2_4
+echo sleep to resync at new speed
+sleep 5
+echo executing test 2-2-1
+bash /opt/osdp-conformance/bin/do-CP-command conform_2_2_1
+echo sleep to resync at new speed
+sleep 5
+
