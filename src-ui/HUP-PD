@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo -n rm -f /tmp/1.in
 echo "00" >/tmp/1.in
 /opt/osdp-conformance/bin/open-osdp-kick PD </tmp/1.in
 

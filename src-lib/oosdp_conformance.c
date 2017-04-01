@@ -30,7 +30,19 @@
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 
+#define LOG_REPORT(lfargs) {\
+  sprintf lfargs; \
+  fprintf (ctx->log, "%s\n", log_string); fflush (ctx->log); \
+  fprintf (ctx->report, "%s\n", log_string); fflush (ctx->report);\
+}; 
+static char
+    *role_tag;
 
+
+int
+  osdp_report
+    (OSDP_CONTEXT
+      *ctx);
 int
   osdp_test_set_status
     (char
@@ -56,7 +68,7 @@ typedef struct osdp_conformance_test
   int
     test_for_basic;
   int
-    test_for_biometrics;
+    test_for_bio;
   int
     test_for_xpm;
   int
@@ -139,31 +151,31 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0, "---"},
 
     { "3-1-1", &(osdp_conformance.cmd_poll.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-1-2", &(osdp_conformance.cmd_poll_raw.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-1-3", &(osdp_conformance.cmd_poll_lstatr.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-1-4", &(osdp_conformance.cmd_poll_response_4.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-2-1", &(osdp_conformance.cmd_id.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-3-1", &(osdp_conformance.cmd_pdcap.test_status),
-      0, 0, 0, 0, 0, "---" }, // optional in all cases
+      1, 0, 0, 0, 0, "---" }, // optional in all cases
     { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
-      0, 0, 0, 0, 0, "---" }, // optional in all cases
+      1, 0, 0, 0, 0, "---" }, // optional in all cases
     { "3-5-1", &(osdp_conformance.cmd_lstat.test_status),
-      0, 0, 0, 0, 0, "---" }, // optional in all cases
+      1, 0, 0, 0, 0, "---" }, // optional in all cases
     { "3-6-1", &(osdp_conformance.cmd_istat.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-7-1", &(osdp_conformance.cmd_ostat.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-7-2", &(osdp_conformance.cmd_ostat_ack.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-8-1", &(osdp_conformance.cmd_rstat.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-9-1", &(osdp_conformance.cmd_out.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "3-10-1", &(osdp_conformance.cmd_led_red.test_status),
       0, 0, 0, 0, 0, "---" },
     { "3-10-2", &(osdp_conformance.cmd_led_green.test_status),
@@ -208,13 +220,13 @@ OSDP_CONFORMANCE_TEST
     { "4-5-3", &(osdp_conformance.resp_lstatr_power.test_status),
       1, 1, 1, 1, 0, "---" },
     { "4-6-1", &(osdp_conformance.resp_input_stat.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "4-6-2", &(osdp_conformance.resp_input_consistent.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "4-7-1", &(osdp_conformance.resp_output_stat.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "4-7-2", &(osdp_conformance.resp_ostatr_poll.test_status),
-      0, 0, 0, 0, 0, "---" },
+      1, 0, 0, 0, 0, "---" },
     { "4-7-3", &(osdp_conformance.resp_ostatr_range.test_status),
       0, 0, 0, 0, 0, "---" },
     { "4-8-1", &(osdp_conformance.resp_rstatr.test_status),
@@ -224,7 +236,7 @@ OSDP_CONFORMANCE_TEST
     { "4-10-1", &(osdp_conformance.rep_formatted.test_status),
       0, 0, 0, 0, 0, "---" },
     { "4-11-1", &(osdp_conformance.resp_keypad.test_status),
-      0, 0, 0, 0, 0, "---" },
+      0, 0, 0, 0, 0, "Keypad" },
     { "4-11-1", &(osdp_conformance.resp_keypad.test_status),
       0, 0, 0, 0, 0, "---" },
     { "4-12-1", &(osdp_conformance.resp_com.test_status),
@@ -408,8 +420,6 @@ void
 
   char
     *profile_tag;
-  char
-    *role_tag;
 
 
   oconf->pass = 0;
@@ -450,12 +460,6 @@ void
       OCONFORM_EXERCISED;
   };
 
-#define LOG_REPORT(lfargs) {\
-  sprintf lfargs; \
-  fprintf (ctx->log, "%s\n", log_string); fflush (ctx->log); \
-  fprintf (ctx->report, "%s\n", log_string); fflush (ctx->report);\
-}; 
-
   ctx->report = fopen ("/opt/osdp-conformance/log/report.log", "w");
 
   LOG_REPORT ((log_string, "Conformance Report:"));
@@ -463,6 +467,8 @@ void
     "Testing %s\n", role_tag));
   LOG_REPORT ((log_string, "Conformance Tester Version: %d.%d Build %d\n",
     ctx->fw_version [0], ctx->fw_version [1], ctx->fw_version [2]));
+
+  osdp_report (ctx);
 
   LOG_REPORT ((log_string,
 "2-1-1  Physical Interface                 %s",
@@ -762,6 +768,129 @@ int
 {
   return (osdp_test_set_status (test, OCONFORM_FAIL));
 }
+
+
+int
+  osdp_report
+    (OSDP_CONTEXT
+      *ctx)
+
+{ /* osdp_report */
+
+  int
+    done;
+  int
+    i;
+  int
+    status;
+typedef struct score_counters
+{
+  int
+    score_periph;
+  int
+    score_basic;
+  int
+    score_bio;
+  int
+    score_xpm;
+  int
+    score_xparnt;
+  int
+    score_optional;
+} OSDP_SCORE_COUNTERS;
+OSDP_SCORE_COUNTERS
+  exercised_score;
+OSDP_SCORE_COUNTERS
+  required_score;
+OSDP_SCORE_COUNTERS
+  failed_score;
+
+  status = ST_OK;
+  memset (&exercised_score, 0, sizeof (exercised_score));
+  memset (&required_score, 0, sizeof (required_score));
+  memset (&failed_score, 0, sizeof (failed_score));
+  done = 0;
+  i = 0;
+  while (!done)
+  {
+    if ((test_control [i].test_for_peripheral) &&
+      (*(test_control [i].conformance) != OCONFORM_SKIP))
+    {
+      required_score.score_periph ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_EXERCISED)
+        exercised_score.score_periph ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_FAIL)
+        failed_score.score_periph ++;
+    };
+    if (test_control [i].test_for_basic)
+    {
+      required_score.score_basic ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_EXERCISED)
+        exercised_score.score_basic ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_FAIL)
+        failed_score.score_basic ++;
+    };
+    if (test_control [i].test_for_bio)
+    {
+      required_score.score_bio ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_EXERCISED)
+        exercised_score.score_bio ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_FAIL)
+        failed_score.score_bio ++;
+    };
+    if (test_control [i].test_for_xpm)
+    {
+      required_score.score_xpm ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_EXERCISED)
+        exercised_score.score_xpm ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_FAIL)
+        failed_score.score_xpm ++;
+    };
+    if (test_control [i].test_for_transparent)
+    {
+      required_score.score_xparnt ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_EXERCISED)
+        exercised_score.score_xparnt ++;
+      if (*(test_control [i].conformance) EQUALS OCONFORM_FAIL)
+        failed_score.score_xparnt ++;
+    };
+    i++;
+    if (test_control [i].name EQUALS NULL)
+      done = 1;
+  };
+  if (strcmp (role_tag, "PD"))  // if I'm the PD I'm testing the CP...
+  {
+   LOG_REPORT ((log_string, 
+"TEST RESULTS for CP Conformance %s\n",
+  asctime (localtime (NULL)) ));
+  }
+  else
+   LOG_REPORT ((log_string, 
+"TEST RESULTS for PD Conformance ...OUI ...version ...date ...time\n"));
+
+
+  LOG_REPORT ((log_string, 
+"           Periph Basic Bio XPM Xprnt Opt"));
+  LOG_REPORT ((log_string, 
+"Exercised:   %2d    %2d   %2d  %2d   %2d   %2d",
+    exercised_score.score_periph, exercised_score.score_basic,
+    exercised_score.score_bio, exercised_score.score_xpm,
+    exercised_score.score_xparnt, exercised_score.score_optional));
+  LOG_REPORT ((log_string, 
+" Required:   %2d    %2d   %2d  %2d   %2d   %2d",
+    required_score.score_periph, required_score.score_basic,
+    required_score.score_bio, required_score.score_xpm,
+    required_score.score_xparnt, required_score.score_optional));
+  LOG_REPORT ((log_string, 
+"   Failed:   %2d    %2d   %2d  %2d   %2d   %2d\n",
+    failed_score.score_periph, failed_score.score_basic,
+    failed_score.score_bio, failed_score.score_xpm,
+    failed_score.score_xparnt, failed_score.score_optional));
+
+  return (status);
+
+} /* osdp_report */
+
 
 int
   osdp_test_set_status
