@@ -19,7 +19,8 @@ sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-CP485
 sudo -n chmod 777 /opt/osdp-conformance/tmp
 sudo -n mkdir -p /opt/osdp-conformance/etc
-sudo -n echo "CP" >/opt/osdp-conformance/etc/current_role
+sudo -n echo "CP" >/opt/osdp-conformance/tmp/current_role
+sudo -n cp /opt/osdp-conformance/tmp/current_role /opt/osdp-conformance/etc
 echo "Content-type: text/html"
 echo ""
 
