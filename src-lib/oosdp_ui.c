@@ -272,16 +272,33 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
 
         status = ST_OK;
         current_length = 0;
-        sec_blk [0] = OSDP_KEY_SCBK_D;
-        strncpy ((char *)(context->random_value), "12345678", 8);
-        if (context->verbosity > 2)
-          fprintf (stderr, "using SCBK-D, hard-coded RND.A to 12345678\n");
-        status = send_secure_message (context,
-          OSDP_CHLNG, p_card.addr, &current_length, 
-          sizeof (context->random_value), context->random_value,
-          OSDP_SEC_SCS_11, sizeof (sec_blk), sec_blk);
-        if (context->verbosity > 2)
-          fprintf (stderr, "Initiating Secure Channel\n");
+        context->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
+
+        // if default enabled use SCBK-D
+        // if not default if key pre-loaded use that else error
+        if (context->enable_secure_channel EQUALS 2)
+        {
+          sec_blk [0] = OSDP_KEY_SCBK_D;
+        }
+        else
+        {
+          sec_blk [0] = OSDP_KEY_SCBK;
+        };
+        if (status EQUALS ST_OK)
+        {
+          // clear and initialize secure channel details
+
+          osdp_reset_secure_channel (context);
+          status = osdp_setup_scbk (context, NULL);
+          if (status EQUALS ST_OK)
+            osdp_create_keys (context);
+
+          if (status EQUALS ST_OK)
+            status = send_secure_message (context,
+              OSDP_CHLNG, p_card.addr, &current_length, 
+              sizeof (context->rnd_a), context->rnd_a,
+              OSDP_SEC_SCS_11, sizeof (sec_blk), sec_blk);
+        };
       };
       break;
 

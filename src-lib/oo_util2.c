@@ -574,6 +574,42 @@ int
       ctx->disable_certificate_checking = i;
   }; 
 
+  // parameter "enable-install"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "enable-install");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    ctx->secure_channel_use [OO_SCU_INST] = OO_SECURE_INSTALL;
+  }; 
+  // parameter "enable-secure-channel"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "enable-secure-channel");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+
+    ctx->enable_secure_channel = 1;
+    ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
+
+    strcpy (vstr, json_string_value (value));
+    if (0 EQUALS strcmp (vstr, "DEFAULT"))
+      ctx->enable_secure_channel = 2;
+  }; 
+
   // parameter "fqdn"
 
   if (status EQUALS ST_OK)
@@ -604,6 +640,38 @@ int
     strcpy (ctx->init_command, json_string_value (value));
   }; 
 
+  // parameter  "key" ("DEFAULT" or a 16-byte hex value)
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "key");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char key_value [1024];
+
+    strcpy (key_value, json_string_value (value));
+    ctx->enable_secure_channel = OSDP_KEY_SCBK;
+    if (0 EQUALS strcmp (key_value, "DEFAULT"))
+      ctx->enable_secure_channel = OSDP_KEY_SCBK_D;
+    if (strlen (key_value) EQUALS 32)
+    {
+      int byte;
+      int i;
+      char octetstring [3];
+      for (i=0; i<16; i++)
+      {
+        memcpy (octetstring, key_value+(2*i), 2);
+        octetstring [2] = 0;
+        sscanf (octetstring, "%x", &byte);
+        ctx->current_scbk [i] = byte;
+      };
+    };
+  };
 
   // parameter "network_address"
   // this is the other end of the TLS connection
@@ -969,6 +1037,8 @@ int
     true_dest;
 
 
+  fprintf (context->log, "Top of send_message cmd=%02x:\n", command);
+    fflush (context->log);
   status = ST_OK;
   true_dest = dest_addr;
   *current_length = 0;
@@ -995,6 +1065,8 @@ int
     {
       OSDP_MSG
         m;
+      int
+        parse_role;
       OSDP_HDR
         returned_hdr;
       int
@@ -1005,7 +1077,11 @@ int
       m.ptr = test_blk; // marshalled outbound message
       m.lth = *current_length;
 
-      status_monitor = parse_message (context, &m, &returned_hdr);
+      // parse the message, mostly for display.  role to parse_... is the OTHER guy
+      parse_role = OSDP_ROLE_CP;
+      if (context->role EQUALS OSDP_ROLE_CP)
+        parse_role = OSDP_ROLE_PD;
+      status_monitor = osdp_parse_message (context, parse_role, &m, &returned_hdr);
       if (context->verbosity > 8)
         if (status_monitor != ST_OK)
         {

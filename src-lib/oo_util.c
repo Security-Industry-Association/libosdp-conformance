@@ -211,16 +211,144 @@ if (secure != 0)
 } /* osdp_build_message */
 
 
+int
+  osdp_check_command_reply
+    (int
+      role,
+    int
+      command,
+    OSDP_MSG
+      *m,
+    char
+      *tlogmsg2)
+
+{ /* osdp_check_command_reply */
+
+  OSDP_CONTEXT
+    *ctx;
+  int
+    status;
+
+
+  ctx = &context;
+  status = ST_OK;
+  if (role EQUALS OSDP_ROLE_PD)
+  {
+    switch (command)
+    {
+    default:
+      if (ctx->verbosity > 8)
+        fprintf (stderr, "hmmm might be unknown command to PD\n");
+
+      // can't really check here because of that switch statement after the call, hasn't all been migrated here.
+      break;
+
+    case OSDP_CHLNG:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_CHLNG");
+
+      osdp_conformance.cmd_chlng.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_POLL:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = NULL;
+      m->data_length = 0;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_POLL");
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_SCRYPT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_SCRYPT");
+
+      osdp_conformance.cmd_scrypt.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+    };
+  };
+  if (role EQUALS OSDP_ROLE_CP)
+  {
+    switch (command)
+    {
+    default:
+      status = ST_OSDP_BAD_COMMAND_REPLY;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "\?\?\?");
+
+      // if we don't recognize the command/reply code it fails 2-15-1
+      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
+      SET_FAIL (ctx, "2-15-1");
+      break;
+
+    case OSDP_ACK:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = NULL;
+      m->data_length = 0;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_ACK");
+      ctx->pd_acks ++;
+
+      osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
+
+      // if we just got an ack for an OSTAT mark that too.
+      if (ctx->last_command_sent EQUALS OSDP_OSTAT)
+        osdp_conformance.cmd_ostat_ack.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_CCRYPT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      strcpy (tlogmsg2, "osdp_CCRYPT");
+      break;
+
+    case OSDP_RMAC_I:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      strcpy (tlogmsg2, "osdp_RMAC_I");
+      break;
+
+    };
+  };
+  if (ctx->verbosity > 8)
+  {
+    if ((status != ST_OSDP_CMDREP_FOUND) && (status != ST_OK))
+      fprintf (stderr,
+        "bottom of osdp_check_command_reply: bad status %d\n", status);
+  };
+  return (status);
+
+} /* osdp_check_command_reply */
+
+
 /*
-  parse_message - parses OSDP message
+  osdp_parse_message - parses OSDP message
 
   Note: if verbosity is set (global m_verbosity) it also prints the PDU
   to stderr.
 */
 int
-  parse_message
+  osdp_parse_message
     (OSDP_CONTEXT
       *context,
+    int
+      role,
     OSDP_MSG
       *m,
     OSDP_HDR
@@ -302,7 +430,7 @@ int
     if (context->verbosity > 3)
       // prints low 7 bits of addr field i.e. not request/reply
       sprintf (tlogmsg,
-"Addr:%02x Lth:%d. CTRL %02x",
+"A:%02x L:%d. C:%02x",
         (0x7f & p->addr), msg_lth, p->ctrl);
    
     // must start with SOM
@@ -338,22 +466,35 @@ int
     }
     else
     {
-fprintf (stderr, "Parsing security block...\n");
-//vegas      m -> cmd_payload = m->ptr + sizeof (OSDP_HDR) + 1; // STUB for sec hdr.
+{
+  int i;
+  fprintf (stderr, "Parsing security block...\n");
+  fprintf (stderr, "Msg (Secure): ");
+  for (i=0; i<16; i++)
+  {
+    fprintf (stderr, "%02x", (m->ptr)[i]);
+    if (3 == (i % 4))
+      if (i != 15)
+        fprintf (stderr, "-");
+  };
+  fprintf (stderr, "\n"); fflush (stderr);
+};
+
+      // packet is SOM, ADDR, LEN_LSB, LEN_MSB, CTRL (5 bytes) and then...
+
+      // sec_blk_length -
+
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       sec_blk_length = (unsigned)*(m->ptr + 5);
+      if (context->verbosity > 8)
+        fprintf (stderr, "SECBLK: LEN=%d.(0x%02x) SEC_BLK_LEN=%d.\n",
+          msg_data_length, msg_data_length, sec_blk_length);
       m -> cmd_payload = m->ptr + 5 + sec_blk_length;
 
       // whole thing less 5 hdr less 1 cmd less sec blk less 2 crc
       msg_data_length = msg_data_length - 6 - sec_blk_length - 2;
 
       fflush (stdout);fflush (stderr);
-      if (context->verbosity > 3)
-      {
-        fprintf (stderr, "sec blk lth %d\n", sec_blk_length);
-      };
-fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
-  msg_data_length, sec_blk_length, *(m->cmd_payload));
     };
 
     // extract the command
@@ -362,7 +503,7 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
 
     if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
     {
-      sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
+      sprintf (tlogmsg2, " Cm%02x", returned_hdr->command);
       strcat (tlogmsg, tlogmsg2);
     };
 ///    msg_data_length = 0; // depends on command
@@ -394,7 +535,7 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
         {
           fprintf (context->log,
             "  SEC_BLK_LEN %02x SEC_BLK_TYPE %02x SEC_BLK_DATA[0] %02x\n",
-            *(p1+5), *(p1+6), *(p1+7));
+            *(p1+5), *(p1+6), *(p1+7)); fflush (context->log);
           // p2 = p1+5+*(p1+5); // before-secblk and secblk
         };
         if (!m_dump)
@@ -421,7 +562,17 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
         };
       };
 
+    m->data_length = msg_data_length;
     // go check the command field
+    status = osdp_check_command_reply (role, returned_hdr->command, m, tlogmsg2);
+    msg_data_length = m->data_length;
+    if (status != ST_OSDP_CMDREP_FOUND)
+    {
+      if (status != ST_OK)
+        fprintf (stderr,
+          "Status %d Unknown command? (%02x), default msg_data_length was %d\n",
+          status, returned_hdr->command, msg_data_length);
+
     switch (returned_hdr->command)
     {
     default:
@@ -436,24 +587,6 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       // if we don't recognize the command/reply code it fails 2-15-1
       osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
       SET_FAIL ((context), "2-15-1");
-      break;
-
-    case OSDP_ACK:
-      m->data_payload = NULL;
-      msg_data_length = 0;
-      if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_ACK");
-      context->pd_acks ++;
-
-      osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
-      osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
-
-      // if we just got an ack for an OSTAT mark that too.
-      if (context->last_command_sent EQUALS OSDP_OSTAT)
-        osdp_conformance.cmd_ostat_ack.test_status = OCONFORM_EXERCISED;
-
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
       break;
 
     case OSDP_BIOREAD:
@@ -472,22 +605,6 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       osdp_conformance.resp_busy.test_status = OCONFORM_EXERCISED;
       break;
 
-    case OSDP_CCRYPT:
-      m->data_payload = m->cmd_payload + 1;
-      if (context->verbosity > 2)
-      {
-        if (context->role EQUALS OSDP_ROLE_PD)
-        {
-          strcpy (tlogmsg2, "osdp_CHLNG");
-        }
-        else
-        {
-          strcpy (tlogmsg2, "osdp_CCRYPT");
-        };
-      };
-      break;
-
-// OSDP_CHLNG
 
     case OSDP_MFG:
       m->data_payload = m->cmd_payload + 1;
@@ -644,15 +761,6 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;
 
-    case OSDP_POLL:
-      m->data_payload = NULL;
-      msg_data_length = 0;
-      if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_POLL");
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
-      break;
-
     case OSDP_RAW:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
@@ -689,10 +797,14 @@ fprintf (stderr, "mlth %d slth %d cmd 0x%x\n",
         strcpy (tlogmsg2, "osdp_TEXT");
       break;
     };
+    }; // bolt-on for PD/CP switch statements.
+    // if it was found it's ok
+    if (status EQUALS ST_OSDP_CMDREP_FOUND)
+      status = ST_OK;
 
     // for convienience save the data payload length
 
-    m->data_length = msg_data_length;
+///    m->data_length = msg_data_length;
 
     if (m->check_size EQUALS 2)
     {
@@ -740,13 +852,16 @@ if (m->lth == 7)
         log_line [1024];
 
       sprintf (log_line, "  Message: %s %s", tlogmsg2, tlogmsg);
-      sprintf (tlogmsg2, " Seq:%02x ChkType %x Sec %x CRC: %04x",
+      sprintf (tlogmsg2, " S:%02x Ck %x Sec %x CRC %04x",
         msg_sqn, msg_check_type, msg_scb, wire_crc);
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
         (returned_hdr->command != OSDP_ACK)) ||
         (context->verbosity > 3))
+      {
         fprintf (context->log, "%s\n", log_line);
+        fflush (context->log);
+      };
       tlogmsg [0] = 0; tlogmsg2 [0] = 0;
     };
   };
@@ -815,6 +930,12 @@ int
   status = ST_OK;
   switch (msg->msg_cmd)
   {
+  case OSDP_CCRYPT:
+    status = oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
   case OSDP_KEYPAD:
     status = oosdp_make_message (OOSDP_MSG_KEYPAD, tlogmsg, msg);
     if (status == ST_OK)
@@ -864,6 +985,8 @@ int
 
   int
     count;
+  OSDP_SC_CCRYPT
+    ccrypt_response;
   int
     current_length;
   int
@@ -1024,6 +1147,9 @@ int
 
         status = ST_OK;
         nak = 0;
+
+        // make sure this PD was enabled for secure channel (see enable-secure-channel command)
+
         if (OO_SCS_USE_ENABLED != context->secure_channel_use[OO_SCU_ENAB])
           nak = 1;
         if (nak)
@@ -1044,44 +1170,44 @@ int
         if (!nak)
         {
           unsigned char
-            ccrypt_response [32];
-          unsigned char
-            cuid [8];
-          unsigned char
             sec_blk [1];
 
-          sec_blk [0] = OSDP_KEY_SCBK_D;
-          current_length = 0;
-          memcpy (context->challenge, msg->data_payload, 8);
+          osdp_reset_secure_channel (context);
+          memcpy (context->rnd_a, msg->data_payload, sizeof (context->rnd_a));
+          status = osdp_setup_scbk (context, msg);
+          if (status EQUALS ST_OK)
           {
-            int
-              idx;
+            osdp_create_keys (context);
 
-            fprintf (context->log, "Challenge:");
-            for (idx=0; idx<8; idx++)
-            {
-              fprintf (context->log, " %02x", context->challenge [idx]);
-            };
-            fprintf (context->log, "\n");
-          };
-printf ("challenged saved \n");
+            // build up an SCS_12 response
 
-          // put together response to challenge.  need random, need cUID
+            if (context->enable_secure_channel EQUALS 2)
+              sec_blk [0] = OSDP_KEY_SCBK_D;
+            else
+              sec_blk [0] = OSDP_KEY_SCBK;
 
-          strncpy ((char *)(context->random_value), "abcdefgh", 8);
+            // client ID
+            memcpy (ccrypt_response.client_id,
+              context->vendor_code, 3);
+            ccrypt_response.client_id [3] = context->model;
+            ccrypt_response.client_id [4] = context->version;
+            memcpy (ccrypt_response.client_id+5,
+              context->serial_number, 3);
+
+            // RND.B
+            memcpy ((char *)(context->rnd_b), "abcdefgh", 8);
+            memcpy ((char *)(ccrypt_response.rnd_b), (char *)(context->rnd_b), sizeof (ccrypt_response.rnd_b));
 printf ("fixme: RND.B\n");
-          memcpy (cuid+0, context->vendor_code, 3);
-          cuid [3] = context->model;
-          cuid [4] = context->version;
-          memcpy (cuid+5, context->serial_number, 3);
-          memcpy (ccrypt_response+0, cuid, 8);
-          memcpy (ccrypt_response+8, context->random_value, 8);
-printf ("fixme: client cryptogram\n");
-          memset (ccrypt_response+16, 17, 16);
-          status = send_secure_message (context,
-            OSDP_CCRYPT, p_card.addr, &current_length, 
-            sizeof (ccrypt_response), ccrypt_response,
-            OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
+
+            osdp_create_client_cryptogram (context, &ccrypt_response);
+
+            current_length = 0;
+ 
+            status = send_secure_message (context,
+              OSDP_CCRYPT, p_card.addr, &current_length, 
+              sizeof (ccrypt_response), (unsigned char *)&ccrypt_response,
+              OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
+          };
         };
       };
       break;
@@ -1242,6 +1368,10 @@ status = -1;
       status = action_osdp_RSTAT (context, msg);
       break;
 
+    case OSDP_SCRYPT:
+      status = action_osdp_SCRYPT (context, msg);
+      break;
+
     case OSDP_TEXT:
       status = action_osdp_TEXT (context, msg);
       break;
@@ -1281,35 +1411,7 @@ status = -1;
       break;
 
     case OSDP_CCRYPT:
-      {
-        unsigned char
-          scrypt_response [OSDP_KEY_SIZE];
-        unsigned char
-          sec_blk [1];
-
-
-        status = ST_OK;
-        sec_blk [0] = 0; // SCBK-D
-        fprintf (context->log, "PD Responded with osdp_CCRYPT\n");
-#if 0
-verify pd cryptogram
-derive scbk (?)
-compute keys
-  s_enc is 0x01 0x82 first 6 of rnd.a padded with 0
-  s_mac1 is 0x01 0x01 first 6 of rnd.a padded with 0
-  s_mac2 is 0x01 0x02 first 6 of rnd.a padded with 0
-create server cryptogram
-  data is rnd.b
-    concat rnd.a
-  key is s_enc
-send OSDP_SCRYPT
-#endif
-        memset (scrypt_response, 17, sizeof (scrypt_response));
-        status = send_secure_message (context,
-          OSDP_SCRYPT, p_card.addr, &current_length, 
-          sizeof (scrypt_response), scrypt_response,
-          OSDP_SEC_SCS_13, sizeof (sec_blk), sec_blk);
-      };
+      status = action_osdp_CCRYPT (context, msg);
       break;
 
     case OSDP_KEYPAD:
@@ -1518,6 +1620,10 @@ printf ("MMSG DONE\n");
       status = action_osdp_RAW (context, msg);
       break;
 
+    case OSDP_RMAC_I:
+      status = action_osdp_RMAC_I (context, msg);
+      break;
+
     case OSDP_RSTATR:
       // received osdp_RSTATR
       status = ST_OK;
@@ -1532,6 +1638,7 @@ printf ("MMSG DONE\n");
   if (status EQUALS ST_MSG_UNKNOWN)
     osdp_conformance.last_unknown_command = msg->msg_cmd;
 
+  fflush (context->log);
   return (status);
 
 } /* process_osdp_message */

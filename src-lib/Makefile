@@ -24,7 +24,7 @@ OUTLIB=libosdp.a
 CC=gcc
 #CC=clang
 
-CFLAGS=-DOSDP_CONFORMANCE -I /tester/current/include
+CFLAGS=-DOSDP_CONFORMANCE -I/opt/osdp-conformance/include -I /tester/current/include
 
 
 all:	${OUTLIB}

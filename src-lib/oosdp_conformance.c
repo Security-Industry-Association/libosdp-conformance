@@ -192,8 +192,6 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0, "---" },
     { "3-18-1", &(osdp_conformance.cmd_biomatch.test_status),
       0, 0, 0, 0, 0, "---" },
-    { "3-19-1", &(osdp_conformance.cmd_cont.test_status),
-      0, 0, 0, 0, 0, "---" },
     { "3-20-1", &(osdp_conformance.cmd_mfg.test_status),
       0, 0, 0, 0, 0, "---" },
     { "3-21-1", &(osdp_conformance.cmd_stop_multi.test_status),
@@ -639,9 +637,6 @@ void
   LOG_REPORT ((log_string,
 "3-18-1 Scan and match bio template        %s",
     conformance_status (oconf->cmd_biomatch.test_status)));
-  LOG_REPORT ((log_string,
-"3-19-1 Multipart message continuation     %s",
-    conformance_status (oconf->cmd_cont.test_status)));
   LOG_REPORT ((log_string,
 "3-20-1 Manufacturer specific command      %s",
     conformance_status (oconf->cmd_mfg.test_status)));

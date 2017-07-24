@@ -14,7 +14,6 @@ void
     OCONFORM_SKIP;
   oconf->cmd_bioread.test_status = OCONFORM_SKIP;
   oconf->cmd_biomatch.test_status = OCONFORM_SKIP;
-  oconf->cmd_cont.test_status = OCONFORM_SKIP;
   oconf->cmd_diag.test_status = OCONFORM_SKIP;
   oconf->cmd_mfg.test_status = OCONFORM_SKIP;
   oconf->cmd_ostat_ack.test_status =

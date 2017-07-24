@@ -106,7 +106,10 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_prompt;              // 3-16-1
   OSDP_CONFORM cmd_bioread;             // 3-17-1
   OSDP_CONFORM cmd_biomatch;            // 3-18-1
-  OSDP_CONFORM cmd_cont;                // 3-19-1
+  OSDP_CONFORM cmd_keyset;              // 3-??-1
+  OSDP_CONFORM cmd_chlng;               // 3-??-1
+  OSDP_CONFORM cmd_scrypt;              // 3-??-1
+  //OSDP_CONFORM cmd_cont;                // 3-19-1
   OSDP_CONFORM cmd_mfg;                 // 3-20-1
   OSDP_CONFORM cmd_stop_multi;          // 3-21-1
   OSDP_CONFORM cmd_max_rec;             // 3-22-1
@@ -134,6 +137,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_com;                // 4-12-1
   OSDP_CONFORM rep_scan_send;           // 4-13
   OSDP_CONFORM rep_scan_match;          // 4-14
+  OSDP_CONFORM rep_ccrypt;              // 4-??
   OSDP_CONFORM resp_mfg;                // 4-15-1
   OSDP_CONFORM resp_busy;               // 4-16-1
 } OSDP_INTEROP_ASSESSMENT;

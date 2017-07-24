@@ -321,7 +321,7 @@ fprintf (stderr, "command path %s status now %d.\n",
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));
-    test_command = "initiate_secure_channel";
+    test_command = "initiate-secure-channel";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_INIT_SECURE;

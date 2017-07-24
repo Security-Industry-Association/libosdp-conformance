@@ -25,7 +25,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 1)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_BUILD ( 4)
 
 // default configuration
 
@@ -59,9 +59,16 @@
 #define OSDP_DEST_CP (0x00)
 
 #define OSDP_KEY_SCBK_D (0)
+#define OSDP_KEY_SCBK   (1)
 #define OSDP_SEC_SCS_11 (0x11)
 #define OSDP_SEC_SCS_12 (0x12)
 #define OSDP_SEC_SCS_13 (0x13)
+#define OSDP_SEC_SCS_14 (0x14)
+
+#define OSDP_KEY_OCTETS (16) // AES-128 CBC
+
+#define OSDP_SCBK_DEFAULT "\x30\x31\x32\x33\x34\x35\x36\x37\x38\x39\x3A\x3B\x3C\x3D\x3E\x3F"
+
 
 // for Secure Channel
 #define OSDP_KEY_SIZE (128)
@@ -106,6 +113,7 @@
 #define OSDP_COM      (0x54)
 #define OSDP_CCRYPT   (0x76)
 #define OSDP_SCRYPT   (0x77)
+#define OSDP_RMAC_I   (0x78)
 #define OSDP_BUSY     (0x79) // yes it's a reply
 #define OSDP_MFGREP   (0x90)
 
@@ -182,6 +190,41 @@
 #define OSDP_OPT_MONITOR  (111)
 #define OSDP_OPT_SPECIAL  (112)
 
+// for secure channel
+typedef struct osdp_secure_message
+{
+  unsigned char
+    som;
+  unsigned char
+    addr;
+  unsigned char
+    len_lsb;
+  unsigned char
+    len_msb;
+  unsigned char
+    ctrl;
+  unsigned char
+    sec_blk_len;
+  unsigned char
+    sec_blk_type;
+  unsigned char
+    sec_blk_data;
+  unsigned char
+    cmd_reply;
+  unsigned char
+    data_start;
+} OSDP_SECURE_MESSAGE;
+
+typedef struct osdp_sc_ccrypt
+{
+  unsigned char
+    client_id [8];
+  unsigned char
+    rnd_b [8];
+  unsigned char
+    cryptogram [16];
+} OSDP_SC_CCRYPT;
+
 #define OSDP_OUT_NOP              (0)
 #define OSDP_OUT_OFF_PERM_ABORT   (1)
 #define OSDP_OUT_ON_PERM_ABORT    (2)
@@ -253,23 +296,47 @@ typedef struct osdp_timer
 
 typedef struct osdp_context
 {
+  // configuration
   int
-    current_menu;
+    disable_certificate_checking;
+  int
+    enable_secure_channel; // 1=yes, 2=yes and use default
+  char
+    fqdn [1024];
   char
     log_path [1024];
   char
-    text [1024];
-
-  OSDP_LED_STATE
-    led [OSDP_MAX_LED];
-
+    serial_speed [1024];
   int
     verbosity;
-//  int mode;
+
+  // IO context
   int
-    next_sequence;
+    current_pid;
+  int
+    fd;
+  FILE
+    *log;
   char
-    next_response;
+    network_address [1024];
+  FILE
+    *report;
+  struct termios
+    tio;
+
+  // UI context
+  int
+    current_menu;
+
+  // CP and PD context
+  OSDP_LED_STATE
+    led [OSDP_MAX_LED];
+  int
+    role;
+  char
+    text [1024];
+
+  // OSDP protocol context
   char
     last_command_sent;
   char
@@ -277,21 +344,34 @@ typedef struct osdp_context
   char
     last_response_received;
   char
+    next_response;
+  int
+    next_sequence;
+
+  // secure channel
+  unsigned char
+    current_received_mac [OSDP_KEY_OCTETS];
+  unsigned char
+    current_scbk [OSDP_KEY_OCTETS];
+  unsigned char
+    rnd_a [8];
+  unsigned char
+    rnd_b [8];
+  unsigned char
+    s_enc [16];
+  unsigned char
+    s_mac1 [16];
+  unsigned char
+    s_mac2 [16];
+  int
+    secure_channel_use [4]; // see OO_SCU_... use
+
+  char
     new_address;
   char
     test_in_progress [32];
   int
-    fd;
-  struct termios
-    tio;
-  int
-    role;
-  int
     profile;
-  FILE
-    *log;
-  FILE
-    *report;
   int
     timer_count;
   OSDP_TIMER
@@ -327,10 +407,6 @@ typedef struct osdp_context
   int
     cparm_v;
   unsigned char
-    random_value [8];
-  unsigned char
-    challenge [8];
-  unsigned char
     vendor_code [3];
   unsigned char
     model;
@@ -340,12 +416,6 @@ typedef struct osdp_context
     serial_number [4];
   unsigned char
     fw_version [3]; //major minor build
-  unsigned char
-    s_enc [8];
-  unsigned char
-    s_mac1 [8];
-  unsigned char
-    s_mac2 [8];
 
   int
     max_message; // max message from PD, if set
@@ -373,16 +443,10 @@ typedef struct osdp_context
   char
     init_parameters_path [1024];
 
-  int
-    current_pid;
 
   OSDP_OUT_STATE
     out [16];
 
-  char
-    network_address [1024];
-  char
-    fqdn [1024];
   int
     last_raw_read_bits;
   int
@@ -391,24 +455,26 @@ typedef struct osdp_context
     last_raw_read_data [1024];
   char
     last_keyboard_data [8];
-  int
-    disable_certificate_checking;
-  char
-    serial_speed [1024];
-  int
-    secure_channel_use [3]; // disabled=0/enabled=1, install=0/normal=1, strict=0/relaxed=1
 } OSDP_CONTEXT;
 
-#define OO_SCU_ENAB (0)
-#define OO_SCU_INST (1)
-#define OO_SCU_POL  (2)
+#define OO_SCU_ENAB  (0)
+#define OO_SCU_INST  (1)
+#define OO_SCU_POL   (2)
+#define OO_SCU_KEYED (3)
 
 #define OO_SCS_USE_DISABLED (0)
-#define OO_SCS_USE_ENABLED (1)
-#define OO_SECURE_INSTALL (0)
-#define OO_SECURE_NORMAL (1)
-#define OO_SECPOL_STRICT (0)
-#define OO_SECPOL_RELAXED (1)
+#define OO_SCS_USE_ENABLED  (1)
+#define OO_SCS_OPERATIONAL  (2)
+// remember 128+SCSstate also goes here
+
+#define OO_SECURE_NORMAL    (0)
+#define OO_SECURE_INSTALL   (1)
+
+#define OO_SECPOL_STRICT    (0)
+#define OO_SECPOL_RELAXED   (1)
+
+#define OO_SECPOL_ZEROIZED  (0)
+#define OO_SECPOL_KEYLOADED (1)
 
 #define OSDP_ROLE_CP      (0)
 #define OSDP_ROLE_PD      (1)
@@ -462,6 +528,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_PKT_STATS (3)
 #define OOSDP_MSG_PD_CAPAS  (4)
 #define OOSDP_MSG_OUT_STATUS (5)
+#define OOSDP_MSG_CCRYPT     (6)
 
 
 #define OSDP_BUF_MAX (8192)
@@ -679,6 +746,15 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_NET_CLOSED           (47)
 #define ST_OSDP_BAD_SEQUENCE         (48)
 #define ST_OSDP_BAD_SEQUENCE_BUSY    (49)
+#define ST_OSDP_BAD_COMMAND_REPLY    (50)
+#define ST_OSDP_CMDREP_FOUND         (51)
+#define ST_OSDP_CHLNG_DECRYPT        (52)
+#define ST_OSDP_SC_WRONG_STATE       (53)
+#define ST_OSDP_SCRYPT_DECRYPT       (54)
+#define ST_OSDP_NO_KEY_LOADED        (55)
+#define ST_OSDP_BAD_KEY_SELECT       (56)
+#define ST_OSDP_NO_SCBK              (57)
+#define ST_OSDP_UNKNOWN_KEY          (58)
 
 int
   m_version_minor;
@@ -690,11 +766,14 @@ int
   m_dump;
 
 
+int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_POLL (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_RAW (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_RMAC_I (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_RSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_SCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_TEXT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int background (OSDP_CONTEXT *context);
 unsigned char checksum (unsigned char *msg, int length);
@@ -714,9 +793,14 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
+void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
+void osdp_create_keys (OSDP_CONTEXT *ctx);
+int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
+int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
+void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
+int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
-int parse_message (OSDP_CONTEXT *context, OSDP_MSG *m, OSDP_HDR *h);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context, char *details);
 int process_current_command (void);

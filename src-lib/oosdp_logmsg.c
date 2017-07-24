@@ -112,6 +112,11 @@ int
   status = ST_OK;
   switch (msgtype)
   {
+  case OOSDP_MSG_CCRYPT:
+    msg = (OSDP_MSG *) aux;
+    sprintf (tlogmsg, "CCRYPT stuff...");
+    break;
+
   case OOSDP_MSG_KEYPAD:
     {
       int

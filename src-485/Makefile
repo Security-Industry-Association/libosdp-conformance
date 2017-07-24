@@ -21,7 +21,7 @@
 CC=gcc
 #CC=clang
 CFLAGS=-DOSDP_CONFORMANCE -I /tester/current/include
-LDFLAGS=-L /tester/current/lib
+LDFLAGS=/opt/osdp-conformance/lib/aes.o -L /tester/current/lib
 
 PROGS = open-osdp
 
