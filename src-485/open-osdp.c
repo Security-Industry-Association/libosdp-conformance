@@ -190,9 +190,12 @@ int
     ufd;
   fd_set
     writefds;
+  int
+    discard_buffer;
 
 
   status = ST_OK;
+  discard_buffer = 1;
   status = initialize (argc, argv);
   memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
   done = 0;
@@ -235,6 +238,11 @@ int
       };
     };
   };
+
+  // Set timeout to 30ms
+  // Data will be dropped as serial
+  int timeout_nsec = 30000;
+
 check_serial (&context);
   while (!done)
   {
@@ -252,7 +260,7 @@ check_serial (&context);
     FD_ZERO (&writefds);
     FD_ZERO (&exceptfds);
     timeout.tv_sec = 0;
-    timeout.tv_nsec = 100000000;
+    timeout.tv_nsec = timeout_nsec;
     status_select = pselect (scount, &readfds, &writefds, &exceptfds,
       &timeout, &sigmask);
 
@@ -275,6 +283,14 @@ check_serial (&context);
     };
     if (status_select EQUALS 0)
     {
+      if (discard_buffer EQUALS 1)
+      {
+        fprintf (stderr, "stop discarding buffer, ready.\n");
+
+        discard_buffer = 0;
+        tv_nsec = 100000000;
+      };
+
       status = ST_OK;
       if (osdp_timeout (&context, &last_time_check_ex))
       {
@@ -327,6 +343,12 @@ check_serial (&context);
       {
         unsigned char buffer [2];
         status_io = read (context.fd, buffer, 1);
+        if (discard_buffer EQUALS 1)
+        {
+          // Discard this read, move on.
+          continue;
+        };
+
       if (status_io < 1)
       {
         //status = ST_SERIAL_READ_ERR;
