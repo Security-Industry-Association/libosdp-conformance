@@ -288,7 +288,7 @@ check_serial (&context);
         fprintf (stderr, "stop discarding buffer, ready.\n");
 
         discard_buffer = 0;
-        tv_nsec = 100000000;
+        timeout_nsec = 100000000;
       };
 
       status = ST_OK;
