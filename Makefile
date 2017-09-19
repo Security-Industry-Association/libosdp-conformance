@@ -55,6 +55,8 @@ build:	all
 	  opt/osdp-conformance/run/MON/
 	cp doc/config-samples/open-osdp-params-PD.json \
 	  opt/osdp-conformance/run/PD/
+	mkdir -p opt/open-osdp/run/CP
+	mkdir -p opt/open-osdp/run/PD
 	(cd test; make build-test; cd ..)
 
 release:	build

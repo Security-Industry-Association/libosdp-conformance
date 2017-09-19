@@ -44,14 +44,8 @@ void
 
   unsigned char
     cleartext [OSDP_KEY_OCTETS];
-  int
-    i;
   unsigned char
     iv [OSDP_KEY_OCTETS];
-  char
-    tlogmsg [1024];
-  char
-    tlogmsg2 [1024];
 
 
   fflush (ctx->log);
@@ -63,53 +57,37 @@ void
   cleartext [0] = 1;
   cleartext [1] = 0x82;
   memcpy (cleartext+2, ctx->rnd_a, 6);
-  if (ctx->verbosity > 8)
-  {
-    tlogmsg [0] = 0;
-    strcat (tlogmsg, "current_scbk calculating s_enc: ");
-    for (i=0; i<OSDP_KEY_OCTETS; i++)
-    {
-      sprintf (tlogmsg2, "%02x", ctx->current_scbk[i]);
-      strcat (tlogmsg, tlogmsg2);
-    };
-    fprintf (stderr, "%s\n", tlogmsg);
-    fprintf (ctx->log, "%s\n", tlogmsg);
-  fflush (ctx->log);
-    tlogmsg [0] = 0;
-    strcat (tlogmsg, "cleartext calculating s_enc: ");
-    for (i=0; i<OSDP_KEY_OCTETS; i++)
-    {
-      sprintf (tlogmsg2, "%02x", cleartext[i]);
-      strcat (tlogmsg, tlogmsg2);
-    };
-    fprintf (stderr, "%s\n", tlogmsg);
-    fprintf (ctx->log, "%s\n", tlogmsg);
-  fflush (ctx->log);
-  };
-  AES128_CBC_encrypt_buffer
+
+  (void) oosdp_log_key (ctx,
+"current_scbk calculating s_enc: ", ctx->current_scbk);
+  (void) oosdp_log_key (ctx,
+"   cleartext calculating s_enc: ", cleartext);
+  AES_CBC_encrypt_buffer
     (ctx->s_enc, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
-if (ctx->verbosity > 8)
-{
-  int i;
-  fprintf (stderr, "s_enc in osdp_create_keys: ");
-  for (i=0; i<OSDP_KEY_OCTETS; i++)
-    fprintf (stderr, "%02x", ctx->s_enc [i]);
-  fprintf (stderr, "\n");
-};
+  (void) oosdp_log_key (ctx,
+"     s_enc in osdp_create_keys: ", ctx->s_enc);
 
   // S-MAC-1
   memset (ctx->s_mac1, 0, sizeof (ctx->s_mac1));
   cleartext [0] = 1;
   cleartext [1] = 1;
   memcpy (cleartext+2, ctx->rnd_a, 6);
-  AES128_CBC_encrypt_buffer (ctx->s_mac1, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+  (void) oosdp_log_key (ctx,
+"   cleartext calculating s_mac1: ", cleartext);
+  AES_CBC_encrypt_buffer (ctx->s_mac1, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+  (void) oosdp_log_key (ctx,
+"     s_mac1 in osdp_create_keys: ", ctx->s_mac1);
 
   // S-MAC-2
   memset (ctx->s_mac1, 0, sizeof (ctx->s_mac1));
   cleartext [0] = 1;
   cleartext [1] = 2;
   memcpy (cleartext+2, ctx->rnd_a, 6);
-  AES128_CBC_encrypt_buffer (ctx->s_mac2, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+  (void) oosdp_log_key (ctx,
+"   cleartext calculating s_mac2: ", cleartext);
+  AES_CBC_encrypt_buffer (ctx->s_mac2, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+  (void) oosdp_log_key (ctx,
+"     s_mac2 in osdp_create_keys: ", ctx->s_mac2);
 
   return;
 
@@ -301,7 +279,7 @@ if (ctx->verbosity > 8)
     fprintf (stderr, "%02x", ctx->s_enc [i]);
   fprintf (stderr, "\n");
 };
-  AES128_CBC_encrypt_buffer (ccrypt_response->cryptogram, message,
+  AES_CBC_encrypt_buffer (ccrypt_response->cryptogram, message,
     sizeof (message), ctx->s_enc, iv);
   
   return;

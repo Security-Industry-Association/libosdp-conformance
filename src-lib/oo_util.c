@@ -1,3 +1,4 @@
+#define SAMPLE 1
 /*
   oo_util - open osdp utility routines
 
@@ -1187,12 +1188,18 @@ int
               sec_blk [0] = OSDP_KEY_SCBK;
 
             // client ID
+#if SAMPLE
+            memset (ccrypt_response.client_id, 0,
+              sizeof (ccrypt_response.client_id));
+            ccrypt_response.client_id [0] = 1;
+#else
             memcpy (ccrypt_response.client_id,
               context->vendor_code, 3);
             ccrypt_response.client_id [3] = context->model;
             ccrypt_response.client_id [4] = context->version;
             memcpy (ccrypt_response.client_id+5,
               context->serial_number, 3);
+#endif
 
             // RND.B
             memcpy ((char *)(context->rnd_b), "abcdefgh", 8);

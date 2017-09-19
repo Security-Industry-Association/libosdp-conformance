@@ -253,9 +253,10 @@ int
   {
     generate_dh_params ();
     gnutls_priority_init (&priority_cache,
+      "SECURE128",
 //      "PERFORMANCE:%SERVER_PRECEDENCE", NULL);
-//"SERVER128:+PSK:+DHE_PSK:+SHA:+AES128_CBC",
-"PERFORMANCE:%SERVER_PRECEDENCE:+PSK",
+//"SERVER128:+AES128_GCM",
+//"%SERVER_PRECEDENCE",
       NULL);
 
     gnutls_certificate_set_dh_params(x509_cred, dh_params);

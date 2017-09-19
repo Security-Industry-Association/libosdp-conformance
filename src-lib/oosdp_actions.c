@@ -97,7 +97,7 @@ if (ctx->verbosity > 8)
     fprintf (stderr, "%02x", ctx->s_enc [i]);
   fprintf (stderr, "\n");
 };
-      AES128_CBC_decrypt_buffer (message, client_cryptogram, sizeof (message), ctx->s_enc, iv);
+      AES_CBC_decrypt_buffer (message, client_cryptogram, sizeof (message), ctx->s_enc, iv);
 
       if (0 != memcmp (message, ctx->rnd_a, sizeof (ctx->rnd_a)))
         status = ST_OSDP_CHLNG_DECRYPT;
@@ -110,7 +110,7 @@ if (ctx->verbosity > 8)
 
       memcpy (message, ctx->rnd_b, sizeof (ctx->rnd_b));
       memcpy (message+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a));
-      AES128_CBC_encrypt_buffer (server_cryptogram, message, sizeof (server_cryptogram), ctx->s_enc, iv);
+      AES_CBC_encrypt_buffer (server_cryptogram, message, sizeof (server_cryptogram), ctx->s_enc, iv);
 
       if (ctx->enable_secure_channel EQUALS 1)
         sec_blk [0] = OSDP_KEY_SCBK;
@@ -728,7 +728,7 @@ fprintf (stderr,"TODO: osdp_SCRYPT\n");
     status = osdp_get_key_slot (ctx, msg, &current_key_slot);
     if (status EQUALS ST_OK)
     {
-      AES128_CBC_decrypt_buffer (server_cryptogram, msg->data_payload, msg->data_length, ctx->s_enc, iv);
+      AES_CBC_decrypt_buffer (server_cryptogram, msg->data_payload, msg->data_length, ctx->s_enc, iv);
       if ((0 != memcmp (server_cryptogram, ctx->rnd_b, sizeof (ctx->rnd_b))) ||
         (0 != memcmp (server_cryptogram+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a))))
         status = ST_OSDP_SCRYPT_DECRYPT;
@@ -738,8 +738,8 @@ fprintf (stderr,"TODO: osdp_SCRYPT\n");
       sec_blk [0] = 1; // means server cryptogram was good
 
       memcpy (message1, msg->data_payload, sizeof (server_cryptogram));
-      AES128_CBC_encrypt_buffer (message2, message1, sizeof (message1), ctx->s_mac1, iv);
-      AES128_CBC_encrypt_buffer (message3, message2, sizeof (message2), ctx->s_mac2, iv);
+      AES_CBC_encrypt_buffer (message2, message1, sizeof (message1), ctx->s_mac1, iv);
+      AES_CBC_encrypt_buffer (message3, message2, sizeof (message2), ctx->s_mac2, iv);
       ctx->secure_channel_use [OO_SCU_ENAB] = 128+OSDP_SEC_SCS_14;
       current_length = 0;
       status = send_secure_message (ctx,

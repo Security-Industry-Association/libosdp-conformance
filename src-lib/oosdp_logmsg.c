@@ -352,3 +352,40 @@ else
 
 } /* oosdp_log */
 
+
+int
+  oosdp_log_key
+    (OSDP_CONTEXT
+      *ctx,
+    char
+      *prefix_message,
+    unsigned char
+      *key)
+
+{ /* oosdp_log_key */
+
+  int
+    i;
+  int
+    status;
+  char
+    tlogmsg [1024];
+  char
+    tlogmsg2 [1024];
+
+
+  status = ST_OK;
+  if (ctx->verbosity > 8)
+  {
+    strcpy (tlogmsg, prefix_message);
+    for (i=0; i<OSDP_KEY_OCTETS; i++)
+    {
+      sprintf (tlogmsg2, "%02x", key [i]);
+      strcat (tlogmsg, tlogmsg2);
+    };
+    fprintf (ctx->log, "%s\n", tlogmsg);
+  };
+  return (status);
+
+} /* oosdp_log_key */
+

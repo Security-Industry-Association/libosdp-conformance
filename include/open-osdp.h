@@ -785,6 +785,7 @@ int next_sequence (OSDP_CONTEXT *ctx);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
+int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);
 int osdp_build_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,

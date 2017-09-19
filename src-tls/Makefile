@@ -1,6 +1,6 @@
 # Make file for osdp-tls
 
-#  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+#  (C)Copyright 2017 Smithee Solutions LLC
 
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 
 CC=gcc
 #CC=clang
-CFLAGS=-I /tester/current/include
-LDFLAGS=-L /tester/current/lib
+CFLAGS=-I /opt/tester/include
+LDFLAGS=/opt/osdp-conformance/lib/aes.o -L /opt/tester/lib
 
 
 PROGS = osdp-net-client osdp-net-server initiator \
