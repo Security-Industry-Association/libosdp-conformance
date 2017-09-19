@@ -239,7 +239,7 @@ int
     // set trusted CA's, set up verify callback
 
     gnutls_certificate_set_x509_trust_file (x509_cred,
-      "/opt/open-osdp/etc/ca_keys.pem", GNUTLS_X509_FMT_PEM);
+      OSDP_LCL_CA_KEYS, GNUTLS_X509_FMT_PEM);
     gnutls_certificate_set_verify_function (x509_cred,
       _verify_certificate_callback);
 
@@ -252,12 +252,7 @@ int
   if (status EQUALS ST_OK)
   {
     generate_dh_params ();
-    gnutls_priority_init (&priority_cache,
-      "SECURE128",
-//      "PERFORMANCE:%SERVER_PRECEDENCE", NULL);
-//"SERVER128:+AES128_GCM",
-//"%SERVER_PRECEDENCE",
-      NULL);
+    gnutls_priority_init (&priority_cache, "SECURE128", NULL);
 
     gnutls_certificate_set_dh_params(x509_cred, dh_params);
 
@@ -369,7 +364,7 @@ int
 
   status = ST_OK;
   memset (sn, 0, sizeof (1024));
-  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
+  sprintf (sn, OSDP_LCL_CONTROL, tag);
 
   ufd = socket (AF_UNIX, SOCK_STREAM, 0);
   if (ufd != -1)
@@ -660,8 +655,15 @@ int
     };
   };
   if (status != ST_OK)
+  {
+    char *msg;
+
     fprintf (stderr, "osdp-tls return status %d\n",
       status);
+    msg = osdp_message (status, 0, 0, 0);
+    if (msg)
+    fprintf (stderr, "osdp-net-server: %s\n", msg);
+  };
 
   return (status);
 

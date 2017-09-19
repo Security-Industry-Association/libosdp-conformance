@@ -784,9 +784,6 @@ int fasc_n_75_to_string (char * s, long int *sample_1);
 int next_sequence (OSDP_CONTEXT *ctx);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
-int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
-int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
-int oosdp_make_message (int msgtype, char *logmsg, void *aux);
 int osdp_build_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int security);
@@ -802,11 +799,15 @@ void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
+int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
+int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
+int oosdp_make_message (int msgtype, char *logmsg, void *aux);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context, char *details);
 int process_current_command (void);
 int process_osdp_input (OSDP_BUFFER *osdpbuf);
 int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
+char *osdp_message (int status, int detail_1, int detail_2, int detail_3);
 int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);

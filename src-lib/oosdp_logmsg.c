@@ -30,6 +30,37 @@ extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS
   p_card;
 
+
+char
+  *osdp_message
+    (int
+      status,
+    int
+      detail_1,
+    int
+      detail_2,
+    int
+      detail_3)
+
+{ /* osdp_message */
+
+  char
+    *retmsg;
+
+
+  retmsg = 0;
+  switch (status)
+  {
+  case ST_OSDP_TLS_NOCERT:
+    retmsg = "Certificate files unavailable";
+    break;
+  };
+
+  return (retmsg);
+
+} /* osdp_message */
+
+
 char
   *osdp_pdcap_function
     (int func)

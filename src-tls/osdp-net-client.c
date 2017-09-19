@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include <sys/un.h>
 #include <netdb.h>
+#include <errno.h>
 
 
 #include <gnutls/gnutls.h>
@@ -259,8 +260,8 @@ int
 
     if (!context.disable_certificate_checking)
       gnutls_certificate_set_x509_key_file (xcred, 
-        "/opt/open-osdp/etc/client_cert.pem",
-        "/opt/open-osdp/etc/client_key.pem",
+        OSDP_LCL_CLIENT_CERT,
+        OSDP_LCL_CLIENT_KEY,
         GNUTLS_X509_FMT_PEM); 
 
     /* Initialize TLS session 
@@ -274,8 +275,18 @@ int
     gnutls_server_name_set(tls_session, GNUTLS_NAME_DNS, "my_host_name",
       strlen("my_host_name"));
 
-    /* use default priorities */
+    /* use our TLS priorities */
     gnutls_set_default_priority (tls_session);
+if (0)
+{
+  char *priorities = "SECURE128:+SECURE192:-VERS-ALL:+VERS-TLS1.2";
+  const char *err_pos;
+    err_pos = NULL;
+    gnutls_priority_set_direct (tls_session, priorities, &err_pos);
+    if (err_pos != NULL)
+      fprintf (stderr, "GnuTLS set priorities: error in %s at %s\n",
+        priorities, err_pos);
+};
 
     /* put the x509 credentials to the current session
      */
@@ -350,7 +361,7 @@ int
     tag = "CP";
   else
     tag = "PD";
-  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
+  sprintf (sn, OSDP_LCL_CONTROL, tag);
 
   ufd = socket (AF_UNIX, SOCK_STREAM, 0);
   if (ufd != -1)
@@ -377,6 +388,7 @@ int
     }
     else
     {
+      fprintf (stderr, "Unix socket set-up error %d\n", errno);
       status = -4;
     };
   }
