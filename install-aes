@@ -1,0 +1,7 @@
+#!/bin/bash
+set -x
+mkdir -p /opt/osdp-conformance/include
+mkdir -p /opt/osdp-conformance/lib
+cp ../tiny-AES-c/aes.h /opt/osdp-conformance/include
+cp ../tiny-AES-c/aes.o /opt/osdp-conformance/lib
+

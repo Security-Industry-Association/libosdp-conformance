@@ -42,6 +42,8 @@ void
 
 { /* osdp_create_keys */
 
+  struct AES_ctx
+    aes_context_scbk;
   unsigned char
     cleartext [OSDP_KEY_OCTETS];
   unsigned char
@@ -62,8 +64,13 @@ void
 "current_scbk calculating s_enc: ", ctx->current_scbk);
   (void) oosdp_log_key (ctx,
 "   cleartext calculating s_enc: ", cleartext);
-  AES_CBC_encrypt_buffer
-    (ctx->s_enc, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+
+  AES_init_ctx (&aes_context_scbk, ctx->current_scbk);
+  AES_ctx_set_iv (&aes_context_scbk, iv);
+  memcpy (ctx->s_enc, cleartext, sizeof (ctx->s_enc));
+  AES_CBC_encrypt_buffer (&aes_context_scbk, ctx->s_enc, sizeof (ctx->s_enc));
+  //AES_CBC_encrypt_buffer (ctx->s_enc, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+
   (void) oosdp_log_key (ctx,
 "     s_enc in osdp_create_keys: ", ctx->s_enc);
 
@@ -74,7 +81,10 @@ void
   memcpy (cleartext+2, ctx->rnd_a, 6);
   (void) oosdp_log_key (ctx,
 "   cleartext calculating s_mac1: ", cleartext);
-  AES_CBC_encrypt_buffer (ctx->s_mac1, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+  memcpy (ctx->s_mac1, cleartext, sizeof (ctx->s_mac1));
+  AES_ctx_set_iv (&aes_context_scbk, iv);
+  AES_CBC_encrypt_buffer (&aes_context_scbk, ctx->s_mac1, sizeof (ctx->s_mac1));
+  //AES_CBC_encrypt_buffer (ctx->s_mac1, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
   (void) oosdp_log_key (ctx,
 "     s_mac1 in osdp_create_keys: ", ctx->s_mac1);
 
@@ -85,7 +95,10 @@ void
   memcpy (cleartext+2, ctx->rnd_a, 6);
   (void) oosdp_log_key (ctx,
 "   cleartext calculating s_mac2: ", cleartext);
-  AES_CBC_encrypt_buffer (ctx->s_mac2, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+  memcpy (ctx->s_mac2, cleartext, sizeof (ctx->s_mac2));
+  AES_ctx_set_iv (&aes_context_scbk, iv);
+  AES_CBC_encrypt_buffer (&aes_context_scbk, ctx->s_mac1, sizeof (ctx->s_mac1));
+  //AES_CBC_encrypt_buffer (ctx->s_mac2, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
   (void) oosdp_log_key (ctx,
 "     s_mac2 in osdp_create_keys: ", ctx->s_mac2);
 
@@ -262,6 +275,8 @@ void
 
 { /* osdp_create_client_cryptogram */
 
+  struct AES_ctx
+    aes_context_s_enc;
   unsigned char
     iv [16];
   unsigned char
@@ -279,8 +294,10 @@ if (ctx->verbosity > 8)
     fprintf (stderr, "%02x", ctx->s_enc [i]);
   fprintf (stderr, "\n");
 };
-  AES_CBC_encrypt_buffer (ccrypt_response->cryptogram, message,
-    sizeof (message), ctx->s_enc, iv);
+  AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
+  AES_ctx_set_iv (&aes_context_s_enc, iv);
+  memcpy (ccrypt_response->cryptogram, message, sizeof (ccrypt_response->cryptogram));
+  //AES_CBC_encrypt_buffer (ccrypt_response->cryptogram, message, sizeof (message), ctx->s_enc, iv);
   
   return;
 

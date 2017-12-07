@@ -49,6 +49,8 @@ int
 
 { /* action_osdp_CCRYPT */
 
+  struct AES_ctx
+    aes_context_s_enc;
   OSDP_SC_CCRYPT
     *ccrypt_payload;
   unsigned char
@@ -97,7 +99,11 @@ if (ctx->verbosity > 8)
     fprintf (stderr, "%02x", ctx->s_enc [i]);
   fprintf (stderr, "\n");
 };
-      AES_CBC_decrypt_buffer (message, client_cryptogram, sizeof (message), ctx->s_enc, iv);
+      AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
+      AES_ctx_set_iv (&aes_context_s_enc, iv);
+      memcpy (message, client_cryptogram, sizeof (message));
+      AES_CBC_decrypt_buffer (&aes_context_s_enc, message, sizeof (message));
+//      AES_CBC_decrypt_buffer (message, client_cryptogram, sizeof (message), ctx->s_enc, iv);
 
       if (0 != memcmp (message, ctx->rnd_a, sizeof (ctx->rnd_a)))
         status = ST_OSDP_CHLNG_DECRYPT;
@@ -110,7 +116,10 @@ if (ctx->verbosity > 8)
 
       memcpy (message, ctx->rnd_b, sizeof (ctx->rnd_b));
       memcpy (message+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a));
-      AES_CBC_encrypt_buffer (server_cryptogram, message, sizeof (server_cryptogram), ctx->s_enc, iv);
+      AES_ctx_set_iv (&aes_context_s_enc, iv);
+      memcpy (server_cryptogram, message, sizeof (server_cryptogram));
+      AES_CBC_encrypt_buffer (&aes_context_s_enc, server_cryptogram, sizeof (server_cryptogram));
+//      AES_CBC_encrypt_buffer (server_cryptogram, message, sizeof (server_cryptogram), ctx->s_enc, iv);
 
       if (ctx->enable_secure_channel EQUALS 1)
         sec_blk [0] = OSDP_KEY_SCBK;
@@ -697,6 +706,12 @@ int
 
 { /* action_osdp_SCRYPT */
 
+  struct AES_ctx
+    aes_context_s_enc;
+  struct AES_ctx
+    aes_context_mac1;
+  struct AES_ctx
+    aes_context_mac2;
   int
     current_key_slot;
   int
@@ -728,7 +743,10 @@ fprintf (stderr,"TODO: osdp_SCRYPT\n");
     status = osdp_get_key_slot (ctx, msg, &current_key_slot);
     if (status EQUALS ST_OK)
     {
-      AES_CBC_decrypt_buffer (server_cryptogram, msg->data_payload, msg->data_length, ctx->s_enc, iv);
+      AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
+      AES_ctx_set_iv (&aes_context_s_enc, iv);
+      AES_CBC_decrypt_buffer (&aes_context_s_enc, server_cryptogram, sizeof (server_cryptogram));
+      //AES_CBC_decrypt_buffer (server_cryptogram, msg->data_payload, msg->data_length, ctx->s_enc, iv);
       if ((0 != memcmp (server_cryptogram, ctx->rnd_b, sizeof (ctx->rnd_b))) ||
         (0 != memcmp (server_cryptogram+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a))))
         status = ST_OSDP_SCRYPT_DECRYPT;
@@ -738,8 +756,17 @@ fprintf (stderr,"TODO: osdp_SCRYPT\n");
       sec_blk [0] = 1; // means server cryptogram was good
 
       memcpy (message1, msg->data_payload, sizeof (server_cryptogram));
-      AES_CBC_encrypt_buffer (message2, message1, sizeof (message1), ctx->s_mac1, iv);
-      AES_CBC_encrypt_buffer (message3, message2, sizeof (message2), ctx->s_mac2, iv);
+      AES_init_ctx (&aes_context_mac1, ctx->s_mac1);
+      AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
+
+      memcpy (message2, message1, sizeof (message2));
+      AES_ctx_set_iv (&aes_context_mac1, iv);
+      AES_CBC_encrypt_buffer (&aes_context_mac1, message2, sizeof (message2));
+
+      memcpy (message3, message2, sizeof (message3));
+      AES_ctx_set_iv (&aes_context_mac2, iv);
+      AES_CBC_encrypt_buffer (&aes_context_mac2, message3, sizeof (message3));
+
       ctx->secure_channel_use [OO_SCU_ENAB] = 128+OSDP_SEC_SCS_14;
       current_length = 0;
       status = send_secure_message (ctx,
