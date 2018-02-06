@@ -1,5 +1,6 @@
 # Make file for libosdp
 
+#  (C)Copyright 2017 Smithee Solutions LLC
 #  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
@@ -24,7 +25,7 @@ OUTLIB=libosdp.a
 CC=gcc
 #CC=clang
 
-CFLAGS=-DOSDP_CONFORMANCE -I/opt/osdp-conformance/include -I /tester/current/include
+CFLAGS=-DOSDP_CONFORMANCE -I/opt/osdp-conformance/include
 
 
 all:	${OUTLIB}

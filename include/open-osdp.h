@@ -1,6 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_BUILD ( 3)
 
 // default configuration
 

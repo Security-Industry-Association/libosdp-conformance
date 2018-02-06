@@ -2,7 +2,8 @@
 /*
   oo_util - open osdp utility routines
 
-  (C)2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -239,7 +240,7 @@ int
     {
     default:
       if (ctx->verbosity > 8)
-        fprintf (stderr, "hmmm might be unknown command to PD\n");
+        fprintf (stderr, "hmmm might be unknown command to PD (0x%x)\n", command);
 
       // can't really check here because of that switch statement after the call, hasn't all been migrated here.
       break;
@@ -251,6 +252,30 @@ int
         strcpy (tlogmsg2, "osdp_CHLNG");
 
       osdp_conformance.cmd_chlng.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_COMSET:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_COMSET");
+
+      osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_LSTAT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_LSTAT");
+
+      osdp_conformance.cmd_lstat.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -281,6 +306,10 @@ int
   };
   if (role EQUALS OSDP_ROLE_CP)
   {
+    if (ctx->verbosity > 8)
+    {
+      fprintf(stderr, "check command reply CP cmd is 0x%0x\n", command);
+    };
     switch (command)
     {
     default:
@@ -319,6 +348,67 @@ int
       strcpy (tlogmsg2, "osdp_CCRYPT");
       break;
 
+    case OSDP_COM:
+printf("OSDP_COM ok???\n");
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_COM");
+
+      osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_LSTATR:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_LSTATR");
+
+      osdp_conformance.cmd_lstat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_PDCAP:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_PDCAP");
+
+      osdp_conformance.rep_device_capas.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_PDID:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_COMSET");
+
+      osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_RAW:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_RAW");
+
+      osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_RMAC_I:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -355,7 +445,7 @@ int
     OSDP_HDR
       *returned_hdr)
 
-{ /* parse_message */
+{ /* osdp_parse_message */
 
   char
     logmsg [1024];
@@ -504,7 +594,7 @@ int
 
     if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
     {
-      sprintf (tlogmsg2, " Cm%02x", returned_hdr->command);
+      sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
       strcat (tlogmsg, tlogmsg2);
     };
 ///    msg_data_length = 0; // depends on command
@@ -574,6 +664,10 @@ int
           "Status %d Unknown command? (%02x), default msg_data_length was %d\n",
           status, returned_hdr->command, msg_data_length);
 
+    if (context->verbosity > 8)
+    {
+      fprintf(stderr, "osdp_parse_message: command %02x\n", returned_hdr->command);
+    };
     switch (returned_hdr->command)
     {
     default:
@@ -605,7 +699,6 @@ int
         strcpy (tlogmsg2, "osdp_BUSY");
       osdp_conformance.resp_busy.test_status = OCONFORM_EXERCISED;
       break;
-
 
     case OSDP_MFG:
       m->data_payload = m->cmd_payload + 1;

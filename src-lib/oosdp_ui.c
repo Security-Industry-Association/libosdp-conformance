@@ -1,7 +1,8 @@
 /*
   oosdp_ui - UI routines for open-osdp
 
-  (C)2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -261,6 +262,8 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
           OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting PD Ident\n");
+
+        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
       };
       status = ST_OK;
       break;

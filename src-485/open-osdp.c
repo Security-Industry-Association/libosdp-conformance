@@ -1,6 +1,7 @@
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
