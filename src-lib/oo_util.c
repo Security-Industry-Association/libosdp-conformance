@@ -240,9 +240,11 @@ int
     {
     default:
       if (ctx->verbosity > 8)
-        fprintf (stderr, "hmmm might be unknown command to PD (0x%x)\n", command);
+        fprintf(stderr,
+          "hmmm might be unknown command to PD (0x%x)\n", command);
 
-      // can't really check here because of that switch statement after the call, hasn't all been migrated here.
+      // can't really check here because of that switch statement after
+      // the call, hasn't all been migrated here.
       break;
 
     case OSDP_CHLNG:
@@ -269,6 +271,30 @@ int
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_ISTAT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_ISTAT");
+
+      osdp_conformance.cmd_istat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_LED:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_LED");
+
+//      osdp_conformance.cmd_led.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_LSTAT:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -276,6 +302,30 @@ int
         strcpy (tlogmsg2, "osdp_LSTAT");
 
       osdp_conformance.cmd_lstat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_OSTAT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_OSTAT");
+
+      osdp_conformance.cmd_ostat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_OUT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_OUT");
+
+      osdp_conformance.cmd_out.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -291,6 +341,18 @@ int
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_RSTAT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_RSTAT");
+
+      osdp_conformance.cmd_rstat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_SCRYPT:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -298,6 +360,18 @@ int
         strcpy (tlogmsg2, "osdp_SCRYPT");
 
       osdp_conformance.cmd_scrypt.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_TEXT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_TEXT");
+
+      osdp_conformance.cmd_text.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -361,6 +435,18 @@ printf("OSDP_COM ok???\n");
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_ISTATR:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_ISTATR");
+
+      osdp_conformance.cmd_istat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_LSTATR:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -368,6 +454,30 @@ printf("OSDP_COM ok???\n");
         strcpy (tlogmsg2, "osdp_LSTATR");
 
       osdp_conformance.cmd_lstat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_NAK:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_NAK");
+
+      osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_OSTATR:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_OSTATR");
+
+      osdp_conformance.cmd_ostat.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -414,6 +524,19 @@ printf("OSDP_COM ok???\n");
       m->data_payload = m->cmd_payload + 1;
       strcpy (tlogmsg2, "osdp_RMAC_I");
       break;
+
+    case OSDP_RSTATR:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_RSTATR");
+
+      osdp_conformance.cmd_rstat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
 
     };
   };

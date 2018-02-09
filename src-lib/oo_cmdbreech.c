@@ -1,6 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -52,8 +53,7 @@ int
     current_command [1024];
   char
     current_options [1024];
-  char
-    field [1024];
+//  char field [1024];
   int
     i;
   char
@@ -91,9 +91,6 @@ int
     if (status_io <= 0)
       status = ST_CMD_UNDERFLOW;
   };
-fprintf (stderr, "command path %s status now %d.\n",
-  ctx->command_path, status);
-
   if (status EQUALS ST_OK)
   {
     root = json_loads (json_string, 0, &status_json);
@@ -103,14 +100,15 @@ fprintf (stderr, "command path %s status now %d.\n",
         json_string);
       status = ST_CMD_ERROR;
     };
-    if (status EQUALS ST_OK)
-    {
-      strcpy (field, "command");
-      value = json_object_get (root, field);
-      strcpy (current_command, json_string_value (value));
-      if (!json_is_string (value))
-        status = ST_CMD_INVALID;
-    };
+  };
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "command");
+    strcpy (current_command, json_string_value (value));
+    if (!json_is_string (value))
+      status = ST_CMD_INVALID;
+    if (ctx->verbosity > 3)
+      fprintf (stderr, "command was %s\n", current_command);
   };
 
   // command bio_read_template
@@ -132,9 +130,6 @@ fprintf (stderr, "command path %s status now %d.\n",
     if (0 EQUALS strcmp (current_command, "busy"))
     {
       cmd->command = OSDP_CMDB_BUSY;
-      if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
     };
   };
 
@@ -145,13 +140,14 @@ fprintf (stderr, "command path %s status now %d.\n",
     if (0 EQUALS strcmp (current_command, "buzz"))
     {
       cmd->command = OSDP_CMDB_BUZZ;
-      if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
+
+      // set default on, off, repeat timers
 
       cmd->details [0] = 15;
       cmd->details [1] = 15;
       cmd->details [2] = 3;
+
+      // also use off_time if it's present
 
       parameter = json_object_get (root, "off_time");
       if (json_is_string (parameter))
@@ -160,6 +156,9 @@ fprintf (stderr, "command path %s status now %d.\n",
         sscanf (vstr, "%d", &i);
         cmd->details [1] = i;
       };
+
+      // also use on_time if it's present
+
       parameter = json_object_get (root, "on_time");
       if (json_is_string (parameter))
       {
@@ -167,6 +166,9 @@ fprintf (stderr, "command path %s status now %d.\n",
         sscanf (vstr, "%d", &i);
         cmd->details [0] = i;
       };
+
+      // also use repeat if it's present
+
       parameter = json_object_get (root, "repeat");
       if (json_is_string (parameter))
       {
@@ -181,16 +183,12 @@ fprintf (stderr, "command path %s status now %d.\n",
 
   if (status EQUALS ST_OK)
   {
-    strcpy (this_command, json_string_value (value));
-    test_command = "capabilities";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    if (0 EQUALS strcmp (current_command, "capabilities"))
     {
       cmd->command = OSDP_CMDB_CAPAS;
-      if (ctx->verbosity > 4)
-        fprintf (stderr, "command was %s\n",
-          this_command);
     };
   }; 
+// resort above here
 
   // command conform_2_2_1
 
