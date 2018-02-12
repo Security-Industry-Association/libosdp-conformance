@@ -78,7 +78,7 @@ gnutls_session_t
 gnutls_certificate_credentials_t
   xcred;
 
-// cardholder nmber kludge
+// cardholder number kludge
 
 unsigned char
   creds_buffer_a [64*1024];
@@ -201,9 +201,9 @@ config->listen_sap = 10443;
     if (context.role EQUALS OSDP_ROLE_CP)
     {
       fprintf (stderr, "Role: CP\n");
-      fprintf (stderr, "Server certificate: %s\n",
+      fprintf (stderr, "Client certificate: %s\n",
         config->cert_file);
-      fprintf (stderr, "        Server key: %s\n",
+      fprintf (stderr, "        Client key: %s\n",
         config->key_file);
     };
     if (context.role EQUALS OSDP_ROLE_PD)
@@ -268,12 +268,13 @@ int
      */
     gnutls_init(&tls_session, GNUTLS_CLIENT);
 
-    fprintf (stderr, "fqdn is %s\n",
+    fprintf (stderr, "fqdn of target server is %s\n",
       context.fqdn);
     gnutls_session_set_ptr(tls_session, (void *) context.fqdn);
 
-    gnutls_server_name_set(tls_session, GNUTLS_NAME_DNS, "my_host_name",
-      strlen("my_host_name"));
+//    gnutls_server_name_set(tls_session, GNUTLS_NAME_DNS, "my_host_name", strlen("my_host_name"));
+    gnutls_server_name_set(tls_session,
+      GNUTLS_NAME_DNS, context.fqdn, strlen(context.fqdn));
 
     /* use our TLS priorities */
     gnutls_set_default_priority (tls_session);

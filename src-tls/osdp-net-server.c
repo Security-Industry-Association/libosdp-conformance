@@ -340,6 +340,13 @@ int
       status = ST_OSDP_TLS_NONBLOCK;;
     };
   };
+  if (status != ST_OK)
+  {
+    fprintf (context.log, "init TLS server failed: %s\n",
+      gnutls_strerror (status_tls));
+    fprintf (stderr, "Init TLS failed: %s\n",
+      gnutls_strerror (status_tls));
+  };
   return (status);
 
 } /* init_tls_server */

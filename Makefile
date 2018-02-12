@@ -3,6 +3,7 @@
 # This makes the RS-485 version.  To make the TLS version,
 # you need to explicitly do "make osdp-tls"
 
+#  (C)Copyright 2017-2018 Smithee Solutions LLC
 #  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -55,8 +56,6 @@ build:	all
 	  opt/osdp-conformance/run/MON/
 	cp doc/config-samples/open-osdp-params-PD.json \
 	  opt/osdp-conformance/run/PD/
-	mkdir -p opt/open-osdp/run/CP
-	mkdir -p opt/open-osdp/run/PD
 	(cd test; make build-test; cd ..)
 
 release:	build

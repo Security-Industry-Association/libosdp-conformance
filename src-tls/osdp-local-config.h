@@ -16,5 +16,5 @@
 #define OSDP_LCL_DEFAULT_PSK    "speakFriend&3ntr"
 
 #define OSPD_LCL_SET_PID_TEMPLATE \
-  "sudo -n /opt/osdp-conformance/bin/set-pid %s %d"
+  "/opt/osdp-conformance/bin/set-pid %s %d"
 
