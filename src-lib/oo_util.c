@@ -452,6 +452,15 @@ int
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_BUSY:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = NULL;
+      m->data_length = 0;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_BUSY");
+      osdp_conformance.resp_busy.test_status = OCONFORM_EXERCISED;
+      break;
+
     case OSDP_CCRYPT:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -470,6 +479,19 @@ printf("OSDP_COM ok???\n");
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
       break;
+
+    case OSDP_KEYPAD:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_KEYPAD");
+
+      osdp_conformance.resp_keypad.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
 
     case OSDP_ISTATR:
       status = ST_OSDP_CMDREP_FOUND;
@@ -640,7 +662,6 @@ int
   msg_check_type = (p->ctrl) & 0x04;
   if (msg_check_type EQUALS 0)
   {
-fprintf(stderr, "mct checksum\n");
     m->check_size = 1;
     m_check = OSDP_CHECKSUM; // Issue #11
     osdp_conformance.checksum.test_status =

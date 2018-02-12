@@ -1037,8 +1037,11 @@ int
     true_dest;
 
 
-  fprintf (context->log, "Top of send_message cmd=%02x:\n", command);
+  if (context->verbosity > 9)
+  {
+    fprintf (context->log, "Top of send_message cmd=%02x:\n", command);
     fflush (context->log);
+  };
   status = ST_OK;
   true_dest = dest_addr;
   *current_length = 0;
