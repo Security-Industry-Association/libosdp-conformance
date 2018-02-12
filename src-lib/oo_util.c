@@ -247,6 +247,30 @@ int
       // the call, hasn't all been migrated here.
       break;
 
+    case OSDP_BUZ:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_BUZZ");
+
+      osdp_conformance.cmd_buz.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_CAP:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_CAP");
+
+      osdp_conformance.cmd_pdcap.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_CHLNG:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -266,6 +290,18 @@ int
         strcpy (tlogmsg2, "osdp_COMSET");
 
       osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_ID:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_ID");
+
+      osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -380,7 +416,7 @@ int
   };
   if (role EQUALS OSDP_ROLE_CP)
   {
-    if (ctx->verbosity > 8)
+    if (ctx->verbosity > 9)
     {
       fprintf(stderr, "check command reply CP cmd is 0x%0x\n", command);
     };
@@ -604,6 +640,7 @@ int
   msg_check_type = (p->ctrl) & 0x04;
   if (msg_check_type EQUALS 0)
   {
+fprintf(stderr, "mct checksum\n");
     m->check_size = 1;
     m_check = OSDP_CHECKSUM; // Issue #11
     osdp_conformance.checksum.test_status =
