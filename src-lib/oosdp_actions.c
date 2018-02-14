@@ -148,8 +148,23 @@ int
 
 { /* action_osdp_MFG */
 
-  int
-    status;
+  int current_length;
+  OSDP_MFG_HEADER *mfg;
+  int status;
+
+  status = ST_OK;
+  mfg = (OSDP_MFG_HEADER *)(msg->data_payload);
+fprintf (stderr, "osdp_MFG action stub\n");
+fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
+  mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2],
+  mfg->command_id, mfg->data);
+
+  // for the moment just ack it
+
+  current_length = 0;
+  status = send_message(ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+  ctx->pd_acks ++;
+
 #if 0
   unsigned char
     buffer [1024];
@@ -171,7 +186,6 @@ int
     to_send;
 
   status = ST_OK;
-fprintf (stderr, "osdp_MFG action stub\n");
   /*
     set up to send the header and what's in creds buffer a
   */
@@ -208,8 +222,8 @@ fprintf (stderr, "osdp_MFG action stub\n");
     &current_length,
     bufsize+to_send, buffer);
 #endif
-status = -1;
-return (status);
+
+  return (status);
 
 } /* action_osdp_MFG */
 

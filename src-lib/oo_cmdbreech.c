@@ -238,6 +238,12 @@ int
     };
   };
 
+  // command conform_3_20_1 - MFG
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_3_20_1")) {
+      cmd->command = OSDP_CMDB_CONFORM_3_20_1; }; };
+
   // command text
 
   if (status EQUALS ST_OK)

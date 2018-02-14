@@ -90,6 +90,7 @@ int
       status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
         "9600");
       break;
+
     case OSDP_CMDB_CONFORM_2_2_2:
       strcpy (context->test_in_progress, "2-2-2");
       osdp_conformance.alt_speed_2.test_status = OCONFORM_FAIL;
@@ -97,12 +98,14 @@ int
       status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
         "19200");
       break;
+
     case OSDP_CMDB_CONFORM_2_2_3:
       strcpy (context->test_in_progress, "2-2-3");
       osdp_conformance.alt_speed_3.test_status = OCONFORM_FAIL;
       status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
         "38400");
       break;
+
     case OSDP_CMDB_CONFORM_2_2_4:
       strcpy (context->test_in_progress, "2-2-4");
       osdp_conformance.alt_speed_4.test_status = OCONFORM_FAIL;
@@ -133,6 +136,27 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         status = ST_OK;
       };
       break;
+
+    case OSDP_CMDB_CONFORM_3_20_1:
+      {
+        OSDP_MFG_HEADER
+          omfg;
+
+        osdp_conformance.resp_mfg.test_status = OCONFORM_EXERCISED;
+        strcpy (context->test_in_progress, "3_20_1");
+        memcpy(omfg.vendor_code, context->vendor_code, sizeof (omfg.vendor_code));
+        omfg.command_id = 1;
+        omfg.data = 0xff;
+        current_length = 0;
+        status = send_message (context,
+          OSDP_MFG, p_card.addr, &current_length, sizeof(omfg),
+          (unsigned char *)&omfg);
+        if (status EQUALS ST_OK)
+          SET_PASS (context, "3-20-1");
+        status = ST_OK;
+      };
+      break;
+
 
     case OSDP_CMDB_BUSY:
       context->next_response = OSDP_BUSY;

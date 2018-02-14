@@ -343,6 +343,18 @@ int
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_MFG:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_MFG");
+
+      osdp_conformance.cmd_mfg.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_OSTAT:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -373,6 +385,8 @@ int
       m->data_length = 0;
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_POLL");
+
+      ctx->cp_polls ++;
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
       break;
@@ -1639,10 +1653,7 @@ printf ("fixme: RND.B\n");
     break;
 
     case OSDP_MFG:
-#if 0
       status = action_osdp_MFG (context, msg);
-#endif
-status = -1;
       break;
 
     case OSDP_RSTAT:

@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD ( 5)
+#define OSDP_VERSION_BUILD ( 6)
 
 // default configuration
 
@@ -153,6 +153,7 @@
 #define OSDP_CMDB_BUZZ          (1022)
 #define OSDP_CMDB_BUSY          (1023)
 #define OSDP_CMDB_KEYPAD        (1024)
+#define OSDP_CMDB_CONFORM_3_20_1 (1025)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -616,6 +617,13 @@ typedef struct osdp_rdr_led_ctl
 #define OSDP_LEDCOLOR_GREEN (2)
 #define OSDP_LEDCOLOR_AMBER (3)
 #define OSDP_LEDCOLOR_BLUE (4)
+
+typedef struct osdp_mfg_hdr
+{
+  unsigned char vendor_code [3];
+  unsigned char command_id;
+  unsigned char data; // placeholder for first byte
+} OSDP_MFG_HEADER;
 
 typedef struct osdp_text_hdr
 {

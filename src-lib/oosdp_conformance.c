@@ -338,6 +338,8 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0 }, // optional in all cases
     { "3-12-1", &(osdp_conformance.cmd_text.test_status),
       0, 0, 0, 0 }, // ??
+    { "3-20-1", &(osdp_conformance.cmd_mfg.test_status),
+      0, 0, 0, 0 },
     { "3-21-1", &(osdp_conformance.cmd_stop_multi.test_status),
       0, 0, 0, 0 }, //?
     { "3-22-1", &(osdp_conformance.cmd_max_rec.test_status), 0, 0, 0, 0 }, //?
