@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD ( 6)
+#define OSDP_VERSION_BUILD ( 9)
 
 // default configuration
 
@@ -99,7 +99,9 @@
 #define OSDP_BIOREAD  (0x73)
 #define OSDP_KEYSET   (0x75)
 #define OSDP_CHLNG    (0x76)
+#define OSDP_FILETRANSFER (0x77)
 #define OSDP_MFG      (0x80)
+#define OSDP_BOGUS    (0xFF) // bogus command code to induce NAK
 
 #define OSDP_ACK      (0x40)
 #define OSDP_NAK      (0x41)
@@ -129,7 +131,7 @@
 
 // commands used through breech-loading interface
 // by convention starts above 1000
-#define OSDP_CMDB_DUMP_STATUS  (1001)
+#define OSDP_CMDB_DUMP_STATUS    (1001)
 #define OSDP_CMDB_SEND_POLL    (1002)
 #define OSDP_CMDB_IDENT        (1003)
 #define OSDP_CMDB_CAPAS        (1004)
@@ -154,6 +156,8 @@
 #define OSDP_CMDB_BUSY          (1023)
 #define OSDP_CMDB_KEYPAD        (1024)
 #define OSDP_CMDB_CONFORM_3_20_1 (1025)
+#define OSDP_CMDB_INDUCE_NAK     (1026)
+#define OSDP_CMDB_TRANSFER       (1027)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -382,6 +386,7 @@ typedef struct osdp_context
     last_errno;
   int
     tamper;
+  int next_nak; // nak the next incoming message from the CP
   int
     power_report;
   int
@@ -643,6 +648,15 @@ typedef struct osdp_text_hdr
     text [1024];
 } OSDP_TEXT_HEADER;
 
+typedef struct osdp_hdr_filetransfer
+{
+  unsigned char FtType;
+  unsigned char FtSizeTotal [4];
+  unsigned char FtOffset [4];
+  unsigned char FtFragmentSize [2];
+  unsigned char FtData;
+} OSDP_HDR_FILETRANSFER;
+#define OSDP_FILETRANSFER_TYPE_OPAQUE (0x01)
 
 
 typedef struct osdp_msg
@@ -764,6 +778,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_BAD_KEY_SELECT       (56)
 #define ST_OSDP_NO_SCBK              (57)
 #define ST_OSDP_UNKNOWN_KEY          (58)
+#define ST_OSDP_BAD_TRANSFER_FILE    (59)
 
 int
   m_version_minor;
@@ -776,6 +791,7 @@ int
 
 
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_POLL (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

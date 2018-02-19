@@ -25,6 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include <arpa/inet.h>
+#include <errno.h>
 
 
 #include <osdp-tls.h>
@@ -82,7 +83,12 @@ int
     switch (command)
     {
 
-// conformance specific commands.
+    case OSDP_CMDB_BUSY:
+      context->next_response = OSDP_BUSY;
+      if (context->verbosity > 2)
+        fprintf (stderr, "Declaring BUSY on next response\n");
+      status = ST_OK;
+      break;
 
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
@@ -157,12 +163,80 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       };
       break;
 
+    case OSDP_CMDB_TRANSFER:
+      {
+        OSDP_HDR_FILETRANSFER *file_transfer;
+        int fragment_size;
+        FILE *osdp_data_file;
+        int size_to_read;
+        int status_io;
+        int transfer_send_size;
+        unsigned char xfer_buffer [MAX_BUF];
 
-    case OSDP_CMDB_BUSY:
-      context->next_response = OSDP_BUSY;
-      if (context->verbosity > 2)
-        fprintf (stderr, "Declaring BUSY on next response\n");
-      status = ST_OK;
+
+        status = ST_OK;
+
+        // find and open file
+
+        osdp_data_file = fopen ("./osdp_data_file", "r");
+        if (osdp_data_file EQUALS NULL)
+        {
+fprintf(stderr, "local open failed, errno %d\n", errno);
+          osdp_data_file = fopen ("/opt/osdp-conformance/etc/osdp_data_file", "r");
+          if (osdp_data_file EQUALS NULL)
+            status = ST_OSDP_BAD_TRANSFER_FILE;
+          else 
+            if (context->verbosity > 3)
+              fprintf(stderr, "data file is /opt/osdp-conformance/etc/osdp_data_file\n");
+        }
+        else
+        {
+          if (context->verbosity > 3)
+            fprintf(stderr, "data file is ./osdp_data_file\n");
+        };
+
+        if (status EQUALS ST_OK)
+        {
+          memset (xfer_buffer, 0, sizeof(xfer_buffer));
+          file_transfer = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
+
+          // load data from file starting at msg->FtData
+
+if (context->max_message EQUALS 0)
+{
+  context->max_message = 128;
+  fprintf(stderr, "max message unset, setting it to 128\n");
+};
+          size_to_read = context->max_message;
+          size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
+fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
+          status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, osdp_data_file);
+
+          // load data length into FtSizeTotal (little-endian)
+
+          *(unsigned int *)(file_transfer->FtSizeTotal) = htons(status_io);
+
+          file_transfer->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+          *(unsigned int *)(file_transfer->FtOffset) = 0;
+
+          fragment_size = context->max_message + 1
+            - sizeof(OSDP_HDR_FILETRANSFER);
+          file_transfer->FtFragmentSize [0] = 0xff & fragment_size;
+          file_transfer->FtFragmentSize [1] = 0xff & (fragment_size >> 8);
+
+          if (context->verbosity > 3)
+            fprintf (stderr, "Initiating File Transfer\n");
+          current_length = 0;
+          transfer_send_size =
+            file_transfer->FtFragmentSize [0];
+          transfer_send_size = transfer_send_size +
+            (file_transfer->FtFragmentSize [1])*256;
+          transfer_send_size = transfer_send_size - 1 + sizeof (file_transfer);
+          status = send_message (context,
+            OSDP_FILETRANSFER, p_card.addr, &current_length,
+            transfer_send_size, (unsigned char *)file_transfer);
+        };
+      };
       break;
 
     case OSDP_CMDB_BUZZ:

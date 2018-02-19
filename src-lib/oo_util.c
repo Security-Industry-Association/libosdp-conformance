@@ -295,6 +295,18 @@ int
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_FILETRANSFER:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_FILETRANSFER");
+
+      osdp_conformance.cmd_filetransfer.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_ID:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -403,18 +415,6 @@ int
         osdp_conformance.conforming_messages ++;
       break;
 
-    case OSDP_SCRYPT:
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = m->cmd_payload + 1;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_SCRYPT");
-
-      osdp_conformance.cmd_scrypt.test_status = OCONFORM_EXERCISED;
-
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
-      break;
-
     case OSDP_TEXT:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -505,7 +505,6 @@ printf("OSDP_COM ok???\n");
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
       break;
-
 
     case OSDP_ISTATR:
       status = ST_OSDP_CMDREP_FOUND;
@@ -1288,6 +1287,7 @@ int
     *oh;
   int
     status;
+  unsigned char this_command;
   char
     tlogmsg [1024];
 
@@ -1307,7 +1307,14 @@ int
         "CP sent sequence 0 - resetting sequence numbers\n");
       context->next_sequence = 0;
     };
-    switch (msg->msg_cmd)
+
+    // if they asked for a NAK mangle the command so we hit the default case of the switch
+
+    this_command = msg->msg_cmd;
+    if (context->next_nak)
+      this_command = OSDP_BOGUS;
+
+    switch (this_command)
     {
     case OSDP_BIOREAD:
       sprintf (logmsg, "BIOREAD rdr=%02x type=%02x format=%02x quality=%02x\n",
@@ -1507,6 +1514,10 @@ printf ("fixme: RND.B\n");
       };
       break;
 
+    case OSDP_FILETRANSFER:
+      status = action_osdp_FILETRANSFER (context, msg);
+      break;
+
     case OSDP_ID:
       {
         unsigned char
@@ -1660,14 +1671,11 @@ printf ("fixme: RND.B\n");
       status = action_osdp_RSTAT (context, msg);
       break;
 
-    case OSDP_SCRYPT:
-      status = action_osdp_SCRYPT (context, msg);
-      break;
-
     case OSDP_TEXT:
       status = action_osdp_TEXT (context, msg);
       break;
 
+    case OSDP_BOGUS:
     default:
       status = ST_OK;
       {
@@ -1676,6 +1684,14 @@ printf ("fixme: RND.B\n");
         current_length = 0;
         osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
         osdp_nak_response_data [1] = 0xff;
+ 
+        // if it was an induced NAK then call it error code 0xff and detail 0xee
+        if (context->next_nak)
+        {
+          osdp_nak_response_data [0] = 0xff;
+          osdp_nak_response_data [1] = 0xee;
+        };
+
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
         context->sent_naks ++;
@@ -1700,6 +1716,10 @@ printf ("fixme: RND.B\n");
     case OSDP_BUSY:
       status = ST_OK;
       fprintf (context->log, "PD Responded BUSY\n");
+      break;
+
+    case OSDP_SCRYPT:
+      status = action_osdp_SCRYPT (context, msg);
       break;
 
     case OSDP_CCRYPT:

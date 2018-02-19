@@ -576,7 +576,7 @@ int
             status = ST_OSDP_TLS_ERROR;
           if (status EQUALS ST_OK)
           {
-            if (context.verbosity > 8)
+            if (context.verbosity > 9)
               fprintf (stderr, "%d bytes received via TLS:\n",
                 status_tls);
 

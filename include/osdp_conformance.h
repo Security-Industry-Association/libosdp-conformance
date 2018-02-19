@@ -113,6 +113,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_mfg;                 // 3-20-1
   OSDP_CONFORM cmd_stop_multi;          // 3-21-1
   OSDP_CONFORM cmd_max_rec;             // 3-22-1
+  OSDP_CONFORM cmd_filetransfer;         // 3-23-1
 
   // 4-x Replies
 

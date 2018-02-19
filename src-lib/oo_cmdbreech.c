@@ -188,7 +188,37 @@ int
       cmd->command = OSDP_CMDB_CAPAS;
     };
   }; 
-// resort above here
+
+  // COMSET.  takes two option arguments, "new_address" and "new_speed".
+  // default for new_address is 0x00, default for new_speed is 9600
+
+  if (status EQUALS ST_OK)
+  {
+
+    if (0 EQUALS strcmp (current_command, "comset"))
+    {
+      cmd->command = OSDP_CMDB_COMSET;
+
+      value = json_object_get (root, "new_address");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        cmd->details [0] = i;
+      };
+      value = json_object_get (root, "new_speed");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        *(int *) &(cmd->details [4]) = i; // by convention bytes 4,5,6,7 are the speed.
+      };
+      if (ctx->verbosity > 2)
+        fprintf (stderr, "Command COMSET Address %d Speed %d\n",
+          (int) (cmd->details [0]),
+          *(int *) &(cmd->details [4]));
+    };
+  }; 
 
   // command conform_2_2_1
 
@@ -244,6 +274,12 @@ int
     if (0 EQUALS strcmp (current_command, "conform_3_20_1")) {
       cmd->command = OSDP_CMDB_CONFORM_3_20_1; }; };
 
+  // command induce-NAK
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "induce-NAK")) {
+      cmd->command = OSDP_CMDB_INDUCE_NAK; }; };
+
   // command text
 
   if (status EQUALS ST_OK)
@@ -264,36 +300,11 @@ int
     };
   };
 
-  // COMSET.  takes two option arguments, "new_address" and "new_speed".
-  // default for new_address is 0x00, default for new_speed is 9600
+  // command transfer
 
-  if (status EQUALS ST_OK)
-  {
-
-    if (0 EQUALS strcmp (current_command, "comset"))
-    {
-      cmd->command = OSDP_CMDB_COMSET;
-
-      value = json_object_get (root, "new_address");
-      if (json_is_string (value))
-      {
-        strcpy (vstr, json_string_value (value));
-        sscanf (vstr, "%d", &i);
-        cmd->details [0] = i;
-      };
-      value = json_object_get (root, "new_speed");
-      if (json_is_string (value))
-      {
-        strcpy (vstr, json_string_value (value));
-        sscanf (vstr, "%d", &i);
-        *(int *) &(cmd->details [4]) = i; // by convention bytes 4,5,6,7 are the speed.
-      };
-      if (ctx->verbosity > 2)
-        fprintf (stderr, "Command COMSET Address %d Speed %d\n",
-          (int) (cmd->details [0]),
-          *(int *) &(cmd->details [4]));
-    };
-  }; 
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "transfer")) {
+      cmd->command = OSDP_CMDB_TRANSFER; }; };
 
   if (status EQUALS ST_OK)
   {
@@ -501,6 +512,19 @@ int
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_PRESENT_CARD;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+    };
+  }; 
+
+  // induce a NAK
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "induce-NAK"))
+    {
+      cmd->command = OSDP_CMDB_INDUCE_NAK;
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);

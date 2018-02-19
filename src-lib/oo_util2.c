@@ -730,6 +730,27 @@ int
     context.timer [0].i_sec = i;
   }; 
 
+  // parameter "timeout_nsec" - timeout in nanoseconds.
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "timeout_nsec");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    long i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%ld", &i);
+    // inter-poll delay time is by convention "timer 0", in seconds.
+    context.timer [0].i_nsec = i;
+    context.timer [0].i_sec = 0;
+  }; 
+
   // parameter "verbosity"
 
   if (status EQUALS ST_OK)
@@ -1080,11 +1101,12 @@ int
       m.ptr = test_blk; // marshalled outbound message
       m.lth = *current_length;
 
-      // parse the message, mostly for display.  role to parse_... is the OTHER guy
+      // parse the message for display.  role to parse is the OTHER guy
       parse_role = OSDP_ROLE_CP;
       if (context->role EQUALS OSDP_ROLE_CP)
         parse_role = OSDP_ROLE_PD;
-      status_monitor = osdp_parse_message (context, parse_role, &m, &returned_hdr);
+      status_monitor = osdp_parse_message (context, parse_role,
+        &m, &returned_hdr);
       if (context->verbosity > 8)
         if (status_monitor != ST_OK)
         {
@@ -1103,12 +1125,8 @@ int
        for (i=0; i<*current_length; i++)
          fprintf (context->log, " %02x", test_blk [i]);
        fprintf (context->log, "\n");
+fflush(context->log);
     };
-
-    // update statistics
-
-    if (command EQUALS OSDP_POLL)
-      context->cp_polls ++;
 
     buf [0] = 0xff;
     // send start-of-message marker (0xff)

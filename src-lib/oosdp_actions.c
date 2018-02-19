@@ -140,6 +140,24 @@ if (ctx->verbosity > 8)
 
 
 int
+  action_osdp_FILETRANSFER
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_FILETRANSFER */
+
+  int status;
+
+
+  status = ST_OK;
+fprintf(stderr, "action_osdp_FILETRANSFER:\n");
+status=-1;
+  return (status);
+
+} /* action_osdp_FILETRANSFER */
+
+
+int
   action_osdp_MFG
     (OSDP_CONTEXT
       *ctx,
