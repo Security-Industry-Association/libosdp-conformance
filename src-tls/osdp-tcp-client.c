@@ -1,6 +1,7 @@
 /*
   osdp-tcp-client - TCP-only version of osdp-net-client
 
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -129,7 +130,7 @@ int
 
   memset (&context, 0, sizeof (context));
   strcpy (context.init_parameters_path, "open-osdp-params.json");
-  strcpy (context.log_path, "open-osdp.log");
+  strcpy (context.log_path, "osdp.log");
 
   // if there's an argument it is the config file path
   if (argc > 1)

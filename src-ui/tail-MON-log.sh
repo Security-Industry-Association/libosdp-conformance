@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# (C)Copyright 2017-2018 Smithee Solutions LLC
 # (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,7 +23,7 @@ echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
 date
-sudo -n tail -400 /opt/osdp-conformance/run/MON/open-osdp.log
+sudo -n tail -400 /opt/osdp-conformance/run/MON/osdp.log
 echo "</BODY></HTML>"
 
 

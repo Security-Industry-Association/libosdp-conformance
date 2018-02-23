@@ -1,5 +1,6 @@
 # Make file for osdp-ui
 
+#  (C)Copyright 2017-2018 Smithee Solutions LLC
 #  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
@@ -31,7 +32,8 @@ CGIPROGS = \
   tail-CP-log tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
 CGISCRIPTS = conformance-report \
-  do-buzz do-comset do-confirm do-keypad do-led do-text do-verbosity \
+  do-buzz do-comset do-confirm do-keypad do-led do-text \
+  do-verb-cp do-verb-pd \
   conformance-CP-comset conformance-testing-CP conformance-testing-PD
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server

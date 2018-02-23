@@ -234,20 +234,31 @@ int
 
   ctx = &context;
   status = ST_OK;
-  if (role EQUALS OSDP_ROLE_PD)
+  if ((role EQUALS OSDP_ROLE_PD) || (role EQUALS OSDP_ROLE_MONITOR))
   {
     switch (command)
     {
     default:
-      if (ctx->verbosity > 8)
-        fprintf(stderr,
-          "hmmm might be unknown command to PD (0x%x)\n", command);
-
-      // can't really check here because of that switch statement after
-      // the call, hasn't all been migrated here.
+      if ((role != OSDP_ROLE_MONITOR) && (ctx->verbosity > 8))
+        fprintf (ctx->log,
+"top of osdp_check_command_reply: possible unknown command 0x%x\n",
+          command);
       break;
 
+#define OSDP_CHECK_CMDREP(osdp_tag,conformance_test, data_offset) \
+      status = ST_OSDP_CMDREP_FOUND; \
+      m->data_payload = m->cmd_payload + data_offset; \
+      if (ctx->verbosity > 2) \
+        strcpy (tlogmsg2, osdp_tag); \
+      osdp_conformance.conformance_test.test_status = OCONFORM_EXERCISED; \
+      if (osdp_conformance.conforming_messages < PARAM_MMT) \
+        osdp_conformance.conforming_messages ++;
+
     case OSDP_BUZ:
+#ifndef NOSQUISH
+      OSDP_CHECK_CMDREP ("osdp_BUZZ", cmd_buz, 1);
+#endif
+#ifdef NOSQUISH
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
       if (ctx->verbosity > 2)
@@ -257,42 +268,19 @@ int
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
+#endif
       break;
 
     case OSDP_CAP:
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = m->cmd_payload + 1;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_CAP");
-
-      osdp_conformance.cmd_pdcap.test_status = OCONFORM_EXERCISED;
-
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
+      OSDP_CHECK_CMDREP ("osdp_CAP", cmd_pdcap, 1);
       break;
 
     case OSDP_CHLNG:
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = m->cmd_payload + 1;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_CHLNG");
-
-      osdp_conformance.cmd_chlng.test_status = OCONFORM_EXERCISED;
-
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
+      OSDP_CHECK_CMDREP ("osdp_CHLNG", cmd_chlng, 1);
       break;
 
     case OSDP_COMSET:
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = m->cmd_payload + 1;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_COMSET");
-
-      osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
-
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
+      OSDP_CHECK_CMDREP ("osdp_COMSET", cmd_comset, 1);
       break;
 
     case OSDP_FILETRANSFER:
@@ -428,7 +416,12 @@ int
       break;
     };
   };
-  if (role EQUALS OSDP_ROLE_CP)
+
+  // if we're the CP look at the message as if it's incoming.
+  // if we're in monitor mode look at it (if it's not been already seen)
+
+  if ((status != ST_OSDP_CMDREP_FOUND) && 
+    ((role EQUALS OSDP_ROLE_CP) || (role EQUALS OSDP_ROLE_MONITOR)))
   {
     if (ctx->verbosity > 9)
     {
@@ -467,12 +460,7 @@ int
       break;
 
     case OSDP_BUSY:
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = NULL;
-      m->data_length = 0;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_BUSY");
-      osdp_conformance.resp_busy.test_status = OCONFORM_EXERCISED;
+      OSDP_CHECK_CMDREP ("osdp_BUSY", resp_busy, 1);
       break;
 
     case OSDP_CCRYPT:
@@ -482,16 +470,7 @@ int
       break;
 
     case OSDP_COM:
-printf("OSDP_COM ok???\n");
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = m->cmd_payload + 1;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_COM");
-
-      osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
-
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
+      OSDP_CHECK_CMDREP ("osdp_COM", cmd_comset, 1);
       break;
 
     case OSDP_KEYPAD:
@@ -823,27 +802,20 @@ int
             *(p1+5), *(p1+6), *(p1+7)); fflush (context->log);
           // p2 = p1+5+*(p1+5); // before-secblk and secblk
         };
-        if (!m_dump)
+        if (context->verbosity > 0)
         {
           if (msg_data_length)
           {
             fprintf (context->log,
               "  DATA (%d. bytes):\n    ",
               msg_data_length);
+            p1 = m->ptr + (msg_lth-msg_data_length-2);
+            for (i=0; i<msg_data_length; i++)
+            {
+              fprintf (context->log, " %02x", *(i+p1));
+            };
+            fprintf (context->log, "\n");
           };
-          p1 = m->ptr + (msg_lth-msg_data_length-2);
-          for (i=0; i<msg_data_length; i++)
-          {
-            fprintf (context->log, " %02x", *(i+p1));
-          };
-          fprintf (context->log, "\n");
-
-          fprintf (context->log, " Raw data: ");
-          for (i=0; i<msg_lth; i++)
-          {
-            fprintf (context->log, " %02x", *(i+m->ptr));
-          };
-          fprintf (context->log, "\n");
         };
       };
 

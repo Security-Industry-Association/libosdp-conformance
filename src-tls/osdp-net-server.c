@@ -133,7 +133,7 @@ int
 
   memset (&context, 0, sizeof (context));
   strcpy (context.init_parameters_path, "open-osdp-params.json");
-  strcpy (context.log_path, "open-osdp.log");
+  strcpy (context.log_path, "osdp.log");
 
   memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
 

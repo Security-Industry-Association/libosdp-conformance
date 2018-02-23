@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# (C)Copyright 2017-2018 Smithee Solutions LLC
 # (C)Copyright 2015 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,5 +15,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kill -9 `cat /opt/osdp-conformance/run/PD/osdp_pid`
+kill -9 `cat /opt/osdp-conformance/run/PD/osdp-pid`
 

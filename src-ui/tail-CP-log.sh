@@ -22,7 +22,7 @@ echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
 date
-sudo -n tail -150 /opt/osdp-conformance/run/CP/open-osdp.log
+sudo -n tail -150 /opt/osdp-conformance/run/CP/osdp.log
 echo "</BODY></HTML>"
 
 
