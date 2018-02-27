@@ -435,9 +435,16 @@ int
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
 
-      // if we don't recognize the command/reply code it fails 2-15-1
-      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
-      SET_FAIL (ctx, "2-15-1");
+      if (role != OSDP_ROLE_MONITOR)
+      {
+        // if we don't recognize the command/reply code it fails 2-15-1
+        osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
+        SET_FAIL (ctx, "2-15-1");
+      }
+      else
+      {
+        status = ST_OK; // fake ok if monitor only
+      };
       break;
 
     case OSDP_ACK:
@@ -845,9 +852,18 @@ int
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
 
-      // if we don't recognize the command/reply code it fails 2-15-1
-      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
-      SET_FAIL ((context), "2-15-1");
+      if (role != OSDP_ROLE_MONITOR)
+      {
+        // if we don't recognize the command/reply code it fails 2-15-1
+        osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
+        SET_FAIL ((context), "2-15-1");
+      }
+      else
+      {
+        // pretend it was ok if we're in monitor mode
+        m->data_payload = NULL;
+        msg_data_length = 0;
+      };
       break;
 
     case OSDP_BIOREAD:
