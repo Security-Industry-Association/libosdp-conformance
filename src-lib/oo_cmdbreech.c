@@ -518,19 +518,6 @@ int
     };
   }; 
 
-  // induce a NAK
-
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "induce-NAK"))
-    {
-      cmd->command = OSDP_CMDB_INDUCE_NAK;
-      if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
-    };
-  }; 
-
   // request (attached) reader status
 
   if (status EQUALS ST_OK)

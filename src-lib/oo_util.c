@@ -435,16 +435,9 @@ int
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
 
-      if (role != OSDP_ROLE_MONITOR)
-      {
-        // if we don't recognize the command/reply code it fails 2-15-1
-        osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
-        SET_FAIL (ctx, "2-15-1");
-      }
-      else
-      {
-        status = ST_OK; // fake ok if monitor only
-      };
+      // if we don't recognize the command/reply code it fails 2-15-1
+      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
+      SET_FAIL (ctx, "2-15-1");
       break;
 
     case OSDP_ACK:
@@ -553,15 +546,7 @@ int
       break;
 
     case OSDP_PDID:
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = m->cmd_payload + 1;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_COMSET");
-
-      osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
-
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
+      OSDP_CHECK_CMDREP ("osdp_PDID", rep_device_ident, 1);
       break;
 
     case OSDP_RAW:
@@ -811,7 +796,7 @@ int
         };
         if (context->verbosity > 0)
         {
-          if (msg_data_length)
+          if (msg_data_length > 0)
           {
             fprintf (context->log,
               "  DATA (%d. bytes):\n    ",
@@ -852,18 +837,9 @@ int
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
 
-      if (role != OSDP_ROLE_MONITOR)
-      {
-        // if we don't recognize the command/reply code it fails 2-15-1
-        osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), "2-15-1");
-      }
-      else
-      {
-        // pretend it was ok if we're in monitor mode
-        m->data_payload = NULL;
-        msg_data_length = 0;
-      };
+      // if we don't recognize the command/reply code it fails 2-15-1
+      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
+      SET_FAIL ((context), "2-15-1");
       break;
 
     case OSDP_BIOREAD:

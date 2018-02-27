@@ -163,6 +163,17 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       };
       break;
 
+    case OSDP_CMDB_INDUCE_NAK:
+      {
+        unsigned char nothing;
+
+        strcpy (context->test_in_progress, "4_2_1");
+        current_length = 0;
+        status = send_message (context,
+          OSDP_UNDEF, p_card.addr, &current_length, 0, &nothing);
+      };
+      break;
+
     case OSDP_CMDB_TRANSFER:
       {
         OSDP_HDR_FILETRANSFER *file_transfer;

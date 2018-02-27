@@ -80,6 +80,7 @@
 // 0x80
 // 0xA0 - 0xA1
 // replies 0x40 41 45 46 48-4B 50-58 76 78 90 79 b1
+#define OSDP_UNDEF    (0x01) // undefined command
 #define OSDP_POLL     (0x60)
 #define OSDP_ID       (0x61)
 #define OSDP_CAP      (0x62)
