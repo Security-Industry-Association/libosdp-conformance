@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD (10)
+#define OSDP_VERSION_BUILD (11)
 
 // default configuration
 
@@ -119,6 +119,7 @@
 #define OSDP_SCRYPT   (0x77)
 #define OSDP_RMAC_I   (0x78)
 #define OSDP_BUSY     (0x79) // yes it's a reply
+#define OSDP_FTSTAT   (0x80)
 #define OSDP_MFGREP   (0x90)
 
 // NAK error codes
@@ -301,6 +302,16 @@ typedef struct osdp_timer
 #define OSDP_TIMER_RUNNING   (0)
 #define OSDP_TIMER_RESTARTED (1)
 
+
+typedef struct osdp_context_filetransfer
+{
+  unsigned int current_offset;
+  unsigned int total_length;
+  unsigned short int current_send_length;
+  FILE *xferf;
+} OSDP_CONTEXT_FILETRANSFER;
+
+
 typedef struct osdp_context
 {
   // configuration
@@ -451,7 +462,6 @@ typedef struct osdp_context
   char
     init_parameters_path [1024];
 
-
   OSDP_OUT_STATE
     out [16];
 
@@ -463,6 +473,8 @@ typedef struct osdp_context
     last_raw_read_data [1024];
   char
     last_keyboard_data [8];
+
+  OSDP_CONTEXT_FILETRANSFER xferctx;
 } OSDP_CONTEXT;
 
 #define OO_SCU_ENAB  (0)
@@ -649,7 +661,7 @@ typedef struct osdp_text_hdr
     text [1024];
 } OSDP_TEXT_HEADER;
 
-typedef struct osdp_hdr_filetransfer
+typedef struct __attribute__((packed)) osdp_hdr_filetransfer
 {
   unsigned char FtType;
   unsigned char FtSizeTotal [4];
@@ -659,6 +671,18 @@ typedef struct osdp_hdr_filetransfer
 } OSDP_HDR_FILETRANSFER;
 #define OSDP_FILETRANSFER_TYPE_OPAQUE (0x01)
 
+typedef struct __attribute__((packed)) osdp_hdr_ftstat
+{
+  unsigned char FtAction;
+  unsigned char FtDelay [2];
+  unsigned char FtStatusDetail [2];
+  unsigned char FtUpdateMsgMax [2];
+} OSDP_HDR_FTSTAT;
+#define OSDP_FTSTAT_POLL_RESPONSE (0x04)
+#define OSDP_FTSTAT_LEAVE_SECURE  (0x02)
+#define OSDP_FTSTAT_INTERLEAVE    (0x01)
+#define OSDP_FTSTAT_ABORT_TRANSFER (0xffff)
+#define OSDP_FTSTAT_OK             (0x0001)
 
 typedef struct osdp_msg
 {
@@ -780,6 +804,8 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_NO_SCBK              (57)
 #define ST_OSDP_UNKNOWN_KEY          (58)
 #define ST_OSDP_BAD_TRANSFER_FILE    (59)
+#define ST_OSDP_BAD_TRANSFER_SAVE    (60)
+#define ST_OSDP_BAD_WRITE            (61)
 
 int
   m_version_minor;
@@ -793,6 +819,7 @@ int
 
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_POLL (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
@@ -810,6 +837,8 @@ int fasc_n_75_to_string (char * s, long int *sample_1);
 int next_sequence (OSDP_CONTEXT *ctx);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
+void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
+void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
 int osdp_build_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int security);
@@ -817,14 +846,20 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
+void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
 void osdp_create_keys (OSDP_CONTEXT *ctx);
 int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
+int osdp_filetransfer_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FILETRANSFER *msg, unsigned short int *fragsize, unsigned int *offset);
+int osdp_ftstat_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *msg);
 int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
+int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
+int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
+void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);

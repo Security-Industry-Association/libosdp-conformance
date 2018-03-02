@@ -1,6 +1,7 @@
 /*
   oosdp_files - osdp file io/
 
+  (C)2017-2018 Smithee Solutions LLC
   (C)2016 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -33,6 +34,63 @@
 
 extern OSDP_PARAMETERS
   p_card;
+
+
+int
+  osdp_filetransfer_validate
+    (OSDP_CONTEXT *ctx,
+    OSDP_HDR_FILETRANSFER *ftmsg,
+    unsigned short int *fragsize,
+    unsigned int *offset)
+
+{ /* osdp_filetransfer_validate */
+
+  int status;
+
+
+  status = ST_OK;
+
+
+  // ...and this also extracts the offset and fragment size as native integers
+
+  osdp_array_to_doubleByte(ftmsg->FtFragmentSize, fragsize);
+  (void)osdp_array_to_quadByte(ftmsg->FtOffset, offset);
+  return (status);
+
+} /* osdp_filetransfer_validate */
+
+
+int
+  osdp_ftstat_validate
+    (OSDP_CONTEXT *ctx,
+    OSDP_HDR_FTSTAT *ftstat)
+
+{ /* osdp_ftstat_validate */
+
+  int status;
+
+  status = ST_OK;
+// if FtAction bad set status
+
+  if (status EQUALS ST_OK)
+  {
+    // update fragment size to send.
+
+    osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &(ctx->xferctx.current_send_length));
+  };
+  return (status);
+
+} /* osdp_ftstat_validate */
+
+
+void
+  osdp_wrapup_filetransfer
+    (OSDP_CONTEXT *ctx)
+{
+  ctx->xferctx.current_offset = 0;
+  ctx->xferctx.total_length = 0;
+  fclose(ctx->xferctx.xferf);
+}
 
 
 int

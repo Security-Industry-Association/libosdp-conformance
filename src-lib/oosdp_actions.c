@@ -146,15 +146,108 @@ int
 
 { /* action_osdp_FILETRANSFER */
 
+  OSDP_HDR_FILETRANSFER *filetransfer_message;
+  unsigned short int fragment_size;
+  unsigned int offset;
+  OSDP_HDR_FTSTAT response;
   int status;
+  int status_io;
+  unsigned char *transfer_fragment;
 
 
   status = ST_OK;
-fprintf(stderr, "action_osdp_FILETRANSFER:\n");
-status=-1;
+  filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
+  status = osdp_filetransfer_validate(ctx, filetransfer_message,
+    &fragment_size, &offset);
+// check FtType
+// check FtSizeTotal
+// check FtOffset sane
+// check FtFragmentSize sane
+  if (status EQUALS ST_OK)
+  {
+    transfer_fragment = &(filetransfer_message->FtData);
+    if (offset EQUALS 0)
+    {
+      ctx->xferctx.xferf = fopen("./incoming_data", "w");
+      if (ctx->xferctx.xferf EQUALS NULL)
+        status = ST_OSDP_BAD_TRANSFER_SAVE;
+      if (status != ST_OK)
+      {
+        // if open of write file failed, send back error and reset
+
+        osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER, response.FtStatusDetail);
+        status = osdp_send_ftstat(ctx, &response);
+        if (status EQUALS ST_OK)
+          osdp_wrapup_filetransfer(ctx);
+      };
+    };
+    if (status EQUALS ST_OK)
+    {
+      status_io = fwrite(transfer_fragment, sizeof(transfer_fragment[0]), fragment_size, ctx->xferctx.xferf);
+      if (status_io != fragment_size)
+      {
+        // not the same error but we need to abort the transfer so same status code on the wire
+
+        osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER, response.FtStatusDetail);
+        status = osdp_send_ftstat(ctx, &response);
+        if (status EQUALS ST_OK)
+          osdp_wrapup_filetransfer(ctx);
+      }
+      else
+      {
+        // update counters
+
+        ctx->xferctx.current_offset = ctx->xferctx.current_offset + fragment_size;
+        if (ctx->xferctx.current_offset EQUALS ctx->xferctx.total_length)
+        {
+          osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
+          status = osdp_send_ftstat(ctx, &response);
+          osdp_wrapup_filetransfer(ctx);
+        }
+        else
+        {
+          osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
+          status = osdp_send_ftstat(ctx, &response);
+          if (status EQUALS ST_OK)
+            osdp_wrapup_filetransfer(ctx);
+        };
+      };
+    };
+  };
   return (status);
 
 } /* action_osdp_FILETRANSFER */
+
+
+int
+  action_osdp_FTSTAT
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_FTSTAT */
+
+  OSDP_HDR_FTSTAT *ftstat_message;
+  int status;
+
+
+  ftstat_message = (OSDP_HDR_FTSTAT *)(msg->data_payload);
+  status = osdp_ftstat_validate(ctx, ftstat_message);
+  if (status EQUALS ST_OK)
+  {
+    // if more send more
+
+    if (ctx->xferctx.total_length < ctx->xferctx.current_offset)
+    {
+      status = osdp_send_filetransfer(ctx);
+    }
+    else
+    {
+      status = write_status(ctx);
+    };
+  };
+  return (status);
+
+} /* action_osdp_FTSTAT */
 
 
 int
@@ -540,7 +633,6 @@ int
     current_length = 0;
     status = send_message
       (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
-    ctx->pd_acks ++;
     osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
     osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
     if (ctx->verbosity > 9)

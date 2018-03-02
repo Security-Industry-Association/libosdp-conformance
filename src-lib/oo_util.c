@@ -473,6 +473,12 @@ int
       OSDP_CHECK_CMDREP ("osdp_COM", cmd_comset, 1);
       break;
 
+    case OSDP_FTSTAT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      strcpy (tlogmsg2, "osdp_FTSTAT");
+      break;
+
     case OSDP_KEYPAD:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -922,6 +928,7 @@ int
       break;
 
    case OSDP_ISTATR:
+fprintf(stderr, "second istatr switch\n");
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
@@ -1682,12 +1689,23 @@ printf ("fixme: RND.B\n");
       fprintf (context->log, "PD Responded BUSY\n");
       break;
 
-    case OSDP_SCRYPT:
-      status = action_osdp_SCRYPT (context, msg);
-      break;
-
     case OSDP_CCRYPT:
       status = action_osdp_CCRYPT (context, msg);
+      break;
+
+    case OSDP_FTSTAT:
+      status = action_osdp_FTSTAT(context, msg);
+
+    case OSDP_ISTATR:
+      status = ST_OK;
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - 8;
+      sprintf (tlogmsg, "count: %d. %02x %02x %02x %02x",
+        count, *(0+msg->data_payload), *(1+msg->data_payload),
+        *(2+msg->data_payload), *(3+msg->data_payload));
+      fprintf (context->log, "Input Status: %s\n", tlogmsg);
+      osdp_conformance.resp_input_stat.test_status =
+        OCONFORM_EXERCISED;
       break;
 
     case OSDP_KEYPAD:
@@ -1704,18 +1722,6 @@ printf ("fixme: RND.B\n");
         context->last_keyboard_data [0] = *(2+msg->data_payload);
       };
       osdp_conformance.resp_keypad.test_status =
-        OCONFORM_EXERCISED;
-      break;
-
-    case OSDP_ISTATR:
-      status = ST_OK;
-      count = oh->len_lsb + (oh->len_msb << 8);
-      count = count - 8;
-      sprintf (tlogmsg, "count: %d. %02x %02x %02x %02x",
-        count, *(0+msg->data_payload), *(1+msg->data_payload),
-        *(2+msg->data_payload), *(3+msg->data_payload));
-      fprintf (context->log, "Input Status: %s\n", tlogmsg);
-      osdp_conformance.resp_input_stat.test_status =
         OCONFORM_EXERCISED;
       break;
 
@@ -1883,6 +1889,10 @@ printf ("MMSG DONE\n");
       };
 
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+      break;
+
+    case OSDP_SCRYPT:
+      status = action_osdp_SCRYPT (context, msg);
       break;
 
     default:

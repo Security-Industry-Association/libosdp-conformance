@@ -141,6 +141,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_ccrypt;              // 4-??
   OSDP_CONFORM resp_mfg;                // 4-15-1
   OSDP_CONFORM resp_busy;               // 4-16-1
+  OSDP_CONFORM resp_ftstat;             // 4-17-1
 } OSDP_INTEROP_ASSESSMENT;
 
 #define PARAM_MMT (8) // minimum message thresshold

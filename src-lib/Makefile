@@ -1,6 +1,6 @@
 # Make file for libosdp
 
-#  (C)Copyright 2017 Smithee Solutions LLC
+#  (C)Copyright 2017-2018 Smithee Solutions LLC
 #  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
@@ -25,7 +25,8 @@ OUTLIB=libosdp.a
 CC=gcc
 #CC=clang
 
-CFLAGS=-DOSDP_CONFORMANCE -I/opt/osdp-conformance/include
+CFLAGS=-c -DOSDP_CONFORMANCE -g -I/opt/osdp-conformance/include -I../include \
+  -Wall -Werror
 
 
 all:	${OUTLIB}
@@ -37,12 +38,12 @@ clean:
 
 libosdp.a:	oo_initialize.o oo_process.o oo_util.o oo_util2.o \
 	  oo_cmdbreech.o oosdp_actions.o oosdp_crc.o oosdp_conformance.o \
-	  oosdp_files.o oosdp_logmsg.o \
+	  oosdp_files.o oosdp_logmsg.o oosdp_prims.o \
 	  oosdp_secure.o oosdp_ui.o osdp-api.o
 	ar r libosdp.a \
 	  oo_cmdbreech.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
 	  oosdp_actions.o oosdp_conformance.o oosdp_crc.o oosdp_files.o \
-	  oosdp_logmsg.o oosdp_secure.o oosdp_ui.o \
+	  oosdp_logmsg.o oosdp_prims.o oosdp_secure.o oosdp_ui.o \
 	  osdp-api.o
 
 oo_cmdbreech.o:	oo_cmdbreech.c ../include/open-osdp.h
@@ -85,6 +86,9 @@ oosdp_logmsg.o:	oosdp_logmsg.c ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_logmsg.c
 
+oosdp_prims.o:	oosdp_prims.c /opt/osdp-conformance/include/open-osdp.h
+	${CC} ${CFLAGS} oosdp_prims.c
+
 oosdp_secure.o:	oosdp_secure.c ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_secure.c
@@ -96,4 +100,7 @@ oosdp_ui.o:	oosdp_ui.c ../include/open-osdp.h
 osdp-api.o:	osdp-api.c ../include/osdp-tls.h ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  osdp-api.c
+
+/opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
+	cp ../include/open-osdp.h /opt/osdp-conformance/include
 
