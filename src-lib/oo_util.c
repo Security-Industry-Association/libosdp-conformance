@@ -344,15 +344,30 @@ int
       break;
 
     case OSDP_MFG:
-      status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = m->cmd_payload + 1;
-      if (ctx->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_MFG");
+      {
+        OSDP_HDR *p;
 
-      osdp_conformance.cmd_mfg.test_status = OCONFORM_EXERCISED;
+        status = ST_OSDP_CMDREP_FOUND;
+        p = (OSDP_HDR *)m->ptr;
+        m->data_payload = m->cmd_payload + 1;
 
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
+      // if the reply bit is set it's an FTSTAT else it's an MFG
+
+      if (0x80 & (p->addr))
+      {
+        if (ctx->verbosity > 2)
+          strcpy (tlogmsg2, "osdp_FTSTAT");
+      }
+      else
+      {
+        if (ctx->verbosity > 2)
+          strcpy (tlogmsg2, "osdp_MFG");
+        osdp_conformance.cmd_mfg.test_status = OCONFORM_EXERCISED;
+      };
+
+        if (osdp_conformance.conforming_messages < PARAM_MMT)
+          osdp_conformance.conforming_messages ++;
+      }
       break;
 
     case OSDP_OSTAT:
@@ -805,14 +820,17 @@ int
           if (msg_data_length > 0)
           {
             fprintf (context->log,
-              "  DATA (%d. bytes):\n    ",
+              "  DATA (%d. bytes):\n",
               msg_data_length);
             p1 = m->ptr + (msg_lth-msg_data_length-2);
             for (i=0; i<msg_data_length; i++)
             {
               fprintf (context->log, " %02x", *(i+p1));
+              if (31 EQUALS (i % 32))
+                fprintf(context->log, "\n");
             };
-            fprintf (context->log, "\n");
+            if (31 != (msg_data_length % 32))
+              fprintf (context->log, "\n");
           };
         };
       };
@@ -864,12 +882,12 @@ int
       osdp_conformance.resp_busy.test_status = OCONFORM_EXERCISED;
       break;
 
-    case OSDP_MFG:
+    case OSDP_FTSTAT:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_MFG");
+        strcpy (tlogmsg2, "osdp_FTSTAT");
       break;
 
     case OSDP_NAK:

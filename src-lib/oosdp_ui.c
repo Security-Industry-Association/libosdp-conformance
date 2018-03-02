@@ -26,7 +26,9 @@
 #include <time.h>
 #include <arpa/inet.h>
 #include <errno.h>
-
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <osdp-tls.h>
 #include <open-osdp.h>
@@ -176,6 +178,7 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
 
     case OSDP_CMDB_TRANSFER:
       {
+        char data_filename [1024];
         OSDP_HDR_FILETRANSFER *file_transfer;
         int fragment_size;
         FILE *osdp_data_file;
@@ -189,11 +192,13 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
 
         // find and open file
 
-        osdp_data_file = fopen ("./osdp_data_file", "r");
+        strcpy(data_filename, "./osdp_data_file");
+        osdp_data_file = fopen (data_filename, "r");
         if (osdp_data_file EQUALS NULL)
         {
 fprintf(stderr, "local open failed, errno %d\n", errno);
-          osdp_data_file = fopen ("/opt/osdp-conformance/etc/osdp_data_file", "r");
+          strcpy(data_filename, "/opt/osdp-conformance/etc/osdp_data_file");
+          osdp_data_file = fopen (data_filename, "r");
           if (osdp_data_file EQUALS NULL)
             status = ST_OSDP_BAD_TRANSFER_FILE;
           else 
@@ -208,6 +213,10 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
 
         if (status EQUALS ST_OK)
         {
+          struct stat datafile_status;
+
+          stat(data_filename, &datafile_status);
+          context->xferctx.total_length = datafile_status.st_size;
           memset (xfer_buffer, 0, sizeof(xfer_buffer));
           file_transfer = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
 
