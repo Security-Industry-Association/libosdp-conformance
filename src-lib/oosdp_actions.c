@@ -236,13 +236,16 @@ int
   {
     // if more send more
 
-    if (ctx->xferctx.total_length < ctx->xferctx.current_offset)
+fprintf(stderr, "t=%d o=%d\n",
+  ctx->xferctx.total_length, ctx->xferctx.current_offset);
+
+    if (ctx->xferctx.total_length > ctx->xferctx.current_offset)
     {
       status = osdp_send_filetransfer(ctx);
     }
     else
     {
-      status = write_status(ctx);
+      osdp_wrapup_filetransfer(ctx);
     };
   };
   return (status);

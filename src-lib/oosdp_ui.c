@@ -180,7 +180,6 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       {
         char data_filename [1024];
         OSDP_HDR_FILETRANSFER *file_transfer;
-        int fragment_size;
         FILE *osdp_data_file;
         int size_to_read;
         int status_io;
@@ -215,8 +214,11 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
         {
           struct stat datafile_status;
 
+          context->xferctx.xferf = osdp_data_file;
           stat(data_filename, &datafile_status);
           context->xferctx.total_length = datafile_status.st_size;
+          context->xferctx.current_offset = 0; // should be set already but just in case.
+
           memset (xfer_buffer, 0, sizeof(xfer_buffer));
           file_transfer = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
 
@@ -226,35 +228,34 @@ if (context->max_message EQUALS 0)
 {
   context->max_message = 128;
   fprintf(stderr, "max message unset, setting it to 128\n");
+  context->xferctx.current_send_length = context->max_message;
 };
           size_to_read = context->max_message;
           size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
 fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
           status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, osdp_data_file);
 
-          // load data length into FtSizeTotal (little-endian)
+          // if what's left is less than allowed size, adjust
 
-          *(unsigned int *)(file_transfer->FtSizeTotal) = htons(status_io);
+          if (status_io < size_to_read)
+            size_to_read = status_io;
 
           file_transfer->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
-          *(unsigned int *)(file_transfer->FtOffset) = 0;
-
-          fragment_size = context->max_message + 1
-            - sizeof(OSDP_HDR_FILETRANSFER);
-          file_transfer->FtFragmentSize [0] = 0xff & fragment_size;
-          file_transfer->FtFragmentSize [1] = 0xff & (fragment_size >> 8);
+          osdp_doubleByte_to_array(size_to_read, file_transfer->FtFragmentSize);
+          osdp_quadByte_to_array(context->xferctx.total_length, file_transfer->FtSizeTotal);
+          osdp_quadByte_to_array(context->xferctx.current_offset, file_transfer->FtOffset); 
 
           if (context->verbosity > 3)
             fprintf (stderr, "Initiating File Transfer\n");
           current_length = 0;
-          transfer_send_size =
-            file_transfer->FtFragmentSize [0];
-          transfer_send_size = transfer_send_size +
-            (file_transfer->FtFragmentSize [1])*256;
+          transfer_send_size = size_to_read;
           transfer_send_size = transfer_send_size - 1 + sizeof (file_transfer);
           status = send_message (context,
             OSDP_FILETRANSFER, p_card.addr, &current_length,
             transfer_send_size, (unsigned char *)file_transfer);
+
+          // after the send update the current offset
+          context->xferctx.current_offset = context->xferctx.current_offset + size_to_read;
         };
       };
       break;

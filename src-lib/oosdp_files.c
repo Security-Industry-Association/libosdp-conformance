@@ -67,6 +67,7 @@ int
 
 { /* osdp_ftstat_validate */
 
+  unsigned short int new_size;
   int status;
 
   status = ST_OK;
@@ -76,7 +77,9 @@ int
   {
     // update fragment size to send.
 
-    osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &(ctx->xferctx.current_send_length));
+    osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &new_size);
+    if (new_size != 0)
+      ctx->xferctx.current_send_length = new_size;
   };
   return (status);
 

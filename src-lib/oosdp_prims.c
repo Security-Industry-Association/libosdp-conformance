@@ -95,7 +95,10 @@ int
 
     // load data from file starting at msg->FtData
 
-    size_to_read = ctx->max_message;
+    if (ctx->xferctx.current_send_length)
+      size_to_read = ctx->xferctx.current_send_length;
+    else
+      size_to_read = ctx->max_message;
     size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
 fprintf(stderr, "Reading %d. from file.\n", size_to_read);
     status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,

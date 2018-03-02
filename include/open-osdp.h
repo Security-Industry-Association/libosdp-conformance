@@ -847,6 +847,7 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
 void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
+void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
 void osdp_create_keys (OSDP_CONTEXT *ctx);
 int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
