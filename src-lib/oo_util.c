@@ -445,7 +445,9 @@ int
     switch (command)
     {
     default:
-      status = ST_OSDP_BAD_COMMAND_REPLY;
+      // Prevent set status when receive command e.g. OSDP_NAK, 
+      // which is complely legal, to exit after non-ST_OK status.
+      
       m->data_payload = m->cmd_payload + 1;
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
