@@ -684,7 +684,8 @@ typedef struct __attribute__((packed)) osdp_hdr_ftstat
 #define OSDP_FTSTAT_LEAVE_SECURE  (0x02)
 #define OSDP_FTSTAT_INTERLEAVE    (0x01)
 #define OSDP_FTSTAT_ABORT_TRANSFER (0xffff)
-#define OSDP_FTSTAT_OK             (0x0001)
+#define OSDP_FTSTAT_OK             (0x0000)
+#define OSDP_FTSTAT_PROCESSED      (0x0001)
 
 typedef struct osdp_msg
 {

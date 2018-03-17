@@ -210,7 +210,7 @@ int
       ctx->xferctx.current_offset = ctx->xferctx.current_offset + fragment_size;
       if (ctx->xferctx.current_offset EQUALS ctx->xferctx.total_length)
       {
-        osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
+        osdp_doubleByte_to_array(OSDP_FTSTAT_PROCESSED, response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
         osdp_wrapup_filetransfer(ctx);
       }
