@@ -550,6 +550,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_OUT_STATUS   (5)
 #define OOSDP_MSG_CCRYPT       (6)
 #define OOSDP_MSG_FILETRANSFER (7)
+#define OOSDP_MSG_FTSTAT       (8)
 
 
 #define OSDP_BUF_MAX (8192)

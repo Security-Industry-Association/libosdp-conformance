@@ -829,7 +829,7 @@ int
               if (31 EQUALS (i % 32))
                 fprintf(context->log, "\n");
             };
-            if (31 != (msg_data_length % 32))
+            if (32 != (msg_data_length % 32))
               fprintf (context->log, "\n");
           };
         };
@@ -1215,6 +1215,12 @@ int
 
   case OSDP_FILETRANSFER:
     status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
+  case OSDP_FTSTAT:
+    status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;

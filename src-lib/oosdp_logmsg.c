@@ -130,10 +130,13 @@ int
   char
     filename [1024];
   OSDP_HDR_FILETRANSFER *filetransfer_message;
+  OSDP_HDR_FTSTAT *ftstat;
   FILE
     *identf;
   OSDP_MSG
     *msg;
+  unsigned short int newdelay;
+  unsigned short int newmax;
   OSDP_HDR
     *oh;
   char
@@ -187,6 +190,22 @@ int
       (unsigned long)(context.xferctx.xferf));
     strcat(tlogmsg, tmpstr);
     break;
+
+  case OOSDP_MSG_FTSTAT:
+    msg = (OSDP_MSG *) aux;
+    ftstat = (OSDP_HDR_FTSTAT *)(msg->data_payload);
+    tlogmsg[0] = 0;
+    osdp_array_to_doubleByte(ftstat->FtDelay, &newdelay);
+    osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &newmax);
+    sprintf(tmpstr,
+"File Transfer STATUS: Detail %02x%02x Action %02x Delay %02x-%02x(%d.) Update-max %02x-%02x(%d.)\n",
+      ftstat->FtStatusDetail [0], ftstat->FtStatusDetail [1],
+      ftstat->FtAction,
+      ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,
+      ftstat->FtUpdateMsgMax [0], ftstat->FtUpdateMsgMax [1], newmax);
+    strcat(tlogmsg, tmpstr);
+    break;
+
 
   case OOSDP_MSG_KEYPAD:
     {
