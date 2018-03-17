@@ -129,6 +129,7 @@ int
 {
   char
     filename [1024];
+  OSDP_HDR_FILETRANSFER *filetransfer_message;
   FILE
     *identf;
   OSDP_MSG
@@ -137,8 +138,12 @@ int
     *oh;
   char
     tlogmsg [1024];
+  char tmpstr [1024];
   int
     status;
+  unsigned short int ustmp; // throw-away unsigned short integer (fits a "doubleByte")
+  unsigned int utmp; // throw-away unsigned integer (fits a "quadByte")
+
 
   status = ST_OK;
   switch (msgtype)
@@ -148,14 +153,42 @@ int
     sprintf (tlogmsg, "CCRYPT stuff...");
     break;
 
+  case OOSDP_MSG_FILETRANSFER:
+    msg = (OSDP_MSG *) aux;
+    filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
+    tlogmsg[0] = 0;
+    osdp_array_to_quadByte(filetransfer_message->FtSizeTotal, &utmp);
+    sprintf(tmpstr,
+"File Transfer: Type %02x\n",
+      filetransfer_message->FtType);
+    strcat(tlogmsg, tmpstr);
+    sprintf(tmpstr,
+"                           Size %02x-%02x-%02x-%02x(%d.)\n",
+      filetransfer_message->FtSizeTotal [0], filetransfer_message->FtSizeTotal [1],
+      filetransfer_message->FtSizeTotal [2], filetransfer_message->FtSizeTotal [3],
+      utmp);
+    strcat(tlogmsg, tmpstr);
+    osdp_array_to_quadByte(filetransfer_message->FtOffset, &utmp);
+    sprintf(tmpstr,
+"                         Offset %02x%02x%02x%02x(%d.)\n",
+      filetransfer_message->FtOffset [0], filetransfer_message->FtOffset [1],
+      filetransfer_message->FtOffset [2], filetransfer_message->FtOffset [3],
+      utmp);
+    strcat(tlogmsg, tmpstr);
+    osdp_array_to_doubleByte(filetransfer_message->FtFragmentSize, &ustmp);
+    sprintf(tmpstr,
+"                  Fragment Size %02x-%02x(%d.)\n  First data: %02x\n",
+      filetransfer_message->FtFragmentSize [0], filetransfer_message->FtFragmentSize [1],
+      ustmp, filetransfer_message->FtData);
+    strcat(tlogmsg, tmpstr);
+    break;
+
   case OOSDP_MSG_KEYPAD:
     {
       int
         i;
       int
         keycount;
-      char
-        tmpstr [1024];
 
       msg = (OSDP_MSG *) aux;
       keycount = *(msg->data_payload+1);

@@ -199,7 +199,11 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
           strcpy(data_filename, "/opt/osdp-conformance/etc/osdp_data_file");
           osdp_data_file = fopen (data_filename, "r");
           if (osdp_data_file EQUALS NULL)
+          {
+            fprintf(context->log, "SEND: data file not found (checked %s as last resort)\n",
+              data_filename);
             status = ST_OSDP_BAD_TRANSFER_FILE;
+          }
           else 
             if (context->verbosity > 3)
               fprintf(stderr, "data file is /opt/osdp-conformance/etc/osdp_data_file\n");
@@ -207,7 +211,11 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
         else
         {
           if (context->verbosity > 3)
+          {
             fprintf(stderr, "data file is ./osdp_data_file\n");
+            fprintf(context->log, "SEND: Data file is %s\n",
+              data_filename);
+          };
         };
 
         if (status EQUALS ST_OK)

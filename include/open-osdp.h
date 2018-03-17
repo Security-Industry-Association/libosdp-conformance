@@ -543,12 +543,13 @@ typedef struct osdp_parameters
 #define OSDP_LOG_STRING_CP   (3)
 #define OSDP_LOG_STRING_PD   (4)
 
-#define OOSDP_MSG_PD_IDENT  (1)
-#define OOSDP_MSG_KEYPAD    (2)
-#define OOSDP_MSG_PKT_STATS (3)
-#define OOSDP_MSG_PD_CAPAS  (4)
-#define OOSDP_MSG_OUT_STATUS (5)
-#define OOSDP_MSG_CCRYPT     (6)
+#define OOSDP_MSG_PD_IDENT     (1)
+#define OOSDP_MSG_KEYPAD       (2)
+#define OOSDP_MSG_PKT_STATS    (3)
+#define OOSDP_MSG_PD_CAPAS     (4)
+#define OOSDP_MSG_OUT_STATUS   (5)
+#define OOSDP_MSG_CCRYPT       (6)
+#define OOSDP_MSG_FILETRANSFER (7)
 
 
 #define OSDP_BUF_MAX (8192)

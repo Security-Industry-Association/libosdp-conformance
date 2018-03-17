@@ -25,7 +25,7 @@ OUTLIB=libosdp.a
 CC=gcc
 #CC=clang
 
-CFLAGS=-c -DOSDP_CONFORMANCE -g -I/opt/osdp-conformance/include -I../include \
+CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -I/opt/osdp-conformance/include \
   -Wall -Werror
 
 
@@ -59,8 +59,7 @@ oo_process.o:	oo_process.c
 	  oo_process.c
 
 oo_util.o:	oo_util.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oo_util.c
+	${CC} ${CFLAGS} oo_util.c
 
 oo_util2.o:	oo_util2.c ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \

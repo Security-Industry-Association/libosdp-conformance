@@ -1213,6 +1213,12 @@ int
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
 
+  case OSDP_FILETRANSFER:
+    status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
   case OSDP_KEYPAD:
     status = oosdp_make_message (OOSDP_MSG_KEYPAD, tlogmsg, msg);
     if (status == ST_OK)

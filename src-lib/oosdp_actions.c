@@ -165,6 +165,9 @@ int
 // check FtFragmentSize sane
   if (status EQUALS ST_OK)
   {
+    status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
+    fprintf (ctx->log, "%s\n", tlogmsg);
+
     transfer_fragment = &(filetransfer_message->FtData);
     if (offset EQUALS 0)
     {
