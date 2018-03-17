@@ -36,6 +36,9 @@ extern OSDP_PARAMETERS
   p_card;
 
 
+// function osdp_filetransfer_validate:
+// validates values, returns counters explicitly and in context
+
 int
   osdp_filetransfer_validate
     (OSDP_CONTEXT *ctx,
@@ -45,16 +48,36 @@ int
 
 { /* osdp_filetransfer_validate */
 
+  unsigned int total_length_claimed;
   int status;
 
 
   status = ST_OK;
 
+  // ...extract values from message
 
-  // ...and this also extracts the offset and fragment size as native integers
-
+  osdp_array_to_quadByte(ftmsg->FtSizeTotal, &total_length_claimed);
+  osdp_array_to_quadByte(ftmsg->FtOffset, offset);
   osdp_array_to_doubleByte(ftmsg->FtFragmentSize, fragsize);
-  (void)osdp_array_to_quadByte(ftmsg->FtOffset, offset);
+
+  // if there's a transfer in progress, a new one is bad.
+
+  if (ctx->xferctx.total_length && (*offset EQUALS 0))
+    status = ST_OSDP_FILEXFER_ALREADY;
+
+  // message offset must match expected
+
+  if (ctx->xferctx.current_offset != *offset)
+    status = ST_OSDP_FILEXFER_SKIP;
+
+  if (status EQUALS ST_OK)
+  {
+    // the message with offset zero gets to declare the total size.
+
+    if (*offset EQUALS 0)
+      ctx->xferctx.total_length = total_length_claimed;
+  };
+
   return (status);
 
 } /* osdp_filetransfer_validate */

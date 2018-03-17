@@ -1,6 +1,7 @@
 /*
   oosdp-actions - open osdp action routines
 
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -157,16 +158,18 @@ int
 
   status = ST_OK;
   filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
-  status = osdp_filetransfer_validate(ctx, filetransfer_message,
-    &fragment_size, &offset);
+
+  if (status EQUALS ST_OK)
+    status = osdp_filetransfer_validate(ctx, filetransfer_message,
+      &fragment_size, &offset);
+  (void)oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
+  fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
 // check FtType
 // check FtSizeTotal
-// check FtOffset sane
 // check FtFragmentSize sane
+
   if (status EQUALS ST_OK)
   {
-    status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
-    fprintf (ctx->log, "%s\n", tlogmsg);
 
     transfer_fragment = &(filetransfer_message->FtData);
     if (offset EQUALS 0)
@@ -178,44 +181,57 @@ int
       {
         // if open of write file failed, send back error and reset
 
-        osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER, response.FtStatusDetail);
+        osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
+          response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
         if (status EQUALS ST_OK)
           osdp_wrapup_filetransfer(ctx);
       };
     };
-    if (status EQUALS ST_OK)
+  };
+  if (status EQUALS ST_OK)
+  {
+    status_io = fwrite(transfer_fragment, sizeof(transfer_fragment[0]),
+      fragment_size, ctx->xferctx.xferf);
+    if (status_io != fragment_size)
     {
-      status_io = fwrite(transfer_fragment, sizeof(transfer_fragment[0]), fragment_size, ctx->xferctx.xferf);
-      if (status_io != fragment_size)
-      {
-        // not the same error but we need to abort the transfer so same status code on the wire
+      // not same error but need to abort so same status code on the wire
 
-        osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER, response.FtStatusDetail);
+      osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
+        response.FtStatusDetail);
+      status = osdp_send_ftstat(ctx, &response);
+      if (status EQUALS ST_OK)
+        osdp_wrapup_filetransfer(ctx);
+    }
+    else
+    {
+      // update counters
+
+      ctx->xferctx.current_offset = ctx->xferctx.current_offset + fragment_size;
+      if (ctx->xferctx.current_offset EQUALS ctx->xferctx.total_length)
+      {
+        osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
-        if (status EQUALS ST_OK)
-          osdp_wrapup_filetransfer(ctx);
+        osdp_wrapup_filetransfer(ctx);
       }
       else
       {
-        // update counters
-
-        ctx->xferctx.current_offset = ctx->xferctx.current_offset + fragment_size;
-        if (ctx->xferctx.current_offset EQUALS ctx->xferctx.total_length)
-        {
-          osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
-          status = osdp_send_ftstat(ctx, &response);
-          osdp_wrapup_filetransfer(ctx);
-        }
-        else
-        {
-          osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
-          status = osdp_send_ftstat(ctx, &response);
-          if (status EQUALS ST_OK)
-            osdp_wrapup_filetransfer(ctx);
-        };
+        osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
+        status = osdp_send_ftstat(ctx, &response);
       };
     };
+  };
+  if (status != ST_OK)
+  {
+    // something bad happened.  abort.  But tell the caller we dealt with it.
+
+    osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
+      response.FtStatusDetail);
+    status = osdp_send_ftstat(ctx, &response);
+    if (status EQUALS ST_OK)
+      osdp_wrapup_filetransfer(ctx);
+
+    status = ST_OK; // 'cause we recovered.
   };
   return (status);
 

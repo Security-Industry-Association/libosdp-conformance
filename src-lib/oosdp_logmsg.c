@@ -181,6 +181,11 @@ int
       filetransfer_message->FtFragmentSize [0], filetransfer_message->FtFragmentSize [1],
       ustmp, filetransfer_message->FtData);
     strcat(tlogmsg, tmpstr);
+    sprintf(tmpstr,
+"  Current Offset %8d. Total Length %8d. Current Send Length %d. Handle %lx\n",
+      context.xferctx.current_offset, context.xferctx.total_length, context.xferctx.current_send_length,
+      (unsigned long)(context.xferctx.xferf));
+    strcat(tlogmsg, tmpstr);
     break;
 
   case OOSDP_MSG_KEYPAD:

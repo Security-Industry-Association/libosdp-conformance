@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD (12)
+#define OSDP_VERSION_BUILD (13)
 
 // default configuration
 
@@ -806,7 +806,10 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_UNKNOWN_KEY          (58)
 #define ST_OSDP_BAD_TRANSFER_FILE    (59)
 #define ST_OSDP_BAD_TRANSFER_SAVE    (60)
-#define ST_OSDP_BAD_WRITE            (61)
+#define ST_OSDP_FILEXFER_WRITE       (61)
+#define ST_OSDP_FILEXFER_HEADER      (62)
+#define ST_OSDP_FILEXFER_ALREADY     (63)
+#define ST_OSDP_FILEXFER_SKIP        (64)
 
 int
   m_version_minor;
