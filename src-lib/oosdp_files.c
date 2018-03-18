@@ -168,7 +168,7 @@ int
     strcpy (tag, "PD");
   else
     strcpy (tag, "CP");
-  sprintf (statfile, "/opt/osdp-conformance/run/%s/open-osdp-status.json",
+  sprintf (statfile, "/opt/osdp-conformance/run/%s/osdp-status.json",
     tag);
   sf = fopen (statfile, "w");
   if (sf != NULL)

@@ -158,6 +158,7 @@ int
 
   status = ST_OK;
   filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
+  memset (&response, 0, sizeof(response));
 
   if (status EQUALS ST_OK)
     status = osdp_filetransfer_validate(ctx, filetransfer_message,
@@ -233,6 +234,7 @@ int
 
     status = ST_OK; // 'cause we recovered.
   };
+fprintf(stderr, "action_osdp_FILETRANSFER: exit with status %d.\n", status);
   return (status);
 
 } /* action_osdp_FILETRANSFER */
