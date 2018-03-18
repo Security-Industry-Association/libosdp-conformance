@@ -90,11 +90,28 @@ int
 
 { /* osdp_ftstat_validate */
 
+  unsigned short int filetransfer_status;
   unsigned short int new_size;
   int status;
 
   status = ST_OK;
-// if FtAction bad set status
+
+  // if FtAction bad set status
+
+  osdp_array_to_doubleByte(ftstat->FtStatusDetail, &filetransfer_status);
+  switch (filetransfer_status)
+  {
+  case OSDP_FTSTAT_OK:
+    // continue with transfer
+    status = ST_OK;
+    break;
+  case OSDP_FTSTAT_PROCESSED:
+    status = ST_OSDP_FILEXFER_WRAPUP;
+    break;
+  default:
+    status = ST_OSDP_FILEXFER_ERROR;
+    break;
+  };
 
   if (status EQUALS ST_OK)
   {
