@@ -107,9 +107,11 @@ int
     break;
   case OSDP_FTSTAT_PROCESSED:
     status = ST_OSDP_FILEXFER_WRAPUP;
+    fprintf(stderr, "FTSTAT Detail: %02x (\"processed\")\n", filetransfer_status);
     break;
   default:
     status = ST_OSDP_FILEXFER_ERROR;
+    fprintf(stderr, "FTSTAT Detail: %02x\n", filetransfer_status);
     break;
   };
 
@@ -168,7 +170,7 @@ int
     strcpy (tag, "PD");
   else
     strcpy (tag, "CP");
-  sprintf (statfile, "/opt/osdp-conformance/run/%s/osdp-status.json",
+  sprintf (statfile, "/opt/osdp-conformance/run/%s/open-osdp-status.json",
     tag);
   sf = fopen (statfile, "w");
   if (sf != NULL)
@@ -244,8 +246,17 @@ int
     {
       sprintf (val+(2*i), "%02x", ctx->last_raw_read_data [i]);
     };
-    fprintf (sf, "  \"raw_data\" : \"%s\"\n", // LAST so no comma
+    fprintf (sf, "  \"raw_data\" : \"%s\",\n",
       val);
+
+    fprintf(sf, "  \"current_offset\" : \"%d\",\n",
+      ctx->xferctx.current_offset);
+    fprintf(sf, "  \"total_length\" : \"%d\",\n",
+      ctx->xferctx.total_length);
+    fprintf(sf, "  \"current_send_length\" : \"%d\",\n",
+      ctx->xferctx.current_send_length);
+
+    fprintf(sf, "\"_#\" : \"_end\"\n");
     fprintf (sf, "}\n");
 
     fclose (sf);

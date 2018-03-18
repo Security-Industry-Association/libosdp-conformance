@@ -166,7 +166,6 @@ int
   (void)oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
 // check FtType
-// check FtSizeTotal
 // check FtFragmentSize sane
 
   if (status EQUALS ST_OK)
@@ -185,8 +184,7 @@ int
         osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
           response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
-        if (status EQUALS ST_OK)
-          osdp_wrapup_filetransfer(ctx);
+        (void) osdp_wrapup_filetransfer(ctx);
       };
     };
   };
@@ -255,6 +253,8 @@ int
   status = osdp_ftstat_validate(ctx, ftstat_message);
   (void)oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
+  if (status EQUALS ST_OSDP_FILEXFER_WRAPUP)
+    osdp_wrapup_filetransfer(ctx);
   if (status EQUALS ST_OK)
   {
     // if more send more
