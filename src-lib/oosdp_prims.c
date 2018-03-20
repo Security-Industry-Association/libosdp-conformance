@@ -100,26 +100,33 @@ int
     else
       size_to_read = ctx->max_message;
     size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
-fprintf(stderr, "Reading %d. from file.\n", size_to_read);
     status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,
       ctx->xferctx.xferf);
-if (status_io != size_to_read)
-  status = -2;
+    if (status_io > 0)
+      size_to_read = status_io;
+    if (status_io <= 0)
+      status = ST_OSDP_FILEXFER_READ;
 
-    // load data length into FtSizeTotal (little-endian)
-    osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
+    if (status EQUALS ST_OK)
+    {
+      // load data length into FtSizeTotal (little-endian)
+      osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
 
-    ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+      ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
 
-    osdp_doubleByte_to_array(size_to_read, ft->FtFragmentSize);
-    osdp_quadByte_to_array(ctx->xferctx.current_offset, ft->FtOffset);
+      osdp_doubleByte_to_array(size_to_read, ft->FtFragmentSize);
+      osdp_quadByte_to_array(ctx->xferctx.current_offset, ft->FtOffset);
 
-    transfer_send_size = size_to_read;
-    transfer_send_size = transfer_send_size - 1 + sizeof (*ft);
-    current_length = 0;
-    status = send_message (ctx,
-      OSDP_FILETRANSFER, p_card.addr, &current_length,
-      transfer_send_size, (unsigned char *)ft);
+      transfer_send_size = size_to_read;
+      transfer_send_size = transfer_send_size - 1 + sizeof (*ft);
+      current_length = 0;
+      status = send_message (ctx,
+        OSDP_FILETRANSFER, p_card.addr, &current_length,
+        transfer_send_size, (unsigned char *)ft);
+
+      // after the send update the current offset
+      ctx->xferctx.current_offset = ctx->xferctx.current_offset + size_to_read;
+    };
   };
   return (status);
 

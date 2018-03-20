@@ -814,6 +814,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_FILEXFER_SKIP        (64)
 #define ST_OSDP_FILEXFER_WRAPUP      (65)
 #define ST_OSDP_FILEXFER_ERROR       (66)
+#define ST_OSDP_FILEXFER_READ        (67)
 
 int
   m_version_minor;

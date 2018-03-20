@@ -58,12 +58,21 @@ int
 
   int
     current_length;
+  int send_poll;
   int
     status;
 
 
   status = ST_OK;
+  send_poll = 0;
+  fflush(context->log);
   if (context->role EQUALS OSDP_ROLE_CP)
+    if (context->xferctx.total_length EQUALS 0)
+      send_poll = 1;
+
+  if (context->verbosity > 3)
+    fprintf(stderr, "Background (send=%d).\n", send_poll);
+  if (send_poll)
   {
     current_length = 0;
     status = send_message (context,

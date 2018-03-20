@@ -249,6 +249,7 @@ int
   int status;
 
 
+fprintf(stderr, "action_osdp_FTSTAT: top\n");
   ftstat_message = (OSDP_HDR_FTSTAT *)(msg->data_payload);
   status = osdp_ftstat_validate(ctx, ftstat_message);
   (void)oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
