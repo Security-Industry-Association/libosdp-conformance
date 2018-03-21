@@ -71,7 +71,8 @@ int
       send_poll = 1;
 
   if (context->verbosity > 3)
-    fprintf(stderr, "Background (send=%d).\n", send_poll);
+    if (context->role EQUALS OSDP_ROLE_CP)
+      fprintf(stderr, "Background (send=%d).\n", send_poll);
   if (send_poll)
   {
     current_length = 0;
