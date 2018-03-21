@@ -633,8 +633,8 @@ int
 
 { /* osdp_parse_message */
 
-  char
-    logmsg [1024];
+  int display;
+  char logmsg [1024];
   unsigned int
     msg_lth;
   int
@@ -777,18 +777,40 @@ int
     // extract the command
     returned_hdr -> command = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->command;
+    m->data_payload = m->cmd_payload + 1;
 
     if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
     {
       sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
       strcat (tlogmsg, tlogmsg2);
     };
-///    msg_data_length = 0; // depends on command
-    if ((context->verbosity > 4) || ((m->msg_cmd != OSDP_POLL) &&
-       (m->msg_cmd != OSDP_ACK)))
+
+    // display it.  Unless it's a poll/ack or filetransfer/ftstat.  or verbosity is high enough.
+
+    display = 0;
+    if (context->verbosity > 4)
+      display = 1;
+    if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
+    {
+      if ((m->msg_cmd != OSDP_FILETRANSFER) && (m->msg_cmd != OSDP_FTSTAT))
+        display = 1;
+      if ((m->msg_cmd EQUALS OSDP_FILETRANSFER) &&
+          (context->xferctx.current_offset EQUALS 0))
+        display = 1;
+      if (m->msg_cmd EQUALS OSDP_FTSTAT)
       {
-        char
-          dirtag [1024];
+        unsigned short int ft_status_detail;
+        OSDP_HDR_FTSTAT *ft;
+
+        ft = (OSDP_HDR_FTSTAT *)(m->data_payload);
+        osdp_array_to_doubleByte(ft->FtStatusDetail, &ft_status_detail);
+        if (ft_status_detail != 0)
+          display = 1;
+      };
+    };
+    if (display)
+    {
+      char dirtag [1024];
         int i;
         unsigned char
           *p1;
@@ -815,7 +837,7 @@ int
             *(p1+5), *(p1+6), *(p1+7)); fflush (context->log);
           // p2 = p1+5+*(p1+5); // before-secblk and secblk
         };
-        if (context->verbosity > 0)
+        if (context->verbosity > 3)
         {
           if (msg_data_length > 0)
           {
@@ -829,11 +851,11 @@ int
               if (31 EQUALS (i % 32))
                 fprintf(context->log, "\n");
             };
-            if (32 != (msg_data_length % 32))
-              fprintf (context->log, "\n");
-          };
+          if (32 != (msg_data_length % 32))
+            fprintf (context->log, "\n");
         };
       };
+    };
 
     m->data_length = msg_data_length;
     // go check the command field

@@ -684,6 +684,25 @@ int
     };
   };
 
+  // parameter "max-send"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "max-send");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    ctx->max_message = i;
+  };
+
   // parameter "network_address"
   // this is the other end of the TLS connection
 

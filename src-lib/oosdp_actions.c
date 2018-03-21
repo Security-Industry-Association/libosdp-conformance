@@ -215,6 +215,10 @@ int
       }
       else
       {
+        osdp_doubleByte_to_array(ctx->max_message, response.FtUpdateMsgMax);
+fprintf(stderr, "response mmax %02x %02x\n",
+  response.FtUpdateMsgMax [0],
+  response.FtUpdateMsgMax [1]);
         osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
       };
@@ -272,6 +276,8 @@ fprintf(stderr, "t=%d o=%d\n",
       osdp_wrapup_filetransfer(ctx);
     };
   };
+  if (status EQUALS ST_OK)
+    status = write_status (ctx);
   return (status);
 
 } /* action_osdp_FTSTAT */
