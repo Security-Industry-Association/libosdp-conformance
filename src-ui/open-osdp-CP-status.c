@@ -1,6 +1,7 @@
 /*
   open-osdp-CP-status - display CP status as refreshing HTML page
 
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -63,7 +64,7 @@ int
   int status_io;
   char buffer [16384];
 
-  sf = fopen ("/opt/osdp-conformance/run/CP/open-osdp-status.json", "r");
+  sf = fopen ("/opt/osdp-conformance/run/CP/osdp-status.json", "r");
   if (sf != NULL)
   {
     status_io = fread (buffer, sizeof (buffer [0]), sizeof (buffer), sf);

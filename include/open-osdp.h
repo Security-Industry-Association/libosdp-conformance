@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD (13)
+#define OSDP_VERSION_BUILD (15)
 
 // default configuration
 

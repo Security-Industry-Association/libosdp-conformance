@@ -156,7 +156,7 @@ int
   printf ("</HEAD><BODY>");
 
   buffer [0] = 0;
-  sf = fopen ("/opt/osdp-conformance/run/PD/open-osdp-status.json", "r");
+  sf = fopen ("/opt/osdp-conformance/run/PD/osdp-status.json", "r");
   if (sf != NULL)
   {
     (void) fread (buffer, sizeof (buffer [0]), sizeof (buffer), sf);

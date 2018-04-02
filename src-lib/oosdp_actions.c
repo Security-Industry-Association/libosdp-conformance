@@ -23,6 +23,7 @@
 
 #include <stdio.h>
 #include <memory.h>
+#include <stdlib.h>
 
 
 #include <aes.h>
@@ -734,6 +735,7 @@ int
       *(raw_data+2),
       *(raw_data+3));
     processed = 1;
+    system("sudo mpg123 /opt/osdp-conformance/etc/beep.mp3");
   };
   if (bits EQUALS 75)
   {
