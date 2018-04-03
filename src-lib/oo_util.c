@@ -1437,8 +1437,9 @@ int
           (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
 
         sprintf (logmsg, "COMSET Data Payload %02x %02x%02x%02x%02x %d. 0x%x",
-        *(0+msg->data_payload), *(1+msg->data_payload), *(2+msg->data_payload), *(3+msg->data_payload),
-        *(4+msg->data_payload), i, i);
+          *(0+msg->data_payload), *(1+msg->data_payload),
+          *(2+msg->data_payload), *(3+msg->data_payload),
+          *(4+msg->data_payload), i, i);
         fprintf (context->log, "%s\n", logmsg);
 
         p_card.addr = *(msg->data_payload); // first byte is new PD addr
@@ -1455,6 +1456,18 @@ int
         {
           sprintf (logmsg, "Responding with OSDP_COM");
           fprintf (context->log, "%s\n", logmsg); logmsg[0]=0;
+        };
+        if (status EQUALS ST_OK)
+        {
+          context->new_address = p_card.addr;
+          sprintf(context->serial_speed, "%d", i);
+
+fprintf(stderr, "comset to addr %02x speed %s\n",
+  p_card.addr, context->serial_speed);
+  if (context->verbosity > 2)
+    fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",
+      p_card.addr, context->serial_speed);
+  status = init_serial (context, p_card.filename);
         };
       };
       break;

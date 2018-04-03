@@ -171,7 +171,6 @@ int
 
   if (status EQUALS ST_OK)
   {
-
     transfer_fragment = &(filetransfer_message->FtData);
     if (offset EQUALS 0)
     {
@@ -210,13 +209,17 @@ int
       ctx->xferctx.current_offset = ctx->xferctx.current_offset + fragment_size;
       if (ctx->xferctx.current_offset EQUALS ctx->xferctx.total_length)
       {
-        osdp_doubleByte_to_array(OSDP_FTSTAT_PROCESSED, response.FtStatusDetail);
+        osdp_doubleByte_to_array(OSDP_FTSTAT_PROCESSED,
+          response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
         osdp_wrapup_filetransfer(ctx);
       }
       else
       {
         osdp_doubleByte_to_array(ctx->max_message, response.FtUpdateMsgMax);
+fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
+fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);
+fprintf(stderr, "current_send_length : %d\n", ctx->xferctx.current_send_length);
 fprintf(stderr, "response mmax %02x %02x\n",
   response.FtUpdateMsgMax [0],
   response.FtUpdateMsgMax [1]);
@@ -237,7 +240,10 @@ fprintf(stderr, "response mmax %02x %02x\n",
 
     status = ST_OK; // 'cause we recovered.
   };
-fprintf(stderr, "action_osdp_FILETRANSFER: exit with status %d.\n", status);
+
+  // update status json
+  if (status EQUALS ST_OK)
+    status = write_status (ctx);
   return (status);
 
 } /* action_osdp_FILETRANSFER */
@@ -531,30 +537,31 @@ int
       };
     };
   };
-  if (ctx->tamper EQUALS 1)
+  if ((ctx->power_report EQUALS 1) || (ctx->tamper))
   {
+    char details [1024];
     done = 1;
-    ctx->tamper = 1;
-    osdp_lstat_response_data [ 0] = ctx->tamper;
-    current_length = 0;
-    status = send_message (ctx,
-      OSDP_LSTATR, p_card.addr, &current_length,
-      sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
-    osdp_conformance.resp_lstatr_tamper.test_status =
-      OCONFORM_EXERCISED;
-    if (ctx->verbosity > 2)
+
+    details [0] = 0;
+    if (ctx->tamper)
     {
-      sprintf (tlogmsg, "Responding with OSDP_LSTATR (Tamper)");
-      fprintf (ctx->log, "%s\n", tlogmsg);
+      strcat(details, "Tamper");
+      osdp_conformance.resp_lstatr_tamper.test_status =
+        OCONFORM_EXERCISED;
     };
-  };
-  if (ctx->power_report EQUALS 1)
-  {
-    done = 1;
-    // power change not yet reported
-    ctx->power_report = 0;
+    if (ctx->power_report)
+    {
+      if (strlen(details) > 0)
+        strcat(details, " ");
+      strcat(details, "Power");
+    };
     osdp_lstat_response_data [ 0] = ctx->tamper;
-    osdp_lstat_response_data [ 1] = 1; // report power failure
+    osdp_lstat_response_data [ 1] = ctx->power_report;
+
+    // clear tamper and power now reported
+    ctx->tamper = 0;
+    ctx->power_report = 0;
+
     current_length = 0;
     status = send_message (ctx,
       OSDP_LSTATR, p_card.addr, &current_length,
@@ -564,7 +571,7 @@ int
     SET_PASS (ctx, "4-5-3");
     if (ctx->verbosity > 2)
     {
-      sprintf (tlogmsg, "Responding with OSDP_LSTATR (Power)");
+      sprintf (tlogmsg, "Responding with OSDP_LSTATR (%s)", details);
       fprintf (ctx->log, "%s\n", tlogmsg);
     };
   }

@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# (C)Copyright 2017-2018 Smithee Solutions LLC
 # (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,6 +15,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+OSDPDIR=/opt/osdp-conformance
+sudo rm -f ${OSDPDIR}/tmp/current_role
 cd /opt/osdp-conformance/run/CP
 sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-CP485

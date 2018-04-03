@@ -15,11 +15,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+ROLE=PD
+
 echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>COMSET</TITLE>"
-URL=/osdp-conformance-CP.html
+URL=/osdp-conformance-${ROLE}.html
 echo "<META HTTP-EQUIV=\"REFRESH\""
 echo "CONTENT=\"1;URL=${URL}\">"
 echo "<HEAD>"
@@ -27,22 +29,19 @@ echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
 date
-date >>/opt/tester/log2/tester.log
-echo arg 1 is $1 >>/opt/tester/log2/tester.log
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
-CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
-sudo rm -f ${CMDPATH} 
+CMDPATHX=${OSDP_PATH}/run/${ROLE}/open_osdp_command.json
+sudo rm -f ${CMDPATH}
 sudo -n echo  >${CMDPATH} "{"
-sudo -n echo >>${CMDPATH} "   \"command\" : \"verbosity\"",
-sudo -n echo >>${CMDPATH} "  \"level\" : \"$1\"",
-sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-verbosity from UI\""
+sudo -n echo >>${CMDPATH} "   \"command\" : \"tamper\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-tamper from UI\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}
 
-sudo -n ${OSDP_PATH}/bin/HUP-CP
+sudo -n ${OSDP_PATH}/bin/HUP-${ROLE}
 
-echo "Set verbosity to level $1"
+echo "Inducing Tamper..."
 
 echo "</PRE></BODY></HTML>"
 
