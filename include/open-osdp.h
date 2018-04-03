@@ -425,16 +425,11 @@ typedef struct osdp_context
     cparm;
   int
     cparm_v;
-  unsigned char
-    vendor_code [3];
-  unsigned char
-    model;
-  unsigned char
-    version;
-  unsigned char
-    serial_number [4];
-  unsigned char
-    fw_version [3]; //major minor build
+  unsigned char vendor_code [3];
+  unsigned char model;
+  unsigned char version;
+  unsigned char serial_number [4];
+  unsigned char fw_version [3]; //major minor build
 
   int
     max_message; // max message from PD, if set

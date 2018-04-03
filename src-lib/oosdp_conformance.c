@@ -775,12 +775,10 @@ int
 
 { /* osdp_report */
 
-  int
-    done;
-  int
-    i;
-  int
-    status;
+  time_t current_time;
+  int done;
+  int i;
+  int status;
 typedef struct score_counters
 {
   int
@@ -856,16 +854,21 @@ OSDP_SCORE_COUNTERS
     if (test_control [i].name EQUALS NULL)
       done = 1;
   };
+  current_time = time(NULL);
   if (strcmp (role_tag, "PD"))  // if I'm the PD I'm testing the CP...
   {
    LOG_REPORT ((log_string, 
 "TEST RESULTS for CP Conformance %s\n",
-  asctime (localtime (NULL)) ));
+  asctime (localtime (&current_time)) ));
   }
   else
    LOG_REPORT ((log_string, 
-"TEST RESULTS for PD Conformance ...OUI ...version ...date ...time\n"));
-
+"TEST RESULTS for PD Conformance %s\nVendor: %02x-%02x-%02x Product: Model %d. Version %d. Firmware %d.%d.%d S/N %02x-%02x-%02x-%02x\n",
+     asctime (localtime (&current_time)),
+     (unsigned)(ctx->vendor_code [0]), (unsigned)(ctx->vendor_code [1]), (unsigned)(ctx->vendor_code [2]),
+     (unsigned)(ctx->model), (unsigned)(ctx->version),
+     (unsigned)(ctx->fw_version [0]), (unsigned)(ctx->fw_version [1]), (unsigned)(ctx->fw_version [2]),
+     (unsigned)(ctx->serial_number [0]), (unsigned)(ctx->serial_number [1]), (unsigned)(ctx->serial_number [2]), (unsigned)(ctx->serial_number [3])));
 
   LOG_REPORT ((log_string, 
 "           Periph Basic Bio XPM Xprnt Opt"));

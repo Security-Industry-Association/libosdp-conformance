@@ -872,6 +872,7 @@ int
     {
       fprintf(stderr, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
+fprintf(stderr, "oo_util 999 cmd %0x\n", returned_hdr->command);
     switch (returned_hdr->command)
     {
     default:
@@ -1950,6 +1951,18 @@ printf ("MMSG DONE\n");
       }
       else
       {
+        context->vendor_code [0] = *(0+msg->data_payload);
+        context->vendor_code [1] = *(1+msg->data_payload);
+        context->vendor_code [2] = *(2+msg->data_payload);
+        context->model = *(3+msg->data_payload);
+        context->version = *(4+msg->data_payload);
+        context->serial_number [0] = *(5+msg->data_payload);
+        context->serial_number [1] = *(6+msg->data_payload);
+        context->serial_number [2] = *(7+msg->data_payload);
+        context->serial_number [3] = *(8+msg->data_payload);
+        context->fw_version [0] = *(9+msg->data_payload);
+        context->fw_version [1] = *(10+msg->data_payload);
+        context->fw_version [2] = *(11+msg->data_payload);
         SET_PASS ((context), "4-3-2");
       };
 

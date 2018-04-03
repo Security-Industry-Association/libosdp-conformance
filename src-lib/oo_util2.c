@@ -151,101 +151,6 @@ unsigned char
 } /* checksum */
 
 
-static int
-  depth = 0;
-static char
-  *last_content;
-/*
-  end_element - end xml parsing element.  parses parameters
-
-  this is a libexpat callback
-*/
-void
-  end_element
-    (void
-      *data,
-    const char
-      *el)
-
-{ /* end_element */
-
-  int
-    i;
-
-
-  switch (context.cparm)
-  {
-  case PARAMETER_PARAMS:
-    switch (context.cparm_v)
-    {
-    default:
-      context.cparm = PARAMETER_NONE;
-      break;
-    case PARMV_ADDR:
-      sscanf (last_content, "%d", &i);
-      p_card.addr = i;
-      context.cparm_v = PARMV_NONE;
-      break;
-    case PARMV_CARD_BITS:
-      sscanf (last_content, "%d", &i);
-      p_card.bits = i;
-      context.cparm_v = PARMV_NONE;
-      break;
-    case PARMV_FILENAME:
-      strcpy (p_card.filename, last_content);
-      context.cparm_v = PARMV_NONE;
-      break;
-    case PARMV_CP_POLL:
-      sscanf (last_content, "%d", &i);
-      p_card.poll = i;
-      context.cparm_v = PARMV_NONE;
-      break;
-    case PARMV_CARD_VALUE:
-      {
-        /*
-          accumulate the "value" field into p_card.value
-        */
-        int
-          idata;
-        int
-          idx;
-        int
-          rem;
-        char
-          tmps [3];
-
-        idx=0;
-        idata = 0;
-        rem = strlen (last_content);
-        while (rem > 0)
-        {
-          strncpy (tmps, last_content+idx, 2);
-          idx = idx + 2;
-          rem = rem - 2;
-          tmps [2] = 0;
-          sscanf (tmps, "%x", &i);
-          p_card.value [idata] = i;
-          idata ++;
-          p_card.value_len ++;
-        };
-      };
-      context.cparm_v = PARMV_NONE;
-      break;
-    case PARMV_ROLE:
-      if (strcmp (last_content, "CP") == 0)
-      if (strcmp (last_content, "PD") == 0)
-        context.role = OSDP_ROLE_PD;
-      if (strncmp (last_content, "MONITOR", 7) == 0)
-        context.role = OSDP_ROLE_MONITOR;
-      break;
-    };
-    break;
-  };
-  depth--;
-
-} /* end_element */
-
-
 int
   fasc_n_75_to_string
     (char * s, long int *sample_1)
@@ -298,25 +203,6 @@ z64 = (0xff & (unsigned int)*(p+9));
   return (status);
 
 } /* fasc_n_75_to_string */
-
-
-void
-  handle_data
-    (void
-      *data,
-    const char
-      *content,
-    int
-      length)
-{
-  char *tmp = malloc (length);
-
-  strncpy (tmp, content, length);
-  tmp [length] = 0;
-  data = (void *)tmp;
-  last_content = tmp;
-
-} /* handle_data */
 
 
 int

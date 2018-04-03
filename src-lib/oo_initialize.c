@@ -257,6 +257,19 @@ int
       context->fw_version [0], m_version_minor, m_build);
     fprintf (context->log, "%s\n", logmsg);
     printf ("%s\n", logmsg);
+
+    if (context->role EQUALS OSDP_ROLE_CP)
+    {
+      // all these are for the PD we're talking to
+      context->model = 0;
+      context->version = 0;
+      context->fw_version [0] = 0;
+      context->fw_version [1] = 0;
+      context->fw_version [2] = 0;
+      context->vendor_code [0] = 0;
+      context->vendor_code [1] = 0;
+      context->vendor_code [2] = 0;
+    };
   };
   if (status EQUALS ST_OK)
   {

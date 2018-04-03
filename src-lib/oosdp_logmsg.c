@@ -206,7 +206,6 @@ int
     strcat(tlogmsg, tmpstr);
     break;
 
-
   case OOSDP_MSG_KEYPAD:
     {
       int
