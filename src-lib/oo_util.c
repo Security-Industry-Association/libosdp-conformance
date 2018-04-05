@@ -26,6 +26,7 @@
 #include <memory.h>
 #include <unistd.h>
 #include <time.h>
+#include <stdlib.h>
 
 
 #include <osdp-tls.h>
@@ -162,8 +163,6 @@ if (secure != 0)
     int i;
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
-    if (context.verbosity > 5)
-      fprintf (stderr, "orig next_data %lx\n", (unsigned long)next_data);
     for (i=0; i<data_length; i++)
     {
       *(sptr+i) = *(i+data);
@@ -332,6 +331,7 @@ int
       break;
 
     case OSDP_LSTAT:
+fprintf(stderr, "lstat 335\n");
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
       if (ctx->verbosity > 2)
@@ -395,6 +395,7 @@ int
       break;
 
     case OSDP_POLL:
+fprintf(stderr, "poll 297\n");
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = NULL;
       m->data_length = 0;
@@ -441,6 +442,8 @@ int
     if (ctx->verbosity > 9)
     {
       fprintf(stderr, "check command reply CP cmd is 0x%0x\n", command);
+if (command EQUALS OSDP_POLL)
+  fprintf(stderr, "test point\n");
     };
     switch (command)
     {
@@ -994,6 +997,7 @@ fprintf(stderr, "second istatr switch\n");
       break;
 
     case OSDP_LSTAT:
+fprintf(stderr, "lstat 1000\n");
       m->data_payload = NULL;
       msg_data_length = 0;
       if (context->verbosity > 2)
@@ -1130,11 +1134,31 @@ fprintf(stderr, "second istatr switch\n");
       // checksum
 
       parsed_cksum = checksum (m->ptr, m->lth-1);
+
+// hmmm
+
 // checksum is in low-order byte of 16 bit message suffix
       wire_cksum = *(m->cmd_payload + 2 + msg_data_length);
-//experimental
-if (m->lth == 7)
+// ("experimental") if it's a reply and it has no data
+// then use the last byte as the checksum
+
+fprintf(stderr, "ckck: cmd %x %x %x wc %x pc %x\n",
+  returned_hdr->command, (unsigned)(p->addr), m->lth, wire_cksum, parsed_cksum);
+fprintf(stderr, "L=%x PC %x Last=%x\n", m->lth, parsed_cksum, (unsigned char)*(m->lth -1 + m->ptr));
+if (0) //if ((p->addr & 0x80) && (m->lth == 7))
+{
+  char *p;
+  int i;
+  unsigned old;
+  old = wire_cksum;
   wire_cksum = *(m->cmd_payload + 1 + msg_data_length);
+  fprintf(stderr, "wck old %x now %x, p %x cmd %x\n", old, wire_cksum, parsed_cksum, returned_hdr->command);
+  p = (char *)(m->ptr);
+  for (i=0; i<16; i++)
+    fprintf(stderr, " %02x", (unsigned)*(p+i)); 
+  fprintf(stderr, "\n");
+};
+wire_cksum = (unsigned char)*(m->lth -1 + m->ptr);
       if (context->verbosity > 99)
       {
         fprintf (stderr, "pck %04x wck %04x\n",
@@ -1142,7 +1166,16 @@ if (m->lth == 7)
       };
       if (parsed_cksum != wire_cksum)
       {
+char *p;
+int i;
+fprintf(stderr, "!= c=%x p %x %x\n",
+  (unsigned)(returned_hdr->command), (unsigned)parsed_cksum, (unsigned)wire_cksum);
+p = (char *)(m->ptr);
+for (i=0; i<16; i++)
+  fprintf(stderr, " %02x", (unsigned)*(p+i)); 
+fprintf(stderr, "\n"); fflush(stderr);
         status = ST_BAD_CHECKSUM;
+exit(-2);
         context->checksum_errs ++;
       };
     };
@@ -1663,7 +1696,7 @@ printf ("fixme: RND.B\n");
         status = send_message
           (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
         context->pd_acks ++;
-        if (context->verbosity > 4)
+        if (context->verbosity > 9)
           fprintf (stderr, "Responding with OSDP_ACK\n");
       };
       break;
@@ -1673,10 +1706,12 @@ printf ("fixme: RND.B\n");
       break;
 
     case OSDP_POLL:
+fprintf(stderr, "poll 297\n");
       status = action_osdp_POLL (context, msg);
       break;
 
     case OSDP_LSTAT:
+fprintf(stderr, "lstat 1684\n");
     status = ST_OK;
     {
       unsigned char
