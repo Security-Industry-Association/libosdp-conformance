@@ -395,7 +395,6 @@ fprintf(stderr, "lstat 335\n");
       break;
 
     case OSDP_POLL:
-fprintf(stderr, "poll 297\n");
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = NULL;
       m->data_length = 0;
@@ -1142,9 +1141,6 @@ fprintf(stderr, "lstat 1000\n");
 // ("experimental") if it's a reply and it has no data
 // then use the last byte as the checksum
 
-fprintf(stderr, "ckck: cmd %x %x %x wc %x pc %x\n",
-  returned_hdr->command, (unsigned)(p->addr), m->lth, wire_cksum, parsed_cksum);
-fprintf(stderr, "L=%x PC %x Last=%x\n", m->lth, parsed_cksum, (unsigned char)*(m->lth -1 + m->ptr));
 if (0) //if ((p->addr & 0x80) && (m->lth == 7))
 {
   char *p;
@@ -1671,7 +1667,19 @@ printf ("fixme: RND.B\n");
             i, led_ctl->reader, led_ctl->led, led_ctl->temp_control,
             led_ctl->perm_control);
           if (led_ctl->reader EQUALS 0)
-            if (led_ctl->perm_control EQUALS 1)
+            if (led_ctl->temp_control EQUALS OSDP_LED_TEMP_SET)
+            {
+              if (context->verbosity > 2)
+              {
+                fprintf(context->log, "LED-TEMP: On: C=%d T=%d Off C=%d T=%d timer %02x %02x\n",
+                  led_ctl->temp_on_color, led_ctl->temp_on, led_ctl->temp_off_color, led_ctl->temp_off,
+                  led_ctl->temp_timer_lsb, led_ctl->temp_timer_msb);
+#define MILLISEC_IN_NANOSEC (1000000) 
+              };
+            };
+
+
+            if (led_ctl->perm_control EQUALS OSDP_LED_SET)
             {
               context->led [led_ctl->led].state = OSDP_LED_ACTIVATED;
               context->led [led_ctl->led].web_color =
@@ -1706,7 +1714,6 @@ printf ("fixme: RND.B\n");
       break;
 
     case OSDP_POLL:
-fprintf(stderr, "poll 297\n");
       status = action_osdp_POLL (context, msg);
       break;
 

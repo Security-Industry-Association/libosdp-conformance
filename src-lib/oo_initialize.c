@@ -214,11 +214,11 @@ int
 
   previous_time = 0;
   context->timer_count = 2;
-  context->timer [0].i_sec = 1;
-  context->timer [0].i_nsec = 0;
-  context->timer [1].i_sec = 0;
-  context->timer [1].i_nsec = 0; // for 200 milliseconds it would be 200000000l;
-  {
+  context->timer [OSDP_TIMER_BACKGROUND].i_sec = 3;
+  context->timer [OSDP_TIMER_BACKGROUND].i_nsec = 0;
+  context->timer [OSDP_TIMER_INTERPOLL].i_sec = 0;
+  context->timer [OSDP_TIMER_INTERPOLL].i_nsec = 200000000l;
+  { 
     struct timespec resolution;
 
     clock_getres (CLOCK_REALTIME, &resolution);

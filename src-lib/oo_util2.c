@@ -279,30 +279,12 @@ int
   if (status_posix == -1)
     ctx->last_errno = errno;
 
-#if 0
-  time_t
-    current_time;
-  current_time = time (NULL);
-  if (*last_time_check != current_time)
-  {
-    delta_time = current_time - *last_time_check;
-    *last_time_check = current_time;
-    if (delta_time > 0)
-    {
-      ctx->idle_time = ctx->idle_time + delta_time;
-      if (ctx->idle_time > m_idle_timeout)
-      {
-        osdp_reset_background_timer (ctx);
-        return_value = 1;
-      };
-    };
-  };
-#endif
-
   // update timers (new style)
 
   for (i=0; i<ctx->timer_count; i++)
   {
+    if (ctx->timer [i].status != OSDP_TIMER_STOPPED)
+    {
     ctx->timer [i].status = OSDP_TIMER_RUNNING;
     if (ctx->timer [i].i_sec > 0)
     {
@@ -320,6 +302,8 @@ int
       if (ctx->timer [i].current_seconds == 0)
       {
         return_value = 1;
+if (ctx->verbosity > 8)
+  fprintf(stderr, "timer %d i %d seconds\n", i, (unsigned)ctx->timer [i].i_sec);
         ctx->timer [i].current_seconds = ctx->timer [i].i_sec;
         ctx->timer [i].status = OSDP_TIMER_RESTARTED;
       };
@@ -340,10 +324,13 @@ int
       if (ctx->timer [i].current_nanoseconds == 0)
       {
         return_value = 1;
+if (ctx->verbosity > 8)
+  fprintf(stderr, "timer %d i %ld nanoseconds\n", i, ctx->timer [i].i_nsec);
         ctx->timer [i].current_nanoseconds = ctx->timer [i].i_nsec;
         ctx->timer [i].status = OSDP_TIMER_RESTARTED;
       };
     };
+    }; // timer not stopped
   };
   last_time_ex->tv_sec = time_spec.tv_sec;;
   last_time_ex->tv_nsec = time_spec.tv_nsec;;
@@ -662,9 +649,9 @@ int
     long i;
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%ld", &i);
-    // inter-poll delay time is by convention "timer 0", in seconds.
-    context.timer [0].i_nsec = i;
-    context.timer [0].i_sec = 0;
+    // inter-poll delay time is timer OSDP_TIMER_INTERPOLL (a/k/a "timer 0"), in seconds.
+    context.timer [OSDP_TIMER_INTERPOLL].i_nsec = i;
+    context.timer [OSDP_TIMER_INTERPOLL].i_sec = 0;
   }; 
 
   // parameter "verbosity"

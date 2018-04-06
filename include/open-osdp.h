@@ -301,6 +301,13 @@ typedef struct osdp_timer
 // possible values for status
 #define OSDP_TIMER_RUNNING   (0)
 #define OSDP_TIMER_RESTARTED (1)
+#define OSDP_TIMER_STOPPED   (-1)
+
+#define OSDP_TIMER_MAX            (4)
+#define OSDP_TIMER_INTERPOLL      (0)
+#define OSDP_TIMER_BACKGROUND     (1)
+#define OSDP_TIMER_LED_0_TEMP_ON  (2)
+#define OSDP_TIMER_LED_0_TEMP_OFF (3)
 
 
 typedef struct osdp_context_filetransfer
@@ -393,7 +400,7 @@ typedef struct osdp_context
   int
     timer_count;
   OSDP_TIMER
-    timer [2];
+    timer [OSDP_TIMER_MAX];
   int
     last_errno;
   int
