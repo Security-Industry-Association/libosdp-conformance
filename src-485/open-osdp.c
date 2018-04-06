@@ -280,13 +280,21 @@ check_serial (&context);
       if (osdp_timeout (&context, &last_time_check_ex))
       {
         // if timer 0 expired dump the status
-        if (context.timer[0].status EQUALS OSDP_TIMER_RESTARTED)
+        if (context.timer[OSDP_TIMER_BACKGROUND].status EQUALS OSDP_TIMER_RESTARTED)
           status = write_status (&context);
 
         // if "the timer" went off, do the background process
 
-        if (status EQUALS ST_OK)
-          status = background (&context);
+        if (context.timer[OSDP_TIMER_INTERPOLL].status EQUALS OSDP_TIMER_RESTARTED)
+          if (status EQUALS ST_OK)
+            status = background (&context);
+
+#if 0
+// for temp timers
+  if main timer expires go to perm settings
+  if temp on timer expires go to off timer/color
+  if temp off timer expires go to on timer/color
+#endif
       };
     };
 
