@@ -192,6 +192,9 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         // find and open file
 
         strcpy(data_filename, "./osdp_data_file");
+        if (strlen (details) > 0)
+          strcpy(data_filename, details);
+        strcpy(context->xferctx.filename, data_filename);
         osdp_data_file = fopen (data_filename, "r");
         if (osdp_data_file EQUALS NULL)
         {
@@ -232,12 +235,15 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
 
           // load data from file starting at msg->FtData
 
-if (context->max_message EQUALS 0)
-{
-  context->max_message = 128;
-  fprintf(stderr, "max message unset, setting it to 128\n");
-  context->xferctx.current_send_length = context->max_message;
-};
+          if (context->pd_cap.rec_max > 0)
+            if (context->max_message EQUALS 0)
+              context->max_message = context->pd_cap.rec_max;
+          if (context->max_message EQUALS 0)
+          {
+            context->max_message = 128;
+            fprintf(stderr, "max message unset, setting it to 128\n");
+            context->xferctx.current_send_length = context->max_message;
+          };
           size_to_read = context->max_message;
           size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
 fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);

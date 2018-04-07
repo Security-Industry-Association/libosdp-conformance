@@ -795,10 +795,16 @@ int
     if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
     {
       if ((m->msg_cmd != OSDP_FILETRANSFER) && (m->msg_cmd != OSDP_FTSTAT))
+      {
+fprintf(stderr, "d 1 at 799\n");
         display = 1;
+      };
       if ((m->msg_cmd EQUALS OSDP_FILETRANSFER) &&
           (context->xferctx.current_offset EQUALS 0))
+      {
+fprintf(stderr, "d 1 at 802\n");
         display = 1;
+      };
       if (m->msg_cmd EQUALS OSDP_FTSTAT)
       {
         unsigned short int ft_status_detail;
@@ -807,7 +813,10 @@ int
         ft = (OSDP_HDR_FTSTAT *)(m->data_payload);
         osdp_array_to_doubleByte(ft->FtStatusDetail, &ft_status_detail);
         if (ft_status_detail != 0)
+        {
+fprintf(stderr, "d 1 at 811\n");
           display = 1;
+        };
       };
     };
     if (display)
@@ -822,6 +831,18 @@ int
 
         strcpy (tlogmsg, "");
         p1 = m->ptr;
+if (context->verbosity > 9)
+{
+  int i;
+  unsigned char *p;
+  p = m->ptr;
+  fprintf(stderr, "first (%d) of message: ", 32);
+  for (i=0; i<32; i++)
+  {
+    fprintf(stderr, " %02x", *(p+i));
+  };
+  fprintf(stderr, "\n");
+};
         if (*(p1+1) & 0x80)
           strcpy (dirtag, "PD");
         else
@@ -1250,6 +1271,7 @@ int
 
   time_t
     current_time;
+  int do_log;
   int
     status;
   char
@@ -1257,6 +1279,7 @@ int
 
 
   status = ST_OK;
+  do_log = 1;
   switch (msg->msg_cmd)
   {
   case OSDP_CCRYPT:
@@ -1266,15 +1289,24 @@ int
     break;
 
   case OSDP_FILETRANSFER:
-    status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
-    if (status == ST_OK)
-      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    do_log = 0;
+    if (context->verbosity > 3)
+    {
+      do_log = 1;
+      status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    };
     break;
 
   case OSDP_FTSTAT:
-    status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
-    if (status == ST_OK)
-      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    do_log = 0;
+    if (context->verbosity > 3)
+    {
+      status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    };
     break;
 
   case OSDP_KEYPAD:
@@ -1306,7 +1338,7 @@ int
   if ((current_time - previous_time) > 15)
   {
     status = oosdp_make_message (OOSDP_MSG_PKT_STATS, tlogmsg, msg);
-    if (status == ST_OK)
+    if ((status == ST_OK) && do_log)
       status = oosdp_log (context, OSDP_LOG_STRING, 1, tlogmsg);
     previous_time = current_time;
   };
@@ -1803,6 +1835,7 @@ fprintf(stderr, "lstat 1684\n");
 
     case OSDP_FTSTAT:
       status = action_osdp_FTSTAT(context, msg);
+      break;
 
     case OSDP_ISTATR:
       status = ST_OK;
@@ -1973,6 +2006,7 @@ printf ("MMSG DONE\n");
       break;
 
     case OSDP_PDCAP:
+      status = action_osdp_PDCAP(context, msg);
       status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
       fprintf (context->log, "%s\n", tlogmsg);
       break;

@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD (18)
+#define OSDP_VERSION_BUILD (19)
 
 // default configuration
 
@@ -100,7 +100,7 @@
 #define OSDP_BIOREAD  (0x73)
 #define OSDP_KEYSET   (0x75)
 #define OSDP_CHLNG    (0x76)
-#define OSDP_FILETRANSFER (0x77)
+#define OSDP_FILETRANSFER (0x7C)
 #define OSDP_MFG      (0x80)
 #define OSDP_BOGUS    (0xFF) // bogus command code to induce NAK
 
@@ -119,7 +119,7 @@
 #define OSDP_SCRYPT   (0x77)
 #define OSDP_RMAC_I   (0x78)
 #define OSDP_BUSY     (0x79) // yes it's a reply
-#define OSDP_FTSTAT   (0x80)
+#define OSDP_FTSTAT   (0x7A)
 #define OSDP_MFGREP   (0x90)
 
 // NAK error codes
@@ -197,6 +197,20 @@
 #define OSDP_OPT_INIT     (110)
 #define OSDP_OPT_MONITOR  (111)
 #define OSDP_OPT_SPECIAL  (112)
+
+// for PDCAP
+
+typedef struct osdp_pdcap_entry
+{
+  unsigned char function_code;
+  unsigned char compliance;
+  unsigned char number_of;
+} OSDP_PDCAP_ENTRY;
+#define OSDP_CAP_REC_MAX (10)
+typedef struct osdp_pd_capability
+{
+  unsigned int rec_max;
+} OSDP_PD_CAPABILITY;
 
 // for secure channel
 typedef struct osdp_secure_message
@@ -315,6 +329,7 @@ typedef struct osdp_context_filetransfer
   unsigned int current_offset;
   unsigned int total_length;
   unsigned short int current_send_length;
+  char filename [1024];
   FILE *xferf;
 } OSDP_CONTEXT_FILETRANSFER;
 
@@ -372,6 +387,8 @@ typedef struct osdp_context
     next_response;
   int
     next_sequence;
+
+  OSDP_PD_CAPABILITY pd_cap;
 
   // secure channel
   unsigned char
@@ -571,7 +588,7 @@ typedef struct osdp_command
   int
     command;
   unsigned char
-    details [128];
+    details [1024];
 } OSDP_COMMAND;
 
 typedef struct osdp_param
@@ -817,6 +834,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_FILEXFER_WRAPUP      (65)
 #define ST_OSDP_FILEXFER_ERROR       (66)
 #define ST_OSDP_FILEXFER_READ        (67)
+#define ST_OSDP_UNKNOWN_CAPABILITY   (68)
 
 int
   m_version_minor;
@@ -833,6 +851,7 @@ int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_PDCAP (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_POLL (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_RAW (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_RMAC_I (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

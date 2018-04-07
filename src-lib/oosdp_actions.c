@@ -38,8 +38,7 @@ extern OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 extern OSDP_PARAMETERS
   p_card;
-char
-  tlogmsg [1024];
+char tlogmsg [1024];
 
 
 int
@@ -266,8 +265,13 @@ fprintf(stderr, "action_osdp_FTSTAT: top\n");
   (void)oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
   if (status EQUALS ST_OSDP_FILEXFER_WRAPUP)
+  {
     osdp_wrapup_filetransfer(ctx);
-  if (status EQUALS ST_OK)
+    status = ST_OK;
+  }
+  else
+  {
+    if (status EQUALS ST_OK)
   {
     // if more send more
 
@@ -282,6 +286,7 @@ fprintf(stderr, "t=%d o=%d\n",
     {
       osdp_wrapup_filetransfer(ctx);
     };
+  };
   };
   if (status EQUALS ST_OK)
     status = write_status (ctx);
@@ -468,6 +473,46 @@ done = 1; // just first one for now.
   return (status);
 
 } /* action_osdp_OUT */
+
+
+int
+  action_osdp_PDCAP
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_PDCAP */
+
+  OSDP_PDCAP_ENTRY *entry;
+  int i;
+  int num_entries;
+  unsigned char *ptr;
+  int status;
+
+
+  status = ST_OK;
+  num_entries = msg->data_length / 3;
+  ptr = msg->data_payload;
+  entry = (OSDP_PDCAP_ENTRY *)ptr;
+  for (i=0; i<num_entries; i++)
+  {
+    switch (entry->function_code)
+    {
+    case OSDP_CAP_REC_MAX:
+      ctx->pd_cap.rec_max = entry->compliance + 256*entry->number_of;
+      break;
+    default:
+      status = ST_OSDP_UNKNOWN_CAPABILITY;
+fprintf(stderr, "unimplemented capability: 0x%02x\n", entry->function_code);
+      status = ST_OK;
+      break;
+    };
+    entry ++;
+  };
+  status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
+  fprintf (ctx->log, "%s\n", tlogmsg);
+  return(status);
+
+} /* action_osdp_PDCAP */
 
 
 int

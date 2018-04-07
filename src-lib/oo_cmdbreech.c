@@ -306,6 +306,14 @@ int
     if (0 EQUALS strcmp (current_command, "transfer")) {
       cmd->command = OSDP_CMDB_TRANSFER; }; };
 
+  // if there's a "file" argument use that
+
+  parameter = json_object_get (root, "file");
+  if (json_is_string (parameter))
+  {
+    strcpy ((char *)cmd->details, json_string_value (parameter));
+  };
+
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));

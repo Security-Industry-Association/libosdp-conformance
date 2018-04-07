@@ -90,6 +90,7 @@ int
 
 { /* osdp_ftstat_validate */
 
+  unsigned short int filetransfer_delay;
   unsigned short int filetransfer_status;
   unsigned short int new_size;
   int status;
@@ -99,14 +100,27 @@ int
   // if FtAction bad set status
 
   osdp_array_to_doubleByte(ftstat->FtStatusDetail, &filetransfer_status);
+
+  filetransfer_delay = 0;
+  osdp_array_to_doubleByte(ftstat->FtDelay, &filetransfer_delay);
+
   switch (filetransfer_status)
   {
   case OSDP_FTSTAT_OK:
     // continue with transfer
     status = ST_OK;
     break;
+
+// wavelynx sends status 3 at the end
+case 3:
+  status = ST_OSDP_FILEXFER_WRAPUP;
+  fprintf(stderr, "FTSTAT 3 Delay %d.\n", filetransfer_delay);
+  break;
   case OSDP_FTSTAT_PROCESSED:
-    status = ST_OSDP_FILEXFER_WRAPUP;
+//    status = ST_OSDP_FILEXFER_WRAPUP;
+
+    // this is 1, a positive number, so per the spec we proceed.
+
     fprintf(stderr, "FTSTAT Detail: %02x (\"processed\")\n", filetransfer_status);
     break;
   default:
@@ -206,6 +220,8 @@ int
                  "     \"led_color_%02d\" : \"#%06x\",\n",
         j, ctx->led [j].web_color);
     };
+    fprintf(sf,  "  Receive-BufferSize : \"%d\",\n",
+      ctx->pd_cap.rec_max);
     for (j=0; j<OSDP_MAX_OUT; j++)
     {
       fprintf (sf,
