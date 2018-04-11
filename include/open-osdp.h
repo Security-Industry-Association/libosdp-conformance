@@ -331,7 +331,11 @@ typedef struct osdp_context_filetransfer
   unsigned short int current_send_length;
   char filename [1024];
   FILE *xferf;
+  int state; // state=0 no transfer state=1 transferring state=2 finishing
 } OSDP_CONTEXT_FILETRANSFER;
+#define OSDP_XFER_STATE_IDLE         (0)
+#define OSDP_XFER_STATE_TRANSFERRING (1)
+#define OSDP_XFER_STATE_FINISHING    (2)
 
 
 typedef struct osdp_context
@@ -702,9 +706,13 @@ typedef struct __attribute__((packed)) osdp_hdr_ftstat
 #define OSDP_FTSTAT_POLL_RESPONSE (0x04)
 #define OSDP_FTSTAT_LEAVE_SECURE  (0x02)
 #define OSDP_FTSTAT_INTERLEAVE    (0x01)
+
+// codes in FtStatusDetail
+
 #define OSDP_FTSTAT_ABORT_TRANSFER (0xffff)
 #define OSDP_FTSTAT_OK             (0x0000)
 #define OSDP_FTSTAT_PROCESSED      (0x0001)
+#define OSDP_FTSTAT_FINISHING      (0x0003)
 
 typedef struct osdp_msg
 {
@@ -835,6 +843,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_FILEXFER_ERROR       (66)
 #define ST_OSDP_FILEXFER_READ        (67)
 #define ST_OSDP_UNKNOWN_CAPABILITY   (68)
+#define ST_OSDP_FILEXFER_FINISHING   (69)
 
 int
   m_version_minor;

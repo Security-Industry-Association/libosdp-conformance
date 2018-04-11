@@ -1,0 +1,10 @@
+#!/bin/bash
+set -x
+rm -f /tmp/cmd.json
+echo >/tmp/cmd.json "{"
+echo >>/tmp/cmd.json "\"command\" : \"transfer\","
+echo >>/tmp/cmd.json "\"file\" : \"/home/opsadmin1/binary\""
+echo >>/tmp/cmd.json "}"
+cp /tmp/cmd.json /opt/osdp-conformance/run/CP/open_osdp_command.json
+/opt/osdp-conformance/bin/HUP-CP
+

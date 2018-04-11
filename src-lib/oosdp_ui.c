@@ -261,6 +261,8 @@ fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
 
           if (context->verbosity > 3)
             fprintf (stderr, "Initiating File Transfer\n");
+
+          context->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
           current_length = 0;
           transfer_send_size = size_to_read;
           transfer_send_size = transfer_send_size - 1 + sizeof (file_transfer);

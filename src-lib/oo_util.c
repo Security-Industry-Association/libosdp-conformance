@@ -819,6 +819,8 @@ fprintf(stderr, "d 1 at 811\n");
         };
       };
     };
+if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
+  display = 1;
     if (display)
     {
       char dirtag [1024];

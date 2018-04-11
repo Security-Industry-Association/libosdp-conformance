@@ -205,6 +205,7 @@ int
   context->vendor_code [1] = 0x00;
   context->vendor_code [2] = 0x17;
   strcpy (context->fqdn, "perim-0000.example.com");
+  context->xferctx.state = OSDP_XFER_STATE_IDLE;
   m_check = OSDP_CRC;
   m_dump = 0;
   strcpy (p_card.filename, "/dev/ttyUSB0");

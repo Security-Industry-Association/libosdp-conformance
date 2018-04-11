@@ -83,6 +83,11 @@ int
 } /* osdp_filetransfer_validate */
 
 
+/*
+  osdp_ftstat_validate - validate fields in incoming osdp_FTSTAT msg
+
+  also returns relevant status and updates filetransfer context.
+*/
 int
   osdp_ftstat_validate
     (OSDP_CONTEXT *ctx,
@@ -95,6 +100,7 @@ int
   unsigned short int new_size;
   int status;
 
+
   status = ST_OK;
 
   // if FtAction bad set status
@@ -104,30 +110,40 @@ int
   filetransfer_delay = 0;
   osdp_array_to_doubleByte(ftstat->FtDelay, &filetransfer_delay);
 
+  /*
+    per the spec, positive status numbers are advisory, negative mean
+    the transfer should be terminated.  "finishing" state causes idle msgs.
+  */
   switch (filetransfer_status)
   {
   case OSDP_FTSTAT_OK:
     // continue with transfer
     status = ST_OK;
+    ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
     break;
 
+  case OSDP_FTSTAT_FINISHING:
 // wavelynx sends status 3 at the end
-case 3:
-  status = ST_OSDP_FILEXFER_WRAPUP;
-  fprintf(stderr, "FTSTAT 3 Delay %d.\n", filetransfer_delay);
-  break;
-  case OSDP_FTSTAT_PROCESSED:
-//    status = ST_OSDP_FILEXFER_WRAPUP;
-
-    // this is 1, a positive number, so per the spec we proceed.
-
-    fprintf(stderr, "FTSTAT Detail: %02x (\"processed\")\n", filetransfer_status);
+    status = ST_OSDP_FILEXFER_FINISHING;
+    ctx->xferctx.state = OSDP_XFER_STATE_FINISHING;
     break;
+
+  case OSDP_FTSTAT_PROCESSED:
+    fprintf(stderr, "FTSTAT Detail: %02x (\"processed\")\n", filetransfer_status);
+    ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
+    break;
+
   default:
     status = ST_OSDP_FILEXFER_ERROR;
     fprintf(stderr, "FTSTAT Detail: %02x\n", filetransfer_status);
     break;
   };
+
+  // if we transitioned out of "finishing" declare it wrapped up.
+
+  if (filetransfer_status != OSDP_FTSTAT_FINISHING)
+    if (ctx->xferctx.state EQUALS OSDP_XFER_STATE_FINISHING)
+      status = ST_OSDP_FILEXFER_WRAPUP;
 
   if (status EQUALS ST_OK)
   {

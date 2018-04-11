@@ -248,6 +248,12 @@ fprintf(stderr, "response mmax %02x %02x\n",
 } /* action_osdp_FILETRANSFER */
 
 
+/*
+  action_osdp_FTSTAT - processing incoming osdp_FTSTAT message at CP
+
+  this causes the next chunk to be transferred, or terminates the transfer,
+  or switches to "finishing" mode if the PD needs more time.
+*/
 int
   action_osdp_FTSTAT
     (OSDP_CONTEXT *ctx,
@@ -259,11 +265,16 @@ int
   int status;
 
 
-fprintf(stderr, "action_osdp_FTSTAT: top\n");
   ftstat_message = (OSDP_HDR_FTSTAT *)(msg->data_payload);
   status = osdp_ftstat_validate(ctx, ftstat_message);
   (void)oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
+  if (status EQUALS ST_OSDP_FILEXFER_FINISHING)
+  {
+    // the filetransfer context was already set to "finishing".
+    // (and this is ok so reset the status)
+    status = ST_OK;
+  };
   if (status EQUALS ST_OSDP_FILEXFER_WRAPUP)
   {
     osdp_wrapup_filetransfer(ctx);
@@ -284,7 +295,11 @@ fprintf(stderr, "t=%d o=%d\n",
     }
     else
     {
-      osdp_wrapup_filetransfer(ctx);
+      // if we're done and it's not "finishing" then wrap up
+      if (ctx->xferctx.state != OSDP_XFER_STATE_FINISHING)
+        osdp_wrapup_filetransfer(ctx);
+      else
+        status = osdp_send_filetransfer(ctx); // will send benign msg
     };
   };
   };

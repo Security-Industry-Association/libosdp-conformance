@@ -93,6 +93,22 @@ int
     memset (xfer_buffer, 0, sizeof(xfer_buffer));
     ft = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
 
+    // if we're finishing up send a benign message
+    // L=0 Off=whole-size Tot=whole-size
+    if (ctx->xferctx.state EQUALS OSDP_XFER_STATE_FINISHING)
+    {
+      transfer_send_size = 0;
+      memset(ft, 0, sizeof(*ft));
+      osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
+      ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+      osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtOffset);
+      current_length = 0;
+      status = send_message (ctx,
+        OSDP_FILETRANSFER, p_card.addr, &current_length,
+        transfer_send_size, (unsigned char *)ft);
+    }
+    else
+    {
     // load data from file starting at msg->FtData
 
     if (ctx->xferctx.current_send_length)
@@ -126,7 +142,11 @@ int
 
       // after the send update the current offset
       ctx->xferctx.current_offset = ctx->xferctx.current_offset + size_to_read;
+
+      // we're transferring.  set the state to show that
+      ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
     };
+    }; // end else real filetransfer
   };
   return (status);
 

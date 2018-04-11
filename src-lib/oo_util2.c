@@ -70,7 +70,7 @@ int
     if (context->xferctx.total_length EQUALS 0)
       send_poll = 1;
 
-  if (context->verbosity > 3)
+  if (context->verbosity > 9)
     if (context->role EQUALS OSDP_ROLE_CP)
       fprintf(stderr, "Background (send=%d).\n", send_poll);
   if (send_poll)
@@ -324,7 +324,7 @@ if (ctx->verbosity > 8)
       if (ctx->timer [i].current_nanoseconds == 0)
       {
         return_value = 1;
-if (ctx->verbosity > 8)
+if (ctx->verbosity > 9)
   fprintf(stderr, "timer %d i %ld nanoseconds\n", i, ctx->timer [i].i_nsec);
         ctx->timer [i].current_nanoseconds = ctx->timer [i].i_nsec;
         ctx->timer [i].status = OSDP_TIMER_RESTARTED;
