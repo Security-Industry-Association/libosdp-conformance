@@ -1,6 +1,7 @@
 /*
   open-osdp-PD-status - display PD status as refreshing HTML page
 
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -171,7 +172,6 @@ int
       (unsigned long int)current_time_fine.tv_sec, current_time_fine.tv_nsec,
       asctime (localtime (&current_time)));
 
-  sf = fopen ("/opt/osdp-conformance/run/PD/open-osdp-status.json", "r");
   if (strlen (buffer) > 0)
   {
     printf ("%s", buffer);
