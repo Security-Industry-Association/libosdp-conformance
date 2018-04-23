@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD (20)
+#define OSDP_VERSION_BUILD (21)
 
 // default configuration
 
@@ -574,6 +574,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_CCRYPT       (6)
 #define OOSDP_MSG_FILETRANSFER (7)
 #define OOSDP_MSG_FTSTAT       (8)
+#define OOSDP_MSG_LED          (9)
 
 
 #define OSDP_BUF_MAX (8192)

@@ -236,7 +236,7 @@ int
                  "     \"led_color_%02d\" : \"#%06x\",\n",
         j, ctx->led [j].web_color);
     };
-    fprintf(sf,  " \"Receive-BufferSize : \"%d\",\n",
+    fprintf(sf,  " \"Receive-BufferSize\" : \"%d\",\n",
       ctx->pd_cap.rec_max);
     for (j=0; j<OSDP_MAX_OUT; j++)
     {

@@ -1262,6 +1262,9 @@ exit(-2);
 } /* parse_message */
 
 
+/*
+  monitor_osdp_message - output the message to the log for tracing
+*/
 int
   monitor_osdp_message
     (OSDP_CONTEXT
@@ -1271,13 +1274,10 @@ int
 
 { /* monitor_osdp_message */
 
-  time_t
-    current_time;
-  int do_log;
-  int
-    status;
-  char
-    tlogmsg [1024];
+  time_t current_time;
+  int do_log; // do call oosdp_log at the end with built-up text
+  int status;
+  char tlogmsg [1024];
 
 
   status = ST_OK;
@@ -1313,6 +1313,12 @@ int
 
   case OSDP_KEYPAD:
     status = oosdp_make_message (OOSDP_MSG_KEYPAD, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
+  case OSDP_LED:
+    status = oosdp_make_message (OOSDP_MSG_LED, tlogmsg, msg);
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;

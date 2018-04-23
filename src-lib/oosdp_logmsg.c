@@ -32,6 +32,41 @@ extern OSDP_PARAMETERS
 
 
 char
+  *osdp_led_color_lookup
+    (unsigned char led_color_number)
+
+{ /* osdp_led_color_lookup */
+
+  static char value [1024];
+
+
+  switch(led_color_number)
+  {
+  default:
+    sprintf(value, "?(%02x)", led_color_number);
+    break;
+  case OSDP_LEDCOLOR_AMBER:
+    sprintf(value, "\'Amber\'(%02x)", led_color_number);
+    break;
+  case OSDP_LEDCOLOR_BLUE:
+    sprintf(value, "\'Blue\'(%02x)", led_color_number);
+    break;
+  case OSDP_LEDCOLOR_BLACK:
+    sprintf(value, "Black");
+    break;
+  case OSDP_LEDCOLOR_GREEN:
+    sprintf(value, "Green");
+    break;
+  case OSDP_LEDCOLOR_RED:
+    sprintf(value, "Red");
+    break;
+  };
+  return (value); 
+
+} /* osdp_led_color_lookup */
+
+
+char
   *osdp_message
     (int
       status,
@@ -117,33 +152,30 @@ char
   return (funcname);
 };
 
+/*
+  oosdp_make_message - construct useful log text for output
+
+  used for monitor mode and logging
+*/
 int
   oosdp_make_message
-    (int
-       msgtype,
-    char
-      *logmsg,
-    void
-      *aux)
+    (int msgtype,
+    char *logmsg,
+    void *aux)
     
-{
-  char
-    filename [1024];
+{ /* oosdp_make_message */
+
+  char filename [1024];
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
-  FILE
-    *identf;
-  OSDP_MSG
-    *msg;
+  FILE *identf;
+  OSDP_MSG *msg;
   unsigned short int newdelay;
   unsigned short int newmax;
-  OSDP_HDR
-    *oh;
-  char
-    tlogmsg [1024];
+  OSDP_HDR *oh;
+  char tlogmsg [1024];
   char tmpstr [1024];
-  int
-    status;
+  int status;
   unsigned short int ustmp; // throw-away unsigned short integer (fits a "doubleByte")
   unsigned int utmp; // throw-away unsigned integer (fits a "quadByte")
 
@@ -227,6 +259,70 @@ int
       sprintf (tlogmsg,
 "Keypad Input Rdr %d, %d digits: %s",
         *(msg->data_payload+0), keycount, tmpstr);
+    };
+    break;
+
+  case OOSDP_MSG_LED:
+    {
+      char color_name_off [1024];
+      char color_name_on [1024];
+      int count;
+      int i;
+      int j;
+      OSDP_RDR_LED_CTL *led_ctl;
+      unsigned char *p;
+      char tmpstr [1024];
+
+
+      msg = (OSDP_MSG *) aux;
+
+      // count of LED command structures is inferred from message header
+      oh = (OSDP_HDR *)(msg->ptr);
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - 7;
+      count = count / sizeof (*led_ctl);
+
+      // msg body is one or more of these structures per section 3.10 of 2.1.7
+      led_ctl = (OSDP_RDR_LED_CTL *)(msg->data_payload);
+      tlogmsg [0] = 0;
+
+      sprintf(tmpstr, "LED Control: %d. commands\n", count);
+      strcat(tlogmsg, tmpstr);
+      for (i=0; i<count; i++)
+      {
+        strcpy(color_name_on, osdp_led_color_lookup(led_ctl->temp_on_color));
+        strcpy(color_name_off, osdp_led_color_lookup(led_ctl->temp_off_color));
+        sprintf(tmpstr,
+" %02d Rdr %02d LED %02d Temp %03d.(ms) Ctl=%02d ON=%d(ms)-%s OFF %d(ms)-%s\n",
+          i, led_ctl->reader, led_ctl->led, led_ctl->temp_control,
+          ((led_ctl->temp_timer_msb * 256) + led_ctl->temp_timer_lsb) * 100,
+          led_ctl->temp_on*100, color_name_on,
+          led_ctl->temp_off*100, color_name_off);
+        strcat(tlogmsg, tmpstr);
+        strcpy(color_name_on, osdp_led_color_lookup(led_ctl->perm_on_color));
+        strcpy(color_name_off, osdp_led_color_lookup(led_ctl->perm_off_color));
+        sprintf(tmpstr,
+"                  Perm          Ctl=%02d ON %d(ms)-%s OFF %d(ms)-%s\n",
+          led_ctl->perm_control, led_ctl->perm_on_time*100, color_name_on,
+          led_ctl->perm_off_time, color_name_off);
+        strcat(tlogmsg, tmpstr);
+        if (context.verbosity > 3)
+        {
+          strcpy(tmpstr, "(Raw:");
+          strcat(tlogmsg, tmpstr);
+          tmpstr [0] = 0;
+          p = (unsigned char *)led_ctl;
+          for (j=0; j<16; j++)
+          {
+            sprintf(tmpstr, " %02x", *p);
+            p++;
+            strcat(tlogmsg, tmpstr);
+          };
+          strcat(tlogmsg, ")\n");
+        };
+
+        led_ctl++; // increment structure pointer to next LED
+      };
     };
     break;
 
