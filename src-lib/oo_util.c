@@ -34,25 +34,18 @@
 #include <osdp_conformance.h>
 
 
-extern OSDP_CONTEXT
-  context;
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-extern OSDP_PARAMETERS
-  p_card;
-unsigned int
-  web_color_lookup [16] = {
+extern OSDP_CONTEXT context;
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_PARAMETERS p_card;
+unsigned int web_color_lookup [16] = {
     0x000000, 0xFF0000, 0x00FF00, 0x008080,
     0x444444, 0x550101, 0x660101, 0x770101,
     0x0000FF, 0x010101, 0x010101, 0x010101,
     0x010101, 0x010101, 0x010101, 0x010101,
   };
-time_t
-  previous_time;
-char
-  tlogmsg [1024];
-char
-  tlogmsg2 [1024];
+time_t previous_time;
+char tlogmsg [1024];
+char tlogmsg2 [1024];
 
 
 int
@@ -671,6 +664,7 @@ int
   {
     m->check_size = 1;
     m_check = OSDP_CHECKSUM; // Issue #11
+fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
     osdp_conformance.checksum.test_status =
       OCONFORM_EXERCISED;
   }
@@ -857,9 +851,7 @@ if (context->verbosity > 9)
         {
           strcpy(tlogmsg, osdp_sec_block_dump(p1+5));
           fprintf(context->log, "%s\n", tlogmsg);
-          fprintf (context->log,
-            "  SEC_BLK_LEN %02x SEC_BLK_TYPE %02x SEC_BLK_DATA[0] %02x\n",
-            *(p1+5), *(p1+6), *(p1+7)); fflush (context->log);
+          fflush (context->log);
           // p2 = p1+5+*(p1+5); // before-secblk and secblk
         };
         if (context->verbosity > 3)
@@ -1343,7 +1335,7 @@ int
     break;
   };
   (void) time (&current_time);
-  if ((current_time - previous_time) > 15)
+  if ((current_time - previous_time) > 60) // 15)
   {
     status = oosdp_make_message (OOSDP_MSG_PKT_STATS, tlogmsg, msg);
     if ((status == ST_OK) && do_log)
@@ -2015,8 +2007,6 @@ printf ("MMSG DONE\n");
 
     case OSDP_PDCAP:
       status = action_osdp_PDCAP(context, msg);
-      status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
-      fprintf (context->log, "%s\n", tlogmsg);
       break;
 
     case OSDP_PDID:

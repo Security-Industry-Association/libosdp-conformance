@@ -383,26 +383,53 @@ char *osdp_sec_block_dump
 
 { /* osdp_sec_block_dump */
 
+  int dump_details;
   int i;
   static char sec_block_dump [1024];
   unsigned char sec_block_length;
   unsigned char sec_block_type;
 
+
+  dump_details = 1; // unless we print something pretty dump it
   sec_block_dump [0] = 0;
   sec_block_type = *(sec_block+1);
   sec_block_length = *sec_block;
   switch (sec_block_type)
   {
     case OSDP_SEC_SCS_11:
-      strcat(sec_block_dump, "SCS_11 (Begin Sequence)");
+      if (sec_block [2] EQUALS 1)
+        sprintf(sec_block_dump, "SCS_11 (Begin Sequence) Key: Default");
+      else
+      {
+        if (sec_block [2] EQUALS 0)
+          sprintf(sec_block_dump, "SCS_11 (Begin Sequence) Key: 0");
+        else
+          sprintf(sec_block_dump, "SCS_11 (Begin Sequence) Key: UNKNOWN (0x%x)",
+            sec_block [2]);
+      };
+      dump_details = 0;
+      break;
+    case OSDP_SEC_SCS_12:
+      if (sec_block [2] EQUALS 1)
+        sprintf(sec_block_dump, "SCS_12 Key: Default");
+      else
+      {
+        if (sec_block [2] EQUALS 0)
+          sprintf(sec_block_dump, "SCS_12 Key: 0");
+        else
+          sprintf(sec_block_dump, "SCS_12 Key: UNKNOWN (0x%x)",
+            sec_block [2]);
+      };
+      dump_details = 0;
       break;
     default:
       sprintf(sec_block_dump, "Sec Blk %02x", sec_block_type);
       break;
   };
-  if (sec_block_length > 2)
+  if (dump_details && (sec_block_length > 2))
   {
-    for (i=0; i<sec_block_length; i++)
+    strcat(sec_block_dump, " Details:");
+    for (i=2; i<sec_block_length; i++)
     {
       sprintf(tlogmsg, " %02x", *(2+sec_block));
       strcat(sec_block_dump, tlogmsg);
@@ -543,7 +570,20 @@ int
       fprintf (ctx->log, "send_secure_message: sending(secure) %d\n", *current_length);
        
     send_osdp_data (ctx, test_blk, *current_length);
+
+    {
+      unsigned char log_block [1024];
+      log_block [0] = command;
+      memcpy (log_block+1, test_blk, *current_length);
+      status = oosdp_make_message (OOSDP_MSG_OSDP, tlogmsg, log_block);
+      if (status == ST_OK)
+        status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
+      status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, test_blk);
+      if (status == ST_OK)
+        status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    };
   };
+if (0)
   {
     OSDP_MSG
       m;
@@ -571,8 +611,7 @@ int
           status_monitor);
         status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
       };
-    (void)monitor_osdp_message (ctx, &m);
-    fflush (ctx->log);
+//    (void)monitor_osdp_message (ctx, &m); fflush (ctx->log);
   };
   return (status);
 

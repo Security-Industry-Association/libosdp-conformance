@@ -248,12 +248,9 @@ typedef struct osdp_secure_message
 
 typedef struct osdp_sc_ccrypt
 {
-  unsigned char
-    client_id [8];
-  unsigned char
-    rnd_b [8];
-  unsigned char
-    cryptogram [16];
+  unsigned char client_id [8];
+  unsigned char rnd_b [8];
+  unsigned char cryptogram [16];
 } OSDP_SC_CCRYPT;
 
 #define OSDP_OUT_NOP              (0)
@@ -326,11 +323,12 @@ typedef struct osdp_timer
 #define OSDP_TIMER_RESTARTED (1)
 #define OSDP_TIMER_STOPPED   (-1)
 
-#define OSDP_TIMER_MAX            (4)
-#define OSDP_TIMER_INTERPOLL      (0)
-#define OSDP_TIMER_BACKGROUND     (1)
-#define OSDP_TIMER_LED_0_TEMP_ON  (2)
-#define OSDP_TIMER_LED_0_TEMP_OFF (3)
+#define OSDP_TIMER_MAX            (5)
+#define OSDP_TIMER_STATISTICS     (0)
+#define OSDP_TIMER_RESPONSE       (1)
+#define OSDP_TIMER_SUMMARY        (2)
+#define OSDP_TIMER_LED_0_TEMP_ON  (3)
+#define OSDP_TIMER_LED_0_TEMP_OFF (4)
 
 
 typedef struct osdp_context_filetransfer
@@ -584,6 +582,8 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_FILETRANSFER (7)
 #define OOSDP_MSG_FTSTAT       (8)
 #define OOSDP_MSG_LED          (9)
+#define OOSDP_MSG_CHLNG        (10)
+#define OOSDP_MSG_OSDP         (11)
 
 
 #define OSDP_BUF_MAX (8192)
@@ -895,6 +895,7 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
+char *osdp_command_reply_to_string (unsigned char cmdrep);
 void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
 void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
@@ -902,6 +903,7 @@ void osdp_create_keys (OSDP_CONTEXT *ctx);
 int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
 int osdp_filetransfer_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FILETRANSFER *msg, unsigned short int *fragsize, unsigned int *offset);
 int osdp_ftstat_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *msg);
+int osdp_log_summary(OSDP_CONTEXT *ctx);
 int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);

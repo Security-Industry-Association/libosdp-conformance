@@ -207,6 +207,7 @@ int
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;
   m_check = OSDP_CRC;
+fprintf(stderr, "m_check set to CRC\n");
   m_dump = 0;
   strcpy (p_card.filename, "/dev/ttyUSB0");
   context->next_sequence = 0;
@@ -214,11 +215,12 @@ int
   // timer set-up
 
   previous_time = 0;
-  context->timer_count = 2;
-  context->timer [OSDP_TIMER_BACKGROUND].i_sec = 3;
-  context->timer [OSDP_TIMER_BACKGROUND].i_nsec = 0;
-  context->timer [OSDP_TIMER_INTERPOLL].i_sec = 0;
-  context->timer [OSDP_TIMER_INTERPOLL].i_nsec = 200000000l;
+  context->timer_count = 3;
+  context->timer [OSDP_TIMER_STATISTICS].i_sec = 3;
+  context->timer [OSDP_TIMER_STATISTICS].i_nsec = 0;
+  context->timer [OSDP_TIMER_RESPONSE].i_sec = 0;
+  context->timer [OSDP_TIMER_RESPONSE].i_nsec = 200000000l;
+  context->timer [OSDP_TIMER_SUMMARY].i_sec = 60;
   { 
     struct timespec resolution;
 

@@ -39,6 +39,28 @@ void
 } /* osdp_array_to_quadByte */
 
 
+char
+  *osdp_command_reply_to_string
+    (unsigned char cmdrep)
+
+{ /* osdp_command_reply_to_string */
+
+  static char cmd_rep_s [1024];
+
+  cmd_rep_s [0] = 0;
+  switch (cmdrep)
+  {
+  default:
+    strcpy(cmd_rep_s, "???");
+    break;
+  case OSDP_CHLNG:
+    strcpy(cmd_rep_s, "osdp_CHLNG");
+  };
+  return (cmd_rep_s);
+
+} /* osdp_command_reply_to_string */
+
+
 void
   osdp_doubleByte_to_array
     (unsigned short int i,

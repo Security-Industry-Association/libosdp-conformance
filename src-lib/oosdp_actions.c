@@ -72,11 +72,17 @@ int
     status;
 
   status = ST_OK;
+
+  // display it first.
+  (void)oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
+  fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
+
   memset (iv, 0, sizeof (iv));
 
-  // check for proper state
+  // check for proper state AND secure channel enabled.
 
-  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS 128+OSDP_SEC_SCS_11)
+  if ((ctx->secure_channel_use [OO_SCU_ENAB] EQUALS 128+OSDP_SEC_SCS_11) &&
+    (ctx->enable_secure_channel > 0))
   {
     secure_message = (OSDP_SECURE_MESSAGE *)(msg->ptr);
     if (ctx->enable_secure_channel EQUALS 2)
@@ -521,16 +527,21 @@ int
     switch (entry->function_code)
     {
     case OSDP_CAP_AUDIBLE_OUT:
-      fprintf(ctx->log, "Capability not processed in this CP: Audible Output (%d)\n",
+      fprintf(ctx->log,
+"Capability not processed in this CP: Audible Output (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_CARD_FORMAT:
-      fprintf(ctx->log, "Capability not processed in this CP: Card Format (%d)\n",
+      fprintf(ctx->log,
+"Capability not processed in this CP: Card Format (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_CHECK_CRC:
-      fprintf(ctx->log, "Capability not processed in this CP: Check CRC (%d)\n",
-        entry->function_code);
+      if ((entry->compliance EQUALS 0) && (m_check EQUALS OSDP_CRC))
+      {
+        fprintf(ctx->log,
+"WARNING: Device does not support CRC but CRC configured.\n");
+      };
       break;
     case OSDP_CAP_CONTACT_STATUS:
       fprintf(ctx->log, "Capability not processed in this CP: Contact Status (%d)\n",
@@ -548,8 +559,12 @@ int
       ctx->pd_cap.rec_max = entry->compliance + 256*entry->number_of;
       break;
     case OSDP_CAP_SECURE:
-      fprintf(ctx->log, "Capability not processed in this CP: Secure Channel (%d)\n",
-        entry->function_code);
+      if (entry->compliance EQUALS 0)
+      {
+        if (ctx->enable_secure_channel > 0)
+          fprintf(ctx->log, "Secure Channel not supported by PD, disabling (was enabled.)\n");
+        ctx->enable_secure_channel = 0;
+      };
       break;
     case OSDP_CAP_TEXT_OUT:
       fprintf(ctx->log, "Capability not processed in this CP: Text Output (%d)\n",

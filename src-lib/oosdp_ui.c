@@ -35,16 +35,12 @@
 #include <osdp_conformance.h>
 
 
-extern OSDP_CONTEXT
-  context;
-extern OSDP_OUT_CMD
-  current_output_command [];
-extern OSDP_BUFFER
-  osdp_buf;
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-extern OSDP_PARAMETERS
-  p_card;
+extern OSDP_CONTEXT context;
+extern OSDP_OUT_CMD current_output_command [];
+extern OSDP_BUFFER osdp_buf;
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_PARAMETERS p_card;
+char tlogmsg [1024];
 
 
 int
@@ -432,10 +428,12 @@ fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
             osdp_create_keys (context);
 
           if (status EQUALS ST_OK)
+          {
             status = send_secure_message (context,
               OSDP_CHLNG, p_card.addr, &current_length, 
               sizeof (context->rnd_a), context->rnd_a,
               OSDP_SEC_SCS_11, sizeof (sec_blk), sec_blk);
+          };
         };
       };
       break;

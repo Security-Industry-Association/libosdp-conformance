@@ -27,8 +27,7 @@
 #include <open-osdp.h>
 
 extern OSDP_CONTEXT context;
-extern OSDP_PARAMETERS
-  p_card;
+extern OSDP_PARAMETERS p_card;
 
 
 char
@@ -150,7 +149,30 @@ char
     break;
   };
   return (funcname);
-};
+}
+
+
+/*
+  osdp_log_summary - logs the summary stats
+*/
+
+int
+  osdp_log_summary
+    (OSDP_CONTEXT *ctx)
+
+{ /* osdp_log_summary */
+
+  int status;
+  char tlogmsg [1024];
+
+
+  status = oosdp_make_message (OOSDP_MSG_PKT_STATS, tlogmsg, NULL);
+  if (status == ST_OK)
+    status = oosdp_log (ctx, OSDP_LOG_STRING, 1, tlogmsg);
+  return (ST_OK);
+
+} /* osdp_log_summary */
+
 
 /*
   oosdp_make_message - construct useful log text for output
@@ -165,16 +187,21 @@ int
     
 { /* oosdp_make_message */
 
+  OSDP_SC_CCRYPT *ccrypt_payload;
+  unsigned char *chlng_payload;
   char filename [1024];
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
+  OSDP_HDR *hdr;
   FILE *identf;
   OSDP_MSG *msg;
   unsigned short int newdelay;
   unsigned short int newmax;
   OSDP_HDR *oh;
+  unsigned char osdp_command;
   char tlogmsg [1024];
   char tmpstr [1024];
+  char tmpstr2 [1024];
   int status;
   unsigned short int ustmp; // throw-away unsigned short integer (fits a "doubleByte")
   unsigned int utmp; // throw-away unsigned integer (fits a "quadByte")
@@ -185,7 +212,33 @@ int
   {
   case OOSDP_MSG_CCRYPT:
     msg = (OSDP_MSG *) aux;
-    sprintf (tlogmsg, "CCRYPT stuff...");
+    ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
+    sprintf (tlogmsg,
+"CCRYPT: cUID %02x%02x%02x%02x-%02x%02x%02x%02x RND.B %02x%02x%02x%02x-%02x%02x%02x%02x Client Cryptogram %02x%02x%02x%02x-%02x%02x%02x%02x\n",
+      ccrypt_payload->client_id [0], ccrypt_payload->client_id [1],
+      ccrypt_payload->client_id [2], ccrypt_payload->client_id [3],
+      ccrypt_payload->client_id [4], ccrypt_payload->client_id [5],
+      ccrypt_payload->client_id [6], ccrypt_payload->client_id [7],
+      ccrypt_payload->rnd_b [0], ccrypt_payload->rnd_b [1],
+      ccrypt_payload->rnd_b [2], ccrypt_payload->rnd_b [3],
+      ccrypt_payload->rnd_b [4], ccrypt_payload->rnd_b [5],
+      ccrypt_payload->rnd_b [6], ccrypt_payload->rnd_b [7],
+      ccrypt_payload->cryptogram [0], ccrypt_payload->cryptogram [1],
+      ccrypt_payload->cryptogram [2], ccrypt_payload->cryptogram [3],
+      ccrypt_payload->cryptogram [4], ccrypt_payload->cryptogram [5],
+      ccrypt_payload->cryptogram [6], ccrypt_payload->cryptogram [7]);
+    break;
+
+  case OOSDP_MSG_CHLNG:
+    // in this case 'aux' is a pointer to a marshalled message that's just been sent out the door.
+    hdr = (OSDP_HDR *)aux;
+    chlng_payload = aux + sizeof(*hdr) - sizeof(hdr->command) + 3 /* sec block for SCS_11 osdp_CHNLG */;
+    sprintf (tlogmsg,
+"CHLNG: RND.A %02x%02x%02x%02x-%02x%02x%02x%02x\n",
+      chlng_payload [0], chlng_payload [1],
+      chlng_payload [2], chlng_payload [3],
+      chlng_payload [4], chlng_payload [5],
+      chlng_payload [6], chlng_payload [7]);
     break;
 
   case OOSDP_MSG_FILETRANSFER:
@@ -326,6 +379,18 @@ int
     };
     break;
 
+  // special case - this outputs the basic "Message:.." message
+  case OOSDP_MSG_OSDP:
+    osdp_command = *(unsigned char *)aux;
+    hdr = 1+aux;
+    strcpy(tmpstr, osdp_command_reply_to_string(osdp_command));
+    sprintf(tmpstr2, "Message: %s\n", tmpstr);
+    strcpy(tmpstr, osdp_sec_block_dump(1+aux+sizeof(*hdr)-1));
+    strcat(tlogmsg, tmpstr2);
+    strcat(tlogmsg, tmpstr);
+    strcat(tlogmsg, "\n");
+    break;
+
   case OOSDP_MSG_OUT_STATUS:
     {
       int
@@ -443,7 +508,7 @@ int
     break;
 
   case OOSDP_MSG_PKT_STATS:
-    sprintf (tlogmsg, " CP Polls Sent %6d PD Acks %6d Sent NAKs %6d CkSumErr %6d\n",
+    sprintf (tlogmsg, " CP-Polls %6d PD-Acks %6d PD-NAKs %6d CkSumErr %6d\n",
       context.cp_polls, context.pd_acks, context.sent_naks,
       context.checksum_errs);
     break;
@@ -511,7 +576,7 @@ if (strcmp ("CP", role_tag)==0)
 else
   sprintf (address_suffix, " A=%02x(hex)", p_card.addr);
     sprintf (timestamp,
-"OSDP %s Frame-in:%04d%s\nTimestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
+"OSDP %s RcvFrame:%04d%s\nTimestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
       role_tag, context->packets_received, address_suffix,
       1900+current_cooked_time->tm_year, 1+current_cooked_time->tm_mon,
       current_cooked_time->tm_mday,

@@ -65,14 +65,10 @@ int
 
   status = ST_OK;
   send_poll = 0;
-  fflush(context->log);
   if (context->role EQUALS OSDP_ROLE_CP)
     if (context->xferctx.total_length EQUALS 0)
       send_poll = 1;
 
-  if (context->verbosity > 9)
-    if (context->role EQUALS OSDP_ROLE_CP)
-      fprintf(stderr, "Background (send=%d).\n", send_poll);
   if (send_poll)
   {
     current_length = 0;
@@ -650,8 +646,8 @@ int
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%ld", &i);
     // inter-poll delay time is timer OSDP_TIMER_INTERPOLL (a/k/a "timer 0"), in seconds.
-    context.timer [OSDP_TIMER_INTERPOLL].i_nsec = i;
-    context.timer [OSDP_TIMER_INTERPOLL].i_sec = 0;
+    context.timer [OSDP_TIMER_RESPONSE].i_nsec = i;
+    context.timer [OSDP_TIMER_RESPONSE].i_sec = 0;
   }; 
 
   // parameter "verbosity"
@@ -1028,7 +1024,6 @@ int
        for (i=0; i<*current_length; i++)
          fprintf (context->log, " %02x", test_blk [i]);
        fprintf (context->log, "\n");
-fflush(context->log);
     };
 
     buf [0] = 0xff;
@@ -1039,7 +1034,11 @@ fflush(context->log);
       status = send_osdp_data (context, test_blk, *current_length);
   };
   if (status EQUALS ST_OK)
+  {
+    context->timer [OSDP_TIMER_RESPONSE].current_nanoseconds = context->timer [OSDP_TIMER_RESPONSE].i_nsec;
+    context->timer [OSDP_TIMER_RESPONSE].status = OSDP_TIMER_RUNNING;
     context->last_command_sent = command;
+  };
 
   return (status);
 
