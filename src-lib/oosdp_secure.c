@@ -31,8 +31,8 @@
 #include <osdp-tls.h>
 #include <open-osdp.h>
 
-extern OSDP_CONTEXT
-  context;
+extern OSDP_CONTEXT context;
+char tlogmsg [1024];
 
 
 void
@@ -373,6 +373,45 @@ void
   fprintf (ctx->log, "Resetting Secure Channel\n");
 
 } /* osdp_reset_secure_channel */
+
+
+// return a string to dump containing the security block.
+// does not include a trailing newline.
+
+char *osdp_sec_block_dump
+  (unsigned char *sec_block)
+
+{ /* osdp_sec_block_dump */
+
+  int i;
+  static char sec_block_dump [1024];
+  unsigned char sec_block_length;
+  unsigned char sec_block_type;
+
+  sec_block_dump [0] = 0;
+  sec_block_type = *(sec_block+1);
+  sec_block_length = *sec_block;
+  switch (sec_block_type)
+  {
+    case OSDP_SEC_SCS_11:
+      strcat(sec_block_dump, "SCS_11 (Begin Sequence)");
+      break;
+    default:
+      sprintf(sec_block_dump, "Sec Blk %02x", sec_block_type);
+      break;
+  };
+  if (sec_block_length > 2)
+  {
+    for (i=0; i<sec_block_length; i++)
+    {
+      sprintf(tlogmsg, " %02x", *(2+sec_block));
+      strcat(sec_block_dump, tlogmsg);
+    }
+  };
+
+  return (sec_block_dump);
+
+} /* osdp_sec_block_dump */
 
 
 int

@@ -135,6 +135,14 @@ if (ctx->verbosity > 8)
   }
   else
     status = ST_OSDP_SC_WRONG_STATE;
+
+  // if there was an error reset the secure channel and let the world continue
+  if (status != ST_OK)
+  {
+    fprintf(ctx->log, "Error processing CCRYPT.  Secure Channel reset.\n");
+    status = ST_OK;
+    osdp_reset_secure_channel (ctx);
+  };
   return (status);
 
 } /* action_osdp_CCRYPT */
@@ -512,12 +520,48 @@ int
   {
     switch (entry->function_code)
     {
+    case OSDP_CAP_AUDIBLE_OUT:
+      fprintf(ctx->log, "Capability not processed in this CP: Audible Output (%d)\n",
+        entry->function_code);
+      break;
+    case OSDP_CAP_CARD_FORMAT:
+      fprintf(ctx->log, "Capability not processed in this CP: Card Format (%d)\n",
+        entry->function_code);
+      break;
+    case OSDP_CAP_CHECK_CRC:
+      fprintf(ctx->log, "Capability not processed in this CP: Check CRC (%d)\n",
+        entry->function_code);
+      break;
+    case OSDP_CAP_CONTACT_STATUS:
+      fprintf(ctx->log, "Capability not processed in this CP: Contact Status (%d)\n",
+        entry->function_code);
+      break;
+    case OSDP_CAP_LED_CONTROL:
+      fprintf(ctx->log, "Capability not processed in this CP: LED Control (%d)\n",
+        entry->function_code);
+      break;
+    case OSDP_CAP_OUTPUT_CONTROL:
+      fprintf(ctx->log, "Capability not processed in this CP: Output Control (%d)\n",
+        entry->function_code);
+      break;
     case OSDP_CAP_REC_MAX:
       ctx->pd_cap.rec_max = entry->compliance + 256*entry->number_of;
       break;
+    case OSDP_CAP_SECURE:
+      fprintf(ctx->log, "Capability not processed in this CP: Secure Channel (%d)\n",
+        entry->function_code);
+      break;
+    case OSDP_CAP_TEXT_OUT:
+      fprintf(ctx->log, "Capability not processed in this CP: Text Output (%d)\n",
+        entry->function_code);
+      break;
+    case OSDP_CAP_TIME_KEEPING:
+      fprintf(ctx->log, "Capability not processed in this CP: Time Keeping (%d)\n",
+        entry->function_code);
+      break;
     default:
       status = ST_OSDP_UNKNOWN_CAPABILITY;
-fprintf(stderr, "unimplemented capability: 0x%02x\n", entry->function_code);
+      fprintf(ctx->log, "unknown capability: 0x%02x\n", entry->function_code);
       status = ST_OK;
       break;
     };

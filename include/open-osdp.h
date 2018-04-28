@@ -206,7 +206,16 @@ typedef struct osdp_pdcap_entry
   unsigned char compliance;
   unsigned char number_of;
 } OSDP_PDCAP_ENTRY;
-#define OSDP_CAP_REC_MAX (10)
+#define OSDP_CAP_CONTACT_STATUS (1)
+#define OSDP_CAP_OUTPUT_CONTROL (2)
+#define OSDP_CAP_CARD_FORMAT    (3)
+#define OSDP_CAP_LED_CONTROL    (4)
+#define OSDP_CAP_AUDIBLE_OUT    (5)
+#define OSDP_CAP_TEXT_OUT       (6)
+#define OSDP_CAP_TIME_KEEPING   (7)
+#define OSDP_CAP_CHECK_CRC      (8)
+#define OSDP_CAP_SECURE         (9)
+#define OSDP_CAP_REC_MAX        (10)
 typedef struct osdp_pd_capability
 {
   unsigned int rec_max;
@@ -896,6 +905,7 @@ int osdp_ftstat_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *msg);
 int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
+char *osdp_sec_block_dump (unsigned char *sec_block);
 int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

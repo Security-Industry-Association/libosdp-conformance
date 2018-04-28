@@ -796,13 +796,11 @@ int
     {
       if ((m->msg_cmd != OSDP_FILETRANSFER) && (m->msg_cmd != OSDP_FTSTAT))
       {
-fprintf(stderr, "d 1 at 799\n");
         display = 1;
       };
       if ((m->msg_cmd EQUALS OSDP_FILETRANSFER) &&
           (context->xferctx.current_offset EQUALS 0))
       {
-fprintf(stderr, "d 1 at 802\n");
         display = 1;
       };
       if (m->msg_cmd EQUALS OSDP_FTSTAT)
@@ -857,6 +855,8 @@ if (context->verbosity > 9)
         // p2 = p1+5; // command/reply
         if (p->ctrl & 0x08)
         {
+          strcpy(tlogmsg, osdp_sec_block_dump(p1+5));
+          fprintf(context->log, "%s\n", tlogmsg);
           fprintf (context->log,
             "  SEC_BLK_LEN %02x SEC_BLK_TYPE %02x SEC_BLK_DATA[0] %02x\n",
             *(p1+5), *(p1+6), *(p1+7)); fflush (context->log);

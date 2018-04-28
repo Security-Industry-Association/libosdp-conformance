@@ -29,10 +29,10 @@ LDFLAGS=-g -L /tester/current/lib
 CGIPROGS = \
   open-osdp-CP-status open-osdp-PD-status send-osdp-command \
   start-CP-485 start-PD-485 start-MON-485 \
-  tail-CP-log tail-MON-log tail-PD-log \
+  tail-CP-log tail-CP-stderr tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
 CGISCRIPTS = conformance-report \
-  do-buzz do-comset do-confirm do-keypad do-led do-text \
+  do-buzz do-comset do-confirm do-init-secure do-keypad do-led do-text \
   do-transfer do-verb-cp do-verb-pd \
   conformance-CP-comset conformance-testing-CP conformance-testing-PD
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
@@ -128,6 +128,9 @@ send-osdp-command.o:	send-osdp-command.c
 
 tail-CP-log:	tail-CP-log.sh
 	cp tail-CP-log.sh tail-CP-log
+
+tail-CP-stderr:	tail-CP-stderr.sh
+	cp tail-CP-stderr.sh tail-CP-stderr
 
 start-MON-485:	start-MON-485.sh
 	cp start-MON-485.sh start-MON-485
