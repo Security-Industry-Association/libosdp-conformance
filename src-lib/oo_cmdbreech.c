@@ -413,7 +413,22 @@ int
     if (0 EQUALS strcmp (current_command, "led"))
     {
       cmd->command = OSDP_CMDB_LED;
+
+      // set up details with the default values (and then tune that if there are parameters)
+
+      cmd->details [0] = thing1_GREEN; // assume permanent on color is GREEN
       cmd->details [1] = 0; // assume LED 0
+      cmd->details [2] = thing1_PERM_DETAILS; // nonzero if we set perm values
+      cmd->details [3] = 30; // assume 30x100ms perm on time
+      cmd->details [4] = 0; // assume 0 seconds off time
+      cmd->details [5] = thing1_BLACK; // assume perm off color is BLACK
+      // 6-13 will hold temp values
+// 6 temp enable
+// 7 temp on time 3
+// 8 temp off time 3
+// 9 temp on color RED
+// 10 temp off color BLACK
+// 11 blink_duration 15
 
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
