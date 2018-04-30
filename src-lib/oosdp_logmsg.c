@@ -346,16 +346,17 @@ int
         strcpy(color_name_on, osdp_led_color_lookup(led_ctl->temp_on_color));
         strcpy(color_name_off, osdp_led_color_lookup(led_ctl->temp_off_color));
         sprintf(tmpstr,
-" %02d Rdr %02d LED %02d Temp %03d.(ms) Ctl=%02d ON=%d(ms)-%s OFF %d(ms)-%s\n",
-          i, led_ctl->reader, led_ctl->led, led_ctl->temp_control,
-          ((led_ctl->temp_timer_msb * 256) + led_ctl->temp_timer_lsb) * 100,
+" %02d Rdr %02d LED %02d Temp Ctl=%02d ON=%d(ms)-%s OFF %d(ms)-%s blinkTime %d.(ms)\n",
+          i, led_ctl->reader, led_ctl->led,
+          led_ctl->temp_control,
           led_ctl->temp_on*100, color_name_on,
-          led_ctl->temp_off*100, color_name_off);
+          led_ctl->temp_off*100, color_name_off,
+          ((led_ctl->temp_timer_msb * 256) + led_ctl->temp_timer_lsb) * 100);
         strcat(tlogmsg, tmpstr);
         strcpy(color_name_on, osdp_led_color_lookup(led_ctl->perm_on_color));
         strcpy(color_name_off, osdp_led_color_lookup(led_ctl->perm_off_color));
         sprintf(tmpstr,
-"                  Perm          Ctl=%02d ON %d(ms)-%s OFF %d(ms)-%s\n",
+"                  Perm Ctl=%02d ON %d(ms)-%s OFF %d(ms)-%s\n",
           led_ctl->perm_control, led_ctl->perm_on_time*100, color_name_on,
           led_ctl->perm_off_time, color_name_off);
         strcat(tlogmsg, tmpstr);

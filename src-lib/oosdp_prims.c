@@ -198,3 +198,24 @@ int
 
 } /* osdp_send_ftstat */
 
+
+int osdp_validate_led_values
+      (OSDP_RDR_LED_CTL *leds,
+      unsigned char *errdeets,
+      int *elth)
+
+{ /* osdp_validate_led_values */
+
+  int status;
+
+
+  status = ST_OK;
+  if (leds->reader != 0)
+  {
+    errdeets[0] = OO_NAK_CMD_UNABLE;
+    *elth = 1;
+  };
+  return (status);
+
+} /* osdp_validate_led_values */
+

@@ -62,6 +62,7 @@ int
     *parameter;
   json_t
     *root;
+  int set_led_temp;
   json_error_t
     status_json;
   int
@@ -412,41 +413,93 @@ int
   {
     if (0 EQUALS strcmp (current_command, "led"))
     {
+      OSDP_RDR_LED_CTL *led_ctl;
+
       cmd->command = OSDP_CMDB_LED;
-
-      // set up details with the default values (and then tune that if there are parameters)
-
-      cmd->details [0] = thing1_GREEN; // assume permanent on color is GREEN
-      cmd->details [1] = 0; // assume LED 0
-      cmd->details [2] = thing1_PERM_DETAILS; // nonzero if we set perm values
-      cmd->details [3] = 30; // assume 30x100ms perm on time
-      cmd->details [4] = 0; // assume 0 seconds off time
-      cmd->details [5] = thing1_BLACK; // assume perm off color is BLACK
-      // 6-13 will hold temp values
-// 6 temp enable
-// 7 temp on time 3
-// 8 temp off time 3
-// 9 temp on color RED
-// 10 temp off color BLACK
-// 11 blink_duration 15
+      /*
+        "details" is an OSDP_RDR_LED_CTL structure.
+        set up details with the default values (and then tune that if there
+        are parameters with the command.)
+      */
+      led_ctl = (OSDP_RDR_LED_CTL *)(cmd->details);
+      set_led_temp = 0;
+      led_ctl->led           = 0;
+      led_ctl->perm_control  = OSDP_LED_SET;
+      led_ctl->perm_off_time = 0;
+      led_ctl->perm_off_color = OSDP_LEDCOLOR_BLACK;
+      led_ctl->perm_on_color  = OSDP_LEDCOLOR_GREEN;
+      led_ctl->perm_on_time   = 30;
+      led_ctl->reader         = 0;
+      led_ctl->temp_control   = OSDP_LED_TEMP_NOP;
+      led_ctl->temp_off       = 3;
+      led_ctl->temp_off_color = OSDP_LEDCOLOR_GREEN;
+      led_ctl->temp_on        = 3;
+      led_ctl->temp_on_color  = OSDP_LEDCOLOR_RED;
+      led_ctl->temp_timer_lsb = 30;
+      led_ctl->temp_timer_msb = 0;
 
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
 
-      value = json_object_get (root, "perm_on_color");
-      if (json_is_string (value))
-      {
-        strcpy (vstr, json_string_value (value));
-        sscanf (vstr, "%d", &i);
-        cmd->details [0] = i;
-      };
       value = json_object_get (root, "led_number");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
-        cmd->details [1] = i;
+        led_ctl->led = i;
+      };
+      value = json_object_get (root, "perm_on_color");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->perm_on_color = i;
+      };
+      value = json_object_get (root, "temp_off_color");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->temp_off_color = i;
+        set_led_temp = 1;
+      };
+      value = json_object_get (root, "temp_off");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->temp_off = i;
+        set_led_temp = 1;
+      };
+      value = json_object_get (root, "temp_on");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->temp_on = i;
+        set_led_temp = 1;
+      };
+      value = json_object_get (root, "temp_on_color");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->temp_on_color = i;
+        set_led_temp = 1;
+      };
+      value = json_object_get (root, "temp_timer");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->temp_timer_lsb = i & 0xff;
+        led_ctl->temp_timer_msb = i >> 8;
+        set_led_temp = 1;
+      };
+      if (set_led_temp)
+      {
+        led_ctl->temp_control = OSDP_LED_TEMP_SET;
       };
     };
   }; 
@@ -623,6 +676,8 @@ int
 
   if (cmdf != NULL)
     fclose (cmdf);
+  if (status != ST_OK)
+    fprintf(stderr, "Status %d at read_command.\n", status);
   return (status);
 
 } /* read_command */

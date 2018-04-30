@@ -498,30 +498,38 @@ fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
 
     case OSDP_CMDB_LED:
       {
+        int details_length;
+        unsigned char error_details [1024];
         OSDP_RDR_LED_CTL
           led_control_message;
 
-        memset (&led_control_message, 0, sizeof (led_control_message));
-        /*
-          assume reader 0
-          assume LED 0
-          assume permanent (temp control 0)
-          assume on time is 3 sec (30x100 ms)
-          assume off time is 0
-          assume off LED color is BLACK
-        */
-        led_control_message.led = details [1];
-        led_control_message.perm_control = OSDP_LED_SET;
-        led_control_message.perm_on_time = 30;
-        led_control_message.perm_off_time = 0;
-        led_control_message.perm_on_color = details [0];
-        led_control_message.perm_off_color = OSDP_LEDCOLOR_BLACK;
-        current_length = 0;
-        status = send_message (context,
-          OSDP_LED, p_card.addr, &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message);
-        if (context->verbosity > 3)
-          fprintf (stderr, "Requesting LED tmp ctl %02x perm ctl %02x perm color %02x\n",
-            0, 0, led_control_message.perm_on_color);
+        memcpy (&led_control_message, details, sizeof (led_control_message));
+        details_length = sizeof (error_details);
+        status = osdp_validate_led_values (&led_control_message,
+          error_details, &details_length);
+        if (status EQUALS ST_OK)
+        {
+          current_length = 0;
+          status = send_message (context,
+            OSDP_LED, p_card.addr, &current_length,
+            sizeof (led_control_message),
+            (unsigned char *)&led_control_message);
+        }
+        else
+        {
+          int nak_length;
+          unsigned char osdp_nak_response_data [1024];
+
+          current_length = 0;
+          osdp_nak_response_data [0] = OO_NAK_CMD_UNABLE;
+          osdp_nak_response_data [1] = error_details [0]; // temp error
+          osdp_nak_response_data [2] = error_details [1]; // perm error
+          nak_length = 3;
+          status = send_message (context,
+            OSDP_NAK, p_card.addr, &current_length, nak_length,
+            osdp_nak_response_data);
+          context->sent_naks ++;
+        };
       };
       break;
 

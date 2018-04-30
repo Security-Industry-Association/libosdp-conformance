@@ -1868,6 +1868,7 @@ fprintf(stderr, "lstat 1684\n");
 
     case OSDP_NAK:
       status = ST_OK;
+      context->sent_naks ++;
       context->last_nak_error = *(0+msg->data_payload);
 
       if (context->verbosity > 2)

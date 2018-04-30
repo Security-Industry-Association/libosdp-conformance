@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD (22)
+#define OSDP_VERSION_BUILD (23)
 
 // default configuration
 
@@ -125,6 +125,7 @@
 // NAK error codes
 #define OO_NAK_CHECK_CRC (1)
 #define OO_NAK_UNK_CMD   (3)
+#define OO_NAK_CMD_UNABLE (9)
 
 #define OSDP_MENU_TOP     (0x0000)
 #define OSDP_MENU_CP_DIAG (0x0100)
@@ -629,34 +630,20 @@ typedef struct osdp_hdr
 
 typedef struct osdp_rdr_led_ctl
 {
-  unsigned char
-    reader;
-  unsigned char
-    led;
-  unsigned char
-    temp_control;
-  unsigned char
-    temp_on;
-  unsigned char
-    temp_off;
-  unsigned char
-    temp_on_color;
-  unsigned char
-    temp_off_color;
-  unsigned char
-    temp_timer_lsb;
-  unsigned char
-    temp_timer_msb;
-  unsigned char
-    perm_control;
-  unsigned char
-    perm_on_time;
-  unsigned char
-    perm_off_time;
-  unsigned char
-    perm_on_color;
-  unsigned char
-    perm_off_color;
+  unsigned char reader;
+  unsigned char led;
+  unsigned char temp_control;
+  unsigned char temp_on;
+  unsigned char temp_off;
+  unsigned char temp_on_color;
+  unsigned char temp_off_color;
+  unsigned char temp_timer_lsb;
+  unsigned char temp_timer_msb;
+  unsigned char perm_control;
+  unsigned char perm_on_time;
+  unsigned char perm_off_time;
+  unsigned char perm_on_color;
+  unsigned char perm_off_color;
 } OSDP_RDR_LED_CTL;
 
 #define OSDP_LED_TEMP_NOP    (0)
@@ -912,6 +899,8 @@ int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
+int osdp_validate_led_values
+      (OSDP_RDR_LED_CTL *leds, unsigned char *errdeets, int *elth);
 void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
