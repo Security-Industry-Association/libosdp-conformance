@@ -28,6 +28,8 @@
 #define OSDP_VERSION_MINOR ( 2)
 #define OSDP_VERSION_BUILD (23)
 
+#define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
+
 // default configuration
 
 #define OOSDP_CFG_INPUTS (8)
@@ -348,6 +350,7 @@ typedef struct osdp_context_filetransfer
 
 typedef struct osdp_context
 {
+  int process_lock; // file handle to exclusivity lock
   // configuration
   int
     disable_certificate_checking;

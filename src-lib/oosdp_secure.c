@@ -388,6 +388,7 @@ char *osdp_sec_block_dump
   static char sec_block_dump [1024];
   unsigned char sec_block_length;
   unsigned char sec_block_type;
+  char tmsg [1024];
 
 
   dump_details = 1; // unless we print something pretty dump it
@@ -407,6 +408,11 @@ char *osdp_sec_block_dump
           sprintf(sec_block_dump, "SCS_11 (Begin Sequence) Key: UNKNOWN (0x%x)",
             sec_block [2]);
       };
+      if (sec_block_length > 3)
+      {
+        sprintf(tmsg, " Note: Sec Block too long (%d.)", sec_block_length);
+        strcat(sec_block_dump, tmsg);
+      };
       dump_details = 0;
       break;
     case OSDP_SEC_SCS_12:
@@ -419,6 +425,11 @@ char *osdp_sec_block_dump
         else
           sprintf(sec_block_dump, "SCS_12 Key: UNKNOWN (0x%x)",
             sec_block [2]);
+      };
+      if (sec_block_length > 3)
+      {
+        sprintf(tmsg, " Note: Sec Block too long (%d.)", sec_block_length);
+        strcat(sec_block_dump, tmsg);
       };
       dump_details = 0;
       break;

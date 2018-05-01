@@ -189,6 +189,7 @@ int
 
   OSDP_SC_CCRYPT *ccrypt_payload;
   unsigned char *chlng_payload;
+  int count;
   char filename [1024];
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
@@ -400,9 +401,12 @@ int
       char tmpstr [1024];
 
       msg = (OSDP_MSG *) aux;
+      oh = (OSDP_HDR *)(msg->ptr);
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - 8;
       tlogmsg [0] = 0;
       out_status = msg->data_payload;
-      for (i=0; i<OSDP_MAX_OUT; i++)
+      for (i=0; i<count; i++)
       {
         sprintf (tmpstr, " Out-%02d = %d\n",
           i, out_status [i]);
@@ -413,8 +417,6 @@ int
 
   case OOSDP_MSG_PD_CAPAS:
     {
-      int
-        count;
       int
         i;
       OSDP_HDR

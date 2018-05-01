@@ -30,6 +30,7 @@
 #include <errno.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/file.h>
 
 
 #include <osdp-tls.h>
@@ -52,12 +53,9 @@ int
 
 { /* init_serial */
 
-  char
-    command [1024];
-  int
-    status;
-  int
-    status_io;
+  char command [1024];
+  int status;
+  int status_io;
 
   if (context->verbosity > 3)
     printf ("init_serial: command %s\n",
@@ -188,6 +186,20 @@ int
 
   status = ST_OK;
   memset (&osdp_conformance, 0, sizeof (osdp_conformance));
+
+  // create the lock, exclusively, for just this user
+  context->process_lock = open(OSDP_EXCLUSIVITY_LOCK,
+    O_CREAT | O_WRONLY, S_IRWXU);
+  if (context->process_lock < 0)
+    status = -1;
+  if (status EQUALS ST_OK)
+  {
+    status_io = flock(context->process_lock, LOCK_EX | LOCK_NB);
+    if (status_io EQUALS -1)
+    status = -2;
+  };
+  if (status EQUALS ST_OK)
+  {
 
   osdp_conformance.last_unknown_command = OSDP_POLL;
   context->mmsgbuf = multipart_message_buffer_1;
@@ -358,6 +370,8 @@ fprintf(stderr, "m_check set to CRC\n");
   
   memset (&osdp_buf, 0, sizeof (osdp_buf));
   context->current_menu = OSDP_MENU_TOP;
+
+  }; // end lock file not found
 
   if (status EQUALS ST_OK)
     status = write_status (context);

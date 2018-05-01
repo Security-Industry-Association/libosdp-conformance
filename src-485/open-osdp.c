@@ -114,6 +114,7 @@ int
   if (status EQUALS ST_OK)
   {
     memset (&context, 0, sizeof (context));
+    context.current_menu = OSDP_MENU_TOP;
     strcpy (context.init_parameters_path, "open-osdp-params.json");
     strcpy (context.log_path, "osdp.log");
 
@@ -123,23 +124,25 @@ int
       strcpy (context.init_parameters_path, argv [1]);
     };
     status = initialize_osdp (&context);
-    context.current_menu = OSDP_MENU_TOP;
   };
 
-  // set things up depending on role.
+  if (status EQUALS ST_OK)
+  {
+    // set things up depending on role.
 
-  strcpy (tag, "PD");
-  if (context.role EQUALS OSDP_ROLE_CP)
-    strcpy (tag, "CP");
-  if (context.role EQUALS OSDP_ROLE_MONITOR)
-    strcpy (tag, "MON");
-  sprintf (context.command_path,
-    "/opt/osdp-conformance/run/%s/open_osdp_command.json", tag);
-  // initialize my current pid
-  my_pid = getpid ();
-  sprintf (command, OSPD_LCL_SET_PID_TEMPLATE,
-    tag, my_pid);
-  system (command);
+    strcpy (tag, "PD");
+    if (context.role EQUALS OSDP_ROLE_CP)
+      strcpy (tag, "CP");
+    if (context.role EQUALS OSDP_ROLE_MONITOR)
+      strcpy (tag, "MON");
+    sprintf (context.command_path,
+      "/opt/osdp-conformance/run/%s/open_osdp_command.json", tag);
+    // initialize my current pid
+    my_pid = getpid ();
+    sprintf (command, OSPD_LCL_SET_PID_TEMPLATE,
+      tag, my_pid);
+    system (command);
+  };
 
   if (status EQUALS ST_OK)
   {
@@ -167,43 +170,35 @@ int
 
 { /* main for open-osdp */
 
-  int
-    c1;
-  int
-    done;
-  fd_set
-    exceptfds;
-  fd_set
-    readfds;
-  int
-    scount;
-  const sigset_t
-    sigmask;
-  int
-    status;
-  int
-    status_io;
-  int
-    status_select;
-  struct timespec
-    timeout;
-  int
-    ufd;
-  fd_set
-    writefds;
+  int c1;
+  int done;
+  fd_set exceptfds;
+  fd_set readfds;
+  int scount;
+  const sigset_t sigmask;
+  int status;
+  int status_io;
+  int status_select;
+  struct timespec timeout;
+  int ufd;
+  fd_set writefds;
 
 
   status = ST_OK;
   status = initialize (argc, argv);
-  memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
-  done = 0;
-  fprintf (stderr, "role %02x\n",
-    context.role);
+  if (status EQUALS ST_OK)
+  {
+    memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
+    done = 0;
+    fprintf (stderr, "role %02x\n",
+      context.role);
+  };
   if (status != ST_OK)
     done = 1;
 
   // set up a unix socket so commands can be injected
 
+  if (!done)
   {
     char
       sn [1024];
@@ -235,8 +230,8 @@ int
           status_socket = listen (ufd, 0);
       };
     };
+    check_serial (&context);
   };
-check_serial (&context);
   while (!done)
   {
     fflush (context.log);

@@ -853,13 +853,25 @@ int
   status = write_status (ctx);
   if (bits EQUALS 26)
   {
-    fprintf (ctx->log, "CARD DATA (%d bits):", bits);
-    fprintf (ctx->log,
-      " %02x-%02x-%02x-%02x\n",
-      *(raw_data+0),
-      *(raw_data+1),
-      *(raw_data+2),
-      *(raw_data+3));
+    int idx;
+    int bits_to_print;
+
+    bits_to_print = bits;
+    fprintf(ctx->log, "CARD DATA (%d bits): %02x", bits, raw_data [0]);
+    if (bits_to_print > 8)
+      bits_to_print = bits_to_print - 8;
+    else
+      bits_to_print = 0;
+    while (bits_to_print > 0)
+    {
+      fprintf(ctx->log, "-%02x", raw_data [idx]);
+      idx++;
+      if (bits_to_print > 8)
+        bits_to_print = bits_to_print - 8;
+      else
+        bits_to_print = 0;
+    };
+    fprintf(ctx->log, "\n");
     processed = 1;
     system("sudo mpg123 /opt/osdp-conformance/etc/beep.mp3");
   };
