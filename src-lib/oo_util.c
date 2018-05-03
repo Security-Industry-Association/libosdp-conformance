@@ -2076,6 +2076,11 @@ printf ("MMSG DONE\n");
   } /* role CP */
   if (status EQUALS ST_MSG_UNKNOWN)
     osdp_conformance.last_unknown_command = msg->msg_cmd;
+  if (status != ST_OK)
+  {
+    fprintf(context->log, "Error %d. in process_osdp_message, recovering.\n", status);
+    status = ST_OK;
+  };
 
   fflush (context->log);
   return (status);

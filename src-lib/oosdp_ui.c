@@ -223,6 +223,7 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
 
           context->xferctx.xferf = osdp_data_file;
           stat(data_filename, &datafile_status);
+fprintf(stderr, "data file %s size %d.\n", data_filename, (int)datafile_status.st_size);
           context->xferctx.total_length = datafile_status.st_size;
           context->xferctx.current_offset = 0; // should be set already but just in case.
 
@@ -261,7 +262,8 @@ fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
           context->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
           current_length = 0;
           transfer_send_size = size_to_read;
-          transfer_send_size = transfer_send_size - 1 + sizeof (file_transfer);
+          transfer_send_size = transfer_send_size - 1 + sizeof (*file_transfer);
+fprintf(stderr, "xfer size %d.\n", transfer_send_size);
           status = send_message (context,
             OSDP_FILETRANSFER, p_card.addr, &current_length,
             transfer_send_size, (unsigned char *)file_transfer);

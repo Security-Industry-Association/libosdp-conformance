@@ -149,23 +149,29 @@ typedef struct osdp_interop_assessment
 #define SET_PASS(ctx,testnum) \
   { \
     (void) osdp_conform_confirm (testnum); \
-    fprintf (stderr, \
-      "********Test %s PASSED********\n", \
-      testnum); \
-    fprintf (ctx->log, \
-      "********Test %s PASSED********\n", \
-      testnum); \
+    if (ctx->role != OSDP_ROLE_MONITOR) \
+    { \
+      fprintf (stderr, \
+        "********Test %s PASSED********\n", \
+        testnum); \
+      fprintf (ctx->log, \
+        "********Test %s PASSED********\n", \
+        testnum); \
+    }; \
     ctx->test_in_progress [0] = 0; \
   };
 #define SET_FAIL(ctx,testnum) \
   { \
     (void) osdp_conform_fail (testnum); \
-    fprintf (stderr, \
-      "********Test %s FAILED********\n", \
-      testnum); \
-    fprintf (ctx->log, \
-      "********Test %s FAILED********\n", \
-      testnum); \
+    if (ctx->role != OSDP_ROLE_MONITOR) \
+    { \
+      fprintf (stderr, \
+        "********Test %s FAILED********\n", \
+        testnum); \
+      fprintf (ctx->log, \
+        "********Test %s FAILED********\n", \
+        testnum); \
+    }; \
     ctx->test_in_progress [0] = 0; \
   };
 
