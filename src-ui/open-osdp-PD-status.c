@@ -172,6 +172,11 @@ int
       (unsigned long int)current_time_fine.tv_sec, current_time_fine.tv_nsec,
       asctime (localtime (&current_time)));
 
+  printf("PD Config:\n");
+  fflush(stdout);
+  system
+    ("cd /opt/osdp-conformance/run/PD;/opt/osdp-conformance/bin/osdp-config-print");
+  printf("PD Status Block:\n");
   if (strlen (buffer) > 0)
   {
     printf ("%s", buffer);

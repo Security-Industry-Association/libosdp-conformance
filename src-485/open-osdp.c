@@ -327,23 +327,24 @@ int
       {
         unsigned char buffer [2];
         status_io = read (context.fd, buffer, 1);
-      if (status_io < 1)
-      {
-        //status = ST_SERIAL_READ_ERR;
-        // continue if it was a serial error
-        status = ST_OK;
-      }
-      else
-      {
-        if (context.verbosity > 9)
-          fprintf (stderr, "485 read returned %d bytes\n",
-            status_io);
-
-        status = ST_SERIAL_IN;
-        if (osdp_buf.next < sizeof (osdp_buf.buf))
+        if (status_io < 1)
         {
-          osdp_buf.buf [osdp_buf.next] = buffer [0];
-          osdp_buf.next ++;
+          // continue if it was a serial error
+          status = ST_OK;
+        }
+        else
+        {
+          if (context.verbosity > 8)
+            fprintf(context.log, "RAW SERIAL: %02x\n", buffer [0]);
+          if (context.verbosity > 9)
+            fprintf (stderr, "485 read returned %d bytes\n",
+              status_io);
+
+          status = ST_SERIAL_IN;
+          if (osdp_buf.next < sizeof (osdp_buf.buf))
+          {
+            osdp_buf.buf [osdp_buf.next] = buffer [0];
+            osdp_buf.next ++;
 
           // if we're reading noise dump bytes until a clean header starts
 

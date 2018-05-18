@@ -21,10 +21,11 @@
 
 # built with gcc.  note it also builds with clang.
 
-CFLAGS=-DOSDP_CONFORMANCE
-CC=gcc ${CFLAGS}
-#CC=clang ${CFLAGS}
-LDFLAGS=-g -L /tester/current/lib
+CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include
+#CC=gcc ${CFLAGS}
+CC=clang
+LINK=clang
+LDFLAGS=-g -L /opt/tester/lib -ljansson
 
 CGIPROGS = \
   open-osdp-CP-status open-osdp-PD-status send-osdp-command \
@@ -38,7 +39,7 @@ CGISCRIPTS = conformance-report \
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
 
-PROGS = open-osdp-kick
+PROGS = open-osdp-kick osdp-config-print
 TLS_PROGS = 
 
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
@@ -82,15 +83,21 @@ build-tls:	${TLS_CGIPROGS} ${TLS_PAGES} ${TLS_SCRIPTS} ${TLS_PROGS} build
 build-test:	build
 	(cd ../test; make build-test)
 
+osdp-config-print:	osdp-config-print.o Makefile
+	${LINK} -o osdp-config-print osdp-config-print.o ${LDFLAGS}
+
+osdp-config-print.o:	osdp-config-print.c ${INCLUDES}
+	${CC} ${CFLAGS} osdp-config-print.c
+
 open-osdp-CP-status:	open-osdp-CP-status.o Makefile
-	${CC} -o open-osdp-CP-status -g open-osdp-CP-status.o -lrt
+	${LINK} -o open-osdp-CP-status -g open-osdp-CP-status.o -lrt
 
 open-osdp-PD-status:	open-osdp-PD-status.o Makefile
-	${CC} ${LDFLAGS} -o open-osdp-PD-status open-osdp-PD-status.o \
+	${LINK} ${LDFLAGS} -o open-osdp-PD-status open-osdp-PD-status.o \
 	  -ljansson -lrt
 
 send-osdp-command:	send-osdp-command.o Makefile
-	${CC} -o send-osdp-command -g send-osdp-command.o
+	${LINK} -o send-osdp-command -g send-osdp-command.o
 
 start-CP-tcp-client:	start-CP-tcp-client.sh
 	cp start-CP-tcp-client.sh start-CP-tcp-client
@@ -108,10 +115,10 @@ start-PD-485:	start-PD-485.sh
 	cp start-PD-485.sh start-PD-485
 
 open-osdp-kick:	open-osdp-kick.o Makefile
-	${CC} -o open-osdp-kick -g open-osdp-kick.o
+	${LINK} -o open-osdp-kick open-osdp-kick.o ${LDFLAGS}
 
 open-osdp-kick.o:	open-osdp-kick.c
-	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS}  -c -g -I../include -I/tester/current/include -Wall -Werror \
 	  open-osdp-kick.c
 
 open-osdp-CP-status.o:	open-osdp-CP-status.c

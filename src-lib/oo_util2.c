@@ -67,7 +67,9 @@ int
   send_poll = 0;
   if (context->role EQUALS OSDP_ROLE_CP)
     if (context->xferctx.total_length EQUALS 0)
-      send_poll = 1;
+      if (context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
+        if (!(context->secure_channel_use [OO_SCU_ENAB] & 0x80))
+          send_poll = 1;
 
   if (send_poll)
   {
@@ -535,9 +537,9 @@ int
     char key_value [1024];
 
     strcpy (key_value, json_string_value (value));
-    ctx->enable_secure_channel = OSDP_KEY_SCBK;
+    ctx->enable_secure_channel = 1;
     if (0 EQUALS strcmp (key_value, "DEFAULT"))
-      ctx->enable_secure_channel = OSDP_KEY_SCBK_D;
+      ctx->enable_secure_channel = 2;
     if (strlen (key_value) EQUALS 32)
     {
       int byte;

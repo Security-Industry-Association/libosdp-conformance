@@ -381,6 +381,12 @@ int
     };
     break;
 
+  case OOSDP_MSG_NAK:
+    msg = (OSDP_MSG *) aux;
+    sprintf (tlogmsg, "NAK: Error Code %02x Data %02x\n",
+      *(0+msg->data_payload), *(1+msg->data_payload));
+    break;
+
   // special case - this outputs the basic "Message:.." message
   case OOSDP_MSG_OSDP:
     osdp_command = *(unsigned char *)aux;
@@ -575,11 +581,11 @@ int
     (void) time (&current_raw_time);
     current_cooked_time = localtime (&current_raw_time);
 if (strcmp ("CP", role_tag)==0)
-  strcpy (address_suffix, "");
+  sprintf (address_suffix, " DestAddr=%02x(hex)", context->this_message_addr);
 else
-  sprintf (address_suffix, " A=%02x(hex)", p_card.addr);
+  sprintf (address_suffix, " A=%02x(hex)", context->this_message_addr);
     sprintf (timestamp,
-"OSDP %s RcvFrame:%04d%s\nTimestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
+"OSDP %s Frame:%04d%s\nTimestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
       role_tag, context->packets_received, address_suffix,
       1900+current_cooked_time->tm_year, 1+current_cooked_time->tm_mon,
       current_cooked_time->tm_mday,

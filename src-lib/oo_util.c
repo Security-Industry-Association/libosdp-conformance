@@ -629,11 +629,10 @@ int
 { /* osdp_parse_message */
 
   int display;
+  int i;
   char logmsg [1024];
-  unsigned int
-    msg_lth;
-  int
-    msg_check_type;
+  unsigned int msg_lth;
+  int msg_check_type;
   int
     msg_data_length;
   int
@@ -739,19 +738,22 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
     }
     else
     {
-{
-  int i;
-  fprintf (stderr, "Parsing security block...\n");
-  fprintf (stderr, "Msg (Secure): ");
-  for (i=0; i<16; i++)
-  {
-    fprintf (stderr, "%02x", (m->ptr)[i]);
-    if (3 == (i % 4))
-      if (i != 15)
-        fprintf (stderr, "-");
-  };
-  fprintf (stderr, "\n"); fflush (stderr);
-};
+      tlogmsg[0] = 0;
+      sprintf(tlogmsg2, "Msg (Secure): ");
+      strcat(tlogmsg, tlogmsg2);
+      for (i=0; i<16; i++)
+      {
+        sprintf(tlogmsg2, "%02x", (m->ptr)[i]);
+        strcat(tlogmsg, tlogmsg2);
+        if (3 == (i % 4))
+          if (i != 15)
+          {
+            sprintf(tlogmsg2, "-");
+            strcat(tlogmsg, tlogmsg2);
+          };
+      };
+      strcat(tlogmsg, "\n");
+      fprintf (context->log, "%s", tlogmsg);
 
       // packet is SOM, ADDR, LEN_LSB, LEN_MSB, CTRL (5 bytes) and then...
 
@@ -773,6 +775,7 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
     // extract the command
     returned_hdr -> command = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->command;
+    m->direction = 0x80 & p->addr;
     m->data_payload = m->cmd_payload + 1;
 
     if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
@@ -1266,14 +1269,11 @@ int
 
 { /* monitor_osdp_message */
 
-  time_t current_time;
-  int do_log; // do call oosdp_log at the end with built-up text
   int status;
   char tlogmsg [1024];
 
 
   status = ST_OK;
-  do_log = 1;
   switch (msg->msg_cmd)
   {
   case OSDP_CCRYPT:
@@ -1283,10 +1283,8 @@ int
     break;
 
   case OSDP_FILETRANSFER:
-    do_log = 0;
     if (context->verbosity > 3)
     {
-      do_log = 1;
       status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
@@ -1294,7 +1292,6 @@ int
     break;
 
   case OSDP_FTSTAT:
-    do_log = 0;
     if (context->verbosity > 3)
     {
       status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
@@ -1311,6 +1308,12 @@ int
 
   case OSDP_LED:
     status = oosdp_make_message (OOSDP_MSG_LED, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
+  case OSDP_NAK:
+    status = oosdp_make_message (OOSDP_MSG_NAK, tlogmsg, msg);
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
@@ -1334,14 +1337,6 @@ int
     status = action_osdp_RAW (context, msg);
     break;
   };
-  (void) time (&current_time);
-  if ((current_time - previous_time) > 60) // 15)
-  {
-    status = oosdp_make_message (OOSDP_MSG_PKT_STATS, tlogmsg, msg);
-    if ((status == ST_OK) && do_log)
-      status = oosdp_log (context, OSDP_LOG_STRING, 1, tlogmsg);
-    previous_time = current_time;
-  };
   return (status);
 
 } /* monitor_osdp_message */
@@ -1358,8 +1353,6 @@ int
 
   int
     count;
-  OSDP_SC_CCRYPT
-    ccrypt_response;
   int
     current_length;
   int
@@ -1535,81 +1528,7 @@ fprintf(stderr, "comset to addr %02x speed %s\n",
       break;
 
     case OSDP_CHLNG:
-      {
-        int
-          nak;
-
-        status = ST_OK;
-        nak = 0;
-
-        // make sure this PD was enabled for secure channel (see enable-secure-channel command)
-
-        if (OO_SCS_USE_ENABLED != context->secure_channel_use[OO_SCU_ENAB])
-          nak = 1;
-        if (nak)
-        {
-          current_length = 0;
-          osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
-          osdp_nak_response_data [1] = 0xff;
-          status = send_message (context,
-            OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
-          context->sent_naks ++;
-          osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
-          if (context->verbosity > 2)
-          {
-            fprintf (context->log, "Responding with OSDP NAK\n");
-            fprintf (stderr, "CMD %02x Unknown\n", msg->msg_cmd);
-          };
-        };
-        if (!nak)
-        {
-          unsigned char
-            sec_blk [1];
-
-          osdp_reset_secure_channel (context);
-          memcpy (context->rnd_a, msg->data_payload, sizeof (context->rnd_a));
-          status = osdp_setup_scbk (context, msg);
-          if (status EQUALS ST_OK)
-          {
-            osdp_create_keys (context);
-
-            // build up an SCS_12 response
-
-            if (context->enable_secure_channel EQUALS 2)
-              sec_blk [0] = OSDP_KEY_SCBK_D;
-            else
-              sec_blk [0] = OSDP_KEY_SCBK;
-
-            // client ID
-#if SAMPLE
-            memset (ccrypt_response.client_id, 0,
-              sizeof (ccrypt_response.client_id));
-            ccrypt_response.client_id [0] = 1;
-#else
-            memcpy (ccrypt_response.client_id,
-              context->vendor_code, 3);
-            ccrypt_response.client_id [3] = context->model;
-            ccrypt_response.client_id [4] = context->version;
-            memcpy (ccrypt_response.client_id+5,
-              context->serial_number, 3);
-#endif
-
-            // RND.B
-            memcpy ((char *)(context->rnd_b), "abcdefgh", 8);
-            memcpy ((char *)(ccrypt_response.rnd_b), (char *)(context->rnd_b), sizeof (ccrypt_response.rnd_b));
-printf ("fixme: RND.B\n");
-
-            osdp_create_client_cryptogram (context, &ccrypt_response);
-
-            current_length = 0;
- 
-            status = send_secure_message (context,
-              OSDP_CCRYPT, p_card.addr, &current_length, 
-              sizeof (ccrypt_response), (unsigned char *)&ccrypt_response,
-              OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
-          };
-        };
-      };
+      status = action_osdp_CHLNG(context, msg);
       break;
 
     case OSDP_FILETRANSFER:
@@ -1904,6 +1823,9 @@ fprintf(stderr, "lstat 1684\n");
         osdp_conformance.cmd_pdcap.test_status = OCONFORM_FAIL;
         SET_FAIL ((context), "3-3-1");
       };
+      // if the PD NAK'd during secure channel set-up then reset out of secure channel
+      if (context->secure_channel_use [OO_SCU_ENAB] & 0x80)
+        osdp_reset_secure_channel (context);
       break;
 
     case OSDP_COM:

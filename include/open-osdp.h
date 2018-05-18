@@ -25,8 +25,8 @@
 #include <time.h>
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR ( 2)
-#define OSDP_VERSION_BUILD (23)
+#define OSDP_VERSION_MINOR ( 3)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -366,22 +366,15 @@ typedef struct osdp_context
     verbosity;
 
   // IO context
-  int
-    current_pid;
-  int
-    fd;
-  FILE
-    *log;
-  char
-    network_address [1024];
-  FILE
-    *report;
-  struct termios
-    tio;
+  int current_pid;
+  int fd;
+  FILE *log;
+  char network_address [1024];
+  FILE *report;
+  struct termios tio;
 
   // UI context
-  int
-    current_menu;
+  int current_menu;
 
   // CP and PD context
   OSDP_LED_STATE
@@ -390,6 +383,7 @@ typedef struct osdp_context
     role;
   char
     text [1024];
+  unsigned char this_message_addr;
 
   // OSDP protocol context
   char
@@ -511,8 +505,16 @@ typedef struct osdp_context
   OSDP_CONTEXT_FILETRANSFER xferctx;
 } OSDP_CONTEXT;
 
+// four different details maintained about a secure channel connection,
+// stored in 4 elemenets of the secure channel status array in context.
+
 #define OO_SCU_ENAB  (0)
+	// values below 11 are disabled, enabled, operational
+	// 128+x is an SCS_xx state e.g. 128+SCS_11 is SCS_11
+
 #define OO_SCU_INST  (1)
+	// OO_SECURE_INSTALL for install mode, normal mode if OO_SECURE_NORMAL
+
 #define OO_SCU_POL   (2)
 #define OO_SCU_KEYED (3)
 
@@ -588,6 +590,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_LED          (9)
 #define OOSDP_MSG_CHLNG        (10)
 #define OOSDP_MSG_OSDP         (11)
+#define OOSDP_MSG_NAK          (12)
 
 
 #define OSDP_BUF_MAX (8192)
@@ -716,22 +719,15 @@ typedef struct __attribute__((packed)) osdp_hdr_ftstat
 
 typedef struct osdp_msg
 {
-  unsigned int
-    lth;
-  unsigned char
-    * ptr;
-  unsigned char
-    msg_cmd;
-  unsigned char
-    * cmd_payload;
-  unsigned char
-    * data_payload;
-  int
-    data_length;
-  unsigned char
-    * crc_check;
-  int
-    check_size;
+  unsigned int lth;
+  unsigned char * ptr;
+  unsigned char msg_cmd;
+  unsigned char direction;
+  unsigned char * cmd_payload;
+  unsigned char * data_payload;
+  int data_length;
+  unsigned char * crc_check;
+  int check_size;
 } OSDP_MSG;
 
 typedef struct osdp_multi_getpiv
@@ -855,6 +851,7 @@ int
   m_dump;
 
 
+int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
