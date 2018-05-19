@@ -28,6 +28,10 @@
 #define OSDP_VERSION_MINOR ( 3)
 #define OSDP_VERSION_BUILD ( 2)
 
+#define OOSDP_VENDOR_CODE_0 (0x0A)
+#define OOSDP_VENDOR_CODE_1 (0x00)
+#define OOSDP_VENDOR_CODE_2 (0x17)
+
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
 // default configuration
@@ -352,18 +356,12 @@ typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
   // configuration
-  int
-    disable_certificate_checking;
-  int
-    enable_secure_channel; // 1=yes, 2=yes and use default
-  char
-    fqdn [1024];
-  char
-    log_path [1024];
-  char
-    serial_speed [1024];
-  int
-    verbosity;
+  int disable_certificate_checking;
+  int enable_secure_channel; // 1=yes, 2=yes and use default
+  char fqdn [1024];
+  char log_path [1024];
+  char serial_speed [1024];
+  int verbosity;
 
   // IO context
   int current_pid;
@@ -384,6 +382,7 @@ typedef struct osdp_context
   char
     text [1024];
   unsigned char this_message_addr;
+  unsigned char MFG_oui [3];
 
   // OSDP protocol context
   char
