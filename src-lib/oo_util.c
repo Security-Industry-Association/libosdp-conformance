@@ -434,13 +434,12 @@ fprintf(stderr, "lstat 335\n");
     if (ctx->verbosity > 9)
     {
       fprintf(stderr, "check command reply CP cmd is 0x%0x\n", command);
-if (command EQUALS OSDP_POLL)
-  fprintf(stderr, "test point\n");
     };
     switch (command)
     {
     default:
-      status = ST_OSDP_BAD_COMMAND_REPLY;
+      fprintf(stderr, "possible bad response 0x%02x\n", command);
+      // status = ST_OSDP_BAD_COMMAND_REPLY;
       m->data_payload = m->cmd_payload + 1;
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
@@ -520,6 +519,30 @@ if (command EQUALS OSDP_POLL)
         strcpy (tlogmsg2, "osdp_LSTATR");
 
       osdp_conformance.cmd_lstat.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_MFG:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_MFG");
+
+      osdp_conformance.cmd_mfg.test_status = OCONFORM_EXERCISED;
+
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
+    case OSDP_MFGREP:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_MFGREP");
+
+      osdp_conformance.resp_mfg.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -1029,6 +1052,14 @@ fprintf(stderr, "lstat 1000\n");
         strcpy (tlogmsg2, "osdp_LSTATR");
       break;
 
+    case OSDP_MFG:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_MFG");
+      break;
+
     case OSDP_MFGREP:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
@@ -1312,7 +1343,26 @@ int
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
 
+  case OSDP_LSTATR:
+    status = oosdp_make_message (OOSDP_MSG_LSTATR, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
+  case OSDP_MFG:
+    status = oosdp_make_message (OOSDP_MSG_MFG, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
+  case OSDP_MFGREP:
+    status = oosdp_make_message (OOSDP_MSG_MFGREP, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
   case OSDP_NAK:
+    context->sent_naks ++; // nobody updated it in monitor mode
     status = oosdp_make_message (OOSDP_MSG_NAK, tlogmsg, msg);
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);

@@ -591,7 +591,9 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_CHLNG        (10)
 #define OOSDP_MSG_OSDP         (11)
 #define OOSDP_MSG_NAK          (12)
-
+#define OOSDP_MSG_LSTATR       (13)
+#define OOSDP_MSG_MFGREP       (14)
+#define OOSDP_MSG_MFG          (15)
 
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer

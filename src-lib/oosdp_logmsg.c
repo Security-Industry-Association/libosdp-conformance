@@ -381,6 +381,41 @@ int
     };
     break;
 
+  case OOSDP_MSG_LSTATR:
+    {
+      unsigned char *osdp_lstat_response_data;
+
+      msg = (OSDP_MSG *) aux;
+      osdp_lstat_response_data = (unsigned char *)(msg->data_payload);
+      sprintf(tlogmsg, "LSTAT Response: Tamper %d Power-cycle %d\n",
+        osdp_lstat_response_data [0], osdp_lstat_response_data [1]);
+    };
+    break;
+
+  case OOSDP_MSG_MFG:
+    {
+      OSDP_MFG_HEADER *mrep;
+
+      msg = (OSDP_MSG *) aux;
+      mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
+      sprintf(tlogmsg, "MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
+        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
+        mrep->command_id);
+    };
+    break;
+
+  case OOSDP_MSG_MFGREP:
+    {
+      OSDP_MFG_HEADER *mrep;
+
+      msg = (OSDP_MSG *) aux;
+      mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
+      sprintf(tlogmsg, "MFG Reply: OUI:%02x-%02x-%02x RepID: %02x\n",
+        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
+        mrep->command_id);
+    };
+    break;
+
   case OOSDP_MSG_NAK:
     msg = (OSDP_MSG *) aux;
     sprintf (tlogmsg, "NAK: Error Code %02x Data %02x\n",
