@@ -21,7 +21,7 @@
 
 # built with gcc.  note it also builds with clang.
 
-CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include
+CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -Wall -Werror
 #CC=gcc ${CFLAGS}
 CC=clang
 LINK=clang
@@ -130,7 +130,7 @@ open-osdp-PD-status.o:	open-osdp-PD-status.c
 	  open-osdp-PD-status.c
 
 send-osdp-command.o:	send-osdp-command.c
-	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
+	${CC} ${CFLAGS} -c -g -I../include -I/tester/current/include -Wall -Werror \
 	  send-osdp-command.c
 
 tail-CP-log:	tail-CP-log.sh

@@ -36,7 +36,7 @@ int
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {
     printf ("<HTML><HEAD><TITLE>libosdp Monitor Console</TITLE>");
-    printf ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-MON.html\">");
+    printf ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-MON.html.html\">");
     printf ("</HEAD><BODY>");
     strcpy (command, arguments+strlen(tag));
     if (0 == strcmp (command, "stop"))
@@ -45,7 +45,7 @@ int
   strcpy (tag, "cmd=CP-");
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {
-    printf ("<HTML><HEAD><TITLE>open-osdp CP console</TITLE>");
+    printf ("<HTML><HEAD><TITLE>Control PD Testing (CP Emulator)</TITLE>");
 #ifdef OSDP_CONFORMANCE
     printf
 ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-CP.html\">");

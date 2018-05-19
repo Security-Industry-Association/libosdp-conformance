@@ -58,6 +58,7 @@ int
 
   // make sure this PD was enabled for secure channel (see enable-secure-channel command)
 
+fprintf(stderr, "enab? %d\n", ctx->secure_channel_use[OO_SCU_ENAB]);
   if (OO_SCS_USE_ENABLED != ctx->secure_channel_use[OO_SCU_ENAB])
     nak = 1;
   if (nak)
@@ -480,6 +481,8 @@ void
   if (ctx->enable_secure_channel > 0)
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
   fprintf (ctx->log, "Resetting Secure Channel\n");
+fprintf(stderr, "s-c-u %d e s c %d\n",
+  ctx->secure_channel_use[OO_SCU_ENAB], ctx->enable_secure_channel);
 
 } /* osdp_reset_secure_channel */
 
