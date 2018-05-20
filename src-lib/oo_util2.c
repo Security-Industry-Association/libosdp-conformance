@@ -590,40 +590,6 @@ int
     strcpy (ctx->network_address, json_string_value (value));
   };
 
-  // parameter "oui"
-  // this is the vendor id we send in MFG requests as a CP.
-  // this is the vendor id we claim as a PD.
-
-  if (status EQUALS ST_OK)
-  {
-    found_field = 1;
-    value = json_object_get (root, "oui");
-    if (!json_is_string (value))
-      found_field = 0;
-  };
-  if (found_field)
-  {
-    char vstr [1024];
-    int i;
-    strcpy (vstr, json_string_value (value));
-    sscanf (vstr, "%d", &i);
-
-    // expected to be 6 characters, hexits.
-
-    if (strlen(vstr) EQUALS 6)
-    {
-      char hexbyte [3];
-      hexbyte[2] = 0;
-
-      memcpy(hexbyte, vstr, 2); sscanf(hexbyte, "%2x", &i); ctx->vendor_code [0] = 0xff & i;
-      memcpy(hexbyte, vstr+2, 2); sscanf(hexbyte, "%2x", &i); ctx->vendor_code [1] = 0xff & i;
-      memcpy(hexbyte, vstr+4, 2); sscanf(hexbyte, "%2x", &i); ctx->vendor_code [2] = 0xff & i;
-      memcpy(ctx->MFG_oui, ctx->vendor_code, sizeof(ctx->MFG_oui));
-    };
-  };
-
-  // poll
-
   if (status EQUALS ST_OK)
   {
     found_field = 1;

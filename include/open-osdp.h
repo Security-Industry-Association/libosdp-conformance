@@ -28,10 +28,6 @@
 #define OSDP_VERSION_MINOR ( 3)
 #define OSDP_VERSION_BUILD ( 2)
 
-#define OOSDP_VENDOR_CODE_0 (0x0A)
-#define OOSDP_VENDOR_CODE_1 (0x00)
-#define OOSDP_VENDOR_CODE_2 (0x17)
-
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
 // default configuration
@@ -253,6 +249,11 @@ typedef struct osdp_secure_message
     data_start;
 } OSDP_SECURE_MESSAGE;
 
+typedef struct osdp_sc_chlng
+{
+  unsigned char rnd_a [8];
+} OSDP_SC_CHLNG;
+
 typedef struct osdp_sc_ccrypt
 {
   unsigned char client_id [8];
@@ -356,12 +357,18 @@ typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
   // configuration
-  int disable_certificate_checking;
-  int enable_secure_channel; // 1=yes, 2=yes and use default
-  char fqdn [1024];
-  char log_path [1024];
-  char serial_speed [1024];
-  int verbosity;
+  int
+    disable_certificate_checking;
+  int
+    enable_secure_channel; // 1=yes, 2=yes and use default
+  char
+    fqdn [1024];
+  char
+    log_path [1024];
+  char
+    serial_speed [1024];
+  int
+    verbosity;
 
   // IO context
   int current_pid;
@@ -382,7 +389,6 @@ typedef struct osdp_context
   char
     text [1024];
   unsigned char this_message_addr;
-  unsigned char MFG_oui [3];
 
   // OSDP protocol context
   char
@@ -883,7 +889,7 @@ int osdp_build_secure_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
-char *osdp_command_reply_to_string (unsigned char cmdrep);
+char *osdp_command_reply_to_string (unsigned char cmdrep, int role);
 void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
 void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);

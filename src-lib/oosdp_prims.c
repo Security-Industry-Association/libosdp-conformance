@@ -39,22 +39,43 @@ void
 } /* osdp_array_to_quadByte */
 
 
+// direction is the CP/PD bit e.g. 0 or 128
+
 char
   *osdp_command_reply_to_string
-    (unsigned char cmdrep)
+    (unsigned char cmdrep, int direction)
 
 { /* osdp_command_reply_to_string */
 
   static char cmd_rep_s [1024];
 
   cmd_rep_s [0] = 0;
-  switch (cmdrep)
+  if (direction != 0)
   {
-  default:
-    strcpy(cmd_rep_s, "???");
-    break;
-  case OSDP_CHLNG:
-    strcpy(cmd_rep_s, "osdp_CHLNG");
+    switch (cmdrep)
+    {
+    default:
+      strcpy(cmd_rep_s, "???");
+      break;
+    case OSDP_CCRYPT:
+      strcpy(cmd_rep_s, "osdp_CCRYPT");
+      break;
+    case OSDP_NAK:
+      strcpy(cmd_rep_s, "osdp_NAK");
+      break;
+    };
+  };
+  if (direction EQUALS 0)
+  {
+    switch (cmdrep)
+    {
+    default:
+      strcpy(cmd_rep_s, "???");
+      break;
+    case OSDP_CHLNG:
+      strcpy(cmd_rep_s, "osdp_CHLNG");
+      break;
+    };
   };
   return (cmd_rep_s);
 

@@ -697,12 +697,13 @@ int
     {
       unsigned char log_block [1024];
       log_block [0] = command;
-      memcpy (log_block+1, test_blk, *current_length);
+      log_block [1] = ctx->role;
+      memcpy (log_block+2, test_blk, *current_length);
       status = oosdp_make_message (OOSDP_MSG_OSDP, tlogmsg, log_block);
       if (status == ST_OK)
-        status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
-      status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, test_blk);
-      if (status == ST_OK)
+//        status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
+//      status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, test_blk);
+//      if (status == ST_OK)
         status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     };
   };

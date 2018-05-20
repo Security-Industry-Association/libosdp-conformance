@@ -241,7 +241,7 @@ int
       status = ST_OSDP_CMDREP_FOUND; \
       m->data_payload = m->cmd_payload + data_offset; \
       if (ctx->verbosity > 2) \
-        strcpy (tlogmsg2, osdp_tag); \
+        strcpy (tlogmsg2, osdp_command_reply_to_string(command, ctx->role)); /* osdp_tag */ \
       osdp_conformance.conformance_test.test_status = OCONFORM_EXERCISED; \
       if (osdp_conformance.conforming_messages < PARAM_MMT) \
         osdp_conformance.conforming_messages ++;
@@ -268,7 +268,7 @@ int
       break;
 
     case OSDP_CHLNG:
-      OSDP_CHECK_CMDREP ("osdp_CHLNG", cmd_chlng, 1);
+      OSDP_CHECK_CMDREP ("osdp_zCHLNG", cmd_chlng, 1);
       break;
 
     case OSDP_COMSET:
@@ -777,6 +777,8 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
       };
       strcat(tlogmsg, "\n");
       fprintf (context->log, "%s", tlogmsg);
+      tlogmsg [0] = 0;
+      tlogmsg2 [0] = 0;
 
       // packet is SOM, ADDR, LEN_LSB, LEN_MSB, CTRL (5 bytes) and then...
 
@@ -916,6 +918,7 @@ if (context->verbosity > 9)
       fprintf(stderr, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
 fprintf(stderr, "oo_util 999 cmd %0x\n", returned_hdr->command);
+
     switch (returned_hdr->command)
     {
     default:
@@ -1226,10 +1229,11 @@ exit(-2);
     };
     if ((context->verbosity > 2) || (m_dump > 0))
     {
-      char
-        log_line [1024];
+      char cmd_rep_tag [1024];
+      char log_line [1024];
 
-      sprintf (log_line, "  Message: %s %s", tlogmsg2, tlogmsg);
+      strcpy(cmd_rep_tag, osdp_command_reply_to_string(returned_hdr->command, m->direction));
+      sprintf (log_line, "  Message: %s %s", cmd_rep_tag, tlogmsg);
       sprintf (tlogmsg2, " S:%02x Ck %x Sec %x CRC %04x",
         msg_sqn, msg_check_type, msg_scb, wire_crc);
       strcat (log_line, tlogmsg2);
@@ -1305,14 +1309,30 @@ int
 
 
   status = ST_OK;
+  if (msg->direction EQUALS 0)
+  {
+    switch (msg->msg_cmd)
+    {
+    case OSDP_CHLNG:
+      status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    };
+  };
+  if (msg->direction != 0)
+  {
+    switch (msg->msg_cmd)
+    {
+    case OSDP_CCRYPT:
+      status = oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    };
+  };
   switch (msg->msg_cmd)
   {
-  case OSDP_CCRYPT:
-    status = oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
-    if (status == ST_OK)
-      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-    break;
-
   case OSDP_FILETRANSFER:
     if (context->verbosity > 3)
     {

@@ -188,7 +188,7 @@ int
 { /* oosdp_make_message */
 
   OSDP_SC_CCRYPT *ccrypt_payload;
-  unsigned char *chlng_payload;
+  OSDP_SC_CHLNG *chlng_payload;
   int count;
   char filename [1024];
   OSDP_HDR_FILETRANSFER *filetransfer_message;
@@ -232,14 +232,14 @@ int
 
   case OOSDP_MSG_CHLNG:
     // in this case 'aux' is a pointer to a marshalled message that's just been sent out the door.
-    hdr = (OSDP_HDR *)aux;
-    chlng_payload = aux + sizeof(*hdr) - sizeof(hdr->command) + 3 /* sec block for SCS_11 osdp_CHNLG */;
+    msg = (OSDP_MSG *) aux;
+    chlng_payload = (OSDP_SC_CHLNG *)(msg->data_payload);
     sprintf (tlogmsg,
 "CHLNG: RND.A %02x%02x%02x%02x-%02x%02x%02x%02x\n",
-      chlng_payload [0], chlng_payload [1],
-      chlng_payload [2], chlng_payload [3],
-      chlng_payload [4], chlng_payload [5],
-      chlng_payload [6], chlng_payload [7]);
+      chlng_payload->rnd_a [0], chlng_payload->rnd_a [1],
+      chlng_payload->rnd_a [2], chlng_payload->rnd_a [3],
+      chlng_payload->rnd_a [4], chlng_payload->rnd_a [5],
+      chlng_payload->rnd_a [6], chlng_payload->rnd_a [7]);
     break;
 
   case OOSDP_MSG_FILETRANSFER:
@@ -425,10 +425,10 @@ int
   // special case - this outputs the basic "Message:.." message
   case OOSDP_MSG_OSDP:
     osdp_command = *(unsigned char *)aux;
-    hdr = 1+aux;
-    strcpy(tmpstr, osdp_command_reply_to_string(osdp_command));
+    hdr = 2+aux;
+    strcpy(tmpstr, osdp_command_reply_to_string(osdp_command, *(unsigned char *)(1+aux)));
     sprintf(tmpstr2, "Message: %s\n", tmpstr);
-    strcpy(tmpstr, osdp_sec_block_dump(1+aux+sizeof(*hdr)-1));
+    strcpy(tmpstr, osdp_sec_block_dump(2+aux+sizeof(*hdr)-1));
     strcat(tlogmsg, tmpstr2);
     strcat(tlogmsg, tmpstr);
     strcat(tlogmsg, "\n");
