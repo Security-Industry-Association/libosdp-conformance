@@ -276,7 +276,7 @@ int
 
   status = ST_OK;
   memset (sn, 0, sizeof (1024));
-  sprintf (sn, "/opt/open-osdp/run/%s/open-osdp-control", tag);
+  sprintf (sn, "/opt/osdp-conformance/run/%s/open-osdp-control", tag);
 
   ufd = socket (AF_UNIX, SOCK_STREAM, 0);
   if (ufd != -1)
@@ -357,6 +357,9 @@ int
     writefds;
 
 
+#define PSELECT_NSEC (900000000)
+//#define PSELECT_NSEC (100000000)
+
   status = ST_OK;
   request_immediate_poll = 0;
   status = initialize (&config, argc, argv);
@@ -388,7 +391,7 @@ int
         FD_ZERO (&exceptfds);
         FD_SET (ufd, &readfds);
         timeout.tv_sec = 0;
-        timeout.tv_nsec = 100000000;
+        timeout.tv_nsec = PSELECT_NSEC; //100000000;
         status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
           &timeout, &sigmask);
 

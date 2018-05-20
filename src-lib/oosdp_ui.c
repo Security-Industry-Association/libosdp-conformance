@@ -148,7 +148,10 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
 
         osdp_conformance.resp_mfg.test_status = OCONFORM_EXERCISED;
         strcpy (context->test_in_progress, "3_20_1");
-        memcpy(omfg.vendor_code, context->vendor_code, sizeof (omfg.vendor_code));
+        // send the tester's vendor code
+        omfg.vendor_code [0] = context->MFG_oui [0];
+        omfg.vendor_code [1] = context->MFG_oui [1];
+        omfg.vendor_code [2] = context->MFG_oui [2];
         omfg.command_id = 1;
         omfg.data = 0xff;
         current_length = 0;
@@ -412,6 +415,9 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
         // if default enabled use SCBK-D
         // if not default if key pre-loaded use that else error
+fprintf(stderr, "esc %d sb0 %d\n",
+  context->enable_secure_channel,
+  sec_blk [0]);
         if (context->enable_secure_channel EQUALS 2)
         {
           sec_blk [0] = OSDP_KEY_SCBK_D;

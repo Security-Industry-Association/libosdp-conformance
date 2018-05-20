@@ -526,12 +526,14 @@ int
 
 int tcp_connect(void)
 {
-        const char *PORT = "10001";
-        int err, sd;
-        struct sockaddr_in sa;
+  const char *PORT = "10001";
+  int err, sd;
+  struct sockaddr_in sa;
 
 
-fprintf (context.log, "Connecting to %s Port %s\n",
+fprintf(stderr, "Connecting to %s Port %s\n",
+  context.network_address, PORT);
+fprintf(context.log, "Connecting to %s Port %s\n",
   context.network_address,
   PORT);
         /* connects to server

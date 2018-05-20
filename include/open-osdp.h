@@ -389,6 +389,7 @@ typedef struct osdp_context
   char
     text [1024];
   unsigned char this_message_addr;
+  unsigned char MFG_oui [3];
 
   // OSDP protocol context
   char

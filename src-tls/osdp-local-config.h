@@ -19,8 +19,6 @@
   http://www.securityindustry.org
 */
 
-*/
-
 // the server key and cert for the OSDP TLS server
 
 #define OSDP_LCL_CA_KEYS        "/opt/osdp-conformance/etc/ca_keys.pem"
