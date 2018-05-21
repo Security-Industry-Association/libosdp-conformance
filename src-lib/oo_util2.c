@@ -300,8 +300,6 @@ int
       if (ctx->timer [i].current_seconds == 0)
       {
         return_value = 1;
-if (ctx->verbosity > 8)
-  fprintf(stderr, "timer %d i %d seconds\n", i, (unsigned)ctx->timer [i].i_sec);
         ctx->timer [i].current_seconds = ctx->timer [i].i_sec;
         ctx->timer [i].status = OSDP_TIMER_RESTARTED;
       };
@@ -665,12 +663,12 @@ int
     context.timer [0].i_sec = i;
   }; 
 
-  // parameter "timeout_nsec" - timeout in nanoseconds.
+  // parameter "timeout-nsec" - timeout in nanoseconds.
 
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "timeout_nsec");
+    strcpy (field, "timeout-nsec");
     value = json_object_get (root, field);
     if (!json_is_string (value))
       found_field = 0;
@@ -684,6 +682,8 @@ int
     // inter-poll delay time is timer OSDP_TIMER_INTERPOLL (a/k/a "timer 0"), in seconds.
     context.timer [OSDP_TIMER_RESPONSE].i_nsec = i;
     context.timer [OSDP_TIMER_RESPONSE].i_sec = 0;
+fprintf(stderr, "inter-poll response timer set to %ld. nanoseconds\n",
+  context.timer [OSDP_TIMER_RESPONSE].i_nsec);
   }; 
 
   // parameter "verbosity"

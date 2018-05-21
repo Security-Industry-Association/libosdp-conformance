@@ -82,9 +82,18 @@ int
     };
     status = process_osdp_message (&context, &msg);
   };
+
+  // no more address update here.  if it should be updated it should happen
+  // at osdp_COM
+
+#if 0
   // things may have changed.  after processing this incoming message
   // adjust for changes.
+if (p_card.addr != context.new_address)
+  fprintf(stderr, "Changing(2) p_card address from %d. to %d.\n",
+    p_card.addr, context.new_address);
   p_card.addr = context.new_address;
+#endif
 
   // do special things for tests in progress.
 

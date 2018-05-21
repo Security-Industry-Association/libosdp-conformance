@@ -50,31 +50,64 @@ char
   static char cmd_rep_s [1024];
 
   cmd_rep_s [0] = 0;
+
+  // nonzero if it's a PD
+
   if (direction != 0)
   {
     switch (cmdrep)
     {
     default:
-      strcpy(cmd_rep_s, "???");
+      strcpy(cmd_rep_s, "???2");
       break;
-    case OSDP_CCRYPT:
-      strcpy(cmd_rep_s, "osdp_CCRYPT");
-      break;
-    case OSDP_NAK:
-      strcpy(cmd_rep_s, "osdp_NAK");
-      break;
+    case OSDP_ACK: strcpy(cmd_rep_s, "osdp_ACK"); break;
+    case OSDP_BUSY: strcpy(cmd_rep_s, "osdp_BUSY"); break;
+    case OSDP_CCRYPT: strcpy(cmd_rep_s, "osdp_CCRYPT"); break;
+    case OSDP_COM: strcpy(cmd_rep_s, "osdp_COM"); break;
+    case OSDP_FTSTAT: strcpy(cmd_rep_s, "osdp_FTSTAT"); break;
+    case OSDP_ISTATR: strcpy(cmd_rep_s, "osdp_ISTATR"); break;
+    case OSDP_KEYPAD: strcpy(cmd_rep_s, "osdp_KEYPAD"); break;
+    case OSDP_LSTATR: strcpy(cmd_rep_s, "osdp_LSTATR"); break;
+    case OSDP_MFGREP: strcpy(cmd_rep_s, "osdp_MFGREP"); break;
+    case OSDP_NAK: strcpy(cmd_rep_s, "osdp_NAK"); break;
+    case OSDP_OSTATR: strcpy(cmd_rep_s, "osdp_OSTATR"); break;
+    case OSDP_PDCAP: strcpy(cmd_rep_s, "osdp_PDCAP"); break;
+    case OSDP_PDID: strcpy(cmd_rep_s, "osdp_PDID"); break;
+    case OSDP_RAW: strcpy(cmd_rep_s, "osdp_RAW"); break;
+    case OSDP_RMAC_I: strcpy(cmd_rep_s, "osdp_RMAC_I"); break;
+    case OSDP_RSTATR: strcpy(cmd_rep_s, "osdp_RSTATR"); break;
+    case OSDP_SCRYPT: strcpy(cmd_rep_s, "osdp_SCRYPT"); break;
     };
   };
+
+  // zero if it's the CP
+
   if (direction EQUALS 0)
   {
     switch (cmdrep)
     {
-    default:
-      strcpy(cmd_rep_s, "???");
-      break;
-    case OSDP_CHLNG:
-      strcpy(cmd_rep_s, "osdp_CHLNG");
-      break;
+    default: strcpy(cmd_rep_s, "???1"); break;
+    case OSDP_BIOREAD: strcpy(cmd_rep_s, "osdp_BIOREAD"); break;
+    case OSDP_BUZ: strcpy(cmd_rep_s, "osdp_BUZ"); break;
+    case OSDP_CAP: strcpy(cmd_rep_s, "osdp_CAP"); break;
+    case OSDP_CHLNG: strcpy(cmd_rep_s, "osdp_CHLNG"); break;
+    case OSDP_COMSET: strcpy(cmd_rep_s, "osdp_COMSET"); break;
+    case OSDP_DATA: strcpy(cmd_rep_s, "osdp_DATA"); break;
+    case OSDP_DIAG: strcpy(cmd_rep_s, "osdp_DIAG"); break;
+    case OSDP_FILETRANSFER: strcpy(cmd_rep_s, "osdp_FILETRANSFER"); break;
+    case OSDP_ID: strcpy(cmd_rep_s, "osdp_ID"); break;
+    case OSDP_ISTAT: strcpy(cmd_rep_s, "osdp_ISTAT"); break;
+    case OSDP_KEYSET: strcpy(cmd_rep_s, "osdp_KEYSET"); break;
+    case OSDP_LED: strcpy(cmd_rep_s, "osdp_LED"); break;
+    case OSDP_LSTAT: strcpy(cmd_rep_s, "osdp_LSTAT"); break;
+    case OSDP_MFG: strcpy(cmd_rep_s, "osdp_MFG"); break;
+    case OSDP_OSTAT: strcpy(cmd_rep_s, "osdp_OSTAT"); break;
+    case OSDP_OUT: strcpy(cmd_rep_s, "osdp_OUT"); break;
+    case OSDP_POLL: strcpy(cmd_rep_s, "osdp_POLL"); break;
+    case OSDP_PROMPT: strcpy(cmd_rep_s, "osdp_PROMPT"); break;
+    case OSDP_RSTAT: strcpy(cmd_rep_s, "osdp_RSTAT"); break;
+    case OSDP_TDSET: strcpy(cmd_rep_s, "osdp_TDSET"); break;
+    case OSDP_TEXT: strcpy(cmd_rep_s, "osdp_TEXT"); break;
     };
   };
   return (cmd_rep_s);

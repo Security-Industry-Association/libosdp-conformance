@@ -924,6 +924,7 @@ fprintf(stderr, "oo_util 999 cmd %0x\n", returned_hdr->command);
     default:
       //status = ST_PARSE_UNKNOWN_CMD;
       m->data_payload = m->cmd_payload + 1;
+      msg_data_length = 0;
       fprintf (stderr,
         "Unknown command (%02x), default msg_data_length was %d\n",
         returned_hdr->command, msg_data_length);
@@ -1216,14 +1217,14 @@ wire_cksum = (unsigned char)*(m->lth -1 + m->ptr);
       {
 char *p;
 int i;
-fprintf(stderr, "!= c=%x p %x %x\n",
+fprintf(stderr, "Checksum error != c=%x p %x %x\n",
   (unsigned)(returned_hdr->command), (unsigned)parsed_cksum, (unsigned)wire_cksum);
 p = (char *)(m->ptr);
 for (i=0; i<16; i++)
-  fprintf(stderr, " %02x", (unsigned)*(p+i)); 
+  fprintf(stderr, " %02ux", *(unsigned char *)(p+i)); 
 fprintf(stderr, "\n"); fflush(stderr);
         status = ST_BAD_CHECKSUM;
-exit(-2);
+status = ST_OK; // tolerate checksum error and continue
         context->checksum_errs ++;
       };
     };
