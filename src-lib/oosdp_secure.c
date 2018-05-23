@@ -271,6 +271,8 @@ int
 
   // addr
   p->addr = dest_addr;
+  if (context.role EQUALS OSDP_ROLE_PD)
+    p->addr = p->addr | 0x80;
   new_length ++;
 
   // length
