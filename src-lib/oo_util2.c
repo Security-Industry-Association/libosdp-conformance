@@ -71,6 +71,10 @@ int
         if (!(context->secure_channel_use [OO_SCU_ENAB] & 0x80))
           send_poll = 1;
 
+  // if not waiting for response to last message...
+  if (send_poll)
+    if (osdp_awaiting_response(context))
+      send_poll = 0;
   if (send_poll)
   {
     current_length = 0;
@@ -992,6 +996,8 @@ int
   int
     true_dest;
 
+
+  context->last_was_processed = 0; //starting fresh on the processing
 
   if (context->verbosity > 9)
   {

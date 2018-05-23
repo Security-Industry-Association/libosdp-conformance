@@ -309,37 +309,21 @@ int
 
 { /* main for osdp-tcp-client */
 
-  int
-    c1;
-  int
-    done_tls;
-  fd_set
-    exceptfds;
-  fd_set
-    readfds;
-  int
-    nfds;
-  const sigset_t
-    sigmask;
-  int
-    status;
-  int
-    status_io;
-  int
-    status_sock;
-  int
-    status_tls;
-  struct timespec
-    timeout;
-  int
-    tls_current_length;
-  fd_set
-    writefds;
-  int
-    ufd;
+  int c1;
+  int do_net_read;
+  int done_tls;
+  fd_set exceptfds;
+  fd_set readfds;
+  int nfds;
+  const sigset_t sigmask;
+  int status;
+  int status_io;
+  int status_sock;
+  struct timespec timeout;
+  fd_set writefds;
+  int ufd;
 
 
-  status = ST_OK;
   status = initialize (&config, argc, argv);
   if (status EQUALS ST_OK)
   {
@@ -352,168 +336,176 @@ int
     done_tls = 0; // assume not done unless some bad status
 
     status = init_tls_client ();
-
-    // for "phase 1" authentication, kludge it by sending a passphrase
-    // send the passphrase to authenticate
-    status = send_osdp_data (&context,
-      (unsigned char *)specified_passphrase, plmax);
     if (status != ST_OK)
       done_tls = 1;
-
-    if (status EQUALS 0)
-    {
-      request_immediate_poll = 0;
-      while (!done_tls)
-      {
-        fflush (stdout); fflush (stderr); fflush (context.log);
-        {
-          // look for file descriptor activity
-
-          nfds = 0;
-          FD_ZERO (&readfds);
-          FD_ZERO (&writefds);
-          FD_ZERO (&exceptfds);
-          FD_SET (ufd, &readfds);
-	  FD_SET (current_sd, &readfds);
-          nfds = ufd+1;
-	  if (current_sd > ufd)
-            nfds = current_sd + 1;
-          timeout.tv_sec = 0;
-          timeout.tv_nsec = 100000000;
-          status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
-            &timeout, &sigmask);
-
-          if (status_sock > 0)
-          {
-            // check for command input (unix socket activity pokes us to check)
-            if (FD_ISSET (ufd, &readfds))
-            {
-              char cmdbuf [2];
-              char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
-
-              /*
-                send a benign "message" up the line so that the other knows we're active.
-                If the othere end is the CP this will motivate it to generate an osdp_POLL.
-              */
-              status = send_osdp_data (&context, (unsigned char *)gratuitous_data, 1);
-              if (status != ST_OK)
-                done_tls = 1;
-
-              c1 = accept (ufd, NULL, NULL);
-              if (c1 != -1)
-              {
-                status_io = read (c1, cmdbuf, sizeof (cmdbuf));
-                if (status_io > 0)
-                {
-                  close (c1);
-
-                  status = process_current_command ();
-                  if (status EQUALS ST_OK)
-                    preserve_current_command ();
-                  status = ST_OK;
-                };
-              };
-            };
-
-            if (FD_ISSET (current_sd, &readfds))
-            {
-              status = read_tcp_stream (&context, current_sd,
-                &request_immediate_poll);
-            };
-          };
-
-          // idle processing
-
-          if (status_sock EQUALS 0)
-          {
-            if ((context.role EQUALS OSDP_ROLE_CP) && context.authenticated)
-            {
-              if (osdp_timeout (&context, &last_time_check_ex) ||
-                request_immediate_poll)
-              {
-                // if timer 0 expired dump the status
-                if (context.timer[0].status EQUALS OSDP_TIMER_RESTARTED)
-                  status = write_status (&context);
-
-                // if "the timer" went off, do the background process
-
-                status = background (&context);
-                request_immediate_poll = 0;
-              };
-            };
-          };
-        }
-
-        if (0) {
-          status = ST_OK; // assume tls read was ok for starters
-          tls_current_length = status_tls;
-          if (status_tls EQUALS 0)
-            status = ST_OSDP_TLS_CLOSED;
-          if (status_tls < 0)
-            status = ST_OSDP_TLS_ERROR;
-          if (status EQUALS ST_OK)
-          {
-            if (context.verbosity > 4)
-              fprintf (stderr, "%d bytes received via TCP:\n",
-                status_tls);
-
-            // append buffer to osdp buffer
-            if (context.authenticated)
-            {
-              // while first not SOM skip until SOM
-
-              int i;
-              int done;
-              int current_length;
-
-              i = 0;
-              current_length = tls_current_length;
-              done = 0;
-              while (!done)
-              {
-                if (buffer [i] != C_SOM)
-                {
-                  i++;
-                  current_length --;
-                }
-                else
-                {
-                  memcpy (osdp_buf.buf + osdp_buf.next,
-                    buffer+i, current_length);
-                  osdp_buf.next = osdp_buf.next + current_length;
-                  status = ST_NET_INPUT_READY;
-                  done = 1;
-                };
-                if (i EQUALS tls_current_length)
-                  done = 1;
-              }
-            };
-          }
-        };
-        if (status != ST_OK)
-        {
-          if (status != ST_NET_INPUT_READY)
-          {
-            fprintf (stderr, "status %d\n", status);
-            done_tls = 1;
-          };
-        };
-        // if there was input, process the message
-        if (status EQUALS ST_NET_INPUT_READY)
-        {
-          if (status != ST_OK)
-            status = process_osdp_input (&osdp_buf);
-          // if it's too short so far it'll be 'serial_in' so ignore that
-          if (status EQUALS ST_SERIAL_IN)
-            status = ST_OK;
-        };
-        if (status != ST_OK)
-        {
-          done_tls = 1;
-        };
-      } /* not done dls */;
-    } /* tls initialized */;
   };
+  request_immediate_poll = 0;
+  while (!done_tls)
+  {
+    do_net_read = 1; // assume we should do some reading
+
+    fflush (stdout); fflush (stderr); fflush (context.log);
+    
+    // if we already have buffer contents try to process it before reading more.
+    if (osdp_buf.next > 0)
+    {
+      int skip_done;
+      char tmp1 [8192];
+
+      skip_done = 1; 
+
+      if (osdp_buf.next > 1)
+        if (osdp_buf.buf [0] != C_SOM)
+          skip_done = 0;
+
+      while (!skip_done)
+      {
+        if (osdp_buf.buf [0] != C_SOM)
+        {
+          memcpy(tmp1, osdp_buf.buf+1, osdp_buf.next-1);
+          memcpy(osdp_buf.buf, tmp1, osdp_buf.next-1);
+          osdp_buf.next --;
+        }
+        else
+        {
+          skip_done = 1;
+        };
+        if (!osdp_buf.next)
+          skip_done = 1;
+      };
+
+      status = process_osdp_input (&osdp_buf);
+      if (context.verbosity > 9)
+        dump_buffer_log(&context, "After process_osdp_input",
+          osdp_buf.buf, osdp_buf.next);
+
+      // if it's too short so far it'll be 'serial_in' so ignore that
+      if (status EQUALS ST_SERIAL_IN)
+      {
+        status = ST_OK;
+        do_net_read = 1;
+      }
+      else
+      {
+        do_net_read = 0;
+      };
+    };
+
+    // if there was too little to process get some more from the net
+    // otherwise we'll loop around and process more buffer.
+
+    if (do_net_read)
+    {
+      // look for file descriptor activity
+
+      nfds = 0;
+      FD_ZERO (&readfds);
+      FD_ZERO (&writefds);
+      FD_ZERO (&exceptfds);
+      FD_SET (ufd, &readfds);
+
+      FD_SET (current_sd, &readfds);
+      nfds = ufd+1;
+      if (current_sd > ufd)
+        nfds = current_sd + 1;
+      timeout.tv_sec = 0;
+      timeout.tv_nsec = 100000000;
+      status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
+        &timeout, &sigmask);
+
+      if (status_sock > 0)
+      {
+        // check for command input (unix socket activity pokes us to check)
+        if (FD_ISSET (ufd, &readfds))
+        {
+          char cmdbuf [2];
+          char gratuitous_data [2] = {C_OSDP_MARK, 0x00};;
+
+          /*
+            send a benign "message" up the line so that the other knows
+            we're active.
+            If the othere end is the CP this will motivate it to generate
+            an osdp_POLL.
+          */
+          status = send_osdp_data (&context, (unsigned char *)gratuitous_data, 1);
+          if (status != ST_OK)
+            done_tls = 1;
+
+          c1 = accept (ufd, NULL, NULL);
+          if (c1 != -1)
+          {
+            status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+            if (status_io > 0)
+            {
+              close (c1);
+
+              status = process_current_command ();
+              if (status EQUALS ST_OK)
+                preserve_current_command ();
+              status = ST_OK;
+            };
+          };
+        };
+
+        if (FD_ISSET (current_sd, &readfds))
+        {
+          status = read_tcp_stream (&context, current_sd,
+            &request_immediate_poll);
+          if (context.verbosity > 8)
+            dump_buffer_log(&context, "TCP Input:", osdp_buf.buf, osdp_buf.next);
+        };
+      };
+
+      // idle processing
+
+      if (status_sock EQUALS 0)
+      {
+        if ((context.role EQUALS OSDP_ROLE_CP) && context.authenticated)
+        {
+          if (osdp_timeout (&context, &last_time_check_ex) ||
+            request_immediate_poll)
+          {
+            // if timer 0 expired dump the status
+            if (context.timer[0].status EQUALS OSDP_TIMER_RESTARTED)
+              status = write_status (&context);
+
+            // if "the timer" went off, do the background process
+
+            status = background (&context);
+            request_immediate_poll = 0;
+          };
+        };
+      };
+    }
+
+    if (status != ST_OK)
+    {
+      if (status != ST_NET_INPUT_READY)
+      {
+        fprintf (stderr, "status %d\n", status);
+          done_tls = 1;
+      }
+      else
+      {
+        status = ST_OK; // net input ready is OK
+      };
+    };
+#if 0
+    // if there was input, process the message
+    if (status EQUALS ST_NET_INPUT_READY)
+    {
+      if (status != ST_OK)
+        status = process_osdp_input (&osdp_buf);
+      // if it's too short so far it'll be 'serial_in' so ignore that
+      if (status EQUALS ST_SERIAL_IN)
+        status = ST_OK;
+    };
+#endif
+    if (status != ST_OK)
+    {
+      done_tls = 1;
+    };
+  } /* not done tls */;
 
   if (status != ST_OK)
     fprintf (stderr, "osdp-tls return status %d\n",
@@ -566,24 +558,11 @@ int
 
 { /* read_tcp_stream */
 
-  char
-    buffer [1024];
-  int
-    current_length;
-  int
-    done;
-  int
-    i;
-  int
-    lth;
-  int
-    status;
-  int
-    status_io;
-//current_passphrase
-//passphrase_length
-///plmax
-//specified_passphrase
+  char buffer [1024];
+  int current_length;
+  int i;
+  int status;
+  int status_io;
 
 
   status = ST_OK;
@@ -594,58 +573,28 @@ int
     status = ST_OSDP_NET_ERROR;
   if (status EQUALS ST_OK)
   {
+    if (context.verbosity > 8)
+      dump_buffer_log(ctx, "TCP In:", (unsigned char *)buffer, status_io);
     if (context.verbosity > 9)
-      fprintf (stderr, "net read %d\n", status_io);
-    ctx->bytes_received = ctx->bytes_received + status_io;
-
-    // if we have enough data look for the passphrase
-    if (!ctx->authenticated)
     {
-      if (passphrase_length < plmax)
-      {
-        lth = status_io;
-        if ((passphrase_length + lth) > plmax)
-          lth = plmax - passphrase_length;
-        memcpy (current_passphrase+passphrase_length, buffer, lth);
-        if (0 EQUALS
-          memcmp (current_passphrase, specified_passphrase, plmax))
-            ctx->authenticated = 1;
-      };
+      fprintf(stderr, "net read %d already had %d.\n",
+        status_io, ctx->bytes_received);
+      fprintf(stderr, "buffer as read:\n");
+      for (i=0; i<status_io; i++)
+        fprintf(stderr, " %02x", (unsigned char)(buffer [i]));
+      fprintf(stderr, "\n");
     };
+    ctx->bytes_received = ctx->bytes_received + status_io;
 
     // append buffer to osdp buffer
     if (ctx->authenticated)
     {
-      // while first not SOM skip until SOM
-      i = 0;
       current_length = status_io;
-      done = 0;
-      while (!done)
-      {
-        if (buffer [i] != C_SOM)
-        {
-          if (ctx->slow_timer)
-          {
-            fprintf (stderr, "!SOM %02x\n",
-              buffer [i]);
-            *poll = 1;
-          };
-          i++;
-          current_length --;
-        }
-        else
-        {
-          // saw an SOM, so normal incoming message
-          request_immediate_poll = 0; 
-          memcpy (osdp_buf.buf + osdp_buf.next,
-            buffer+i, current_length);
-          osdp_buf.next = osdp_buf.next + current_length;
-          status = ST_NET_INPUT_READY;
-          done = 1;
-        };
-        if (i EQUALS status_io)
-          done = 1;
-      }
+      request_immediate_poll = 0; 
+      memcpy (osdp_buf.buf + osdp_buf.next, buffer, current_length);
+      osdp_buf.next = osdp_buf.next + current_length;
+
+      status = ST_NET_INPUT_READY;
     };
   };
   return (status);

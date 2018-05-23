@@ -431,10 +431,6 @@ fprintf(stderr, "lstat 335\n");
   if ((status != ST_OSDP_CMDREP_FOUND) && 
     ((role EQUALS OSDP_ROLE_CP) || (role EQUALS OSDP_ROLE_MONITOR)))
   {
-    if (ctx->verbosity > 9)
-    {
-      fprintf(stderr, "check command reply CP cmd is 0x%0x\n", command);
-    };
     switch (command)
     {
     default:
@@ -640,14 +636,10 @@ fprintf(stderr, "lstat 335\n");
 */
 int
   osdp_parse_message
-    (OSDP_CONTEXT
-      *context,
-    int
-      role,
-    OSDP_MSG
-      *m,
-    OSDP_HDR
-      *returned_hdr)
+    (OSDP_CONTEXT *context,
+    int role,
+    OSDP_MSG *m,
+    OSDP_HDR *returned_hdr)
 
 { /* osdp_parse_message */
 
@@ -700,6 +692,8 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
   {
     status = ST_OK;
     msg_lth = p->len_lsb + (256*p->len_msb);
+    if ((m->lth) > msg_lth)
+      m->remainder = msg_lth - m->lth;
 
     // now that we have a bit of header figure out how much the whole thing is.  need all of it to process it.
     if (m->lth < msg_lth)
@@ -853,18 +847,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
 
         strcpy (tlogmsg, "");
         p1 = m->ptr;
-if (context->verbosity > 9)
-{
-  int i;
-  unsigned char *p;
-  p = m->ptr;
-  fprintf(stderr, "first (%d) of message: ", 32);
-  for (i=0; i<32; i++)
-  {
-    fprintf(stderr, " %02x", *(p+i));
-  };
-  fprintf(stderr, "\n");
-};
         if (*(p1+1) & 0x80)
           strcpy (dirtag, "PD");
         else
@@ -1171,7 +1153,8 @@ fprintf(stderr, "lstat 1000\n");
          fprintf (stderr, "enc mac so +4 check\n");
           m->crc_check = m->crc_check + sec_blk_length;
       };
-      parsed_crc = fCrcBlk (m->ptr, m->lth - 2);
+//      parsed_crc = fCrcBlk (m->ptr, m->lth - 2);
+      parsed_crc = fCrcBlk (m->ptr, msg_lth - 2);
 
       wire_crc = *(1+m->crc_check) << 8 | *(m->crc_check);
       if (parsed_crc != wire_crc)
@@ -1221,7 +1204,7 @@ fprintf(stderr, "Checksum error != c=%x p %x %x\n",
   (unsigned)(returned_hdr->command), (unsigned)parsed_cksum, (unsigned)wire_cksum);
 p = (char *)(m->ptr);
 for (i=0; i<16; i++)
-  fprintf(stderr, " %02ux", *(unsigned char *)(p+i)); 
+  fprintf(stderr, " %02x", *(unsigned char *)(p+i)); 
 fprintf(stderr, "\n"); fflush(stderr);
         status = ST_BAD_CHECKSUM;
 status = ST_OK; // tolerate checksum error and continue
@@ -1233,7 +1216,8 @@ status = ST_OK; // tolerate checksum error and continue
       char cmd_rep_tag [1024];
       char log_line [1024];
 
-      strcpy(cmd_rep_tag, osdp_command_reply_to_string(returned_hdr->command, m->direction));
+      strcpy(cmd_rep_tag,
+        osdp_command_reply_to_string(returned_hdr->command, m->direction));
       sprintf (log_line, "  Message: %s %s", cmd_rep_tag, tlogmsg);
       sprintf (tlogmsg2, " S:%02x Ck %x Sec %x CRC %04x",
         msg_sqn, msg_check_type, msg_scb, wire_crc);
@@ -1812,6 +1796,11 @@ fprintf(stderr, "lstat 1684\n");
     {
     case OSDP_ACK:
       status = ST_OK;
+
+      // for the moment receiving an ACK is considered processing.
+      // really should be more fine-grained
+
+      context->last_was_processed = 1;
       break;
 
     case OSDP_BUSY:
@@ -1897,6 +1886,8 @@ fprintf(stderr, "lstat 1684\n");
       // if the PD NAK'd during secure channel set-up then reset out of secure channel
       if (context->secure_channel_use [OO_SCU_ENAB] & 0x80)
         osdp_reset_secure_channel (context);
+
+      context->last_was_processed = 1; // if we got a NAK that processes the cmd
       break;
 
     case OSDP_COM:
@@ -2033,6 +2024,8 @@ printf ("MMSG DONE\n");
         context->fw_version [2] = *(11+msg->data_payload);
         SET_PASS ((context), "4-3-2");
       };
+
+      context->last_was_processed = 1;
 
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;

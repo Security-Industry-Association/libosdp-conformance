@@ -357,18 +357,12 @@ typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
   // configuration
-  int
-    disable_certificate_checking;
-  int
-    enable_secure_channel; // 1=yes, 2=yes and use default
-  char
-    fqdn [1024];
-  char
-    log_path [1024];
-  char
-    serial_speed [1024];
-  int
-    verbosity;
+  int disable_certificate_checking;
+  int enable_secure_channel; // 1=yes, 2=yes and use default
+  char fqdn [1024];
+  char log_path [1024];
+  char serial_speed [1024];
+  int verbosity;
 
   // IO context
   int current_pid;
@@ -382,14 +376,12 @@ typedef struct osdp_context
   int current_menu;
 
   // CP and PD context
-  OSDP_LED_STATE
-    led [OSDP_MAX_LED];
-  int
-    role;
-  char
-    text [1024];
+  OSDP_LED_STATE led [OSDP_MAX_LED];
+  int role;
+  char text [1024];
   unsigned char this_message_addr;
   unsigned char MFG_oui [3];
+  int last_was_processed;
 
   // OSDP protocol context
   char
@@ -736,6 +728,7 @@ typedef struct osdp_msg
   int data_length;
   unsigned char * crc_check;
   int check_size;
+  int remainder;
 } OSDP_MSG;
 
 typedef struct osdp_multi_getpiv
@@ -877,12 +870,15 @@ unsigned char checksum (unsigned char *msg, int length);
 int calc_parity (unsigned short value, int length, int sense);
 int display_menu (int menu);
 void display_sim_reader (OSDP_CONTEXT *ctx, char *str);
+void dump_buffer_log (OSDP_CONTEXT *ctx, char * tag, unsigned char *b, int l);
+void dump_buffer_stderr (char * tag, unsigned char *b, int l);
 int fasc_n_75_to_string (char * s, long int *sample_1);
 int next_sequence (OSDP_CONTEXT *ctx);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
+int osdp_awaiting_response(OSDP_CONTEXT *ctx);
 int osdp_build_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int security);

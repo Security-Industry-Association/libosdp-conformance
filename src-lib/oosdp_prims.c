@@ -273,3 +273,51 @@ int osdp_validate_led_values
 
 } /* osdp_validate_led_values */
 
+
+void dump_buffer_log (OSDP_CONTEXT *ctx, char * tag, unsigned char *b, int l)
+{
+  int i;
+  int l2;
+
+  l2 = l;
+  fprintf(ctx->log, "%s (L=%d.)", tag, l);
+  if (l2 > 48) l2 = 48;
+  for (i=0; i<l2; i++)
+    fprintf(ctx->log, " %02x", b [i]);
+  fprintf(ctx->log, "\n");
+  fflush(ctx->log);
+}
+
+
+void dump_buffer_stderr (char * tag, unsigned char *b, int l)
+{
+  int i;
+  int l2;
+
+  l2 = l;
+  fprintf(stderr, "%s (L=%d.)", tag, l);
+  if (l2 > 48) l2 = 48;
+  for (i=0; i<l2; i++)
+    fprintf(stderr, " %02x", b [i]);
+  fprintf(stderr, "\n");
+  fflush(stderr);
+}
+
+int osdp_awaiting_response (OSDP_CONTEXT *ctx)
+{
+  int ret;
+
+  ret = 1;
+
+  if (ctx->last_was_processed)
+  {
+    ret = 0;
+  }
+  else
+  {
+    fprintf(stderr, "Last was not processed\n");
+  };
+ret=0;
+  return (ret);
+}
+
