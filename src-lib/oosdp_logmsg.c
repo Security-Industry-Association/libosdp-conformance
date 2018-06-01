@@ -300,19 +300,27 @@ int
         keycount;
 
       msg = (OSDP_MSG *) aux;
-      keycount = *(msg->data_payload+1);
-      memset (tmpstr, 0, sizeof (tmpstr));
-      memcpy (tmpstr, msg->data_payload+2, *(msg->data_payload+1));
-      for (i=0; i<keycount; i++)
+
+      if (msg->security_block_length > 0)
       {
-        if (tmpstr [i] EQUALS 0x7F)
-          tmpstr [i] = '#';
-        if (tmpstr [i] EQUALS 0x0D)
-          tmpstr [i] = '*';
+        strcat(tlogmsg, "(KEYPAD message contents encrypted)\n");
       };
-      sprintf (tlogmsg,
+      if (msg->security_block_length EQUALS 0)
+      {
+        keycount = *(msg->data_payload+1);
+        memset (tmpstr, 0, sizeof (tmpstr));
+        memcpy (tmpstr, msg->data_payload+2, *(msg->data_payload+1));
+        for (i=0; i<keycount; i++)
+        {
+          if (tmpstr [i] EQUALS 0x7F)
+            tmpstr [i] = '#';
+          if (tmpstr [i] EQUALS 0x0D)
+            tmpstr [i] = '*';
+        };
+        sprintf (tlogmsg,
 "Keypad Input Rdr %d, %d digits: %s",
-        *(msg->data_payload+0), keycount, tmpstr);
+          *(msg->data_payload+0), keycount, tmpstr);
+      };
     };
     break;
 
@@ -340,10 +348,16 @@ int
       led_ctl = (OSDP_RDR_LED_CTL *)(msg->data_payload);
       tlogmsg [0] = 0;
 
-      sprintf(tmpstr, "LED Control: %d. commands\n", count);
-      strcat(tlogmsg, tmpstr);
-      for (i=0; i<count; i++)
+      if (msg->security_block_length > 0)
       {
+        strcat(tlogmsg, "(LED message contents encrypted)\n");
+      };
+      if (msg->security_block_length EQUALS 0)
+      {
+        sprintf(tmpstr, "LED Control: %d. commands\n", count);
+        strcat(tlogmsg, tmpstr);
+        for (i=0; i<count; i++)
+        {
         strcpy(color_name_on, osdp_led_color_lookup(led_ctl->temp_on_color));
         strcpy(color_name_off, osdp_led_color_lookup(led_ctl->temp_off_color));
         sprintf(tmpstr,
@@ -379,6 +393,7 @@ int
         led_ctl++; // increment structure pointer to next LED
       };
     };
+    };
     break;
 
   case OOSDP_MSG_LSTATR:
@@ -386,9 +401,16 @@ int
       unsigned char *osdp_lstat_response_data;
 
       msg = (OSDP_MSG *) aux;
-      osdp_lstat_response_data = (unsigned char *)(msg->data_payload);
-      sprintf(tlogmsg, "LSTAT Response: Tamper %d Power-cycle %d\n",
-        osdp_lstat_response_data [0], osdp_lstat_response_data [1]);
+      if (msg->security_block_length > 0)
+      {
+        strcat(tlogmsg, "(LSTATR message contents encrypted)\n");
+      };
+      if (msg->security_block_length EQUALS 0)
+      {
+        osdp_lstat_response_data = (unsigned char *)(msg->data_payload);
+        sprintf(tlogmsg, "LSTAT Response: Tamper %d Power-cycle %d\n",
+          osdp_lstat_response_data [0], osdp_lstat_response_data [1]);
+      };
     };
     break;
 
@@ -432,6 +454,20 @@ int
     strcat(tlogmsg, tmpstr2);
     strcat(tlogmsg, tmpstr);
     strcat(tlogmsg, "\n");
+    break;
+
+  case OOSDP_MSG_OUT:
+    {
+      OSDP_OUT_MSG *out_message;
+      msg = (OSDP_MSG *) aux;
+      out_message = (OSDP_OUT_MSG *)msg->data_payload;
+
+      // assume one only
+
+      sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x\n",
+        out_message->output_number, out_message->control_code,
+        out_message->timer_lsb, out_message->timer_msb);
+    };
     break;
 
   case OOSDP_MSG_OUT_STATUS:

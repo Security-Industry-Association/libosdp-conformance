@@ -561,13 +561,16 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
           out_lth;
 
         current_length = 0;
-        osdp_out_msg [0].output_number = current_output_command [0].output_number;
+        osdp_out_msg [0].output_number =
+          current_output_command [0].output_number;
         osdp_out_msg [0].control_code = current_output_command [0].control_code;
         osdp_out_msg [0].timer_lsb = current_output_command [0].timer & 0xff;
-        osdp_out_msg [0].timer_lsb = (current_output_command [0].timer > 8) & 0xff;
+        osdp_out_msg [0].timer_msb =
+          (current_output_command [0].timer > 8) & 0xff;
         out_lth = sizeof (osdp_out_msg [0]);
         status = send_message (context,
-          OSDP_OUT, p_card.addr, &current_length, out_lth, (unsigned char *)osdp_out_msg);
+          OSDP_OUT, p_card.addr, &current_length, out_lth,
+          (unsigned char *)osdp_out_msg);
         status = ST_OK;
       };
       break;

@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 3)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_BUILD ( 5)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -592,6 +592,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_LSTATR       (13)
 #define OOSDP_MSG_MFGREP       (14)
 #define OOSDP_MSG_MFG          (15)
+#define OOSDP_MSG_OUT          (16)
 
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer
@@ -729,6 +730,7 @@ typedef struct osdp_msg
   unsigned char * crc_check;
   int check_size;
   int remainder;
+  int security_block_length;
 } OSDP_MSG;
 
 typedef struct osdp_multi_getpiv

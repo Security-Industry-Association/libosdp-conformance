@@ -542,14 +542,14 @@ int
 
       // the output command takes arguments: output_number, control_code
 
-      value = json_object_get (root, "output_number");
+      value = json_object_get (root, "output-number");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         current_output_command [0].output_number = i;
       };
-      value = json_object_get (root, "control_code");
+      value = json_object_get (root, "control-code");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));

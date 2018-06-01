@@ -63,7 +63,6 @@ int
     status = ST_SERIAL_IN;
   if (status EQUALS ST_OK)
   {
-fprintf(stderr, "buffer remainder %d.\n", msg.remainder);
     if (context.verbosity > 9)
     {
       int i;
@@ -146,14 +145,10 @@ if (p_card.addr != context.new_address)
   {
     int length;
     length = (parsed_msg.len_msb << 8) + parsed_msg.len_lsb;
-fprintf(stderr, "process_osdp_input shuffle: l %d. next %d.\n", length, osdp_buf->next);
     memcpy (temp_buffer.buf, osdp_buf->buf+length, osdp_buf->next-length);
     temp_buffer.next = osdp_buf->next-length;
     memcpy (osdp_buf->buf, temp_buffer.buf, temp_buffer.next);
-fprintf(stderr, "process_osdp_input: length updating %d. to %d,\n",
-  temp_buffer.next, osdp_buf->next);
     osdp_buf->next = temp_buffer.next;
-dump_buffer_stderr("osdp_buf after shuffle:", osdp_buf->buf, osdp_buf->next);
     if (status != ST_OK)
       // if we experienced an error we just reset things and continue
       status = ST_SERIAL_IN;

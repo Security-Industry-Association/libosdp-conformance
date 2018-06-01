@@ -573,7 +573,7 @@ int
     status = ST_OSDP_NET_ERROR;
   if (status EQUALS ST_OK)
   {
-    if (context.verbosity > 8)
+    if (context.verbosity > 9)
       dump_buffer_log(ctx, "TCP In:", (unsigned char *)buffer, status_io);
     if (context.verbosity > 9)
     {
@@ -604,25 +604,22 @@ int
 
 int
   send_osdp_data
-    (OSDP_CONTEXT
-      *context,
-    unsigned char
-      *buf,
-    int
-      lth)
+    (OSDP_CONTEXT *ctx,
+    unsigned char *buf,
+    int lth)
 
 { /* send_osdp_data */
 
-  int
-    status;
-  int
-    status_io;
+  int status;
+  int status_io;
 
 
   status = ST_OK;
+  if (ctx->verbosity > 8)
+    dump_buffer_log(ctx, "TCP Output: ", buf, lth);
   status_io = write (current_sd, buf, lth);
 
-  context->bytes_sent = context->bytes_sent + lth;
+  ctx->bytes_sent = ctx->bytes_sent + lth;
   if (status_io != lth)
     status = -3;
   return (status);

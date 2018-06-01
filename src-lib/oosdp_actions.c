@@ -837,6 +837,12 @@ int
   osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
   processed = 0;
   raw_data = msg->data_payload + 4;
+  if (msg->security_block_length > 0)
+  {
+    fprintf (ctx->log, "(RAW card data contents encrypted)\n");
+  };
+  if (msg->security_block_length EQUALS 0)
+  {
   /*
     this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
   */
@@ -917,6 +923,7 @@ sample_1 [0] = tmp1_l;
       bits, *(msg->data_payload+4), hstr);
     processed = 1;
   };
+  }; // not encrypted
 
   return (status);
 

@@ -670,6 +670,7 @@ int
   logmsg [0] = 0;
 
   m->data_payload = NULL;
+  m->security_block_length = 0; // assume no security block
   msg_data_length = 0;
   p = (OSDP_HDR *)m->ptr;
 
@@ -770,7 +771,7 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
           };
       };
       strcat(tlogmsg, "\n");
-      fprintf (context->log, "%s", tlogmsg);
+//      fprintf (context->log, "%s", tlogmsg);
       tlogmsg [0] = 0;
       tlogmsg2 [0] = 0;
 
@@ -780,6 +781,7 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
 
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       sec_blk_length = (unsigned)*(m->ptr + 5);
+      m->security_block_length = sec_blk_length;
       if (context->verbosity > 8)
         fprintf (stderr, "SECBLK: LEN=%d.(0x%02x) SEC_BLK_LEN=%d.\n",
           msg_data_length, msg_data_length, sec_blk_length);
@@ -797,6 +799,9 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
     m->direction = 0x80 & p->addr;
     m->data_payload = m->cmd_payload + 1;
 
+    // if it wasn't a poll or an ack report the secure header if there is one
+    if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
+      fprintf (context->log, "%s", tlogmsg);
     if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
     {
       sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
@@ -1300,6 +1305,11 @@ int
     {
     case OSDP_CHLNG:
       status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_OUT:
+      status = oosdp_make_message(OOSDP_MSG_OUT, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;

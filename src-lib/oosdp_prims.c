@@ -315,7 +315,8 @@ int osdp_awaiting_response (OSDP_CONTEXT *ctx)
   }
   else
   {
-    fprintf(stderr, "Last was not processed\n");
+    if (ctx->verbosity > 9)
+      fprintf(stderr, "Last was not processed\n");
   };
 ret=0;
   return (ret);
