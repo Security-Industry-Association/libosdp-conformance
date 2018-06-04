@@ -211,6 +211,14 @@ int
   status = ST_OK;
   switch (msgtype)
   {
+  case OOSDP_MSG_BUZ:
+    msg = (OSDP_MSG *) aux;
+    sprintf(tlogmsg, "BUZ: Rdr %02x Tone Code %02x On=%d(ms) Off=%d(ms) Count %d\n",
+      *(msg->data_payload + 0), *(msg->data_payload + 1),
+      100 * *(msg->data_payload + 2), 100 * *(msg->data_payload + 3),
+      *(msg->data_payload + 4));
+    break;
+
   case OOSDP_MSG_CCRYPT:
     msg = (OSDP_MSG *) aux;
     ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
@@ -240,6 +248,32 @@ int
       chlng_payload->rnd_a [2], chlng_payload->rnd_a [3],
       chlng_payload->rnd_a [4], chlng_payload->rnd_a [5],
       chlng_payload->rnd_a [6], chlng_payload->rnd_a [7]);
+    break;
+
+  case OOSDP_MSG_COM:
+    {
+      int speed;
+
+      msg = (OSDP_MSG *) aux;
+      speed = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
+        (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
+
+      sprintf(tlogmsg, "COM Returns New Address %02x New Speed %d.\n",
+        *(0+msg->data_payload), speed);
+    };
+    break;
+
+  case OOSDP_MSG_COMSET:
+    {
+      int speed;
+
+      msg = (OSDP_MSG *) aux;
+      speed = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
+        (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
+
+      sprintf(tlogmsg, "COMSET Will use New Address %02x New Speed %d.\n",
+        *(0+msg->data_payload), speed);
+    };
     break;
 
   case OOSDP_MSG_FILETRANSFER:
@@ -290,6 +324,36 @@ int
       ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,
       ftstat->FtUpdateMsgMax [0], ftstat->FtUpdateMsgMax [1], newmax);
     strcat(tlogmsg, tmpstr);
+    break;
+
+  case OOSDP_MSG_ISTATR:
+    msg = (OSDP_MSG *) aux;
+    oh = (OSDP_HDR *)(msg->ptr);
+    if (msg->security_block_length > 0)
+    {
+      strcat(tlogmsg, "(ISTATR message contents encrypted)\n");
+    };
+    if (msg->security_block_length EQUALS 0)
+    {
+      int i;
+      unsigned char *p;
+      i = 0;
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - 8;
+      strcat(tlogmsg, "Input Status:\n");
+      p = msg->data_payload;
+      while (count > 0)
+      {
+        if (*p)
+          sprintf(tmpstr, " IN-%d Active", i);
+        else
+          sprintf(tmpstr, " IN-%d Inactive", i);
+        strcat(tlogmsg, tmpstr);
+        count --;
+        i++;
+      };
+      strcat(tlogmsg, "\n");
+    };
     break;
 
   case OOSDP_MSG_KEYPAD:

@@ -106,6 +106,7 @@ char
     case OSDP_POLL: strcpy(cmd_rep_s, "osdp_POLL"); break;
     case OSDP_PROMPT: strcpy(cmd_rep_s, "osdp_PROMPT"); break;
     case OSDP_RSTAT: strcpy(cmd_rep_s, "osdp_RSTAT"); break;
+    case OSDP_SCRYPT: strcpy(cmd_rep_s, "osdp_SCRYPT"); break;
     case OSDP_TDSET: strcpy(cmd_rep_s, "osdp_TDSET"); break;
     case OSDP_TEXT: strcpy(cmd_rep_s, "osdp_TEXT"); break;
     };

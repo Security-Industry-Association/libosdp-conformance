@@ -47,36 +47,22 @@ int
 
 { /* read_command */
 
-  FILE
-    *cmdf;
-  char
-    current_command [1024];
-  char
-    current_options [1024];
+  FILE *cmdf;
+  char current_command [1024];
+  char current_options [1024];
 //  char field [1024];
-  int
-    i;
-  char
-    json_string [16384];
-  json_t
-    *parameter;
-  json_t
-    *root;
+  int i;
+  char json_string [16384];
+  json_t *parameter;
+  json_t *root;
   int set_led_temp;
-  json_error_t
-    status_json;
-  int
-    status;
-  int
-    status_io;
-  char
-    *test_command;
-  char
-    this_command [1024];
-  json_t
-    *value;
-  char
-    vstr [1024];
+  json_error_t status_json;
+  int status;
+  int status_io;
+  char *test_command;
+  char this_command [1024];
+  json_t *value;
+  char vstr [1024];
 
 
   status = ST_CMD_PATH;

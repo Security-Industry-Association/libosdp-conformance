@@ -1303,8 +1303,18 @@ int
   {
     switch (msg->msg_cmd)
     {
+    case OSDP_BUZ:
+      status = oosdp_make_message (OOSDP_MSG_BUZ, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_CHLNG:
       status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_COMSET:
+      status = oosdp_make_message (OOSDP_MSG_COMSET, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
@@ -1321,6 +1331,16 @@ int
     {
     case OSDP_CCRYPT:
       status = oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_COM:
+      status = oosdp_make_message (OOSDP_MSG_COM, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_ISTATR:
+      status = oosdp_make_message (OOSDP_MSG_ISTATR, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;

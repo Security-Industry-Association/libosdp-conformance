@@ -198,8 +198,10 @@ int
   status = ST_OK;
   if (ctx->role EQUALS OSDP_ROLE_PD)
     strcpy (tag, "PD");
-  else
+  if (ctx->role EQUALS OSDP_ROLE_CP)
     strcpy (tag, "CP");
+  if (ctx->role EQUALS OSDP_ROLE_MONITOR)
+    strcpy (tag, "MON");
   sprintf (statfile, "/opt/osdp-conformance/run/%s/osdp-status.json",
     tag);
   sf = fopen (statfile, "w");
@@ -290,6 +292,8 @@ int
     fprintf(sf,
 "  \"current_send_length\" : \"%d\",\n",
       ctx->xferctx.current_send_length);
+
+    fprintf(sf, "  \"last_update_timeT\" : %ld,\n", current_time);
 
     fprintf(sf, "\"_#\" : \"_end\"\n");
     fprintf (sf, "}\n");

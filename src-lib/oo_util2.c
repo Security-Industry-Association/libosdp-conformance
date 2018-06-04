@@ -608,7 +608,6 @@ int
     char vstr [1024];
     int i;
     strcpy (vstr, json_string_value (value));
-    sscanf (vstr, "%d", &i);
 
     // expected to be 6 characters, hexits.
 
