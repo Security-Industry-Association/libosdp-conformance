@@ -648,22 +648,15 @@ int
   char logmsg [1024];
   unsigned int msg_lth;
   int msg_check_type;
-  int
-    msg_data_length;
-  int
-    msg_scb;
-  int
-    msg_sqn;
-  OSDP_HDR
-    *p;
-  unsigned short int
-    parsed_crc;
-  int
-    sec_blk_length;
-  int
-    status;
-  unsigned short int
-    wire_crc;
+  int msg_data_length;
+  int msg_scb;
+  int msg_sqn;
+  OSDP_HDR *p;
+  unsigned short int parsed_crc;
+  int sec_blk_length;
+  int sec_block_type;
+  int status;
+  unsigned short int wire_crc;
 
 
   status = ST_MSG_TOO_SHORT;
@@ -780,6 +773,16 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
       // sec_blk_length -
 
       msg_data_length = p->len_lsb + (p->len_msb << 8);
+
+      // if there's a security block and it's the proper type here's 4 bytes
+      // of MAC at the end.
+
+      sec_block_type = (unsigned)*(m->ptr+6); // second byte of sec block
+      if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
+        (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
+        (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
+        (sec_block_type EQUALS OSDP_SEC_SCS_18))
+        msg_data_length = msg_data_length - 4;
       sec_blk_length = (unsigned)*(m->ptr + 5);
       m->security_block_length = sec_blk_length;
       if (context->verbosity > 8)
@@ -1153,12 +1156,17 @@ fprintf(stderr, "lstat 1000\n");
     {
       // figure out where crc or checksum starts
       m->crc_check = m->cmd_payload + 1 + msg_data_length;
-      if (0)///(msg_scb)
-      {
-         fprintf (stderr, "enc mac so +4 check\n");
-          m->crc_check = m->crc_check + sec_blk_length;
-      };
-//      parsed_crc = fCrcBlk (m->ptr, m->lth - 2);
+
+      // if it's an SCS with a MAC suffix move the CRC pointer
+
+      if (msg_scb)
+        if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
+          (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
+          (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
+          (sec_block_type EQUALS OSDP_SEC_SCS_18))
+          m->crc_check = 4 + m->cmd_payload + 1 + msg_data_length;
+
+fprintf(stderr, "secure crc msg calc lth %d\n", msg_lth-2);
       parsed_crc = fCrcBlk (m->ptr, msg_lth - 2);
 
       wire_crc = *(1+m->crc_check) << 8 | *(m->crc_check);
