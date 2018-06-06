@@ -55,8 +55,9 @@ OSDP_OUT_CMD
   current_output_command [16];
 OSDP_PARAMETERS
   p_card;
-char
-  tag [1024]; // PD or CP as a string
+char tag [1024]; // PD or CP as a string
+char trace_in_buffer [1024];
+char trace_out_buffer [1024];
 
 
 unsigned char
@@ -109,6 +110,8 @@ int
 
 
   status = ST_OK;
+  trace_in_buffer [0] = 0;
+  trace_out_buffer [0] = 0;
   check_for_command = 0;
 
   if (status EQUALS ST_OK)
@@ -335,7 +338,12 @@ int
         else
         {
           if (context.verbosity > 8)
-            fprintf(context.log, "RAW SERIAL: %02x\n", buffer [0]);
+          {
+            char octet [3];
+//            fprintf(context.log, "RAW SERIAL: %02x\n", buffer [0]);
+            sprintf(octet, " %02x", buffer [0]);
+            strcat(trace_in_buffer, octet);
+          };
           if (context.verbosity > 9)
             fprintf (stderr, "485 read returned %d bytes\n",
               status_io);
@@ -360,8 +368,9 @@ int
         }
         else
         {
-          status = ST_SERIAL_OVERFLOW;
+          fprintf(context.log, "Serial Overflow, resetting input buffer\n");
           osdp_buf.overflow ++;
+          osdp_buf.next = 0; 
         };
       };
     };

@@ -28,6 +28,7 @@
 
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
+extern char trace_in_buffer [];
 
 
 char
@@ -329,6 +330,7 @@ int
   case OOSDP_MSG_ISTATR:
     msg = (OSDP_MSG *) aux;
     oh = (OSDP_HDR *)(msg->ptr);
+    tlogmsg [0] = 0;
     if (msg->security_block_length > 0)
     {
       strcat(tlogmsg, "(ISTATR message contents encrypted)\n");
@@ -340,6 +342,7 @@ int
       i = 0;
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - 8;
+fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
       strcat(tlogmsg, "Input Status:\n");
       p = msg->data_payload;
       while (count > 0)
@@ -727,6 +730,11 @@ else
       current_cooked_time->tm_hour, current_cooked_time->tm_min, 
       current_cooked_time->tm_sec,
       current_time_fine.tv_sec, current_time_fine.tv_nsec);
+  };
+  if (strlen(trace_in_buffer) > 0)
+  {
+    fprintf(context->log, "Trace Data IN: %s\n", trace_in_buffer);
+    trace_in_buffer [0] = 0;
   };
   if (context->role == OSDP_ROLE_MONITOR)
   {

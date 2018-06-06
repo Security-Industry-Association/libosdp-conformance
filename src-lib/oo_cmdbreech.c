@@ -255,6 +255,12 @@ int
     };
   };
 
+  // 2-14-3: rogue secure poll
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_2_14_3")) {
+      cmd->command = OSDP_CMDB_CONFORM_2_14_3; }; };
+
   // command conform_3_20_1 - MFG
 
   if (status EQUALS ST_OK) {

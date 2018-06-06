@@ -720,7 +720,7 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
     if (context->verbosity > 3)
       // prints low 7 bits of addr field i.e. not request/reply
       sprintf (tlogmsg,
-"A:%02x L:%d. C:%02x",
+"A:%02x L:%d. C:%02x\n",
         (0x7f & p->addr), msg_lth, p->ctrl);
    
     // must start with SOM

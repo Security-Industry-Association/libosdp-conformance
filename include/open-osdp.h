@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 3)
-#define OSDP_VERSION_BUILD ( 5)
+#define OSDP_VERSION_BUILD ( 6)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -67,6 +67,10 @@
 #define OSDP_SEC_SCS_12 (0x12)
 #define OSDP_SEC_SCS_13 (0x13)
 #define OSDP_SEC_SCS_14 (0x14)
+#define OSDP_SEC_SCS_15 (0x15)
+#define OSDP_SEC_SCS_16 (0x16)
+#define OSDP_SEC_SCS_17 (0x17)
+#define OSDP_SEC_SCS_18 (0x18)
 
 #define OSDP_KEY_OCTETS (16) // AES-128 CBC
 
@@ -137,32 +141,33 @@
 // commands used through breech-loading interface
 // by convention starts above 1000
 #define OSDP_CMDB_DUMP_STATUS    (1001)
-#define OSDP_CMDB_SEND_POLL    (1002)
-#define OSDP_CMDB_IDENT        (1003)
-#define OSDP_CMDB_CAPAS        (1004)
-#define OSDP_CMDB_RESET_POWER  (1005)
-#define OSDP_CMDB_PRESENT_CARD  (1006)
-#define OSDP_CMDB_OUT           (1007)
-#define OSDP_CMDB_LED           (1008)
-#define OSDP_CMDB_INIT_SECURE   (1009)
-#define OSDP_CMDB_TEXT          (1010)
-#define OSDP_CMDB_TAMPER        (1011)
-#define OSDP_CMDB_OSTAT         (1012)
-#define OSDP_CMDB_LSTAT         (1013)
-#define OSDP_CMDB_RSTAT         (1014)
-#define OSDP_CMDB_CONFORM_2_6_1 (1015)
-#define OSDP_CMDB_ISTAT         (1016)
-#define OSDP_CMDB_COMSET        (1017)
-#define OSDP_CMDB_CONFORM_2_2_1 (1018)
-#define OSDP_CMDB_CONFORM_2_2_2 (1019)
-#define OSDP_CMDB_CONFORM_2_2_3 (1020)
-#define OSDP_CMDB_CONFORM_2_2_4 (1021)
-#define OSDP_CMDB_BUZZ          (1022)
-#define OSDP_CMDB_BUSY          (1023)
-#define OSDP_CMDB_KEYPAD        (1024)
+#define OSDP_CMDB_SEND_POLL      (1002)
+#define OSDP_CMDB_IDENT          (1003)
+#define OSDP_CMDB_CAPAS          (1004)
+#define OSDP_CMDB_RESET_POWER    (1005)
+#define OSDP_CMDB_PRESENT_CARD   (1006)
+#define OSDP_CMDB_OUT            (1007)
+#define OSDP_CMDB_LED            (1008)
+#define OSDP_CMDB_INIT_SECURE    (1009)
+#define OSDP_CMDB_TEXT           (1010)
+#define OSDP_CMDB_TAMPER         (1011)
+#define OSDP_CMDB_OSTAT          (1012)
+#define OSDP_CMDB_LSTAT          (1013)
+#define OSDP_CMDB_RSTAT          (1014)
+#define OSDP_CMDB_CONFORM_2_6_1  (1015)
+#define OSDP_CMDB_ISTAT          (1016)
+#define OSDP_CMDB_COMSET         (1017)
+#define OSDP_CMDB_CONFORM_2_2_1  (1018)
+#define OSDP_CMDB_CONFORM_2_2_2  (1019)
+#define OSDP_CMDB_CONFORM_2_2_3  (1020)
+#define OSDP_CMDB_CONFORM_2_2_4  (1021)
+#define OSDP_CMDB_BUZZ           (1022)
+#define OSDP_CMDB_BUSY           (1023)
+#define OSDP_CMDB_KEYPAD         (1024)
 #define OSDP_CMDB_CONFORM_3_20_1 (1025)
 #define OSDP_CMDB_INDUCE_NAK     (1026)
 #define OSDP_CMDB_TRANSFER       (1027)
+#define OSDP_CMDB_CONFORM_2_14_3 (1028)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -601,12 +606,9 @@ typedef struct osdp_parameters
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer
 {
-  unsigned char
-    buf [OSDP_BUF_MAX];
-  int
-    next;
-  int
-    overflow;
+  unsigned char buf [OSDP_BUF_MAX];
+  int next;
+  int overflow;
 } OSDP_BUFFER;
 
 typedef struct osdp_command
@@ -888,7 +890,7 @@ int osdp_awaiting_response(OSDP_CONTEXT *ctx);
 int osdp_build_message (unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int security);
-int osdp_build_secure_message (unsigned char *buf, int *updated_length,
+int osdp_build_secure_message (OSDP_CONTEXT *ctx, unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);

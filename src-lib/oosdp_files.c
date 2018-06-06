@@ -175,24 +175,16 @@ int
 
 { /* write_status */
 
-  char
-    current_date_string [1024];
-  time_t
-    current_time;
-  int
-    i;
-  int
-    j;
-  FILE
-    *sf;
-  char
-    statfile [1024];
-  int
-    status;
-  char
-    tag [3];
-  char
-    val [1024];
+  char current_date_string [1024];
+  time_t current_time;
+  int i;
+  int j;
+  extern OSDP_BUFFER osdp_buf;
+  FILE *sf;
+  char statfile [1024];
+  int status;
+  char tag [3];
+  char val [1024];
 
 
   status = ST_OK;
@@ -211,17 +203,23 @@ int
     strcpy (current_date_string, asctime (localtime (&current_time)));
     current_date_string [strlen (current_date_string)-1] = 0;
     fprintf (sf, "{\n");
-    fprintf (sf, "      \"last_update\" : \"%s\",\n",
+    fprintf (sf,
+"          \"last_update\" : \"%s\",\n",
       current_date_string);
     if (strlen (ctx->text) > 0)
-      fprintf (sf, "\"text\" : \"%s\",\n",
+      fprintf (sf,
+"                 \"text\" : \"%s\",\n",
         ctx->text);
-    fprintf (sf, "             \"role\" : \"%d\",\n",
+    fprintf (sf,
+"                 \"role\" : \"%d\",\n",
       ctx->role);
-    fprintf (sf, "                \"#\" : \"0=CP 1=PD 2=MON\",\n");
-    fprintf (sf, "     \"serial_speed\" : \"%s\",\n",
+    fprintf (sf,
+"                    \"#\" : \"0=CP 1=PD 2=MON\",\n");
+    fprintf (sf,
+"         \"serial_speed\" : \"%s\",\n",
       ctx->serial_speed);
-    fprintf (sf, "       \"pd_address\" : \"%02x\",\n",
+    fprintf (sf,
+"           \"pd_address\" : \"%02x\",\n",
       p_card.addr);
     fprintf (sf,       "\"max_pd_send\" : \"%d\",\n",
       ctx->max_message);
@@ -229,8 +227,12 @@ int
       ctx->cp_polls);
     fprintf (sf, "          \"pd_acks\" : \"%d\",\n",
       ctx->pd_acks);
-    fprintf (sf, "        \"sent_naks\" : \"%d\",\n",
+    fprintf (sf,
+"           \"sent_naks\" : \"%d\",\n",
       ctx->sent_naks);
+    fprintf(sf,
+"    \"buffer-overflows\" : \"%d\",\n",
+      osdp_buf.overflow);
     for (j=0; j<OSDP_MAX_LED; j++)
     {
       if (ctx->led [j].state EQUALS OSDP_LED_ACTIVATED)
@@ -293,7 +295,8 @@ int
 "  \"current_send_length\" : \"%d\",\n",
       ctx->xferctx.current_send_length);
 
-    fprintf(sf, "  \"last_update_timeT\" : %ld,\n", current_time);
+    fprintf(sf,
+"    \"last_update_timeT\" : %ld,\n", current_time);
 
     fprintf(sf, "\"_#\" : \"_end\"\n");
     fprintf (sf, "}\n");

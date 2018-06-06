@@ -50,26 +50,16 @@ int
 
 { /* action_osdp_CCRYPT */
 
-  struct AES_ctx
-    aes_context_s_enc;
-  OSDP_SC_CCRYPT
-    *ccrypt_payload;
-  unsigned char
-    *client_cryptogram;
-  int
-    current_length;
-  unsigned char
-    iv [16];
-  unsigned char
-    message [16];
-  unsigned char
-    sec_blk [1];
-  OSDP_SECURE_MESSAGE
-    *secure_message;
-  unsigned char
-    server_cryptogram [16];
-  int
-    status;
+  struct AES_ctx aes_context_s_enc;
+  OSDP_SC_CCRYPT *ccrypt_payload;
+  unsigned char *client_cryptogram;
+  int current_length;
+  unsigned char iv [16];
+  unsigned char message [16];
+  unsigned char sec_blk [1];
+  OSDP_SECURE_MESSAGE *secure_message;
+  unsigned char server_cryptogram [16];
+  int status;
 
   status = ST_OK;
 

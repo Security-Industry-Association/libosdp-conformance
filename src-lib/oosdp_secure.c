@@ -32,7 +32,7 @@
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 
-extern OSDP_CONTEXT context;
+//extern OSDP_CONTEXT context;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 char tlogmsg [1024];
@@ -145,6 +145,28 @@ printf ("fixme: RND.B\n");
 } /* action_osdp_CHLNG */
 
 
+int
+  osdp_calculate_secure_channel_mac
+    (OSDP_CONTEXT *ctx,
+    unsigned char *msg_to_send,
+    int msg_lth,
+    unsigned char * mac)
+
+{ /* osdp_calculate_secure_channel_mac */
+
+  int status;
+
+
+  status = ST_OK;
+  mac [0] = 0xaa;
+  mac [1] = 0xbb;
+  mac [2] = 0xcc;
+  mac [3] = 0xdd;
+  return (status);
+
+} /* osdp_calculate_secure_channel_mac */
+
+
 void
   osdp_create_keys
     (OSDP_CONTEXT
@@ -219,43 +241,31 @@ void
 
 int
   osdp_build_secure_message
-    (unsigned char
-        *buf,
-    int
-      *updated_length,
-    unsigned char
-      command,
-    int
-      dest_addr,
-    int
-      sequence,
-    int
-      data_length,
-    unsigned char
-      *data,
-    int
-      sec_block_type,
-    int
-      sec_block_length,
-    unsigned char
-      *sec_blk)
+    (OSDP_CONTEXT *ctx,
+    unsigned char *buf,
+    int *updated_length,
+    unsigned char command,
+    int dest_addr,
+    int sequence,
+    int data_length,
+    unsigned char *data,
+    int sec_block_type,
+    int sec_block_length,
+    unsigned char *sec_blk)
 
 { /* osdp_build_secure_mesage */
 
-  int
-    check_size;
-  unsigned char
-    * cmd_ptr;
-  int
-    new_length;
-  unsigned char
-    * next_data;
-  OSDP_HDR
-    *p;
-  int
-    status;
-  int
-    whole_msg_lth;
+  int check_size;
+  unsigned char * cmd_ptr;
+  unsigned char *crc_check;
+  int new_length;
+  unsigned char * next_data;
+  OSDP_HDR *p;
+  unsigned short int parsed_crc;
+  unsigned char sc_mac[4];
+  unsigned char *sp;
+  int status;
+  int whole_msg_lth;
 
 
   status = ST_OK;
@@ -264,6 +274,8 @@ int
   else
     check_size = 2;
   new_length = *updated_length;
+fprintf(stderr, "277 nl %d. ul %d.\n",
+  new_length, *updated_length);
 
   p = (OSDP_HDR *)buf;
   p->som = C_SOM;
@@ -271,11 +283,9 @@ int
 
   // addr
   p->addr = dest_addr;
-  if (context.role EQUALS OSDP_ROLE_PD)
+  if (ctx->role EQUALS OSDP_ROLE_PD)
     p->addr = p->addr | 0x80;
   new_length ++;
-
-  // length
 
   /*
     length goes in before CRC calc.
@@ -285,7 +295,20 @@ int
   whole_msg_lth = whole_msg_lth + 1; //CMND
   whole_msg_lth = whole_msg_lth + data_length;
   whole_msg_lth = whole_msg_lth + sec_block_length +2; //contents+hdr
+
+  // if it gets a MAC suffix add in the length of that.
+
+  if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
+    (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
+    (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
+    (sec_block_type EQUALS OSDP_SEC_SCS_18))
+    whole_msg_lth = whole_msg_lth + 4;
   whole_msg_lth = whole_msg_lth + check_size; // including CRC
+fprintf(stderr, "301 nl %d. wml %d.\n",
+  new_length, whole_msg_lth);
+
+  if (ctx->verbosity > 8)
+    dump_buffer_log(ctx, "Secure Before length set", buf, whole_msg_lth);
 
   p->len_lsb = 0x00ff & whole_msg_lth;
   new_length ++;
@@ -295,7 +318,7 @@ int
   // control
   p->ctrl = 0;
   p->ctrl = p->ctrl | (0x3 & sequence);
-  if (context.verbosity > 4)
+  if (ctx->verbosity > 4)
     fprintf (stderr, "build msg: seq %d added ctl now %02x m_check %d\n",
       sequence, p->ctrl, m_check);
 
@@ -306,25 +329,23 @@ int
   new_length ++;
 
   // secure is bit 3 (mask 0x08)
-  {
-    p->ctrl = p->ctrl | 0x08;
-    cmd_ptr = buf + 5; // STUB pretend security block is 3 bytes len len 1 payload
-  };
+  p->ctrl = p->ctrl | 0x08;
+  cmd_ptr = buf + 5; // STUB pretend security block is 3 bytes len len 1 payload
 
-  // fill in secure data
-  {
-    unsigned char *sp;
-    sp = buf+5;
-    *sp = sec_block_length+2;
-    sp++;
-    *sp = sec_block_type;
-    sp++;
+  // fill in secure data.  first is length (lth,type,payload)
+
+  sp = buf+5;
+  *sp = sec_block_length+2;
+  sp++;
+  *sp = sec_block_type;
+  sp++;
+  if (sec_block_length > 0)
     memcpy (sp, sec_blk, sec_block_length);
-    sp = sp + sec_block_length;
-    cmd_ptr = sp;
-printf ("bef sec block to new length %d.\n", new_length);
-    new_length = new_length + 2+ sec_block_length; // account for lth/typ
-  };
+  sp = sp + sec_block_length;
+  cmd_ptr = sp;
+  fprintf(stderr, "bef sec block to new length %d.\n", new_length);
+  new_length = new_length + 2+ sec_block_length; // account for lth/typ
+fprintf(stderr, "340 nl %d\n", new_length);
   
   *cmd_ptr = command;
   new_length++;
@@ -335,7 +356,7 @@ printf ("bef sec block to new length %d.\n", new_length);
     int i;
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
-    if (context.verbosity > 3)
+    if (ctx->verbosity > 3)
       fprintf (stderr, "orig (s) next_data %lx\n", (unsigned long)next_data);
     for (i=0; i<data_length; i++)
     {
@@ -344,21 +365,38 @@ printf ("bef sec block to new length %d.\n", new_length);
       next_data ++; // where crc goes (after data)
     };
   };
+  if (ctx->verbosity > 8)
+    dump_buffer_log(ctx, "Secure Before MAC append", buf, new_length);
+
+  // append 4-byte partial MAC for SCS_15-18
+  if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
+    (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
+    (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
+    (sec_block_type EQUALS OSDP_SEC_SCS_18))
+  {
+    status = osdp_calculate_secure_channel_mac(ctx, buf, new_length, sc_mac);
+    if (status EQUALS 0)
+    {
+      memcpy(next_data, sc_mac, 4);
+      next_data = next_data + 4;
+      new_length = new_length + 4;
+    };
+  };
+  if (ctx->verbosity > 8)
+    dump_buffer_log(ctx, "Secure After MAC append", buf, new_length);
 
   // crc
   if (m_check EQUALS OSDP_CRC)
-{
-  unsigned short int parsed_crc;
-  unsigned char *crc_check;
-  crc_check = next_data;
-  parsed_crc = fCrcBlk (buf, new_length);
+  {
+    crc_check = next_data;
+    parsed_crc = fCrcBlk (buf, new_length);
 
-  // low order byte first
-  *(crc_check+1) = (0xff00 & parsed_crc) >> 8;
-  *(crc_check) = (0x00ff & parsed_crc);
-  new_length ++;
-  new_length ++;
-}
+    // low order byte first
+    *(crc_check+1) = (0xff00 & parsed_crc) >> 8;
+    *(crc_check) = (0x00ff & parsed_crc);
+    new_length ++;
+    new_length ++;
+  }
   else
   {
     unsigned char
@@ -618,37 +656,25 @@ int
 
 int
   send_secure_message
-    (OSDP_CONTEXT
-      *ctx,
-    int
-      command,
-    int
-      dest_addr,
-    int
-      *current_length,
-    int
-      data_length,
-    unsigned char
-      *data,
-    int
-      sec_block_type,
-    int
-      sec_block_length,
-    unsigned char
-      *sec_blk)
+    (OSDP_CONTEXT *ctx,
+    int command,
+    int dest_addr,
+    int *current_length,
+    int data_length,
+    unsigned char *data,
+    int sec_block_type,
+    int sec_block_length,
+    unsigned char *sec_blk)
 
 { /* send_secure_message */
 
-  unsigned char
-    buf [2];
-  char
-    tlogmsg [1024];
-  int
-    status;
-  unsigned char
-    test_blk [1024];
-  int
-    true_dest;
+  unsigned char buf [2];
+  int i;
+  unsigned char log_block [1024];
+  char tlogmsg [1024];
+  int status;
+  unsigned char test_blk [1024];
+  int true_dest;
 
 
   status = ST_OK;
@@ -662,7 +688,8 @@ int
   ctx->secure_channel_use [OO_SCU_ENAB] = 128 + sec_block_type;
 
   status = osdp_build_secure_message
-    (test_blk, // message itself
+    (ctx,
+    test_blk, // message itself
     current_length, // returned message length in bytes
     command,
     true_dest,
@@ -672,12 +699,8 @@ int
     sec_block_type, sec_block_length, sec_blk); // security values
   if (status EQUALS ST_OK)
   {
-  if ((ctx->verbosity > 3) || (command != OSDP_ACK))
-    if (m_dump)
+    if ((ctx->verbosity > 3) || (command != OSDP_ACK))
     {
-      int
-        i;
-
        fprintf (ctx->log, "Sending(secure) lth %d.=", *current_length);
        for (i=0; i<*current_length; i++)
          fprintf (ctx->log, " %02x", test_blk [i]);
@@ -696,48 +719,12 @@ int
        
     send_osdp_data (ctx, test_blk, *current_length);
 
-    {
-      unsigned char log_block [1024];
-      log_block [0] = command;
-      log_block [1] = ctx->role;
-      memcpy (log_block+2, test_blk, *current_length);
-      status = oosdp_make_message (OOSDP_MSG_OSDP, tlogmsg, log_block);
-      if (status == ST_OK)
-//        status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
-//      status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, test_blk);
-//      if (status == ST_OK)
-        status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-    };
-  };
-if (0)
-  {
-    OSDP_MSG
-      m;
-    int
-      parse_role;
-    OSDP_HDR
-      returned_hdr;
-    int
-      status_monitor;
-
-    memset (&m, 0, sizeof (m));
-
-    m.ptr = test_blk; // marshalled outbound message
-    m.lth = *current_length;
-
-    // parse the message, mostly for display.  role to parse_... is the OTHER guy
-    parse_role = OSDP_ROLE_CP;
-    if (ctx->role EQUALS OSDP_ROLE_CP)
-      parse_role = OSDP_ROLE_PD;
-    status_monitor = osdp_parse_message (ctx, parse_role, &m, &returned_hdr);
-    if (ctx->verbosity > 8)
-      if (status_monitor != ST_OK)
-      {
-        sprintf (tlogmsg,"parse_message for monitoring returned %d.\n",
-          status_monitor);
-        status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
-      };
-//    (void)monitor_osdp_message (ctx, &m); fflush (ctx->log);
+    log_block [0] = command;
+    log_block [1] = ctx->role;
+    memcpy (log_block+2, test_blk, *current_length);
+    status = oosdp_make_message (OOSDP_MSG_OSDP, tlogmsg, log_block);
+    if (status == ST_OK)
+      status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
   };
   return (status);
 

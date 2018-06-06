@@ -134,11 +134,13 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-13-2", &(osdp_conformance.control_2.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-13-3", &(osdp_conformance.scb_absent.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
-    { "2-13-4", &(osdp_conformance.ctl_seq.test_status),
+    { "2-13-3", &(osdp_conformance.ctl_seq.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-14-1", &(osdp_conformance.security_block.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-14-2", &(osdp_conformance.scb_absent.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
+    { "2-14-3", &(osdp_conformance.rogue_secure_poll.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-15-1", &(osdp_conformance.CMND_REPLY.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
@@ -553,14 +555,17 @@ void
 "2-13-2 Secure Control Block [5]           %s",
     conformance_status (oconf->control_2.test_status)));
   LOG_REPORT ((log_string,
-"2-13-3 SCB absent                         %s",
-    conformance_status (oconf->scb_absent.test_status)));
-  LOG_REPORT ((log_string,
-"2-13-4 Sequence numbers                   %s",
+"2-13-3 Sequence numbers                   %s",
     conformance_status (oconf->ctl_seq.test_status)));
   LOG_REPORT ((log_string,
 "2-14-1 Security Block (hdr process only)  %s",
     conformance_status (oconf->security_block.test_status)));
+  LOG_REPORT ((log_string,
+"2-14-2 SCB absent                         %s",
+    conformance_status (oconf->scb_absent.test_status)));
+  LOG_REPORT ((log_string,
+"2-14-3 SCB absent                         %s",
+    conformance_status (oconf->rogue_secure_poll.test_status)));
   LOG_REPORT ((log_string,
 "2-15-1 Incoming C/R valid                 %s",
     conformance_status (oconf->CMND_REPLY.test_status)));

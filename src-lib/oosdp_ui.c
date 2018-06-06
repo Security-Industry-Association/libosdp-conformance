@@ -54,14 +54,11 @@ int
 
 { /* process_command */
 
-  extern int
-    creds_buffer_a_lth;
-  int
-    current_length;
-  int
-    processed;
-  int
-    status;
+  extern int creds_buffer_a_lth;
+  int current_length;
+  int processed;
+  unsigned char sec_blk [1];
+  int status;
 
 
   status = ST_CMD_UNKNOWN;
@@ -139,6 +136,20 @@ int
 fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         status = ST_OK;
       };
+      break;
+
+    case OSDP_CMDB_CONFORM_2_14_3:
+      strcpy (context->test_in_progress, "2_14_3");
+      current_length = 0;
+
+      // no security block for an SCS_17
+
+      status = send_secure_message(context, OSDP_POLL, p_card.addr,
+        &current_length, 0, NULL, OSDP_SEC_SCS_17, 0, sec_blk);
+
+      if (status EQUALS ST_OK)
+        SET_PASS (context, "2-14-3");
+      status = ST_OK;
       break;
 
     case OSDP_CMDB_CONFORM_3_20_1:
@@ -407,7 +418,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
     case OSDP_CMDB_INIT_SECURE:
       {
         unsigned char
-          sec_blk [1];
+          sec_blk_1 [1];
 
         status = ST_OK;
         current_length = 0;
@@ -415,13 +426,14 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
         // if default enabled use SCBK-D
         // if not default if key pre-loaded use that else error
+fprintf(stderr, "enable_secure_channel %d\n", context->enable_secure_channel);
         if (context->enable_secure_channel EQUALS 2)
         {
-          sec_blk [0] = OSDP_KEY_SCBK_D;
+          sec_blk_1 [0] = OSDP_KEY_SCBK_D;
         }
         else
         {
-          sec_blk [0] = OSDP_KEY_SCBK;
+          sec_blk_1 [0] = OSDP_KEY_SCBK;
         };
         if (status EQUALS ST_OK)
         {
@@ -437,7 +449,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
             status = send_secure_message (context,
               OSDP_CHLNG, p_card.addr, &current_length, 
               sizeof (context->rnd_a), context->rnd_a,
-              OSDP_SEC_SCS_11, sizeof (sec_blk), sec_blk);
+              OSDP_SEC_SCS_11, sizeof (sec_blk_1), sec_blk_1);
           };
         };
       };
