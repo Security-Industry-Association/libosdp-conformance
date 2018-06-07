@@ -441,6 +441,34 @@ int
         sscanf (vstr, "%d", &i);
         led_ctl->led = i;
       };
+      value = json_object_get (root, "perm_control");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->perm_control = i;
+      };
+      value = json_object_get (root, "perm-off-time");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->perm_off_time = i;
+      };
+      value = json_object_get (root, "perm_off_color");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->perm_off_color = i;
+      };
+      value = json_object_get (root, "perm-on-time");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        led_ctl->perm_on_time = i;
+      };
       value = json_object_get (root, "perm_on_color");
       if (json_is_string (value))
       {
@@ -454,7 +482,8 @@ int
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         led_ctl->temp_off_color = i;
-        set_led_temp = 1;
+        if (i > 0)
+          set_led_temp = 1;
       };
       value = json_object_get (root, "temp_off");
       if (json_is_string (value))
@@ -462,7 +491,8 @@ int
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         led_ctl->temp_off = i;
-        set_led_temp = 1;
+        if (i > 0)
+          set_led_temp = 1;
       };
       value = json_object_get (root, "temp_on");
       if (json_is_string (value))
@@ -470,7 +500,8 @@ int
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         led_ctl->temp_on = i;
-        set_led_temp = 1;
+        if (i > 0)
+          set_led_temp = 1;
       };
       value = json_object_get (root, "temp_on_color");
       if (json_is_string (value))
@@ -478,7 +509,8 @@ int
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         led_ctl->temp_on_color = i;
-        set_led_temp = 1;
+        if (i > 0)
+          set_led_temp = 1;
       };
       value = json_object_get (root, "temp_timer");
       if (json_is_string (value))
@@ -487,7 +519,20 @@ int
         sscanf (vstr, "%d", &i);
         led_ctl->temp_timer_lsb = i & 0xff;
         led_ctl->temp_timer_msb = i >> 8;
-        set_led_temp = 1;
+        if (i > 0)
+          set_led_temp = 1;
+      };
+
+      // lastly look for "temp-control".  If it's set it overrides the
+      // implicit temp-control from other values being set.
+
+      value = json_object_get (root, "temp_control");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf (vstr, "%d", &i);
+        set_led_temp = 0; // NOT the implied control
+        led_ctl->temp_control = i;
       };
       if (set_led_temp)
       {
