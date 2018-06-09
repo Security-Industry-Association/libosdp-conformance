@@ -42,6 +42,8 @@
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 #include <osdp-local-config.h>
+char trace_in_buffer [1024];
+char trace_out_buffer [1024];
 
 
 int
@@ -331,6 +333,8 @@ int
   };
   if (status EQUALS ST_OK)
   {
+    trace_in_buffer [0] = 0;
+    trace_out_buffer [0] = 0;
     memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
 
     done_tls = 0; // assume not done unless some bad status
@@ -452,7 +456,15 @@ int
           status = read_tcp_stream (&context, current_sd,
             &request_immediate_poll);
           if (context.verbosity > 8)
-            dump_buffer_log(&context, "TCP Input:", osdp_buf.buf, osdp_buf.next);
+          {
+            if (context.verbosity > 8)
+            {
+              char octet [3];
+              sprintf(octet, " %02x", buffer [0]);
+              strcat(trace_in_buffer, octet);
+              dump_buffer_log(&context, "TCP Input:", osdp_buf.buf, osdp_buf.next);
+            };
+          };
         };
       };
 

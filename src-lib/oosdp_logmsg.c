@@ -29,6 +29,7 @@
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
 extern char trace_in_buffer [];
+extern char trace_out_buffer [];
 
 
 char
@@ -733,8 +734,13 @@ else
   };
   if (strlen(trace_in_buffer) > 0)
   {
-    fprintf(context->log, "Trace Data IN: %s\n", trace_in_buffer);
+    fprintf(context->log, " Trace Data IN: %s\n", trace_in_buffer);
     trace_in_buffer [0] = 0;
+  };
+  if (strlen(trace_out_buffer) > 0)
+  {
+    fprintf(context->log, "Trace Data OUT: %s\n", trace_out_buffer);
+    trace_out_buffer [0] = 0;
   };
   if (context->role == OSDP_ROLE_MONITOR)
   {

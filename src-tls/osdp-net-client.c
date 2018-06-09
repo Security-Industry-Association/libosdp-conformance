@@ -44,6 +44,8 @@
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 #include <osdp-local-config.h>
+char trace_in_buffer [1024];
+char trace_out_buffer [1024];
 
 
 int tcp_connect (void);
@@ -451,6 +453,8 @@ int
   status = initialize (&config, argc, argv);
   if (status EQUALS ST_OK)
   {
+    trace_in_buffer [0] = 0;
+    trace_out_buffer [0] = 0;
     memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
 
     if (context.disable_certificate_checking)
@@ -577,6 +581,16 @@ int
             status = ST_OSDP_TLS_ERROR;
           if (status EQUALS ST_OK)
           {
+            {
+              int i;
+              char octet [3];
+
+              for(i=0; i<tls_current_length; i++)
+              {
+                sprintf(octet, " %02x", buffer [i]);
+                strcat(trace_in_buffer, octet);
+              };
+            };
             if (context.verbosity > 9)
               fprintf (stderr, "%d bytes received via TLS:\n",
                 status_tls);

@@ -1166,7 +1166,6 @@ fprintf(stderr, "lstat 1000\n");
           (sec_block_type EQUALS OSDP_SEC_SCS_18))
           m->crc_check = 4 + m->cmd_payload + 1 + msg_data_length;
 
-fprintf(stderr, "secure crc msg calc lth %d\n", msg_lth-2);
       parsed_crc = fCrcBlk (m->ptr, msg_lth - 2);
 
       wire_crc = *(1+m->crc_check) << 8 | *(m->crc_check);

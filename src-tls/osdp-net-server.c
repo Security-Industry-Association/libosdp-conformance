@@ -44,6 +44,8 @@
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 #include <osdp-local-config.h>
+char trace_in_buffer [1024];
+char trace_out_buffer [1024];
 
 
 int _verify_certificate_callback(gnutls_session_t session);

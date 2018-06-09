@@ -55,50 +55,30 @@ int
       *poll);
 
 
-int
-  current_sd; // current socket for tcp connection
-int
-  passphrase_length;
-int
-  plmax = 16;
-char
-  current_passphrase [17];
-char
-  specified_passphrase [17];
-char
-  buffer [MAX_BUF + 1];
-OSDP_TLS_CONFIG
-  config;
-OSDP_CONTEXT
-  context;
-unsigned char
-  creds_buffer_a [64*1024];
-int
-  creds_buffer_a_lth;
-int
-  creds_buffer_a_next;
-int
-  creds_buffer_a_remaining;
-OSDP_OUT_CMD
-  current_output_command [16];
-gnutls_dh_params_t
-  dh_params;
-struct timespec
-  last_time_check_ex;
-int
-  listen_sd;
-OSDP_BUFFER
-  osdp_buf;
-OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-OSDP_PARAMETERS
-  p_card;
-struct sockaddr_in
-  sa_serv;
-char
-  *tag;
-gnutls_session_t
-  tls_session;
+char buffer [MAX_BUF + 1];
+OSDP_TLS_CONFIG config;
+OSDP_CONTEXT context;
+unsigned char creds_buffer_a [64*1024];
+int creds_buffer_a_lth;
+int creds_buffer_a_next;
+int creds_buffer_a_remaining;
+OSDP_OUT_CMD current_output_command [16];
+char current_passphrase [17];
+int current_sd; // current socket for tcp connection
+gnutls_dh_params_t dh_params;
+struct timespec last_time_check_ex;
+int listen_sd;
+OSDP_BUFFER osdp_buf;
+OSDP_INTEROP_ASSESSMENT osdp_conformance;
+OSDP_PARAMETERS p_card;
+int passphrase_length;
+int plmax = 16;
+struct sockaddr_in sa_serv;
+char specified_passphrase [17];
+char *tag;
+char trace_in_buffer [1024];
+char trace_out_buffer [1024];
+gnutls_session_t tls_session;
 
 
 int
@@ -170,6 +150,9 @@ context.current_menu = OSDP_MENU_TOP;
     if (context.role EQUALS OSDP_ROLE_PD)
       fprintf (stderr, "Role: PD\n");
   };
+
+  // always authenticated these days.
+  context.authenticated = 1;
 
   return (status);
 
@@ -320,41 +303,25 @@ int
 
 int
   main
-    (int
-      argc,
-    char
-      *argv [])
+    (int argc,
+    char *argv [])
 
 { /* main for osdp-net-server */
 
-  int
-    c1;
-  int
-    done_tls;
-  fd_set
-    exceptfds;
-  char
-    gratuitous_data [2] = {C_OSDP_MARK, 0x00};
-  fd_set
-    readfds;
-  int
-    nfds;
-  int
-    request_immediate_poll;
-  const sigset_t
-    sigmask;
-  int
-    status;
-  int
-    status_io;
-  int
-    status_sock;
-  struct timespec
-    timeout;
-  int
-    ufd;
-  fd_set
-    writefds;
+  int c1;
+  int done_tls;
+  fd_set exceptfds;
+  char gratuitous_data [2] = {C_OSDP_MARK, 0x00};
+  fd_set readfds;
+  int nfds;
+  int request_immediate_poll;
+  const sigset_t sigmask;
+  int status;
+  int status_io;
+  int status_sock;
+  struct timespec timeout;
+  int ufd;
+  fd_set writefds;
 
 
 #define PSELECT_NSEC (900000000)
@@ -372,109 +339,145 @@ int
     status = init_tcp_server ();
     if (status EQUALS ST_OK)
     {
+      trace_in_buffer [0] = 0;
+      trace_out_buffer [0] = 0;
+
       fprintf (stderr, "Specified passphrase: %s(%d)\n",
         specified_passphrase, plmax);
       done_tls = 0;
       request_immediate_poll = 0;
       while (!done_tls)
       {
-        fflush (stdout); fflush (stderr);
-        fflush (context.log);
-        {
-        nfds = 0;
-        nfds = ufd+1;
-        if (current_sd > ufd)
-          nfds = current_sd + 1;
-        FD_ZERO (&readfds);
-        FD_SET (current_sd, &readfds);
-        FD_ZERO (&writefds);
-        FD_ZERO (&exceptfds);
-        FD_SET (ufd, &readfds);
-        timeout.tv_sec = 0;
-        timeout.tv_nsec = PSELECT_NSEC; //100000000;
-        status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
-          &timeout, &sigmask);
+        // just in case there's telemetry waiting to go out the door...
+        fflush (stdout); fflush (stderr); fflush (context.log);
 
-        if (context.verbosity > 9)
-          if (context.verbosity > 9) if (status_sock > 0)
+        status_sock = 0;
+
+        {
+          nfds = 0;
+          nfds = ufd+1;
+          if (current_sd > ufd)
+            nfds = current_sd + 1;
+          FD_ZERO (&readfds);
+          FD_SET (current_sd, &readfds);
+          FD_ZERO (&writefds);
+          FD_ZERO (&exceptfds);
+          FD_SET (ufd, &readfds);
+          timeout.tv_sec = 0;
+          timeout.tv_nsec = PSELECT_NSEC; //100000000;
+          status_sock = pselect (nfds, &readfds, &writefds, &exceptfds,
+            &timeout, &sigmask);
+
+          if (context.verbosity > 9)
+            if (context.verbosity > 9) if (status_sock > 0)
+            {
+              fprintf (stderr, "pselect %d\n",
+                status_sock);
+              if (FD_ISSET (current_sd, &readfds))
+                fprintf (stderr, "TCP FD ready\n");
+            };
+          if (status_sock EQUALS 0)
           {
-            fprintf (stderr, "pselect %d\n",
-              status_sock);
-            if (FD_ISSET (current_sd, &readfds))
-              fprintf (stderr, "TCP FD ready\n");
-          };
-        if (status_sock EQUALS 0)
-        {
-              status = ST_OK;
+            status = ST_OK;
 
-              if (context.role EQUALS OSDP_ROLE_CP)
+            if (context.role EQUALS OSDP_ROLE_CP)
+            {
+              /*
+                if timed out due to inactivity or requested,
+                run the background poller.
+              */
+              if ((osdp_timeout (&context, &last_time_check_ex)) ||
+                (request_immediate_poll))
               {
-                /*
-                  if timed out due to inactivity or requested,
-                  run the background poller.
-                */
-                if ((osdp_timeout (&context, &last_time_check_ex)) ||
-                  (request_immediate_poll))
-                {
-                  if (context.authenticated)
-                    status = background (&context);
-                  request_immediate_poll = 0;
-                };
+                if (context.authenticated)
+                  status = background (&context);
+                request_immediate_poll = 0;
               };
             };
-            if (status_sock > 0)
+          };
+          if (status_sock > 0)
+          {
+            // chk for cmd (unix socket activity pokes us to check)
+
+            if (FD_ISSET (ufd, &readfds))
             {
-              // chk for cmd (unix socket activity pokes us to check)
-
-              if (FD_ISSET (ufd, &readfds))
+              char cmdbuf [2];
+              fprintf (stderr, "ufd socket was selected in READ (%d)\n",
+                ufd);
+              c1 = accept (ufd, NULL, NULL);
+              if (c1 != -1)
               {
-                char cmdbuf [2];
-                fprintf (stderr, "ufd socket was selected in READ (%d)\n",
-                  ufd);
-                c1 = accept (ufd, NULL, NULL);
-                if (c1 != -1)
+                status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+                if (status_io > 0)
                 {
-                  status_io = read (c1, cmdbuf, sizeof (cmdbuf));
-                  if (status_io > 0)
-                  {
-                    close (c1);
+                  close (c1);
 
-                    status = process_current_command ();
-                    if (status EQUALS ST_OK)
-                      preserve_current_command ();
-                    status = ST_OK;
-                    /*
-                      send a benign "message" up the line so that the CP knows we're
-                      active.
-                    */
-                    if (context.role EQUALS OSDP_ROLE_PD)
-                    {
-                      status = send_osdp_data (&context,
-                       (unsigned char *)gratuitous_data, 1);
-                    };
+                  status = process_current_command ();
+                  if (status EQUALS ST_OK)
+                    preserve_current_command ();
+                  status = ST_OK;
+                  /*
+                    send a benign "message" up the line so that the CP knows we're
+                    active.
+                  */
+                  if (context.role EQUALS OSDP_ROLE_PD)
+                  {
+                    status = send_osdp_data (&context,
+                     (unsigned char *)gratuitous_data, 1);
                   };
                 };
               };
-
-              if (FD_ISSET (current_sd, &readfds))
-              {
-                status = read_tcp_stream (&context, current_sd, &request_immediate_poll);
-              };
-
             };
-          }
-          if (status != ST_OK)
-          {
-            if (status != ST_NET_INPUT_READY)
+
+            if (FD_ISSET (current_sd, &readfds))
             {
-              fprintf (stderr, "status %d\n", status);
-              done_tls = 1;
+              status = read_tcp_stream (&context, current_sd,
+                &request_immediate_poll);
             };
           };
+        }
+        if (status != ST_OK)
+        {
+          if (status != ST_NET_INPUT_READY)
+          {
+            fprintf (stderr, "status %d\n", status);
+            done_tls = 1;
+          };
+        };
         // if there was input, process the message
         if (status EQUALS ST_NET_INPUT_READY)
         {
-          status = process_osdp_input (&osdp_buf);
+          int done;
+
+//          status = process_osdp_input (&osdp_buf);
+// new way...
+          done = 0;
+          while (!done)
+          {
+            // process the first message in the buffer
+
+            status = process_osdp_input (&osdp_buf);
+            if (status EQUALS ST_OK)
+            {
+              if (osdp_buf.next > 0)
+              {
+  fprintf(stderr, "leftover in osdp input: %d,\n", osdp_buf.next);
+                // if there's more data in the buffer "re-read" the tcp stream.
+                // this will clear out any scruffy octets before the next 
+                // OSDP message.
+
+                status = read_tcp_stream (&context, current_sd,
+                  &request_immediate_poll);
+              };
+              if (status != ST_NET_INPUT_READY)
+              {
+                if (status != ST_OK)
+                  done = 1;
+                if (osdp_buf.next EQUALS 0)
+                  done = 1;
+              };
+            };
+          };
         };
         if (status != ST_OK)
         {
@@ -483,6 +486,14 @@ int
       };
     };
   };
+
+  // if we're falling out the bottom dump any remaining trace buffer.
+
+  if (strlen(trace_in_buffer) > 0)
+    fprintf(stderr, "Last data in: %s\n", trace_in_buffer);
+  if (strlen(trace_out_buffer) > 0)
+    fprintf(stderr, "Last data out: %s\n", trace_out_buffer);
+
   if (status != ST_OK)
     fprintf (stderr, "osdp-tls return status %d\n",
       status);
@@ -494,31 +505,20 @@ int
 
 int
   read_tcp_stream
-    (OSDP_CONTEXT
-      *ctx,
-    int
-      net_fd,
-    int
-      *poll)
+    (OSDP_CONTEXT *ctx,
+    int net_fd,
+    int *poll)
 
 { /* read_tcp_stream */
 
-  char
-    buffer [1024];
-  int
-    current_length;
-  int
-    done;
-  int
-    i;
-  int
-    lth;
-  int
-    request_immediate_poll;
-  int
-    status;
-  int
-    status_io;
+  char buffer [1024];
+  int current_length;
+  int done;
+  int i;
+  int lth;
+  int request_immediate_poll;
+  int status;
+  int status_io;
 //current_passphrase
 //passphrase_length
 ///plmax
@@ -527,6 +527,11 @@ int
 
   status = ST_OK;
   request_immediate_poll = 0;
+
+  // if there was no data left in the buffer
+
+  if (osdp_buf.next EQUALS 0)
+  {
   status_io = read (net_fd, buffer, sizeof (buffer));
   if (status_io EQUALS 0)
     status = ST_OSDP_NET_CLOSED;
@@ -534,6 +539,17 @@ int
     status = ST_OSDP_NET_ERROR;
   if (status EQUALS ST_OK)
   {
+//    if (ctx->verbosity > 8)
+    {
+      int i;
+      char octet [3];
+
+      for(i=0; i<status_io; i++)
+      {
+        sprintf(octet, " %02x", buffer [i]);
+        strcat(trace_in_buffer, octet);
+      };
+    }
     ctx->bytes_received = ctx->bytes_received + status_io;
 
     // if we have enough data look for the passphrase
@@ -549,6 +565,15 @@ int
           memcmp (current_passphrase, specified_passphrase, plmax))
             ctx->authenticated = 1;
       };
+    };
+    }
+    else
+    {
+      // reprocess the leftovers
+
+      memcpy(buffer, osdp_buf.buf, osdp_buf.next);
+      current_length = osdp_buf.next;
+      osdp_buf.next = 0;
     };
 
     // append buffer to osdp buffer
@@ -595,7 +620,7 @@ int
 int
   send_osdp_data
     (OSDP_CONTEXT
-      *context,
+      *ctx,
     unsigned char
       *buf,
     int
@@ -603,15 +628,24 @@ int
 
 { /* send_osdp_data */
 
-  int
-    status;
-  int
-    status_io;
+  int status;
+  int status_io;
 
   status = ST_OK;
+//  if (ctx->verbosity > 8)
+  {
+    int i;
+    char octet [3];
+
+    for(i=0; i<lth; i++)
+    {
+      sprintf(octet, " %02x", buf [i]);
+      strcat(trace_out_buffer, octet);
+    };
+  }
   status_io = write (current_sd, buf, lth);
 
-  context->bytes_sent = context->bytes_sent + lth;
+  ctx->bytes_sent = ctx->bytes_sent + lth;
   if (status_io != lth)
     status = -3;
   return (status);
