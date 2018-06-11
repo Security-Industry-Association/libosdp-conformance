@@ -803,10 +803,8 @@ int
 
 int
   action_osdp_RAW
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* action_osdp_RAW */
 
@@ -827,17 +825,18 @@ int
   osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
   processed = 0;
   raw_data = msg->data_payload + 4;
+dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, 16);
   if (msg->security_block_length > 0)
   {
     fprintf (ctx->log, "(RAW card data contents encrypted)\n");
   };
   if (msg->security_block_length EQUALS 0)
   {
-  /*
-    this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
-  */
-  bits = *(msg->data_payload+2) + ((*(msg->data_payload+3))<<8);
-  ctx->last_raw_read_bits = bits;
+    /*
+      this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
+    */
+    bits = *(msg->data_payload+2) + ((*(msg->data_payload+3))<<8);
+    ctx->last_raw_read_bits = bits;
 
   {
     int octets;
@@ -853,7 +852,9 @@ int
     int bits_to_print;
 
     bits_to_print = bits;
+    idx = 0;
     fprintf(ctx->log, "CARD DATA (%d bits): %02x", bits, raw_data [0]);
+    idx++; // just output first octet
     if (bits_to_print > 8)
       bits_to_print = bits_to_print - 8;
     else

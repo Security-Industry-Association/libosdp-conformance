@@ -138,6 +138,23 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       };
       break;
 
+    case OSDP_CMDB_CONFORM_2_11_3:
+      // request ID but do it on the "all stations" PD address.
+
+      {
+        unsigned char param [1];
+
+        strcpy (context->test_in_progress, "2_11_3");
+        param [0] = 0;
+        current_length = 0;
+        status = send_message (context,
+          OSDP_ID, 0x7F, &current_length, sizeof (param), param);
+
+        osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
+        status = ST_OK;
+      };
+      break;
+
     case OSDP_CMDB_CONFORM_2_14_3:
       strcpy (context->test_in_progress, "2_14_3");
       current_length = 0;
@@ -183,6 +200,45 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         current_length = 0;
         status = send_message (context,
           OSDP_UNDEF, p_card.addr, &current_length, 0, &nothing);
+      };
+      break;
+
+    case OSDP_CMDB_MFG:
+      {
+        unsigned char data [1024];
+        int i;
+        OSDP_MFG_ARGS *oargs;
+        OSDP_MFG_HEADER *omfg;
+        int send_length;
+        char tmps [3];
+
+        oargs = (OSDP_MFG_ARGS *)details;
+        omfg = (OSDP_MFG_HEADER *)data;
+        tmps[2] = 0;
+        memcpy(tmps, oargs->oui+0, 2);
+        sscanf(tmps, "%x", &i);
+        omfg->vendor_code [0] = i;
+        memcpy(tmps, oargs->oui+2, 2);
+        sscanf(tmps, "%x", &i);
+        omfg->vendor_code [1] = i;
+        memcpy(tmps, oargs->oui+4, 2);
+        sscanf(tmps, "%x", &i);
+        omfg->vendor_code [2] = i;
+        omfg->command_id = oargs->command_ID;
+        send_length = sizeof(OSDP_MFG_HEADER) - 1;
+        for (i=0; i<strlen(oargs->c_s_d); i=i+2)
+        {
+          tmps[2] = 0;
+          memcpy(tmps, (2*i)+(oargs->c_s_d), 2);
+          sscanf(tmps, "%x", &i);
+          *(&(omfg->data)+i) = i;
+          send_length ++;
+        };
+        current_length = 0;
+        status = send_message (context,
+          OSDP_MFG, p_card.addr, &current_length, send_length,
+          data);
+        status = ST_OK;
       };
       break;
 

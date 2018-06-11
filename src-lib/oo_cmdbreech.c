@@ -53,6 +53,7 @@ int
 //  char field [1024];
   int i;
   char json_string [16384];
+  OSDP_MFG_ARGS *mfg_args;
   json_t *parameter;
   json_t *root;
   int set_led_temp;
@@ -98,7 +99,7 @@ int
       fprintf (stderr, "command was %s\n", current_command);
   };
 
-  // command bio_read_template
+  // command bio_read
 
   if (status EQUALS ST_OK)
   {
@@ -243,6 +244,17 @@ int
     };
   };
 
+  // command conform_2_11_3 - send an ID on the all-stations PD address
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "conform_2_11_3"))
+    {
+      cmd->command = OSDP_CMDB_CONFORM_2_11_3;
+    };
+  };
+
+
   // command conform_3_14_2 - corrupted COMSET
 
   if (status EQUALS ST_OK)
@@ -272,6 +284,39 @@ int
   if (status EQUALS ST_OK) {
     if (0 EQUALS strcmp (current_command, "induce-NAK")) {
       cmd->command = OSDP_CMDB_INDUCE_NAK; }; };
+
+  // command MFG.  Arguments are OUI, command-id, command-specific-data.
+  // c-s-d is is 2-hexit bytes, length inferred.
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp(current_command, "mfg")) {
+      cmd->command = OSDP_CMDB_MFG; 
+      mfg_args = (OSDP_MFG_ARGS *)(cmd->details);
+      memset(mfg_args, 0, sizeof (*mfg_args));
+      parameter = json_object_get(root, "command-id");
+      if (json_is_string(parameter))
+      {
+        int i;
+        sscanf(json_string_value(parameter), "%d", &i);
+        mfg_args->command_ID = i;
+      };
+      parameter = json_object_get(root, "command-specific-data");
+      if (json_is_string(parameter))
+      {
+        strcpy(mfg_args->c_s_d, json_string_value(parameter));
+      };
+      parameter = json_object_get(root, "oui");
+      if (json_is_string(parameter))
+      {
+        strcpy(mfg_args->oui, json_string_value(parameter));
+      };
+      parameter = json_object_get(root, "payload");
+      if (json_is_string (parameter))
+      {
+        strcpy((char *)cmd->details, json_string_value (parameter));
+      };
+    };
+  };
 
   // command text
 

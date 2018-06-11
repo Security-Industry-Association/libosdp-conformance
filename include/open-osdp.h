@@ -168,6 +168,9 @@
 #define OSDP_CMDB_INDUCE_NAK     (1026)
 #define OSDP_CMDB_TRANSFER       (1027)
 #define OSDP_CMDB_CONFORM_2_14_3 (1028)
+#define OSDP_CMDB_MFG            (1029)
+#define OSDP_CMDB_CONFORM_2_11_3 (1030)
+
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -670,6 +673,13 @@ typedef struct osdp_rdr_led_ctl
 #define OSDP_LEDCOLOR_GREEN (2)
 #define OSDP_LEDCOLOR_AMBER (3)
 #define OSDP_LEDCOLOR_BLUE (4)
+
+typedef struct osdp_mfg_args
+{
+  unsigned char command_ID;
+  char oui [1024];
+  char c_s_d [2*1024]; // command-specific details
+} OSDP_MFG_ARGS;
 
 typedef struct osdp_mfg_hdr
 {
