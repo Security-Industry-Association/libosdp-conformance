@@ -1231,8 +1231,8 @@ status = ST_OK; // tolerate checksum error and continue
       strcpy(cmd_rep_tag,
         osdp_command_reply_to_string(returned_hdr->command, m->direction));
       sprintf (log_line, "  Message: %s %s", cmd_rep_tag, tlogmsg);
-      sprintf (tlogmsg2, " S:%02x Ck %x Sec %x CRC %04x",
-        msg_sqn, msg_check_type, msg_scb, wire_crc);
+      sprintf (tlogmsg2, " A:%02x S:%02x Ck %x Sec %x CRC %04x",
+        (0x7F & p->addr), msg_sqn, msg_check_type, msg_scb, wire_crc);
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
         (returned_hdr->command != OSDP_ACK)) ||

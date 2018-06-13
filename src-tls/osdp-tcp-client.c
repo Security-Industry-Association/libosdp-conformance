@@ -627,8 +627,17 @@ int
 
 
   status = ST_OK;
-  if (ctx->verbosity > 8)
-    dump_buffer_log(ctx, "TCP Output: ", buf, lth);
+//  if (ctx->verbosity > 8)
+  {
+    int i;
+    char octet [3];
+
+    for(i=0; i<lth; i++)
+    {
+      sprintf(octet, " %02x", buf [i]);
+      strcat(trace_out_buffer, octet);
+    };
+  }
   status_io = write (current_sd, buf, lth);
 
   ctx->bytes_sent = ctx->bytes_sent + lth;
