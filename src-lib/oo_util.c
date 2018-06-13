@@ -2087,13 +2087,25 @@ printf ("MMSG DONE\n");
       break;
 
     case OSDP_RSTATR:
-      // received osdp_RSTATR
-      status = ST_OK;
-      fprintf (context->log, "Reader Tamper Status Report:");
-      fprintf (context->log,
-        " Ext Rdr %d\n",
-        *(msg->data_payload + 0));
-      osdp_conformance.resp_rstatr.test_status = OCONFORM_EXERCISED;
+      {
+        unsigned char reader_0_tamper_status;
+        char *tstatus;
+
+        // received osdp_RSTATR.  Assume it's for one attached reader.
+
+        status = ST_OK;
+        reader_0_tamper_status = *(msg->data_payload + 0);
+        fprintf (context->log, "Reader Tamper Status Report:");
+        switch(reader_0_tamper_status)
+        {
+        case 0: tstatus = "Normal"; break;
+        case 1: tstatus = "Not Connected"; break;
+        case 2: tstatus = "Tamper"; break;
+        };
+        fprintf (context->log, " Ext Rdr %d Tamper Status %s\n",
+          0, tstatus);
+        osdp_conformance.resp_rstatr.test_status = OCONFORM_EXERCISED;
+      };
       break;
     };
   } /* role CP */

@@ -561,18 +561,14 @@ fprintf(context.log, "Connecting to %s Port %s\n",
 
 int
   read_tcp_stream
-    (OSDP_CONTEXT
-      *ctx,
-    int
-      net_fd,
-    int
-      *poll)
+    (OSDP_CONTEXT *ctx,
+    int net_fd,
+    int *poll)
 
 { /* read_tcp_stream */
 
   char buffer [1024];
   int current_length;
-  int i;
   int status;
   int status_io;
 
@@ -585,17 +581,17 @@ int
     status = ST_OSDP_NET_ERROR;
   if (status EQUALS ST_OK)
   {
-    if (context.verbosity > 9)
-      dump_buffer_log(ctx, "TCP In:", (unsigned char *)buffer, status_io);
-    if (context.verbosity > 9)
+//    if (ctx->verbosity > 8)
     {
-      fprintf(stderr, "net read %d already had %d.\n",
-        status_io, ctx->bytes_received);
-      fprintf(stderr, "buffer as read:\n");
-      for (i=0; i<status_io; i++)
-        fprintf(stderr, " %02x", (unsigned char)(buffer [i]));
-      fprintf(stderr, "\n");
-    };
+      int i;
+      char octet [3];
+
+      for(i=0; i<status_io; i++)
+      {
+        sprintf(octet, " %02x", (unsigned char) buffer [i]);
+        strcat(trace_in_buffer, octet);
+      };
+    }
     ctx->bytes_received = ctx->bytes_received + status_io;
 
     // append buffer to osdp buffer
