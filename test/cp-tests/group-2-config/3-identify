@@ -1,0 +1,5 @@
+#!/bin/bash
+set -x
+/opt/open-osdp/bin/write-osdp-CP-command identify
+/opt/open-osdp/bin/HUP-CP
+

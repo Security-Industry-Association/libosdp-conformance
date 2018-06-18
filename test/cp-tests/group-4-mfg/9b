@@ -1,0 +1,30 @@
+#!/bin/bash
+set -x
+TROOT=opt/osdp-conformance
+CMDPATH=/${TROOT}/run/CP/open_osdp_command.json
+mkdir -p /${TROOT}/run/CP
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"$1\""
+echo >>${CMDPATH} "}"
+
+# 80800180 as 26 bit is P=1 FC=0x01 CH=0x01 P=1
+
+#                        rrffbbbb--data--
+#                                .0.1.2.3
+CMD_CYPRESS_WIEGAND_OUT="00001A0080800180"
+
+# example per doc 128 bits 56/72 filler
+
+#                        rrffbbbb--data--
+#                                .0.1.2.3.4.5.6(and 72 filler bits)
+#CMD_CYPRESS_WIEGAND_OUT="0000800000000000000001000000000000000000"
+
+CMD_CYPRESS_WIEGAND_OUT="00001A0080800180"
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"mfg\","
+echo >>${CMDPATH} "  \"oui\" : \"CA446C\","
+echo >>${CMDPATH} "  \"command-id\" : \"9\","
+echo >>${CMDPATH} "  \"command-specific-data\" : \"${CMD_CYPRESS_WIEGAND_OUT}\""
+echo >>${CMDPATH} "}"
+/${TROOT}/bin/HUP-CP
+
