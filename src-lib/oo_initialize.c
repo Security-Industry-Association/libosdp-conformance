@@ -33,6 +33,7 @@
 #include <sys/file.h>
 
 
+#define _OO_INITIALIZE_
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>

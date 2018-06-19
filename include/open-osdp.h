@@ -371,6 +371,7 @@ typedef struct osdp_context
   char log_path [1024];
   char serial_speed [1024];
   int verbosity;
+  unsigned char my_guid [128/8];
 
   // IO context
   int current_pid;
@@ -619,7 +620,7 @@ typedef struct osdp_command
   int
     command;
   unsigned char
-    details [1024];
+    details [8*1024]; // must be big enough to hold OSDP_MFG_ARGS
 } OSDP_COMMAND;
 
 typedef struct osdp_param
@@ -681,12 +682,39 @@ typedef struct osdp_mfg_args
   char c_s_d [2*1024]; // command-specific details
 } OSDP_MFG_ARGS;
 
-typedef struct osdp_mfg_hdr
+typedef struct osdp_mfg_header
 {
   unsigned char vendor_code [3];
   unsigned char command_id;
   unsigned char data; // placeholder for first byte
 } OSDP_MFG_HEADER;
+
+typedef struct osdp_config_guid
+{
+  unsigned char gfmt;
+  unsigned short int guid_length;
+  unsigned guid [128/8];
+  unsigned char new_address;
+  unsigned int new_speed [4];
+} OSDP_CONFIG_GUID;
+
+#ifdef _OO_INITIALIZE_
+unsigned char OOSDP_MFG_VENDOR_CODE [3] = {0x0A, 0x00, 0x17 };
+#endif
+#ifndef _OO_INITIALIZE_
+unsigned char OOSDP_MFG_VENDOR_CODE [3];
+#endif
+
+#define OOSDP_MFG_PING (1) // sent for testing, expects an MFG-PING-ACK
+#define OOSDP_MFG_CONFIG_GUID (2)
+	// data is 00=format-guid (01-FF RFU)
+	//         xxxx=guid length in octets (16. for 128 bits)
+        //         guid
+        //         COMSET parameters (1 byte addr, 4 bytes baud rate)
+	// ...a total of 22 bytes
+
+
+#define OOSDP_MFGR_PING_ACK (1)
 
 typedef struct osdp_text_hdr
 {
@@ -748,6 +776,7 @@ typedef struct osdp_msg
   int remainder;
   int security_block_length;
 } OSDP_MSG;
+
 
 typedef struct osdp_multi_getpiv
 {
@@ -872,6 +901,7 @@ int
 
 int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

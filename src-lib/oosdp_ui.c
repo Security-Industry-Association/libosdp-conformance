@@ -207,6 +207,7 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
       {
         unsigned char data [1024];
         int i;
+        int idx;
         OSDP_MFG_ARGS *oargs;
         OSDP_MFG_HEADER *omfg;
         int send_length;
@@ -226,12 +227,12 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         omfg->vendor_code [2] = i;
         omfg->command_id = oargs->command_ID;
         send_length = sizeof(OSDP_MFG_HEADER) - 1;
-        for (i=0; i<strlen(oargs->c_s_d); i=i+2)
+        for (idx=0; idx<strlen(oargs->c_s_d); idx=idx+2)
         {
           tmps[2] = 0;
-          memcpy(tmps, (2*i)+(oargs->c_s_d), 2);
+          memcpy(tmps, (2*idx)+(oargs->c_s_d), 2);
           sscanf(tmps, "%x", &i);
-          *(&(omfg->data)+i) = i;
+          *(&(omfg->data)+idx) = i;
           send_length ++;
         };
         current_length = 0;

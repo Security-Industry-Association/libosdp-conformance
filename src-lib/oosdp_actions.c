@@ -42,106 +42,59 @@ char tlogmsg [1024];
 
 
 int
-  action_osdp_CCRYPT
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+  action_osdp_COMSET
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
-{ /* action_osdp_CCRYPT */
+{ /* action_osdp_COMSET */
 
-  struct AES_ctx aes_context_s_enc;
-  OSDP_SC_CCRYPT *ccrypt_payload;
-  unsigned char *client_cryptogram;
   int current_length;
-  unsigned char iv [16];
-  unsigned char message [16];
-  unsigned char sec_blk [1];
-  OSDP_SECURE_MESSAGE *secure_message;
-  unsigned char server_cryptogram [16];
+  int i;
+  unsigned char osdp_com_response_data [5];
+  char logmsg [1024];
   int status;
 
-  status = ST_OK;
 
-  // display it first.
-  (void)oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
-  fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
+  memset (osdp_com_response_data, 0, sizeof (osdp_com_response_data));
+  i = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
+    (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
 
-  memset (iv, 0, sizeof (iv));
+  sprintf (logmsg, "COMSET Data Payload %02x %02x%02x%02x%02x %d. 0x%x",
+          *(0+msg->data_payload), *(1+msg->data_payload),
+          *(2+msg->data_payload), *(3+msg->data_payload),
+          *(4+msg->data_payload), i, i);
+        fprintf (ctx->log, "%s\n", logmsg);
 
-  // check for proper state AND secure channel enabled.
+  p_card.addr = *(msg->data_payload); // first byte is new PD addr
+  fprintf (ctx->log, "PD Address set to %02x\n", p_card.addr);
 
-  if ((ctx->secure_channel_use [OO_SCU_ENAB] EQUALS 128+OSDP_SEC_SCS_11) &&
-    (ctx->enable_secure_channel > 0))
+  osdp_com_response_data [0] = p_card.addr;
+        *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
+        status = ST_OK;
+        current_length = 0;
+        status = send_message (ctx,
+          OSDP_COM, p_card.addr, &current_length,
+          sizeof (osdp_com_response_data), osdp_com_response_data);
+  if (ctx->verbosity > 2)
   {
-    secure_message = (OSDP_SECURE_MESSAGE *)(msg->ptr);
-    if (ctx->enable_secure_channel EQUALS 2)
-      if (secure_message->sec_blk_data != OSDP_KEY_SCBK_D)
-        status = ST_OSDP_UNKNOWN_KEY;
-
-    if (ctx->enable_secure_channel EQUALS 1)
-      if (secure_message->sec_blk_data != OSDP_KEY_SCBK)
-        status = ST_OSDP_UNKNOWN_KEY;
-
-    if (status EQUALS ST_OK)
-    {
-      ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
-      client_cryptogram = ccrypt_payload-> cryptogram;
-      // decrypt the client cryptogram (validate header, RND.A, collect RND.B)
-if (ctx->verbosity > 8)
-{
-  int i;
-  fprintf (stderr, "s_enc: ");
-  for (i=0; i<OSDP_KEY_OCTETS; i++)
-    fprintf (stderr, "%02x", ctx->s_enc [i]);
-  fprintf (stderr, "\n");
-};
-      AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
-      AES_ctx_set_iv (&aes_context_s_enc, iv);
-      memcpy (message, client_cryptogram, sizeof (message));
-      AES_CBC_decrypt_buffer (&aes_context_s_enc, message, sizeof (message));
-//      AES_CBC_decrypt_buffer (message, client_cryptogram, sizeof (message), ctx->s_enc, iv);
-
-      if (0 != memcmp (message, ctx->rnd_a, sizeof (ctx->rnd_a)))
-        status = ST_OSDP_CHLNG_DECRYPT;
-    };
-    if (status EQUALS ST_OK)
-    {
-      // client crytogram looks ok, save RND.B
-
-      memcpy (ctx->rnd_b, message + sizeof (ctx->rnd_a), sizeof (ctx->rnd_b));
-
-      memcpy (message, ctx->rnd_b, sizeof (ctx->rnd_b));
-      memcpy (message+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a));
-      AES_ctx_set_iv (&aes_context_s_enc, iv);
-      memcpy (server_cryptogram, message, sizeof (server_cryptogram));
-      AES_CBC_encrypt_buffer (&aes_context_s_enc, server_cryptogram, sizeof (server_cryptogram));
-//      AES_CBC_encrypt_buffer (server_cryptogram, message, sizeof (server_cryptogram), ctx->s_enc, iv);
-
-      if (ctx->enable_secure_channel EQUALS 1)
-        sec_blk [0] = OSDP_KEY_SCBK;
-      if (ctx->enable_secure_channel EQUALS 2)
-        sec_blk [0] = OSDP_KEY_SCBK_D;
-
-      status = send_secure_message (ctx,
-        OSDP_SCRYPT, p_card.addr, &current_length, 
-        sizeof (server_cryptogram), server_cryptogram,
-        OSDP_SEC_SCS_13, sizeof (sec_blk), sec_blk);
-    };
-  }
-  else
-    status = ST_OSDP_SC_WRONG_STATE;
-
-  // if there was an error reset the secure channel and let the world continue
-  if (status != ST_OK)
+          sprintf (logmsg, "Responding with OSDP_COM");
+          fprintf (ctx->log, "%s\n", logmsg); logmsg[0]=0;
+  };
+  if (status EQUALS ST_OK)
   {
-    fprintf(ctx->log, "Error processing CCRYPT.  Secure Channel reset.\n");
-    status = ST_OK;
-    osdp_reset_secure_channel (ctx);
+          ctx->new_address = p_card.addr;
+          sprintf(ctx->serial_speed, "%d", i);
+
+fprintf(stderr, "comset to addr %02x speed %s\n",
+  p_card.addr, ctx->serial_speed);
+  if (ctx->verbosity > 2)
+    fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",
+      p_card.addr, ctx->serial_speed);
+  status = init_serial (ctx, p_card.filename);
   };
   return (status);
 
-} /* action_osdp_CCRYPT */
+} /* action_osdp_COMSET */
 
 
 int
@@ -316,87 +269,85 @@ fprintf(stderr, "t=%d o=%d\n",
 
 int
   action_osdp_MFG
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* action_osdp_MFG */
 
   int current_length;
+  int i;
   OSDP_MFG_HEADER *mfg;
+  OSDP_CONFIG_GUID *mfg_config_guid;
+  unsigned char osdp_com_response_data [5];
   int status;
+  int unknown;
+
 
   status = ST_OK;
+  unknown = 1;
   mfg = (OSDP_MFG_HEADER *)(msg->data_payload);
+  mfg_config_guid = (OSDP_CONFIG_GUID *)&(mfg->data);
+
 fprintf (stderr, "osdp_MFG action stub\n");
 fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
   mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2],
   mfg->command_id, mfg->data);
 
-  // for the moment just ack it
-
-  current_length = 0;
-  status = send_message(ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
-  ctx->pd_acks ++;
-
-#if 0
-  unsigned char
-    buffer [1024];
-  int
-    bufsize;
-  extern unsigned char
-    creds_buffer_a [];
-  extern int
-    creds_buffer_a_lth;
-  extern int
-    creds_buffer_a_next;
-  extern int
-    zzcreds_buffer_a_remaining;
-  int
-    current_length;
-  OSDP_MULTI_HDR
-    mmsg;
-  int
-    to_send;
-
-  status = ST_OK;
-  /*
-    set up to send the header and what's in creds buffer a
-  */
-  memset (&mmsg, 0, sizeof (mmsg));
-  mmsg.oui [0] = 0x08;
-  mmsg.oui [1] = 0x00;
-  mmsg.oui [2] = 0x1b;
-  mmsg.total = creds_buffer_a_lth;
-  mmsg.cmd = 0;
-  bufsize = sizeof (mmsg);
-  creds_buffer_a_next = 0;
-  mmsg.offset = creds_buffer_a_next;
-  if (creds_buffer_a_lth > 128)
+  if (0 EQUALS memcmp(mfg->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE)))
   {
-    to_send = 128;
-    creds_buffer_a_remaining = creds_buffer_a_lth - 128;
-  }
-  else
-  {
-    to_send = creds_buffer_a_lth;
-    creds_buffer_a_remaining = 0;
+    switch (mfg->command_id)
+    {
+    case OOSDP_MFG_CONFIG_GUID:
+      if (0 EQUALS memcmp(mfg_config_guid->guid, ctx->my_guid, sizeof(ctx->my_guid)))
+      {
+        unknown = 0;
+        p_card.addr = mfg_config_guid->new_address;
+        i = *(1+mfg_config_guid->new_speed) + (*(2+mfg_config_guid->new_speed) << 8) +
+          (*(3+mfg_config_guid->new_speed) << 16) + (*(4+mfg_config_guid->new_speed) << 24);
+
+        // respond with osdp_COM, then set the speed. Just like COMSET.
+        osdp_com_response_data [0] = p_card.addr;
+        *(unsigned short int *)(osdp_com_response_data+1) = i;
+        current_length = 0;
+        status = send_message (ctx,
+          OSDP_COM, p_card.addr, &current_length,
+          sizeof (osdp_com_response_data), osdp_com_response_data);
+
+        // set the speed and address
+        ctx->new_address = p_card.addr;
+        status = init_serial (ctx, p_card.filename);
+      };
+      break;
+    case OOSDP_MFG_PING:
+      {
+        unsigned char mfg_response [sizeof(struct osdp_mfg_header) + 4];
+        OSDP_MFG_HEADER *mh;
+
+        unknown = 0; // we known this guy
+        mh = (OSDP_MFG_HEADER *)mfg_response;
+        memcpy(mh->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE));
+        mh->command_id = OOSDP_MFGR_PING_ACK;
+        memcpy(&(mh->data), (char *)&(mfg->data), 4); // arbitrarily copy the 4 detail bytes back at ya
+        current_length = 0;
+        status = send_message(ctx, OSDP_MFGREP, p_card.addr, &current_length, sizeof(mfg_response), mfg_response);
+      };
+      break;
+    };
   };
-  mmsg.length = to_send; 
+  if (unknown)
+  {
+    // dunno this mfg command, nak it
 
-  // filled in all of mmsg now copy it to buffer
+    int nak_length;
+    unsigned char osdp_nak_response_data [1024];
 
-  memcpy (buffer, &mmsg, sizeof (mmsg));
-
-  // actual data goes after header in buffer.
-  memcpy (buffer+bufsize, creds_buffer_a+creds_buffer_a_next, to_send);
-
-  current_length = 0;
-  status = send_message (ctx, OSDP_MFGREP, p_card.addr,
-    &current_length,
-    bufsize+to_send, buffer);
-#endif
+    current_length = 0;
+    osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+    memcpy(osdp_nak_response_data, mfg->vendor_code, 3);
+    nak_length = 3;
+    status = send_message (ctx, OSDP_NAK, p_card.addr, &current_length, nak_length,
+      osdp_nak_response_data); ctx->sent_naks ++;
+  };
 
   return (status);
 
@@ -798,7 +749,7 @@ int
 
   return (status);
 
-} /* action_osdp_MFG */
+} /* action_osdp_POLL */
 
 
 int
@@ -922,42 +873,6 @@ sample_1 [0] = tmp1_l;
 
 
 int
-  action_osdp_RMAC_I
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
-
-{ /* action_osdp_RMAC_I */
-
-  unsigned char
-    iv [16];
-  int
-    status;
-
-
-  status = ST_OK;
-  memset (iv, 0, sizeof (iv));
-
-  // check for proper state
-
-  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS 128+OSDP_SEC_SCS_13)
-  {
-    memcpy (ctx->current_received_mac, msg->data_payload, msg->data_length);
-    ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_OPERATIONAL;
-    fprintf (ctx->log, "*** SECURE CHANNEL OPERATIONAL***\n");
-  }
-  else
-  {
-    status = ST_OSDP_SC_WRONG_STATE;
-    osdp_reset_secure_channel (ctx);
-  };
-  return (status);
-
-} /* action_osdp_RMAC_I */
-
-
-int
   action_osdp_RSTAT
     (OSDP_CONTEXT
       *ctx,
@@ -990,94 +905,6 @@ int
   return (status);
 
 } /* action_osdp_RSTAT */
-
-
-int
-  action_osdp_SCRYPT
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
-
-{ /* action_osdp_SCRYPT */
-
-  struct AES_ctx
-    aes_context_s_enc;
-  struct AES_ctx
-    aes_context_mac1;
-  struct AES_ctx
-    aes_context_mac2;
-  int
-    current_key_slot;
-  int
-    current_length;
-  unsigned char
-    iv [16];
-  unsigned char
-    message1 [16];
-  unsigned char
-    message2 [16];
-  unsigned char
-    message3 [16];
-  unsigned char
-    sec_blk [1];
-  unsigned char
-    server_cryptogram [16]; // size of RND.B plus RND.A
-  int
-    status;
-
-
-  status = ST_OK;
-fprintf (stderr,"TODO: osdp_SCRYPT\n");
-  memset (iv, 0, sizeof (iv));
-
-  // check for proper state
-
-  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS 128+OSDP_SEC_SCS_12)
-  {
-    status = osdp_get_key_slot (ctx, msg, &current_key_slot);
-    if (status EQUALS ST_OK)
-    {
-      AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
-      AES_ctx_set_iv (&aes_context_s_enc, iv);
-      AES_CBC_decrypt_buffer (&aes_context_s_enc, server_cryptogram, sizeof (server_cryptogram));
-      //AES_CBC_decrypt_buffer (server_cryptogram, msg->data_payload, msg->data_length, ctx->s_enc, iv);
-      if ((0 != memcmp (server_cryptogram, ctx->rnd_b, sizeof (ctx->rnd_b))) ||
-        (0 != memcmp (server_cryptogram+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a))))
-        status = ST_OSDP_SCRYPT_DECRYPT;
-    };
-    if (status EQUALS ST_OK)
-    {
-      sec_blk [0] = 1; // means server cryptogram was good
-
-      memcpy (message1, msg->data_payload, sizeof (server_cryptogram));
-      AES_init_ctx (&aes_context_mac1, ctx->s_mac1);
-      AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
-
-      memcpy (message2, message1, sizeof (message2));
-      AES_ctx_set_iv (&aes_context_mac1, iv);
-      AES_CBC_encrypt_buffer (&aes_context_mac1, message2, sizeof (message2));
-
-      memcpy (message3, message2, sizeof (message3));
-      AES_ctx_set_iv (&aes_context_mac2, iv);
-      AES_CBC_encrypt_buffer (&aes_context_mac2, message3, sizeof (message3));
-
-      ctx->secure_channel_use [OO_SCU_ENAB] = 128+OSDP_SEC_SCS_14;
-      current_length = 0;
-      status = send_secure_message (ctx,
-        OSDP_RMAC_I, p_card.addr, &current_length, 
-        sizeof (message3), message3,
-        OSDP_SEC_SCS_14, sizeof (sec_blk), sec_blk);
-    };
-  }
-  else
-  {
-    status = ST_OSDP_SC_WRONG_STATE;
-    osdp_reset_secure_channel (ctx);
-  };
-  return (status);
-
-} /* action_osdp_SCRYPT */
 
 
 int

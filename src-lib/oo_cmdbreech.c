@@ -310,11 +310,6 @@ int
       {
         strcpy(mfg_args->oui, json_string_value(parameter));
       };
-      parameter = json_object_get(root, "payload");
-      if (json_is_string (parameter))
-      {
-        strcpy((char *)cmd->details, json_string_value (parameter));
-      };
     };
   };
 
