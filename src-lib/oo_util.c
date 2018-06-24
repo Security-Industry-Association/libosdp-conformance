@@ -143,9 +143,10 @@ status = -2;
   {
     cmd_ptr = buf + 5; // skip security stuff
   };
-// hard-coded off for now
-if (secure != 0)
-  status = -1;
+
+  // hard-coded off for now
+  if (secure != 0)
+    status = -1;
   
   *cmd_ptr = command;
   new_length++;
