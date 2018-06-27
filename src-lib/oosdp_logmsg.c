@@ -441,7 +441,7 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
         sprintf(tmpstr,
 "                  Perm Ctl=%02d ON %d(ms)-%s OFF %d(ms)-%s\n",
           led_ctl->perm_control, led_ctl->perm_on_time*100, color_name_on,
-          led_ctl->perm_off_time*100, color_name_off);
+          led_ctl->perm_off_time, color_name_off);
         strcat(tlogmsg, tmpstr);
         if (context.verbosity > 3)
         {
@@ -484,13 +484,24 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
 
   case OOSDP_MSG_MFG:
     {
+      int idx;
       OSDP_MFG_HEADER *mrep;
+      char tmps [3];
 
       msg = (OSDP_MSG *) aux;
+      oh = (OSDP_HDR *)(msg->ptr);
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - sizeof(*mrep) + 1;
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
       sprintf(tlogmsg, "MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
         mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
         mrep->command_id);
+      for (idx=0; idx<count; idx++)
+      {
+        sprintf(tmps, " %02x", *(unsigned char *)(mrep->data+idx));
+        strcat(tlogmsg, tmps);
+      };
+      strcat(tlogmsg, "\n");
     };
     break;
 

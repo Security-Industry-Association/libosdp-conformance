@@ -143,7 +143,6 @@ status = -2;
   {
     cmd_ptr = buf + 5; // skip security stuff
   };
-
   // hard-coded off for now
   if (secure != 0)
     status = -1;
@@ -1323,6 +1322,11 @@ int
       break;
     case OSDP_COMSET:
       status = oosdp_make_message (OOSDP_MSG_COMSET, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_MFG:
+      status = oosdp_make_message (OOSDP_MSG_MFG, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
