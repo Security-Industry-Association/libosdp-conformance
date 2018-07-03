@@ -498,7 +498,7 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
         mrep->command_id);
       for (idx=0; idx<count; idx++)
       {
-        sprintf(tmps, " %02x", *(unsigned char *)(mrep->data+idx));
+        sprintf(tmps, " %02x", *(unsigned char *)(&(mrep->data)+idx));
         strcat(tlogmsg, tmps);
       };
       strcat(tlogmsg, "\n");
