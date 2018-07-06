@@ -1931,10 +1931,11 @@ fprintf(stderr, "lstat 1684\n");
           mmsg->VendorCode [0], mmsg->VendorCode [1], mmsg->VendorCode [2],
           mmsg->MpdSizeTotal, mmsg->MpdOffset, mmsg->MpdFragmentSize, mmsg->Reply_ID);
         fprintf (context->log, "  Mfg Reply %s\n", tlogmsg);
+#if 0 // not multi-part now...
         /*
           process a multi-part message fragment
         */
-        // if we're already started cannot restart
+	// if we're already started cannot restart
         if ((mmsg->MpdOffset == 0) && (context->total_len != 0))
           status = ST_MMSG_SEQ_ERR;
         if (status == ST_OK)
@@ -1977,6 +1978,7 @@ printf ("MMSG DONE\n");
             context->next_in = context->next_in + mmsg->MpdFragmentSize;
           };
         };
+#endif
       };
       break;
 
