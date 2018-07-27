@@ -316,10 +316,41 @@ int osdp_awaiting_response (OSDP_CONTEXT *ctx)
   }
   else
   {
-    if (ctx->verbosity > 9)
-      fprintf(stderr, "Last was not processed\n");
+    if (ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED)
+      ret = 0; // if no response but timeout, call it "not waiting"
   };
-///ret=0;
   return (ret);
 }
 
+
+// osdp_timer_start - start a timer.  uses preset values
+
+int osdp_timer_start
+   (OSDP_CONTEXT *ctx,
+   int timer_index)
+
+{ /* osdp_timer_start */
+
+  int status;
+
+
+  status = ST_OK;
+  if ((timer_index < 0) || (timer_index > OSDP_TIMER_MAX))
+    status = ST_OSDP_BAD_TIMER;
+  if (status EQUALS ST_OK)
+  {
+    if (ctx->timer [timer_index].i_sec > 0)
+    {
+      ctx->timer [timer_index].current_seconds = ctx->timer [timer_index].i_sec;
+      ctx->timer [timer_index].status = OSDP_TIMER_RESTARTED;
+    };
+    if (ctx->timer [timer_index].i_nsec > 0)
+    {
+      ctx->timer [timer_index].current_nanoseconds = ctx->timer [timer_index].i_nsec;
+      ctx->timer [timer_index].status = OSDP_TIMER_RESTARTED;
+    };
+  };
+
+  return (status);
+
+} /* osdp_timer_start */

@@ -52,31 +52,36 @@ void start_element (void *data, const char *element, const char **attribute);
 
 int
   background
-    (OSDP_CONTEXT
-      *context)
+    (OSDP_CONTEXT *context)
 
 { /* background */
 
-  int
-    current_length;
+  int current_length;
   int send_poll;
-  int
-    status;
+  int status;
 
 
   status = ST_OK;
+//  send_poll = 1;  // assume we're supposed to poll
   send_poll = 0;
+
+  // if we're not in a file transfer...
+  // if we're not set up with an operational secure channel
+  // if we're not enabled for secure channel
+  // yeah, poll
+
   if (context->role EQUALS OSDP_ROLE_CP)
     if (context->xferctx.total_length EQUALS 0)
       if (context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
         if (!(context->secure_channel_use [OO_SCU_ENAB] & 0x80))
           send_poll = 1;
 
-  // if not waiting for response to last message...
+  // if waiting for response to last message then do NOT poll
+
   if (send_poll)
     if (osdp_awaiting_response(context))
     {
-still_waiting ++;
+      still_waiting ++;
       send_poll = 0;
     };
   if (send_poll)
@@ -259,25 +264,17 @@ int
 
 int
   osdp_timeout
-    (OSDP_CONTEXT
-      *ctx,
-    struct timespec
-      *last_time_ex)
+    (OSDP_CONTEXT *ctx,
+    struct timespec *last_time_ex)
 
 { /* osdp_timeout */
 
-  long
-    delta_nanotime;
-  int
-    delta_time;
-  int
-    i;
-  int
-    return_value;
-  int
-    status_posix;
-  struct timespec
-    time_spec;
+  long delta_nanotime;
+  int delta_time;
+  int i;
+  int return_value;
+  int status_posix;
+  struct timespec time_spec;
 
 
   return_value = 0;
@@ -287,53 +284,63 @@ int
 
   // update timers (new style)
 
+
   for (i=0; i<ctx->timer_count; i++)
   {
     if (ctx->timer [i].status != OSDP_TIMER_STOPPED)
     {
-    ctx->timer [i].status = OSDP_TIMER_RUNNING;
-    if (ctx->timer [i].i_sec > 0)
-    {
-      // it's a 1-second resolution timer
+      ctx->timer [i].status = OSDP_TIMER_RUNNING;
+      if (ctx->timer [i].i_sec > 0)
+      {
+        // it's a 1-second resolution timer
 
-      delta_time = time_spec.tv_sec - last_time_ex->tv_sec;
-      if (delta_time > 0)
-      {
-        if (ctx->timer [i].current_seconds >= delta_time)
-          ctx->timer [i].current_seconds =
-            ctx->timer [i].current_seconds - delta_time;
-        else
-          ctx->timer [i].current_seconds =  0;
+        delta_time = time_spec.tv_sec - last_time_ex->tv_sec;
+        if (delta_time > 0)
+        {
+          if (ctx->timer [i].current_seconds >= delta_time)
+            ctx->timer [i].current_seconds =
+              ctx->timer [i].current_seconds - delta_time;
+          else
+            ctx->timer [i].current_seconds =  0;
+        };
+        if (ctx->timer [i].current_seconds == 0)
+        {
+fprintf(stderr, "%d stopped\n", i);
+          ctx->timer [i].status = OSDP_TIMER_STOPPED;
+          return_value = 1;
+          if (ctx->timer [i].timeout_action EQUALS OSDP_TIMER_RESTART_ALWAYS)
+          {
+            ctx->timer [i].current_seconds = ctx->timer [i].i_sec;
+            ctx->timer [i].status = OSDP_TIMER_RESTARTED;
+          };
+        };
       };
-      if (ctx->timer [i].current_seconds == 0)
+      if (ctx->timer [i].i_nsec > 0)
       {
-        return_value = 1;
-        ctx->timer [i].current_seconds = ctx->timer [i].i_sec;
-        ctx->timer [i].status = OSDP_TIMER_RESTARTED;
-      };
-    };
-    if (ctx->timer [i].i_nsec > 0)
-    {
-      // it's a nanosecond resolution timer
+        // it's a nanosecond resolution timer
 
-      delta_nanotime = time_spec.tv_nsec - last_time_ex->tv_nsec;
-      if (delta_nanotime > 0)
-      {
-        if (ctx->timer [i].current_nanoseconds >= delta_nanotime)
-          ctx->timer [i].current_nanoseconds =
-            ctx->timer [i].current_nanoseconds - delta_nanotime;
-        else
-          ctx->timer [i].current_nanoseconds =  0;
+        delta_nanotime = time_spec.tv_nsec - last_time_ex->tv_nsec;
+        if (delta_nanotime > 0)
+        {
+          if (ctx->timer [i].current_nanoseconds >= delta_nanotime)
+            ctx->timer [i].current_nanoseconds =
+              ctx->timer [i].current_nanoseconds - delta_nanotime;
+          else
+            ctx->timer [i].current_nanoseconds =  0;
+        };
+        if (ctx->timer [i].current_nanoseconds == 0)
+        {
+if (i != OSDP_TIMER_RESPONSE)
+  fprintf(stderr, "%d (n) stopped not %d\n", i, OSDP_TIMER_RESPONSE);
+          ctx->timer [i].status = OSDP_TIMER_STOPPED;
+          return_value = 1;
+          if (ctx->timer [i].timeout_action EQUALS OSDP_TIMER_RESTART_ALWAYS)
+          {
+            ctx->timer [i].current_nanoseconds = ctx->timer [i].i_nsec;
+            ctx->timer [i].status = OSDP_TIMER_RESTARTED;
+          };
+        };
       };
-      if (ctx->timer [i].current_nanoseconds == 0)
-      {
-        return_value = 1;
-if (ctx->verbosity > 9)
-  fprintf(stderr, "timer %d i %ld nanoseconds\n", i, ctx->timer [i].i_nsec);
-        ctx->timer [i].current_nanoseconds = ctx->timer [i].i_nsec;
-        ctx->timer [i].status = OSDP_TIMER_RESTARTED;
-      };
-    };
     }; // timer not stopped
   };
   last_time_ex->tv_sec = time_spec.tv_sec;;

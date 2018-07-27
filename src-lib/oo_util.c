@@ -1784,6 +1784,7 @@ fprintf(stderr, "lstat 1684\n");
   {
     // if we're here we think it's a whole sane response so we can say the last was processed.
     context->last_was_processed = 1;
+    status = osdp_timer_start(context, OSDP_TIMER_RESPONSE);
 
     context->last_response_received = msg->msg_cmd;
     switch (msg->msg_cmd)

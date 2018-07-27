@@ -229,10 +229,13 @@ fprintf(stderr, "m_check set to CRC\n");
 
   previous_time = 0;
   context->timer_count = 3;
+  context->timer [OSDP_TIMER_STATISTICS].timeout_action = OSDP_TIMER_RESTART_ALWAYS;
   context->timer [OSDP_TIMER_STATISTICS].i_sec = 3;
   context->timer [OSDP_TIMER_STATISTICS].i_nsec = 0;
+  context->timer [OSDP_TIMER_RESPONSE].timeout_action = OSDP_TIMER_RESTART_NONE;
   context->timer [OSDP_TIMER_RESPONSE].i_sec = 0;
   context->timer [OSDP_TIMER_RESPONSE].i_nsec = 200000000l;
+  context->timer [OSDP_TIMER_SUMMARY].timeout_action = OSDP_TIMER_RESTART_ALWAYS;
   context->timer [OSDP_TIMER_SUMMARY].i_sec = 60;
   { 
     struct timespec resolution;

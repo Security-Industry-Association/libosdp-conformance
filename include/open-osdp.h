@@ -324,21 +324,21 @@ typedef struct osdp_led_state
 
 typedef struct osdp_timer
 {
-  time_t
-    i_sec;
-  long
-    i_nsec;
-  time_t
-    current_seconds;
-  long
-    current_nanoseconds;
-  int
-    status;
+  int status;
+  int timeout_action;
+  long current_nanoseconds;
+
+  time_t i_sec;
+  long i_nsec;
+  time_t current_seconds;
 } OSDP_TIMER;
 // possible values for status
 #define OSDP_TIMER_RUNNING   (0)
 #define OSDP_TIMER_RESTARTED (1)
 #define OSDP_TIMER_STOPPED   (-1)
+// possible values for timeout_action
+#define OSDP_TIMER_RESTART_ALWAYS (1)
+#define OSDP_TIMER_RESTART_NONE   (0)
 
 #define OSDP_TIMER_MAX            (5)
 #define OSDP_TIMER_STATISTICS     (0)
@@ -885,6 +885,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_FILEXFER_READ        (67)
 #define ST_OSDP_UNKNOWN_CAPABILITY   (68)
 #define ST_OSDP_FILEXFER_FINISHING   (69)
+#define ST_OSDP_BAD_TIMER            (70)
 
 int
   m_version_minor;
@@ -947,6 +948,7 @@ char *osdp_sec_block_dump (unsigned char *sec_block);
 int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int osdp_timer_start (OSDP_CONTEXT *ctx, int timer_index);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
 void osdp_trace_dump (OSDP_CONTEXT *ctx);
 int osdp_validate_led_values

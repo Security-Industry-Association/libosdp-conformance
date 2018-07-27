@@ -278,17 +278,24 @@ int
       if (osdp_timeout (&context, &last_time_check_ex))
       {
         // if timer 0 expired dump the status
-        if (context.timer[OSDP_TIMER_STATISTICS].status EQUALS OSDP_TIMER_RESTARTED)
+        if (context.timer[OSDP_TIMER_STATISTICS].status EQUALS
+          OSDP_TIMER_RESTARTED)
+        {
+fprintf(stderr, "timeout stats\n");
           status = write_status (&context);
+        };
 
-        // if "the timer" went off, do the background process
+        // if "the timer" went off, do the background process.
+        // It'll figure out if there figure out if there  was a send timeout.
 
-        //if (status EQUALS ST_OK)
-        if (context.timer[OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_RESTARTED)
-          status = background (&context);
+        status = background (&context);
 
-        if (context.timer[OSDP_TIMER_SUMMARY].status EQUALS OSDP_TIMER_RESTARTED)
+        if (context.timer[OSDP_TIMER_SUMMARY].status EQUALS
+          OSDP_TIMER_RESTARTED)
+        {
+fprintf(stderr, "timeout log\n");
           status = osdp_log_summary(&context);
+        };
       };
     };
 
