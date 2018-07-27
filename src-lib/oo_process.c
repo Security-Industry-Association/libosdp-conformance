@@ -1,3 +1,7 @@
+unsigned char leftover_command;
+unsigned char leftover_data [4*1024];
+int leftover_length;
+
 /*
   oo-process - process OSDP message input
 
@@ -78,17 +82,21 @@ int
     status = process_osdp_message (&context, &msg);
   };
 
-  // no more address update here.  if it should be updated it should happen
-  // at osdp_COM
+  // if there's a leftover command to send then send it now.  Only get to do one of these.
 
-#if 0
-  // things may have changed.  after processing this incoming message
-  // adjust for changes.
-if (p_card.addr != context.new_address)
-  fprintf(stderr, "Changing(2) p_card address from %d. to %d.\n",
-    p_card.addr, context.new_address);
-  p_card.addr = context.new_address;
-#endif
+  if (status EQUALS ST_OK)
+  {
+    if (context.left_to_send > 0)
+    {
+      int current_length; 
+
+      current_length = 0;
+      status = send_message (&context, leftover_command,
+        p_card.addr, &current_length, leftover_length, leftover_data);
+      context.left_to_send = 0;
+      leftover_length = 0;
+    };
+  };
 
   // do special things for tests in progress.
 

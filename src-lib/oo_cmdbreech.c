@@ -66,6 +66,8 @@ int
   char vstr [1024];
 
 
+extern int still_waiting;
+fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_waiting);
   status = ST_CMD_PATH;
   cmdf = fopen (ctx->command_path, "r");
   if (cmdf != NULL)
@@ -716,6 +718,12 @@ int
           this_command);
     };
   }; 
+  if (status EQUALS ST_OK)
+  {
+    test_command = "stop";
+    if (0 EQUALS strncmp(json_string_value(value), test_command, strlen(test_command)))
+      cmd->command = OSDP_CMDB_STOP;
+  };
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));

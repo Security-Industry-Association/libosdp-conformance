@@ -372,6 +372,9 @@ fprintf(stderr, "m_check set to CRC\n");
   memset (&osdp_buf, 0, sizeof (osdp_buf));
   context->current_menu = OSDP_MENU_TOP;
 
+  // we are ready to party.  "last was processed"
+  context->last_was_processed = 1;
+
   }; // end lock file not found
 
   if (status EQUALS ST_OK)

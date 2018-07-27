@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 3)
-#define OSDP_VERSION_BUILD ( 8)
+#define OSDP_VERSION_BUILD ( 9)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -170,6 +170,7 @@
 #define OSDP_CMDB_CONFORM_2_14_3 (1028)
 #define OSDP_CMDB_MFG            (1029)
 #define OSDP_CMDB_CONFORM_2_11_3 (1030)
+#define OSDP_CMDB_STOP           (1031)
 
 
 #define OSDP_CMD_NOOP         (0)
@@ -393,16 +394,12 @@ typedef struct osdp_context
   int last_was_processed;
 
   // OSDP protocol context
-  char
-    last_command_sent;
-  char
-    last_nak_error;
-  char
-    last_response_received;
-  char
-    next_response;
-  int
-    next_sequence;
+  char last_command_sent;
+  char last_nak_error;
+  char last_response_received;
+  char next_response;
+  int next_sequence;
+  int left_to_send;
 
   OSDP_PD_CAPABILITY pd_cap;
 
@@ -951,6 +948,7 @@ int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
+void osdp_trace_dump (OSDP_CONTEXT *ctx);
 int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds, unsigned char *errdeets, int *elth);
 void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);

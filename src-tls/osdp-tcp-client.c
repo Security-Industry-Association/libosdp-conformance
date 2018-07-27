@@ -478,12 +478,17 @@ int
             request_immediate_poll)
           {
             // if timer 0 expired dump the status
-            if (context.timer[0].status EQUALS OSDP_TIMER_RESTARTED)
+            if (context.timer[OSDP_TIMER_STATISTICS].status EQUALS OSDP_TIMER_RESTARTED)
               status = write_status (&context);
 
             // if "the timer" went off, do the background process
 
-            status = background (&context);
+            if (context.timer[OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_RESTARTED)
+              status = background (&context);
+
+            if (context.timer[OSDP_TIMER_SUMMARY].status EQUALS OSDP_TIMER_RESTARTED)
+              status = osdp_log_summary(&context);
+
             request_immediate_poll = 0;
           };
         };

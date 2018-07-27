@@ -1,3 +1,6 @@
+unsigned char leftover_command;
+unsigned char leftover_data [4*1024];
+int leftover_length;
 /*
   oosdp_ui - UI routines for open-osdp
 
@@ -29,6 +32,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 #include <osdp-tls.h>
 #include <open-osdp.h>
@@ -236,17 +240,36 @@ fprintf(stderr, "string is >%s<\n", oargs->c_s_d);
           memcpy(tmps, (idx)+(oargs->c_s_d), 2);
           sscanf(tmps, "%x", &i);
           *(&(omfg->data)+out_idx) = i;
-fprintf(stderr, "mfg data %d. s %s hex value 0x%x\n",
-  out_idx, tmps, i);
+          if (context->verbosity > 3)
+            fprintf(stderr, "mfg data %d. s %s hex value 0x%x\n",
+              out_idx, tmps, i);
           out_idx ++;
           send_length ++;
         };
-        current_length = 0;
-        status = send_message (context,
-          OSDP_MFG, p_card.addr, &current_length, send_length,
-          data);
+
+fprintf(stderr,"w:%d (250)\n", context->last_was_processed);
+        if (osdp_awaiting_response(context))
+        {
+          fprintf(stderr, "busy before OSDP_MFG, skipping send\n");
+          fflush(stderr); fflush(context->log);
+          leftover_command = OSDP_MFG;
+          memcpy(leftover_data, data, send_length);
+          leftover_length = send_length;
+          context->left_to_send = leftover_length;
+        }
+        else
+        {
+          current_length = 0;
+          status = send_message (context,
+            OSDP_MFG, p_card.addr, &current_length, send_length, data);
+        };
         status = ST_OK;
       };
+      break;
+
+    case OSDP_CMDB_STOP:
+      fprintf (context->log, "STOP command received.  Terminating now.\n");
+      exit (0);
       break;
 
     case OSDP_CMDB_TRANSFER:
@@ -468,12 +491,24 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         */
         param [0] = 0;
         current_length = 0;
-        status = send_message (context,
-          OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
-        if (context->verbosity > 3)
-          fprintf (stderr, "Requesting PD Ident\n");
-
-        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
+fprintf(stderr,"w:%d\n", context->last_was_processed);
+        if (osdp_awaiting_response(context))
+        {
+          fprintf(stderr, "busy before OSDP_ID, skipping send\n");
+          fflush(stderr); fflush(context->log);
+          leftover_command = OSDP_ID;
+          memcpy(leftover_data, param, sizeof(param));
+          leftover_length = sizeof(param);
+          context->left_to_send = leftover_length;
+        }
+        else
+        {
+          status = send_message (context,
+            OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
+          if (context->verbosity > 3)
+            fprintf (stderr, "Requesting PD Ident\n");
+          osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
+        };
       };
       status = ST_OK;
       break;
@@ -525,13 +560,22 @@ fprintf(stderr, "enable_secure_channel %d\n", context->enable_secure_channel);
           osdp_ISTAT requires no arguments.
         */
         current_length = 0;
-        status = send_message (context,
-          OSDP_ISTAT, p_card.addr, &current_length, 0, NULL);
-        if (context->verbosity > 3)
-          fprintf (stderr, "Requesting Input Status\n");
+
+        if (osdp_awaiting_response(context))
+        {
+          fprintf(stderr, "busy before OSDP_ID, skipping send\n");
+          fflush(stderr); fflush(context->log);
+        }
+        else
+        {
+          status = send_message (context,
+            OSDP_ISTAT, p_card.addr, &current_length, 0, NULL);
+          if (context->verbosity > 3)
+            fprintf (stderr, "Requesting Input Status\n");
+          osdp_conformance.cmd_istat.test_status =
+            OCONFORM_EXERCISED;
+        };
       };
-      osdp_conformance.cmd_istat.test_status =
-        OCONFORM_EXERCISED;
       status = ST_OK;
       break;
 

@@ -708,6 +708,10 @@ int
 
 
   status = ST_OK;
+
+  // dump the trace buffer before creating the log message
+  osdp_trace_dump(context);
+
   llogtype = logtype;
   role_tag = "";
   strcpy (timestamp, "");
@@ -743,16 +747,6 @@ else
       current_cooked_time->tm_sec,
       current_time_fine.tv_sec, current_time_fine.tv_nsec);
   };
-  if (strlen(trace_in_buffer) > 0)
-  {
-    fprintf(context->log, " Trace Data IN: %s\n", trace_in_buffer);
-    trace_in_buffer [0] = 0;
-  };
-  if (strlen(trace_out_buffer) > 0)
-  {
-    fprintf(context->log, "Trace Data OUT: %s\n", trace_out_buffer);
-    trace_out_buffer [0] = 0;
-  };
   if (context->role == OSDP_ROLE_MONITOR)
   {
     fprintf (context->log, "%s%s", timestamp, message);
@@ -772,12 +766,9 @@ else
 
 int
   oosdp_log_key
-    (OSDP_CONTEXT
-      *ctx,
-    char
-      *prefix_message,
-    unsigned char
-      *key)
+    (OSDP_CONTEXT *ctx,
+    char *prefix_message,
+    unsigned char *key)
 
 { /* oosdp_log_key */
 
@@ -805,4 +796,24 @@ int
   return (status);
 
 } /* oosdp_log_key */
+
+
+void
+  osdp_trace_dump
+    (OSDP_CONTEXT *ctx)
+
+{ /* osdp_trace_dump */
+
+  if (strlen(trace_out_buffer) > 0)
+  {
+    fprintf(ctx->log, "Trace Data OUT: %s\n", trace_out_buffer);
+    trace_out_buffer [0] = 0;
+  };
+  if (strlen(trace_in_buffer) > 0)
+  {
+    fprintf(ctx->log, " Trace Data IN: %s\n", trace_in_buffer);
+    trace_in_buffer [0] = 0;
+  };
+
+} /* osdp_trace_dump */
 

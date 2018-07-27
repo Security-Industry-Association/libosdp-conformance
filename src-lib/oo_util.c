@@ -802,6 +802,9 @@ fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
     m->direction = 0x80 & p->addr;
     m->data_payload = m->cmd_payload + 1;
 
+    // dump the trace buffer even if it's poll/ack...
+    osdp_trace_dump(context);
+
     // if it wasn't a poll or an ack report the secure header if there is one
     if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
       fprintf (context->log, "%s", tlogmsg);
@@ -1396,12 +1399,6 @@ int
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
 
-  case OSDP_MFG:
-    status = oosdp_make_message (OOSDP_MSG_MFG, tlogmsg, msg);
-    if (status == ST_OK)
-      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-    break;
-
   case OSDP_MFGREP:
     status = oosdp_make_message (OOSDP_MSG_MFGREP, tlogmsg, msg);
     if (status == ST_OK)
@@ -1448,23 +1445,16 @@ int
 
 { /* process_osdp_message */
 
-  int
-    count;
-  int
-    current_length;
-  int
-    i;
-  char
-    logmsg [1024];
-  unsigned char
-    osdp_nak_response_data [2];
-  OSDP_HDR
-    *oh;
-  int
-    status;
+  int count;
+  int current_length;
+  int i;
+  char logmsg [1024];
+  unsigned char osdp_nak_response_data [2];
+  OSDP_HDR *oh;
+  int status;
   unsigned char this_command;
-  char
-    tlogmsg [1024];
+  char tlog2 [1024];
+  char tlogmsg [1024];
 
 
   status = ST_MSG_UNKNOWN;
@@ -1792,6 +1782,9 @@ fprintf(stderr, "lstat 1684\n");
   } /* role PD */
   if (context -> role EQUALS OSDP_ROLE_CP)
   {
+    // if we're here we think it's a whole sane response so we can say the last was processed.
+    context->last_was_processed = 1;
+
     context->last_response_received = msg->msg_cmd;
     switch (msg->msg_cmd)
     {
@@ -1821,9 +1814,13 @@ fprintf(stderr, "lstat 1684\n");
       status = ST_OK;
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - 8;
-      sprintf (tlogmsg, "count: %d. %02x %02x %02x %02x",
-        count, *(0+msg->data_payload), *(1+msg->data_payload),
-        *(2+msg->data_payload), *(3+msg->data_payload));
+      sprintf(tlog2, "\n  Count: %d Data:", count);
+      strcat(tlogmsg, tlog2);
+      for (i=0; i<count; i++)
+      {
+        sprintf(tlog2, " %02x", *(i+msg->data_payload));
+        strcat(tlogmsg, tlog2);
+      };
       fprintf (context->log, "Input Status: %s\n", tlogmsg);
       osdp_conformance.resp_input_stat.test_status =
         OCONFORM_EXERCISED;
@@ -1922,15 +1919,21 @@ fprintf(stderr, "lstat 1684\n");
 
     case OSDP_MFGREP:
       {
-        OSDP_MULTI_HDR
-          *mmsg;
+        OSDP_MFG_HEADER *mfg;
+
         status = ST_OK;
-        mmsg = (OSDP_MULTI_HDR *)(msg->data_payload);
+        oh = (OSDP_HDR *)(msg->ptr);
+        count = oh->len_lsb + (oh->len_msb << 8);
+        count = count - 7;
+        count = count - sizeof(OSDP_MFG_HEADER);
+        
+        mfg = (OSDP_MFG_HEADER *)(msg->data_payload);
         sprintf (tlogmsg,
-          "OUI %02x%02x%02x Total %d Offset %d Length %d Command %04x",
-          mmsg->VendorCode [0], mmsg->VendorCode [1], mmsg->VendorCode [2],
-          mmsg->MpdSizeTotal, mmsg->MpdOffset, mmsg->MpdFragmentSize, mmsg->Reply_ID);
+          "OUI %02x%02x%02x Length %d",
+          mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], count);
         fprintf (context->log, "  Mfg Reply %s\n", tlogmsg);
+        dump_buffer_log(context, "MFGREP: ", &(mfg->data), count);
+
 #if 0 // not multi-part now...
         /*
           process a multi-part message fragment

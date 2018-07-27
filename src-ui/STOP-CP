@@ -15,5 +15,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+
+
+
+ROLE=CP
+
+echo "Content-type: text/html"
+echo ""
+
+echo "<HTML><HEAD><TITLE>Stop CP</TITLE>"
+echo "</HEAD>"
+echo "<BODY>"
+echo "<BR>"
+echo "<PRE>"
+date
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/${ROLE}/open_osdp_command.json
+sudo rm -f ${CMDPATH}
+sudo -n echo  >${CMDPATH} "{"
+sudo -n echo >>${CMDPATH} "   \"command\" : \"stop\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by STOP-CP from UI\""
+sudo -n echo >>${CMDPATH} "}"
+sudo -n cp ${CMDPATH} ${CMDPATHX}
+
+sudo -n ${OSDP_PATH}/bin/HUP-${ROLE}
+
+echo "Stopping CP..."
+echo "(return to previous screen manually.)"
+
+echo "</PRE></BODY></HTML>"
+sleep 5
 kill -9 `cat /opt/osdp-conformance/run/CP/osdp-pid`
 

@@ -1,3 +1,4 @@
+int still_waiting;
 /*
   oo_util2 - more open-osdp util routines
 
@@ -74,7 +75,10 @@ int
   // if not waiting for response to last message...
   if (send_poll)
     if (osdp_awaiting_response(context))
+    {
+still_waiting ++;
       send_poll = 0;
+    };
   if (send_poll)
   {
     current_length = 0;
