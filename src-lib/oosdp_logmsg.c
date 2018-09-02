@@ -1,3 +1,66 @@
+#define OSDP_CMD_MSC_GETPIV  (0x10)
+#define OSDP_CMD_MSC_KP_ACT  (0x13)
+#define OSDP_CMD_MSC_CR_AUTH (0x14)
+#define OSDP_REP_MSC_PIVDATA (0x10)
+#define OSDP_REP_MSC_CR_AUTH (0x14)
+#define OSDP_REP_MSC_STAT    (0xFD)
+
+char OSDP_VENDOR_INID [] = { 0x00, 0x75, 0x32 };
+
+typedef struct __attribute__((packed)) osdp_msc_crauth
+{
+  char vendor_code [3];
+  char command_id;
+  unsigned short int mpd_size_total;
+  unsigned short int mpd_offset;
+  unsigned short int mpd_fragment_size;
+  unsigned char data [2]; // just first 2 of data.  algref and keyref in first block
+} OSDP_MSC_CR_AUTH;
+
+typedef struct __attribute__((packed)) osdp_msc_crauth_response
+{
+  char vendor_code [3];
+  char command_id;
+  unsigned short int mpd_size_total;
+  unsigned short int mpd_offset;
+  unsigned short int mpd_fragment_size;
+  unsigned char data;
+} OSDP_MSC_CR_AUTH_RESPONSE;
+
+typedef struct __attribute__((packed)) osdp_msc_getpiv
+{
+  char vendor_code [3];
+  char command_id;
+  char piv_object [3];
+  char piv_element;
+  char piv_offset [2];
+} OSDP_MSC_GETPIV;
+  
+typedef struct __attribute__((packed)) osdp_msc_kp_act
+{
+  char vendor_code [3];
+  char command_id;
+  unsigned short int kp_act_time;
+} OSDP_MSC_KP_ACT;
+  
+typedef struct __attribute__((packed)) osdp_msc_piv_data
+{
+  char vendor_code [3];
+  char command_id;
+  unsigned short int mpd_size_total;
+  unsigned short int mpd_offset;
+  unsigned short int mpd_fragment_size;
+  unsigned char data;
+} OSDP_MSC_PIV_DATA;
+
+typedef struct __attribute__((packed)) osdp_msc_status
+{
+  char vendor_code [3];
+  char command_id;
+  char status;
+  char info [2];
+} OSDP_MSC_STATUS;
+
 /*
   oosdp-logmsg - open osdp log message routines
 
@@ -32,150 +95,6 @@ extern char trace_in_buffer [];
 extern char trace_out_buffer [];
 
 
-char
-  *osdp_led_color_lookup
-    (unsigned char led_color_number)
-
-{ /* osdp_led_color_lookup */
-
-  static char value [1024];
-
-
-  switch(led_color_number)
-  {
-  default:
-    sprintf(value, "?(%02x)", led_color_number);
-    break;
-  case OSDP_LEDCOLOR_AMBER:
-    sprintf(value, "\'Amber\'(%02x)", led_color_number);
-    break;
-  case OSDP_LEDCOLOR_BLUE:
-    sprintf(value, "\'Blue\'(%02x)", led_color_number);
-    break;
-  case OSDP_LEDCOLOR_BLACK:
-    sprintf(value, "Black");
-    break;
-  case OSDP_LEDCOLOR_GREEN:
-    sprintf(value, "Green");
-    break;
-  case OSDP_LEDCOLOR_RED:
-    sprintf(value, "Red");
-    break;
-  };
-  return (value); 
-
-} /* osdp_led_color_lookup */
-
-
-char
-  *osdp_message
-    (int
-      status,
-    int
-      detail_1,
-    int
-      detail_2,
-    int
-      detail_3)
-
-{ /* osdp_message */
-
-  char
-    *retmsg;
-
-
-  retmsg = 0;
-  switch (status)
-  {
-  case ST_OSDP_TLS_NOCERT:
-    retmsg = "Certificate files unavailable";
-    break;
-  };
-
-  return (retmsg);
-
-} /* osdp_message */
-
-
-char
-  *osdp_pdcap_function
-    (int func)
-{
-  static char funcname [1024];
-  switch (func)
-  {
-  default:
-    sprintf (funcname, "Unknown(0x%2x)", func);
-    break;
-  case 1:
-    strcpy (funcname, "Contact Status Monitoring");
-    break;
-  case 2:
-    strcpy (funcname, "Output Control");
-    break;
-  case 3:
-    strcpy (funcname, "Card Data Format");
-    break;
-  case 4:
-    strcpy (funcname, "Reader LED Control");
-    break;
-  case 5:
-    strcpy (funcname, "Reader Audible Output");
-    break;
-  case 6:
-    strcpy (funcname, "Reader Text Output");
-    break;
-  case 7:
-    strcpy (funcname, "Time Keeping");
-    break;
-  case 8:
-    strcpy (funcname, "Check Character Support");
-    break;
-  case 9:
-    strcpy (funcname, "Communication Security");
-    break;
-  case 10:
-    strcpy (funcname, "Receive Buffer Size");
-    break;
-  case 11:
-    strcpy (funcname, "Max Multi-Part Size");
-    break;
-  case 12:
-    strcpy (funcname, "Smart Card Support");
-    break;
-  case 13:
-    strcpy (funcname, "Readers");
-    break;
-  case 14:
-    strcpy (funcname, "Biometrics");
-    break;
-  };
-  return (funcname);
-}
-
-
-/*
-  osdp_log_summary - logs the summary stats
-*/
-
-int
-  osdp_log_summary
-    (OSDP_CONTEXT *ctx)
-
-{ /* osdp_log_summary */
-
-  int status;
-  char tlogmsg [1024];
-
-
-  status = oosdp_make_message (OOSDP_MSG_PKT_STATS, tlogmsg, NULL);
-  if (status == ST_OK)
-    status = oosdp_log (ctx, OSDP_LOG_STRING, 1, tlogmsg);
-  return (ST_OK);
-
-} /* osdp_log_summary */
-
-
 /*
   oosdp_make_message - construct useful log text for output
 
@@ -192,17 +111,24 @@ int
   OSDP_SC_CCRYPT *ccrypt_payload;
   OSDP_SC_CHLNG *chlng_payload;
   int count;
+  OSDP_MSC_CR_AUTH *cr_auth;
+  OSDP_MSC_CR_AUTH_RESPONSE *cr_auth_response;
   char filename [1024];
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
+  OSDP_MSC_GETPIV *get_piv;
   OSDP_HDR *hdr;
   FILE *identf;
+  int idx;
+  OSDP_MSC_STATUS *msc_status;
   OSDP_MSG *msg;
   unsigned short int newdelay;
   unsigned short int newmax;
   OSDP_HDR *oh;
   unsigned char osdp_command;
+  OSDP_MSC_PIV_DATA *piv_data;
   char tlogmsg [1024];
+  char tmps [1024];
   char tmpstr [1024];
   char tmpstr2 [1024];
   int status;
@@ -484,36 +410,174 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
 
   case OOSDP_MSG_MFG:
     {
-      int idx;
       OSDP_MFG_HEADER *mrep;
-      char tmps [3];
+      int process_as_special;
 
+      memset(tlogmsg, 0, sizeof(tlogmsg));
+      process_as_special = 0;
       msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - sizeof(*mrep) + 1;
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
-      sprintf(tlogmsg, "MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
-        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-        mrep->command_id);
-      for (idx=0; idx<count; idx++)
+      process_as_special = 0;
+      if (0 EQUALS memcmp(mrep->vendor_code, OSDP_VENDOR_INID, sizeof(OSDP_VENDOR_INID)))
+        process_as_special = 1;
+      if (!process_as_special)
       {
-        sprintf(tmps, " %02x", *(unsigned char *)(&(mrep->data)+idx));
-        strcat(tlogmsg, tmps);
+        sprintf(tlogmsg,
+"(General) MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
+          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
+          mrep->command_id);
       };
-      strcat(tlogmsg, "\n");
+      if (process_as_special)
+      {
+        switch (mrep->command_id)
+        {
+        case OSDP_CMD_MSC_CR_AUTH:
+          {
+            cr_auth = (OSDP_MSC_CR_AUTH *)(msg->data_payload);
+            sprintf(tmps,
+"MSC CRAUTH\n  TotSize:%d. Offset:%d FragSize: %d",
+              cr_auth->mpd_size_total, cr_auth->mpd_offset,
+              cr_auth->mpd_fragment_size);
+            strcat(tlogmsg, tmps);
+            if (cr_auth->mpd_offset EQUALS 0)
+            {
+              sprintf(tmps, " AlgRef %02x KeyRef %02x",
+                cr_auth->data[0], cr_auth->data[1]);
+              strcat(tlogmsg, tmps);
+            };
+            strcat(tlogmsg, "\n");
+          };
+          break;
+        case OSDP_CMD_MSC_GETPIV:
+          {
+            get_piv = (OSDP_MSC_GETPIV *)(msg->data_payload);
+            sprintf(tmps,
+"MSC PIVDATAGET\n  PIV-Object:%02x %02x %02x Element: %02x Offset: %02x %02x",
+              get_piv->piv_object [0], get_piv->piv_object [1],
+              get_piv->piv_object [2],
+              get_piv->piv_element,
+              get_piv->piv_offset [0], get_piv->piv_offset [1]);
+            strcat(tlogmsg, tmps);
+            strcat(tlogmsg, "\n");
+            count = sizeof(*get_piv) - sizeof(get_piv->vendor_code)
+              - sizeof(get_piv->command_id);
+          };
+          break;
+        case OSDP_CMD_MSC_KP_ACT:
+          {
+            OSDP_MSC_KP_ACT *keep_active;
+            keep_active = (OSDP_MSC_KP_ACT *)(msg->data_payload);
+            sprintf(tmps,
+"MSC KP_ACT\n  KP_ACT_TIME %d. ms\n",
+              keep_active->kp_act_time);
+            strcat(tlogmsg, tmps);
+            count = sizeof(*keep_active) - sizeof(keep_active->vendor_code)
+              - sizeof(keep_active->command_id);
+          };
+          break;
+        default:
+          sprintf(tlogmsg,
+"MSC (MFG) Request: OUI:%02x-%02x-%02x Command: %02x\n",
+            mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
+            mrep->command_id);
+          break;
+        };
+      }; 
+      if (count > 0)
+      {
+        strcat(tlogmsg, "  Raw:");
+        for (idx=0;
+//sizeof(get_piv->command_id) + sizeof(get_piv->vendor_code);
+          idx<count; idx++)
+        {
+          sprintf(tmps, " %02x", *(unsigned char *)(&(mrep->data)+idx));
+          strcat(tlogmsg, tmps);
+        };
+        strcat(tlogmsg, "\n");
+      };
     };
     break;
 
   case OOSDP_MSG_MFGREP:
     {
       OSDP_MFG_HEADER *mrep;
+      int process_as_special;
+
+      memset(tlogmsg, 0, sizeof(tlogmsg));
+      process_as_special = 0;
 
       msg = (OSDP_MSG *) aux;
+      oh = (OSDP_HDR *)(msg->ptr);
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - sizeof(*mrep) + 1;
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
-      sprintf(tlogmsg, "MFG Reply: OUI:%02x-%02x-%02x RepID: %02x\n",
-        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-        mrep->command_id);
+
+      process_as_special = 0;
+      if (0 EQUALS memcmp(mrep->vendor_code, OSDP_VENDOR_INID, sizeof(OSDP_VENDOR_INID)))
+        process_as_special = 1;
+
+      if (!process_as_special)
+      {
+        sprintf(tlogmsg, "(General) MFG Reply: OUI:%02x-%02x-%02x RepID: %02x\n",
+          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
+          mrep->command_id);
+      };
+      if (process_as_special)
+      {
+        switch (mrep->command_id)
+        {
+        case OSDP_REP_MSC_CR_AUTH:
+          {
+            cr_auth_response = (OSDP_MSC_CR_AUTH_RESPONSE *)(msg->data_payload);
+            sprintf(tmps,
+"MSC CRAUTH RESPONSE TotSize:%d. Offset:%d FragSize: %d\n",
+              cr_auth_response->mpd_size_total, cr_auth_response->mpd_offset,
+              cr_auth_response->mpd_fragment_size);
+            strcat(tlogmsg, tmps);
+            count = sizeof(*cr_auth_response) + cr_auth_response->mpd_fragment_size - 1 - sizeof(cr_auth_response->vendor_code)
+              - sizeof(cr_auth_response->command_id);
+          };
+          break;
+
+        case OSDP_REP_MSC_PIVDATA:
+          {
+            piv_data = (OSDP_MSC_PIV_DATA *)(msg->data_payload);
+            sprintf(tmps,
+"MSC PIVDATA\n  TotSize:%d. Offset:%d FragSize: %d\n",
+              piv_data->mpd_size_total, piv_data->mpd_offset,
+              piv_data->mpd_fragment_size);
+            strcat(tlogmsg, tmps);
+            count = sizeof(*piv_data) + piv_data->mpd_fragment_size - 1 - sizeof(piv_data->vendor_code)
+              - sizeof(piv_data->command_id);
+          };
+          break;
+        case OSDP_REP_MSC_STAT:
+          {
+            msc_status = (OSDP_MSC_STATUS *)(msg->data_payload);
+            sprintf(tmps, "MSC STATUS %02x Info %02x %02x\n", 
+              msc_status->status, msc_status->info [0], msc_status->info [1]);
+            count = sizeof(*msc_status) - sizeof(piv_data->vendor_code)
+              - sizeof(piv_data->command_id);
+          };
+          break;
+        default:
+          sprintf(tlogmsg, "(General) MFG Response: OUI:%02x-%02x-%02x RepID: %02x\n",
+            mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
+            mrep->command_id);
+          break;
+        };
+      };
+
+      strcat(tlogmsg, "  Raw:");
+      for (idx=0; idx<count; idx++)
+      {
+        sprintf(tmps, " %02x", *(unsigned char *)(&(mrep->data)+idx));
+        strcat(tlogmsg, tmps);
+      };
+      strcat(tlogmsg, "\n");
     };
     break;
 
@@ -762,58 +826,4 @@ else
   return (status);
 
 } /* oosdp_log */
-
-
-int
-  oosdp_log_key
-    (OSDP_CONTEXT *ctx,
-    char *prefix_message,
-    unsigned char *key)
-
-{ /* oosdp_log_key */
-
-  int
-    i;
-  int
-    status;
-  char
-    tlogmsg [1024];
-  char
-    tlogmsg2 [1024];
-
-
-  status = ST_OK;
-  if (ctx->verbosity > 8)
-  {
-    strcpy (tlogmsg, prefix_message);
-    for (i=0; i<OSDP_KEY_OCTETS; i++)
-    {
-      sprintf (tlogmsg2, "%02x", key [i]);
-      strcat (tlogmsg, tlogmsg2);
-    };
-    fprintf (ctx->log, "%s\n", tlogmsg);
-  };
-  return (status);
-
-} /* oosdp_log_key */
-
-
-void
-  osdp_trace_dump
-    (OSDP_CONTEXT *ctx)
-
-{ /* osdp_trace_dump */
-
-  if (strlen(trace_out_buffer) > 0)
-  {
-    fprintf(ctx->log, "Trace Data OUT: %s\n", trace_out_buffer);
-    trace_out_buffer [0] = 0;
-  };
-  if (strlen(trace_in_buffer) > 0)
-  {
-    fprintf(ctx->log, " Trace Data IN: %s\n", trace_in_buffer);
-    trace_in_buffer [0] = 0;
-  };
-
-} /* osdp_trace_dump */
 

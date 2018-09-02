@@ -25,8 +25,8 @@
 #include <time.h>
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR ( 4)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_MINOR ( 3)
+#define OSDP_VERSION_BUILD ( 9)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -940,8 +940,10 @@ void osdp_create_keys (OSDP_CONTEXT *ctx);
 int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
 int osdp_filetransfer_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FILETRANSFER *msg, unsigned short int *fragsize, unsigned int *offset);
 int osdp_ftstat_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *msg);
+char *osdp_led_color_lookup(unsigned char led_color_number);
 int osdp_log_summary(OSDP_CONTEXT *ctx);
 int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
+char *osdp_pdcap_function(int func);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
 char *osdp_sec_block_dump (unsigned char *sec_block);

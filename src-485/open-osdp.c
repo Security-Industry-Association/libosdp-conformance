@@ -281,7 +281,6 @@ int
         if (context.timer[OSDP_TIMER_STATISTICS].status EQUALS
           OSDP_TIMER_RESTARTED)
         {
-fprintf(stderr, "timeout stats\n");
           status = write_status (&context);
         };
 
@@ -293,7 +292,6 @@ fprintf(stderr, "timeout stats\n");
         if (context.timer[OSDP_TIMER_SUMMARY].status EQUALS
           OSDP_TIMER_RESTARTED)
         {
-fprintf(stderr, "timeout log\n");
           status = osdp_log_summary(&context);
         };
       };

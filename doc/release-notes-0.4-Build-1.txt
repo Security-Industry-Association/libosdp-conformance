@@ -1,11 +1,25 @@
 Release 0.4 Build 1 libosdp-conformance
+=======================================
 
 Changes in 0.4 Build 1
+----------------------
 
 started adding extended packet mode log messages
 release notice cleaned up in doc directory
 
+Change Details
+--------------
+
+Monitor mode now decodes some (not all) application-specific messages for
+PIV processing.
+
 Known Issues
+------------
+The raw dump portion of the monitor output for osdp_MFG and osdp_MFGREP 
+messages is not always precisely the (remaining payload after all headers.)
+Also the raw dump isn't chunked out into lines, it's one long line.  This should
+be modified to make it easier to use.
+
 secure channel not completely implemented
 bio processing not completely implemented
 NAK processing doesn't invoke retry
