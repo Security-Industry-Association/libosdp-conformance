@@ -1,0 +1,14 @@
+Release 0.4 Build 1 libosdp-conformance
+
+Changes in 0.4 Build 1
+
+started adding extended packet mode log messages
+release notice cleaned up in doc directory
+
+Known Issues
+secure channel not completely implemented
+bio processing not completely implemented
+NAK processing doesn't invoke retry
+checksum vs. crc switching may not match other devices
+Check issues list in github.
+

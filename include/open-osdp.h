@@ -25,8 +25,8 @@
 #include <time.h>
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR ( 3)
-#define OSDP_VERSION_BUILD ( 9)
+#define OSDP_VERSION_MINOR ( 4)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
