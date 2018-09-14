@@ -159,34 +159,24 @@ int
 
 { /* initialize */
 
-  extern unsigned char
-    *creds_buffer_a;
-  extern int
-    creds_buffer_a_lth;
-  extern int
-    creds_buffer_a_next;
-  extern int
-    creds_buffer_a_remaining;
-  int
-    creds_f;
-  char
-    logmsg [1024];
-  extern char
-    *multipart_message_buffer_1;
-  char
-    optstring [1024];
-  extern OSDP_BUFFER
-    *osdp_buf;
-  extern time_t
-    previous_time;
-  int
-    status;
-  int
-    status_io;
+  extern unsigned char *creds_buffer_a;
+  extern int creds_buffer_a_lth;
+  extern int creds_buffer_a_next;
+  extern int creds_buffer_a_remaining;
+  int creds_f;
+  char logmsg [1024];
+  extern int mfg_rep_sequence;
+  extern char *multipart_message_buffer_1;
+  char optstring [1024];
+  extern OSDP_BUFFER *osdp_buf;
+  extern time_t previous_time;
+  int status;
+  int status_io;
 
 
   status = ST_OK;
   memset (&osdp_conformance, 0, sizeof (osdp_conformance));
+  mfg_rep_sequence = 0;
 
   // create the lock, exclusively, for just this user
   context->process_lock = open(OSDP_EXCLUSIVITY_LOCK,

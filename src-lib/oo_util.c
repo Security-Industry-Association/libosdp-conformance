@@ -1,4 +1,4 @@
-#define SAMPLE 1
+//#define SAMPLE 1
 /*
   oo_util - open osdp utility routines
 
@@ -46,6 +46,7 @@ unsigned int web_color_lookup [16] = {
 time_t previous_time;
 char tlogmsg [1024];
 char tlogmsg2 [1024];
+int mfg_rep_sequence;
 
 
 int
@@ -1934,6 +1935,27 @@ fprintf(stderr, "lstat 1684\n");
           mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], count);
         fprintf (context->log, "  Mfg Reply %s\n", tlogmsg);
         dump_buffer_log(context, "MFGREP: ", &(mfg->data), count);
+        {
+          char cmd [1024];
+          FILE *mrdat;
+          char mfg_rep_data_file [1024];
+
+          sprintf(mfg_rep_data_file, "/opt/osdp-conformance/run/CP/pd_%02d_mfgrep.dat", p_card.addr);
+          mrdat = fopen(mfg_rep_data_file, "w");
+          if (mrdat != NULL)
+          {
+            fwrite((char *)(msg->data_payload), sizeof(unsigned char), count, mrdat);
+// CHECK SECURE CHANNEL
+            fclose(mrdat);
+            if (context->verbosity > 3)
+            {
+              sprintf(cmd, "mv /opt/osdp-conformance/run/CP/pd_%02d_mfgrep.dat /opt/osdp-conformance/run/CP/%02X_mfgrep.dat",
+                p_card.addr, mfg_rep_sequence);
+              system(cmd);
+              mfg_rep_sequence++;
+            };
+          };
+        };
 
 #if 0 // not multi-part now...
         /*
