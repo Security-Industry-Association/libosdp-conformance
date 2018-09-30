@@ -58,6 +58,7 @@ int
   int status;
   int status_io;
 
+
   if (context->verbosity > 3)
     printf ("init_serial: command %s\n",
       context->init_command);
@@ -73,8 +74,8 @@ int
     fprintf (stderr, "Closing %s\n", device);
     close (context->fd);
   };
-  fprintf (stderr, "Opening %s\n", device);
   context->fd = open (device, O_RDWR | O_NONBLOCK);
+  fprintf (stderr, "Opening %s, fd=%d.\n", device, context->fd);
   if (context->fd EQUALS -1)
   {
     fprintf (stderr, "errno at device %s open %d\n", device, errno);

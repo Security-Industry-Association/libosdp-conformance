@@ -176,6 +176,7 @@ int
   int c1;
   int done;
   fd_set exceptfds;
+  char octet [3]; // used for text version of byte in tracing
   fd_set readfds;
   int scount;
   const sigset_t sigmask;
@@ -344,7 +345,6 @@ int
         {
           if (context.verbosity > 8)
           {
-            char octet [3];
 //            fprintf(context.log, "RAW SERIAL: %02x\n", buffer [0]);
             sprintf(octet, " %02x", buffer [0]);
             strcat(trace_in_buffer, octet);

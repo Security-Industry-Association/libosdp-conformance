@@ -305,7 +305,6 @@ int
         };
         if (ctx->timer [i].current_seconds == 0)
         {
-fprintf(stderr, "%d stopped\n", i);
           ctx->timer [i].status = OSDP_TIMER_STOPPED;
           return_value = 1;
           if (ctx->timer [i].timeout_action EQUALS OSDP_TIMER_RESTART_ALWAYS)
