@@ -1944,8 +1944,30 @@ fprintf(stderr, "lstat 1684\n");
           mrdat = fopen(mfg_rep_data_file, "w");
           if (mrdat != NULL)
           {
-// TODO fix -6 to proper msg parse.
+            int total_length;
+//KLUDGE count-6 blindly assumes 2-totlen 2-fraglen 2-fragoff
             fwrite(6+&(mfg->data), sizeof(unsigned char), count-6, mrdat);
+
+            if (context->verbosity > 3)
+            { 
+              fprintf(stderr, "multi: add at %05d. lth %d.\n",
+                context->next_in, count-6);
+            };
+            memcpy(context->mmsgbuf+context->next_in, 6+&(mfg->data), count-6);
+            context->next_in = context->next_in + (count-6);
+            total_length = mfg->data;
+            total_length = total_length + 256 * *(&(mfg->data) + 1);
+            if (context->next_in EQUALS total_length)
+            {
+              FILE *asmf;
+              asmf = fopen("/opt/osdp-conformance/run/CP/mfg-rep.bin", "w");
+              if (asmf != NULL)
+              {
+                fwrite(context->mmsgbuf, sizeof(unsigned char), total_length, asmf);
+                fclose(asmf);
+                context->next_in = 0;
+              };
+            };              
 // CHECK SECURE CHANNEL
             fclose(mrdat);
             if (context->verbosity > 3)
