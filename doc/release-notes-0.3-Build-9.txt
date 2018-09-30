@@ -1,0 +1,5 @@
+almost 4.x
+
+multipart messages marshalled and written to disk by the CP code, see oo_util.c at processing
+of osdp_MFGREP.  not pretty, intermediate state.
+
