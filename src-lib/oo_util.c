@@ -1944,7 +1944,8 @@ fprintf(stderr, "lstat 1684\n");
           mrdat = fopen(mfg_rep_data_file, "w");
           if (mrdat != NULL)
           {
-            fwrite((char *)(msg->data_payload), sizeof(unsigned char), count, mrdat);
+// TODO fix -6 to proper msg parse.
+            fwrite(6+&(mfg->data), sizeof(unsigned char), count-6, mrdat);
 // CHECK SECURE CHANNEL
             fclose(mrdat);
             if (context->verbosity > 3)
