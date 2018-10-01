@@ -38,8 +38,6 @@ extern OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 extern OSDP_CONTEXT
   context;
-char
-  multipart_message_buffer_1 [64*1024];
 extern OSDP_PARAMETERS
   p_card;
 

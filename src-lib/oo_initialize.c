@@ -39,10 +39,9 @@
 #include <osdp_conformance.h>
 
 
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-extern OSDP_PARAMETERS
-  p_card;
+char multipart_message_buffer_1 [64*1024];
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_PARAMETERS p_card;
 
 
 int
@@ -167,7 +166,6 @@ int
   int creds_f;
   char logmsg [1024];
   extern int mfg_rep_sequence;
-  extern char *multipart_message_buffer_1;
   char optstring [1024];
   extern OSDP_BUFFER *osdp_buf;
   extern time_t previous_time;
