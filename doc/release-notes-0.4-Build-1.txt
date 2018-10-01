@@ -5,6 +5,7 @@ Changes in 0.4 Build 1
 ----------------------
 
 started adding extended packet mode log messages
+assembles multi-part message in mfgrep
 release notice cleaned up in doc directory
 
 Change Details
@@ -12,6 +13,8 @@ Change Details
 
 Monitor mode now decodes some (not all) application-specific messages for
 PIV processing.
+
+see test/piv-tests for some small scripts to assist in testing.
 
 Known Issues
 ------------
@@ -26,3 +29,8 @@ NAK processing doesn't invoke retry
 checksum vs. crc switching may not match other devices
 Check issues list in github.
 
+from 0.3 build 9...
+
+multipart messages marshalled and written to disk by the CP code, see oo_util.c at processing
+of osdp_MFGREP.  not pretty, intermediate state.
+P

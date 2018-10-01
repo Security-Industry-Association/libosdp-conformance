@@ -1,0 +1,19 @@
+#!/bin/bash
+set -x
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
+
+OUI_INID=007532
+CMD_PIVGETCERT=16
+DETAILS_PIVGETCERT=5FC101700000
+
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"mfg\","
+echo >>${CMDPATH} "  \"oui\" : \"${OUI_INID}\","
+echo >>${CMDPATH} "  \"command-id\" : \"${CMD_PIVGETCERT}\","
+echo >>${CMDPATH} "  \"command-specific-data\" : \"${DETAILS_PIVGETCERT}\""
+echo >>${CMDPATH} "}"
+sudo -n cp ${CMDPATH} ${CMDPATHX}
+sudo -n ${OSDP_PATH}/bin/HUP-CP
+
