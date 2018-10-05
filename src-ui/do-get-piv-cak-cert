@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# (C)Copyright 2017-2018 Smithee Solutions LLC
+# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#   http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+echo "Content-type: text/html"
+echo ""
+
+echo "<HTML><HEAD><TITLE>Activate buzzer</TITLE>"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\"><HEAD>"
+echo "<BODY>"
+echo "<BR>"
+echo "<PRE>"
+echo "Retrieving Card Access Key's certificate from a 'PIV' card"
+
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
+
+OUI_INID=007532
+CMD_PIVGETCERT=16
+DETAILS_PIVGETCERT=5FC101700000
+
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"mfg\","
+echo >>${CMDPATH} "  \"oui\" : \"${OUI_INID}\","
+echo >>${CMDPATH} "  \"command-id\" : \"${CMD_PIVGETCERT}\","
+echo >>${CMDPATH} "  \"command-specific-data\" : \"${DETAILS_PIVGETCERT}\""
+echo >>${CMDPATH} "}"
+sudo -n cp ${CMDPATH} ${CMDPATHX}
+sudo -n ${OSDP_PATH}/bin/HUP-CP
+
+echo "Results is in mfg-rep.bin in /opt/osdp-conformance/run/CP"
+
+echo "</PRE></BODY></HTML>"
+
