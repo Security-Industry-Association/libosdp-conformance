@@ -26,7 +26,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR ( 4)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -106,6 +106,7 @@
 #define OSDP_BIOREAD  (0x73)
 #define OSDP_KEYSET   (0x75)
 #define OSDP_CHLNG    (0x76)
+#define OSDP_ACURXSIZE    (0x7B)
 #define OSDP_FILETRANSFER (0x7C)
 #define OSDP_MFG      (0x80)
 #define OSDP_BOGUS    (0xFF) // bogus command code to induce NAK
@@ -228,9 +229,18 @@ typedef struct osdp_pdcap_entry
 #define OSDP_CAP_CHECK_CRC      (8)
 #define OSDP_CAP_SECURE         (9)
 #define OSDP_CAP_REC_MAX        (10)
+#define OSDP_CAP_MAX_MULTIPART  (11)
+#define OSDP_CAP_SMART_CARD     (12)
+#define OSDP_CAP_READERS        (13)
+#define OSDP_CAP_BIOMETRICS     (14)
+#define OSDP_CAP_SPE            (15) // secure pin entry
+#define OSDP_CAP_VERSION        (16)
+
 typedef struct osdp_pd_capability
 {
   unsigned int rec_max;
+  int smart_card_transparent;
+  int smart_card_extended_packet_mode;
 } OSDP_PD_CAPABILITY;
 
 // for secure channel
@@ -603,6 +613,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_BUZ          (18)
 #define OOSDP_MSG_COMSET       (19)
 #define OOSDP_MSG_COM          (20)
+#define OOSDP_MSG_ACURXSIZE    (21)
 
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer

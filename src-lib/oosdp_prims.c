@@ -58,7 +58,7 @@ char
     switch (cmdrep)
     {
     default:
-      strcpy(cmd_rep_s, "???2");
+      sprintf(cmd_rep_s, "???2(0x%2x)", cmdrep);
       break;
     case OSDP_ACK: strcpy(cmd_rep_s, "osdp_ACK"); break;
     case OSDP_BUSY: strcpy(cmd_rep_s, "osdp_BUSY"); break;
@@ -87,6 +87,7 @@ char
     switch (cmdrep)
     {
     default: strcpy(cmd_rep_s, "???1"); break;
+    case OSDP_ACURXSIZE: strcpy(cmd_rep_s, "osdp_ACURXSIZE"); break;
     case OSDP_BIOREAD: strcpy(cmd_rep_s, "osdp_BIOREAD"); break;
     case OSDP_BUZ: strcpy(cmd_rep_s, "osdp_BUZ"); break;
     case OSDP_CAP: strcpy(cmd_rep_s, "osdp_CAP"); break;

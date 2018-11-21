@@ -1298,10 +1298,8 @@ status = ST_OK; // tolerate checksum error and continue
 */
 int
   monitor_osdp_message
-    (OSDP_CONTEXT
-      *context,
-     OSDP_MSG
-       *msg)
+    (OSDP_CONTEXT *context,
+    OSDP_MSG *msg)
 
 { /* monitor_osdp_message */
 
@@ -1314,6 +1312,11 @@ int
   {
     switch (msg->msg_cmd)
     {
+    case OSDP_ACURXSIZE:
+      status = oosdp_make_message (OOSDP_MSG_ACURXSIZE, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_BUZ:
       status = oosdp_make_message (OOSDP_MSG_BUZ, tlogmsg, msg);
       if (status == ST_OK)

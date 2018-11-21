@@ -139,6 +139,16 @@ int
   status = ST_OK;
   switch (msgtype)
   {
+  case OOSDP_MSG_ACURXSIZE:
+    {
+    int c;
+
+    msg = (OSDP_MSG *) aux;
+    c = msg->data_payload [0];
+    c = 256*c + msg->data_payload [1];
+    sprintf(tlogmsg, "ACU Receive Size: %0x\n", c);
+    };
+    break;
   case OOSDP_MSG_BUZ:
     msg = (OSDP_MSG *) aux;
     sprintf(tlogmsg, "BUZ: Rdr %02x Tone Code %02x On=%d(ms) Off=%d(ms) Count %d\n",

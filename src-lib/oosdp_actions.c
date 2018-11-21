@@ -507,6 +507,18 @@ int
         ctx->enable_secure_channel = 0;
       };
       break;
+    case OSDP_CAP_SMART_CARD:
+      if (entry->compliance & 1)
+      {
+        ctx->pd_cap.smart_card_transparent = 1;
+        fprintf(ctx->log, "PD Supports Transparent Mode\n");
+      };
+      if (entry->compliance & 2)
+      {
+        ctx->pd_cap.smart_card_extended_packet_mode = 1;
+        fprintf(ctx->log, "PD Supports Extended Packet Mode\n");
+      };
+      break;
     case OSDP_CAP_TEXT_OUT:
       fprintf(ctx->log, "Capability not processed in this CP: Text Output (%d)\n",
         entry->function_code);
