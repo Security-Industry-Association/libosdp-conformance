@@ -37,6 +37,7 @@ int leftover_length;
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+#include <iec-xwrite.h>
 
 
 extern OSDP_CONTEXT context;
@@ -426,6 +427,13 @@ fprintf(stderr, "top of OSDP_CMDB_XWRITE\n");
           break;
         case 2: // set-mode
           status = osdp_xwrite_set_mode(context, 1); // 1 for mode 1
+          break;
+        case 3: // scan
+          status = osdp_xwrite_mode1
+            (context, OSDP_XWR_1_SMART_CARD_SCAN);
+          break;
+        case 4: // set mode to 0
+          status = osdp_xwrite_set_mode(context, 0);
           break;
         };
       };

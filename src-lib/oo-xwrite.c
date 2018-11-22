@@ -1,6 +1,7 @@
 /*
-  oo-logprims - open osdp logging sub-functions
-(C)Copyright 2017-2018 Smithee Solutions LLC
+  oo-xwrite - extended write and extended reader functions
+
+  (C)Copyright 2017-2018 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -27,15 +28,6 @@
 #include <open-osdp.h>
 #include <iec-xwrite.h>
 extern OSDP_PARAMETERS p_card;
-typedef struct osdp_xwr_command
-{
-  unsigned char xrw_mode;
-  unsigned char xwr_pcmnd;
-  unsigned char xwr_pdata [2];
-} OSDP_XWR_COMMAND;
-#define OSDP_XWR_0_GET_MODE (1) // per table 34 in 60839-11-5
-#define OSDP_XWR_0_SET_MODE (2) // per table 34 in 60839-11-5
-#define OSDP_XWR_1_SMART_CARD_SCAN (4) // per table 34 in 60839-11-5 and table 43
 
 
 int
@@ -56,8 +48,11 @@ int
 
   memset(&xwr_cmd, 0, sizeof(xwr_cmd));
   xwr_cmd.xrw_mode = 1;
-  xwr_cmd.xwr_pcmnd = OSDP_XWR_1_SMART_CARD_SCAN;
+  xwr_cmd.xwr_pcmnd = command;
   xwr_cmd.xwr_pdata [0] = 0; // reader 0
+
+  fprintf(ctx->log, "Extended Write: Mode 1: Command %d\n",
+    xwr_cmd.xwr_pcmnd);
 
   // send command osdp_XWR payload is xwr_cmd
   current_length = 0;
@@ -117,9 +112,18 @@ int
   memset(&xwr_cmd, 0, sizeof(xwr_cmd));
   xwr_cmd.xrw_mode = 0;
   xwr_cmd.xwr_pcmnd = OSDP_XWR_0_SET_MODE;
-  xwr_cmd.xwr_pdata [0] = 1; // behaviour mode 1
+  xwr_cmd.xwr_pdata [0] = mode;
+if (mode EQUALS 1)
+{
   xwr_cmd.xwr_pdata [1] = 0; // only value for mode 1
-//                          1; // enable read card info response (mode 0)
+};
+if (mode EQUALS 0)
+{
+  xwr_cmd.xwr_pdata [1] = 1; // enable read card info response (mode 0)
+};
+
+  fprintf(ctx->log, "Extended Write: Set Mode %d\n",
+    xwr_cmd.xwr_pcmnd);
 
   // send command osdp_XWR payload is xwr_cmd
   current_length = 0;

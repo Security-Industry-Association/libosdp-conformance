@@ -862,9 +862,17 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
         {
           cmd->details [0] = 1; // 1 in byte 0 is get-mode
         };
+        if (0 EQUALS strcmp(json_string_value(value), "scan"))
+        {
+          cmd->details [0] = 3; // 3 in byte 0 is scan (for smart card)
+        };
         if (0 EQUALS strcmp(json_string_value(value), "set-mode"))
         {
           cmd->details [0] = 2; // 2 in byte 0 is set-mode
+        };
+        if (0 EQUALS strcmp(json_string_value(value), "set-zero"))
+        {
+          cmd->details [0] = 4; // 4 in byte 0 is set mode 0
         };
       };
     };

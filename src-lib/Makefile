@@ -72,7 +72,7 @@ oo_util2.o:	oo_util2.c ../include/open-osdp.h
 oo-logprims.o:	oo-logprims.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-logprims.c
 
-oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h
+oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oo-xwrite.c
 
 oosdp_actions.o:	oosdp_actions.c ../include/open-osdp.h
@@ -106,7 +106,7 @@ oosdp_secure_actions.o:	oosdp_secure_actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_secure_actions.c
 
-oosdp_ui.o:	oosdp_ui.c ../include/open-osdp.h
+oosdp_ui.o:	oosdp_ui.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
 	  oosdp_ui.c
 
