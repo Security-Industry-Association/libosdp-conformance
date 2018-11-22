@@ -1,0 +1,6 @@
+#!/bin/bash
+set -x
+
+cp set-zero.json /opt/osdp-conformance/run/CP/open_osdp_command.json
+/opt/osdp-conformance/bin/HUP-CP
+
