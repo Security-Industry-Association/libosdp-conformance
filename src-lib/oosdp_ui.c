@@ -81,7 +81,6 @@ int
   {
     switch (command)
     {
-
     case OSDP_CMDB_BUSY:
       context->next_response = OSDP_BUSY;
       if (context->verbosity > 2)
@@ -193,6 +192,41 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         if (status EQUALS ST_OK)
           SET_PASS (context, "3-20-1");
         status = ST_OK;
+      };
+      break;
+
+    case OSDP_CMDB_CHALLENGE:
+      {
+        unsigned char challenge_command [1024];
+//        int offset;
+//        int total_size;
+
+
+//        total_size = 8; // tbd
+
+        strcpy (context->test_in_progress, "x-challenge");
+        memset (&challenge_command, 0, sizeof (challenge_command));
+
+ //       offset = 0;
+        // multi-part header
+#if 0
+// KLUDGE: assume it'll all fit in this one message
+multipart total lsb is 0x00ff and total_size
+multipart total msb os total_size >> 8;
+multipart offset lsb is 0
+multipart offset msb is 0
+multipart fragsize lsb is total_size & 0xff
+multipart fragsize msb is total_size >> 8
+
+        memcpy(genauth_command+offset, details, details_length);
+
+        if (context->verbosity > 3)
+          fprintf (stderr,
+"Requesting GenAuth\n");
+        current_length = 0;
+        status = send_message (context,
+          OSDP_CRAUTH, p_card.addr, &current_length, sizeof (genauth_commanbuzzer_control), (unsigned char *)&buzzer_control);
+#endif
       };
       break;
 

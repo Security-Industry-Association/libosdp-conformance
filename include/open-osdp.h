@@ -172,6 +172,8 @@
 #define OSDP_CMDB_MFG            (1029)
 #define OSDP_CMDB_CONFORM_2_11_3 (1030)
 #define OSDP_CMDB_STOP           (1031)
+#define OSDP_CMDB_WITNESS        (1032)
+#define OSDP_CMDB_CHALLENGE      (1033)
 
 
 #define OSDP_CMD_NOOP         (0)
@@ -625,10 +627,9 @@ typedef struct osdp_buffer
 
 typedef struct osdp_command
 {
-  int
-    command;
-  unsigned char
-    details [8*1024]; // must be big enough to hold OSDP_MFG_ARGS
+  int command;
+  int details_length; 
+  unsigned char details [8*1024]; // must be big enough to hold OSDP_MFG_ARGS
 } OSDP_COMMAND;
 
 typedef struct osdp_param
@@ -897,6 +898,9 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_UNKNOWN_CAPABILITY   (68)
 #define ST_OSDP_FILEXFER_FINISHING   (69)
 #define ST_OSDP_BAD_TIMER            (70)
+#define ST_OSDP_BAD_GENAUTH_1        (71)
+#define ST_OSDP_BAD_GENAUTH_2        (72)
+#define ST_OSDP_BAD_GENAUTH_3        (73)
 
 int
   m_version_minor;

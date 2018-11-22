@@ -771,16 +771,12 @@ int
 
 { /* action_osdp_RAW */
 
-  int
-    bits;
-  int
-    processed;
-  unsigned char
-    *raw_data;
-  long int
-    sample_1 [4];
-  int
-    status;
+  int bits;
+  char cmd [1024];
+  int processed;
+  unsigned char *raw_data;
+  long int sample_1 [4];
+  int status;
 
 
   status = ST_OK;
@@ -851,16 +847,11 @@ sample_1 [0] = tmp1_l;
   };
   if (!processed)
   {
-    unsigned
-      d;
-    int
-      i;
-    char
-      hstr [1024];
-    int
-      octet_count;
-    char
-      tstr [32];
+    unsigned d;
+    int i;
+    char hstr [1024];
+    int octet_count;
+    char tstr [32];
 
     hstr [0] = 0;
     fprintf (stderr, "Raw Unknown:");
@@ -875,6 +866,9 @@ sample_1 [0] = tmp1_l;
     fprintf (stderr, "\n");
     fprintf (ctx->log, "Unknown RAW CARD DATA (%d. bits) first byte %02x\n %s\n",
       bits, *(msg->data_payload+4), hstr);
+    sprintf(cmd, "/opt/osdp-conformance/run/CP/action_raw \"%s\"",
+      hstr);
+    system(cmd);
     processed = 1;
   };
   }; // not encrypted

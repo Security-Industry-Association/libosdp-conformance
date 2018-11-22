@@ -367,6 +367,83 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
           this_command);
     };
   }; 
+
+  /*
+    command "genauth"
+
+    example:
+      "command" : "genauth"
+      "template" : "witness" or "challenge"
+      "keyref" : "9E" 
+        (or "9e" meaning card auth key - SP800-73-4 Part 1 Page 19 Table 4b.)
+      "algoref" : "07"
+        (07 is RSA; or 11 for ECC P-256 or 14 for ECC curve P-384 per
+        SP800-78-4 Table 6-2 page 12)
+      "payload" : "...hex bytes..."
+  */
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "genauth"))
+    {
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+      cmd->command = OSDP_CMDB_WITNESS;
+      value = json_object_get (root, "template");
+      if (json_is_string (value))
+      {
+        if (0 EQUALS strcmp("challenge", json_string_value (value)))
+        {
+          cmd->command = OSDP_CMDB_CHALLENGE;
+        };
+      };
+
+      // details [0] is algoref
+
+      value = json_object_get (root, "algoref");
+      status = ST_OSDP_BAD_GENAUTH_1;
+      if (json_is_string (value))
+      {
+        if (0 EQUALS strcmp("07", json_string_value (value)))
+        {
+          cmd->details [0] = 0x07;
+          status = ST_OK;
+        };
+      };
+
+      // details [1] is keyref
+
+      value = json_object_get (root, "keyref");
+      status = ST_OSDP_BAD_GENAUTH_2;
+      if (json_is_string (value))
+      {
+        if (0 EQUALS strcmp("9E", json_string_value (value)))
+        {
+          cmd->details [1] = 0x9E;
+          status = ST_OK;
+        };
+      };
+      // details [2-n] is genauth payload
+      // cmd->details_length = 2 + payload length
+
+      value = json_object_get (root, "payload");
+      status = ST_OSDP_BAD_GENAUTH_3;
+      if (json_is_string (value))
+      {
+//        status = osdp_extract_hexblock(json_string_value(value), cmd->details+2, sizeof(cmd->details-2));
+      };
+
+{
+  unsigned char stuff [] = { 0, 1, 2, 3};
+      status = ST_OSDP_BAD_GENAUTH_2;
+  memcpy(cmd->details+2, stuff, sizeof(stuff));
+  cmd->details_length = 2 + sizeof(stuff);
+  status = ST_OK;
+
+};
+    };
+  };
+
   if (status EQUALS ST_OK)
   {
     strcpy (this_command, json_string_value (value));
@@ -395,7 +472,7 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
     };
   }; 
 
-  // request input status
+  // command "input_status" - request input status
 
   if (status EQUALS ST_OK)
   {
