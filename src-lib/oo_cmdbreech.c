@@ -814,7 +814,6 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
     };
   }; 
 
-
   // command verbosity
   // arg level - range 0-9
 
@@ -838,6 +837,35 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         ctx->verbosity = i;
+      };
+    };
+  }; 
+
+  // command "xwrite"
+  /*
+    example:
+      { "command" : "xwrite", "action" : "get-mode" }
+  */
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "xwrite"))
+    {
+      cmd->command = OSDP_CMDB_XWRITE;
+      if (ctx->verbosity > 3)
+        fprintf (stderr, "command was %s\n",
+          this_command);
+
+      value = json_object_get (root, "action");
+      if (json_is_string (value))
+      {
+        if (0 EQUALS strcmp(json_string_value(value), "get-mode"))
+        {
+          cmd->details [0] = 1; // 1 in byte 0 is get-mode
+        };
+        if (0 EQUALS strcmp(json_string_value(value), "set-mode"))
+        {
+          cmd->details [0] = 2; // 2 in byte 0 is set-mode
+        };
       };
     };
   }; 

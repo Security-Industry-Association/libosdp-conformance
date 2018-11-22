@@ -49,12 +49,9 @@ char tlogmsg [1024];
 
 int
   process_command
-  (int
-     command,
-  OSDP_CONTEXT
-     *context,
-  char
-    *details)
+  (int command,
+  OSDP_CONTEXT *context,
+  char *details)
 
 { /* process_command */
 
@@ -404,6 +401,32 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
           // after the send update the current offset
           context->xferctx.current_offset = context->xferctx.current_offset + size_to_read;
+        };
+      };
+      break;
+
+    case OSDP_CMDB_XWRITE:
+      {
+fprintf(stderr, "top of OSDP_CMDB_XWRITE\n");
+        if (context->verbosity > 3)
+          fprintf(context->log, "Extended Write, action %d.\n",
+            details [0]);
+
+        // details [0] is the action.  1=get-mode
+
+        switch(details[0])
+        {
+        default:
+          // only squawk on commands, don't report bad status.
+
+          fprintf(context->log, "Unknown xwrite action %d.\n", details[0]);
+          break;
+        case 1: // get-mode
+          status = osdp_xwrite_get_mode(context);
+          break;
+        case 2: // set-mode
+          status = osdp_xwrite_set_mode(context, 1); // 1 for mode 1
+          break;
         };
       };
       break;

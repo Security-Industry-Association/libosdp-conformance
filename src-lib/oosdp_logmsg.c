@@ -745,6 +745,48 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
       context.cp_polls, context.pd_acks, context.sent_naks,
       context.checksum_errs);
     break;
+
+  case OOSDP_MSG_XREAD:
+    msg = (OSDP_MSG *) aux;
+
+    // default...
+
+    sprintf(tlogmsg, "Extended Read: %02x %02x %02x %02x\n",
+      *(msg->data_payload + 0), *(msg->data_payload + 1),
+      *(msg->data_payload + 2), *(msg->data_payload + 3));
+
+    // if we know it's 7.25.3
+
+    if (*(msg->data_payload + 0) EQUALS 0)
+    {
+      if (*(msg->data_payload + 1) EQUALS 1)
+      {
+        sprintf(tlogmsg,
+"Extended Read: osdp_PR00REQR Current Mode %02x Configuration %02x\n",
+          *(msg->data_payload + 2), *(msg->data_payload + 3));
+      };
+    };
+
+    // if we know it's 7.25.5
+
+    if (*(msg->data_payload + 0) EQUALS 1)
+    {
+      if (*(msg->data_payload + 1) EQUALS 1)
+      {
+        sprintf(tlogmsg,
+"Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
+          *(msg->data_payload + 2), *(msg->data_payload + 3));
+      };
+    };
+    break;
+
+  case OOSDP_MSG_XWRITE:
+    msg = (OSDP_MSG *) aux;
+    sprintf(tlogmsg, "Extended Write: %02x %02x %02x %02x\n",
+      *(msg->data_payload + 0), *(msg->data_payload + 1),
+      *(msg->data_payload + 2), *(msg->data_payload + 3));
+    break;
+
   default:
     sprintf (tlogmsg, "Unknown message type %d", msgtype);
     break;

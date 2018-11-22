@@ -109,6 +109,7 @@
 #define OSDP_ACURXSIZE    (0x7B)
 #define OSDP_FILETRANSFER (0x7C)
 #define OSDP_MFG      (0x80)
+#define OSDP_XWR      (0xA1)
 #define OSDP_BOGUS    (0xFF) // bogus command code to induce NAK
 
 #define OSDP_ACK      (0x40)
@@ -128,6 +129,7 @@
 #define OSDP_BUSY     (0x79) // yes it's a reply
 #define OSDP_FTSTAT   (0x7A)
 #define OSDP_MFGREP   (0x90)
+#define OSDP_XRD      (0xB1)
 
 // NAK error codes
 #define OO_NAK_CHECK_CRC (1)
@@ -174,6 +176,7 @@
 #define OSDP_CMDB_STOP           (1031)
 #define OSDP_CMDB_WITNESS        (1032)
 #define OSDP_CMDB_CHALLENGE      (1033)
+#define OSDP_CMDB_XWRITE         (1034)
 
 
 #define OSDP_CMD_NOOP         (0)
@@ -199,6 +202,8 @@
 
 #define OSDP_CMD_SET_CP       (81)
 #define OSDP_CMD_SET_PD       (82)
+
+#define zzOSDP_CMD_XWRITE       (83)
 
 #define OSDP_OPT_CP (101)
 #define OSDP_OPT_PD (102)
@@ -616,6 +621,8 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_COMSET       (19)
 #define OOSDP_MSG_COM          (20)
 #define OOSDP_MSG_ACURXSIZE    (21)
+#define OOSDP_MSG_XWRITE       (22)
+#define OOSDP_MSG_XREAD        (23)
 
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer
@@ -971,6 +978,9 @@ void osdp_trace_dump (OSDP_CONTEXT *ctx);
 int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds, unsigned char *errdeets, int *elth);
 void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
+int osdp_xwrite_get_mode (OSDP_CONTEXT *ctx);
+int osdp_xwrite_mode1 (OSDP_CONTEXT *ctx, int command);
+int osdp_xwrite_set_mode (OSDP_CONTEXT *ctx, int mode);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);

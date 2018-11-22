@@ -615,7 +615,12 @@ fprintf(stderr, "lstat 335\n");
         osdp_conformance.conforming_messages ++;
       break;
 
-
+    case OSDP_XRD:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_XRD");
+      break;
     };
   };
   if (ctx->verbosity > 8)
@@ -1146,6 +1151,22 @@ fprintf(stderr, "lstat 1000\n");
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_TEXT");
       break;
+
+    case OSDP_XRD:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_XRD");
+      break;
+
+    case OSDP_XWR:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_XWR");
+      break;
     };
     }; // bolt-on for PD/CP switch statements.
     // if it was found it's ok
@@ -1342,10 +1363,17 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+    case OSDP_XWR:
+      status = oosdp_make_message(OOSDP_MSG_XWRITE, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     };
   };
   if (msg->direction != 0)
   {
+fprintf(stderr, "1375-dir %d cmd 0x%x\n",
+  msg->direction, msg->msg_cmd);
     switch (msg->msg_cmd)
     {
     case OSDP_CCRYPT:
@@ -1360,6 +1388,11 @@ int
       break;
     case OSDP_ISTATR:
       status = oosdp_make_message (OOSDP_MSG_ISTATR, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_XRD:
+      status = oosdp_make_message (OOSDP_MSG_XREAD, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
@@ -2087,6 +2120,13 @@ printf ("MMSG DONE\n");
 
     case OSDP_SCRYPT:
       status = action_osdp_SCRYPT (context, msg);
+      break;
+
+    case OSDP_XRD:
+fprintf(stderr, "stub: osdp_XRD not yet processed.\n");
+      status = oosdp_make_message (OOSDP_MSG_XREAD, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
 
     default:
