@@ -1891,7 +1891,15 @@ fprintf(stderr, "lstat 1684\n");
         sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
           *(0+msg->data_payload), *(1+msg->data_payload));
         fprintf (context->log, "%s\n", tlogmsg);
-        fprintf (stderr, "%s\n", tlogmsg);
+        switch(*(0+msg->data_payload))
+        {
+        case 1:
+          fprintf(context->log, "  NAK: Bad CRC/Checksum\n");
+          break;
+        case 3:
+          fprintf(context->log, "  NAK: Command not implemented by PD\n");
+          break;
+        };
       };
       osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
 
