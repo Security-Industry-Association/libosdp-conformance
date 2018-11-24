@@ -257,6 +257,39 @@ int
 } /* osdp_send_ftstat */
 
 
+int osdp_string_to_buffer
+  (OSDP_CONTEXT *ctx,
+  char *instring,
+  unsigned char *buffer,
+  int *buffer_length_returned)
+
+{
+  int bidx;
+  int i;
+  int idx;
+  int returned_length;
+  char tmps [1024];
+
+
+  returned_length = 0;
+  bidx = 0;
+  for (idx=0; idx<strlen(instring); idx=idx+2)
+  {
+    tmps[2] = 0;
+    memcpy(tmps, (idx)+(instring), 2);
+    sscanf(tmps, "%x", &i);
+    *(buffer+bidx) = i;
+    if (ctx->verbosity > 3)
+      fprintf(stderr, "mfg data %d. s %s hex value 0x%x\n",
+        idx, tmps, i);
+    bidx ++;
+    returned_length ++;
+  };
+  *buffer_length_returned = returned_length;
+  return (0);
+}
+
+
 int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds,
       unsigned char *errdeets,
@@ -357,3 +390,4 @@ int osdp_timer_start
   return (status);
 
 } /* osdp_timer_start */
+

@@ -63,6 +63,7 @@ int
   char *test_command;
   char this_command [1024];
   json_t *value;
+  json_t *value2;
   char vstr [1024];
 
 
@@ -873,6 +874,29 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
         if (0 EQUALS strcmp(json_string_value(value), "set-zero"))
         {
           cmd->details [0] = 4; // 4 in byte 0 is set mode 0
+        };
+        if (0 EQUALS strcmp(json_string_value(value), "done"))
+        {
+          cmd->details [0] = 5;
+        };
+        if (0 EQUALS strcmp(json_string_value(value), "apdu"))
+        {
+          int payload_length;
+          char payload_value [1024];
+
+          cmd->details [0] = 6;
+
+          // if there's a "payload" fill it in after the command in details
+
+          value2 = json_object_get (root, "payload");
+          if (json_is_string (value2))
+          {
+            payload_length = sizeof(cmd->details);
+            strcpy(payload_value, json_string_value(value2));
+            status = osdp_string_to_buffer
+              (ctx, payload_value, cmd->details+3, &payload_length);
+            *(short int *)(cmd->details+1) = payload_length;
+          };
         };
       };
     };

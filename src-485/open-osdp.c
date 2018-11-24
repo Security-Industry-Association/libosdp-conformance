@@ -251,8 +251,14 @@ int
       scount = context.fd+1;
     FD_ZERO (&writefds);
     FD_ZERO (&exceptfds);
+
+    // todo: switch over to OSDP_TIMER_IO and add a tunable parameter.
+
     timeout.tv_sec = 0;
     timeout.tv_nsec = 100000000;
+    // to slow things way down set the select timeout to e.g. half a second:
+    // timeout.tv_nsec = 500000000;
+
     status_select = pselect (scount, &readfds, &writefds, &exceptfds,
       &timeout, &sigmask);
 

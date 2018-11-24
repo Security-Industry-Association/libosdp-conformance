@@ -657,6 +657,7 @@ int
   // secure_transmit (relaxed or strict)
 
   // parameter "timeout"
+  // note this is timer 0 (zero)
 
   if (status EQUALS ST_OK)
   {
@@ -677,6 +678,7 @@ int
   }; 
 
   // parameter "timeout-nsec" - timeout in nanoseconds.
+  // note this is OSDP_TIMER_RESPONSE, the poll timer.
 
   if (status EQUALS ST_OK)
   {

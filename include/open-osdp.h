@@ -357,12 +357,13 @@ typedef struct osdp_timer
 #define OSDP_TIMER_RESTART_ALWAYS (1)
 #define OSDP_TIMER_RESTART_NONE   (0)
 
-#define OSDP_TIMER_MAX            (5)
+#define OSDP_TIMER_MAX            (6)
 #define OSDP_TIMER_STATISTICS     (0)
 #define OSDP_TIMER_RESPONSE       (1)
 #define OSDP_TIMER_SUMMARY        (2)
 #define OSDP_TIMER_LED_0_TEMP_ON  (3)
 #define OSDP_TIMER_LED_0_TEMP_OFF (4)
+#define OSDP_TIMER_IO             (5)
 
 
 typedef struct osdp_context_filetransfer
@@ -972,6 +973,7 @@ char *osdp_sec_block_dump (unsigned char *sec_block);
 int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int osdp_string_to_buffer (OSDP_CONTEXT *ctx, char *instring, unsigned char *buffer, int *buffer_length_returned);
 int osdp_timer_start (OSDP_CONTEXT *ctx, int timer_index);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
 void osdp_trace_dump (OSDP_CONTEXT *ctx);
@@ -979,7 +981,7 @@ int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds, unsigned char *errdeets, int *elth);
 void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_xwrite_get_mode (OSDP_CONTEXT *ctx);
-int osdp_xwrite_mode1 (OSDP_CONTEXT *ctx, int command);
+int osdp_xwrite_mode1 (OSDP_CONTEXT *ctx, int command, unsigned char * payload, int payload_length);
 int osdp_xwrite_set_mode (OSDP_CONTEXT *ctx, int mode);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);

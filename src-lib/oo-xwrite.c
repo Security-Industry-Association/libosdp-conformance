@@ -33,10 +33,13 @@ extern OSDP_PARAMETERS p_card;
 int
   osdp_xwrite_mode1
   (OSDP_CONTEXT *ctx,
-  int command)
+  int command,
+  unsigned char *payload,
+  int payload_length)
 
 { /* osdp_xwrite_mode1_command */
 
+  unsigned char send_buffer [1024];
   int clth;
   int current_length;
   int status;
@@ -53,11 +56,19 @@ int
 
   fprintf(ctx->log, "Extended Write: Mode 1: Command %d\n",
     xwr_cmd.xwr_pcmnd);
+  memcpy(send_buffer, &xwr_cmd, sizeof(xwr_cmd));
+  if (command EQUALS OSDP_XWR_1_SMART_CARD_SCAN)
+    clth = 2; // no arg to scan
+  if (command EQUALS OSDP_XWR_1_APDU)
+  {
+    memcpy(send_buffer+1+clth-1, payload, payload_length);
+    clth = clth + payload_length - 1;
+  };
 
   // send command osdp_XWR payload is xwr_cmd
   current_length = 0;
   status = send_message (ctx,
-    OSDP_XWR, p_card.addr, &current_length, clth, (unsigned char *)&xwr_cmd);
+    OSDP_XWR, p_card.addr, &current_length, clth, send_buffer);
 
   return (status);
 

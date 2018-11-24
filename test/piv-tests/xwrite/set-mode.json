@@ -1,0 +1,7 @@
+{
+  "command" : "xwrite",
+  "action" : "set-mode",
+  "mode" : "1",
+  "#" : "_end"
+}
+
