@@ -257,7 +257,6 @@ int
     timeout.tv_sec = 0;
     timeout.tv_nsec = 100000000;
     // to slow things way down set the select timeout to e.g. half a second:
-    // timeout.tv_nsec = 500000000;
 
     status_select = pselect (scount, &readfds, &writefds, &exceptfds,
       &timeout, &sigmask);
@@ -429,6 +428,18 @@ int
       fprintf (stderr, " %02x", buf[idx]);
     };
     fprintf (stderr, "\n");
+  };
+  if (context->verbosity > 3)
+  {
+    char octet [4];
+    int i;
+
+    octet [2] = 0;
+    for (i=0; i<lth; i++)
+    {
+      sprintf(octet, " %02x", buf [i]);
+      strcat(trace_out_buffer, octet);
+    };
   };
   write (context->fd, buf, lth);
   

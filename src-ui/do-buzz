@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# (C)Copyright 2017-2018 Smithee Solutions LLC
 # (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -27,6 +28,10 @@ echo "Activating buzzer"
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
+
+# unilaterally clear out the last temp command
+sudo -n rm -f ${CMDPATH}
+
 sudo -n echo  >${CMDPATH} "{"
 sudo -n echo >>${CMDPATH} "   \"command\" : \"buzz\"",
 sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-buzz from UI\""

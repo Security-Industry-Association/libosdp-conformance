@@ -32,7 +32,6 @@ date
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/${ROLE}/open_osdp_command.json
-sudo rm -f ${CMDPATH}
 sudo -n echo  >${CMDPATH} "{"
 sudo -n echo >>${CMDPATH} "   \"command\" : \"tamper\"",
 sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-tamper from UI\""

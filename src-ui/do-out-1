@@ -28,6 +28,10 @@ OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
 mkdir -p ${OSDP_PATH}/run/CP
+
+# unilaterally clear out the last temp command
+sudo -n rm -f ${CMDPATH}
+
 echo  >${CMDPATH} "{"
 echo >>${CMDPATH} "  \"command\" : \"output\","
 echo >>${CMDPATH} "  \"output-number\" : \"1\","

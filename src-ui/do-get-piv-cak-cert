@@ -33,6 +33,9 @@ OUI_INID=007532
 CMD_PIVGETCERT=16
 DETAILS_PIVGETCERT=5FC101700000
 
+# unilaterally clear out the last temp command
+sudo -n rm -f ${CMDPATH}
+
 echo  >${CMDPATH} "{"
 echo >>${CMDPATH} "  \"command\" : \"mfg\","
 echo >>${CMDPATH} "  \"oui\" : \"${OUI_INID}\","

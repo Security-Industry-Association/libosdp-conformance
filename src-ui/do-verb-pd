@@ -30,6 +30,10 @@ date
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/PD/open_osdp_command.json
+
+# unilaterally clear out the last temp command
+sudo -n rm -f ${CMDPATH}
+
 sudo -n echo  >${CMDPATH} "{"
 sudo -n echo >>${CMDPATH} "   \"command\" : \"verbosity\"",
 sudo -n echo >>${CMDPATH} "  \"level\" : \"$1\"",
