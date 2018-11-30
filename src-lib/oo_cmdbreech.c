@@ -431,12 +431,17 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
       status = ST_OSDP_BAD_GENAUTH_3;
       if (json_is_string (value))
       {
-        int lth;
-
-        lth = sizeof(cmd->details) - 2;
-        status = osdp_string_to_buffer(ctx, (char *)json_string_value(value), cmd->details+2,  &lth);
-        cmd->details_length = 2+lth; //algoref, keyref, payload
+//        status = osdp_extract_hexblock(json_string_value(value), cmd->details+2, sizeof(cmd->details-2));
       };
+
+{
+  unsigned char stuff [] = { 0, 1, 2, 3};
+      status = ST_OSDP_BAD_GENAUTH_2;
+  memcpy(cmd->details+2, stuff, sizeof(stuff));
+  cmd->details_length = 2 + sizeof(stuff);
+  status = ST_OK;
+
+};
     };
   };
 

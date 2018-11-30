@@ -279,7 +279,6 @@ int
       i = 0;
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - 8;
-
 fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
       strcat(tlogmsg, "Input Status:\n");
       p = msg->data_payload;
@@ -382,7 +381,7 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
         strcat(tlogmsg, tmpstr);
         if (context.verbosity > 3)
         {
-          strcpy(tmpstr, "(Raw (LED):");
+          strcpy(tmpstr, "(Raw:");
           strcat(tlogmsg, tmpstr);
           tmpstr [0] = 0;
           p = (unsigned char *)led_ctl;
@@ -429,9 +428,8 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
       msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
-      count = count - sizeof(*oh);
+      count = count - sizeof(*mrep) + 1;
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
-      count = count - sizeof(*mrep)-1;
       process_as_special = 0;
       if (0 EQUALS memcmp(mrep->vendor_code, OSDP_VENDOR_INID, sizeof(OSDP_VENDOR_INID)))
         process_as_special = 1;
@@ -500,7 +498,7 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
       }; 
       if (count > 0)
       {
-        strcat(tlogmsg, "  Raw(MFG):");
+        strcat(tlogmsg, "  Raw:");
         for (idx=0;
 //sizeof(get_piv->command_id) + sizeof(get_piv->vendor_code);
           idx<count; idx++)
@@ -539,9 +537,6 @@ fprintf(stderr, "tlogmsg %s before Input...\n", tlogmsg);
       };
       if (process_as_special)
       {
-        sprintf(tlogmsg, "MFG Reply: OUI:%02x-%02x-%02x RepID: %02x\n",
-          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-          mrep->command_id);
         switch (mrep->command_id)
         {
         case OSDP_REP_MSC_CR_AUTH:

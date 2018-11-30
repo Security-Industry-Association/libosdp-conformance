@@ -791,18 +791,9 @@ dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, 16);
   };
   if (msg->security_block_length EQUALS 0)
   {
-    char raw_fmt [1024];
     /*
       this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
     */
-
-    strcpy(raw_fmt, "unspecified");
-    if (*(msg->data_payload+1) EQUALS 1)
-      strcpy(raw_fmt, "P/data/P");
-    if (*(msg->data_payload+1) > 1)
-      sprintf(raw_fmt, "unknown(%d)", *(msg->data_payload+1));
-
-    fprintf(ctx->log, "Raw data: Format %s (Reader %d)\n", raw_fmt, *(msg->data_payload+0));
     bits = *(msg->data_payload+2) + ((*(msg->data_payload+3))<<8);
     ctx->last_raw_read_bits = bits;
 
