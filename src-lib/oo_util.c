@@ -1195,8 +1195,14 @@ fprintf(stderr, "lstat 1000\n");
 
       wire_crc = *(1+m->crc_check) << 8 | *(m->crc_check);
       if (parsed_crc != wire_crc)
+      {
+        if (context->verbosity > 2)
+        {
+          fprintf(context->log, "Bad CRC: Got %04x Expected %04x\n",
+            wire_crc, parsed_crc);
+        };
         status = ST_BAD_CRC;
-
+      };
     }
     else
     {

@@ -188,6 +188,10 @@ int
 
 
   status = ST_OK;
+
+  // clear logs if possible
+  fflush(ctx->log);
+
   if (ctx->role EQUALS OSDP_ROLE_PD)
     strcpy (tag, "PD");
   if (ctx->role EQUALS OSDP_ROLE_CP)

@@ -1,0 +1,4 @@
+#!/bin/bash
+echo >>/opt/osdp-conformance/log/action.log action for osdp_RAW called
+echo >>/opt/osdp-conformance/log/action.log argument 1: $1
+

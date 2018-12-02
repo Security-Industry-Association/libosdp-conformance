@@ -284,10 +284,16 @@ fprintf(stderr,"w:%d (250)\n", context->last_was_processed);
         {
           fprintf(stderr, "busy before OSDP_MFG, skipping send\n");
           fflush(stderr); fflush(context->log);
+fprintf(stderr, "would have saved %02x d %02x-%02x-%02x L %d.\n",
+  OSDP_MFG, data [0], data [1], data [2], send_length);
+#if 0
+// seems to break crc...
+
           leftover_command = OSDP_MFG;
           memcpy(leftover_data, data, send_length);
           leftover_length = send_length;
           context->left_to_send = leftover_length;
+#endif
         }
         else
         {
