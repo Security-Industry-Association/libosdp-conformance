@@ -1,7 +1,9 @@
 #!/bin/bash
 OSDP_PATH=/opt/osdp-conformance
+LOG=${OSDP_PATH}/log/action.log
 echo ACTION: calling send-challenge
 echo ACTION: argument is $1
+echo >>${LOG} Calling send-challenge
 ${OSDP_PATH}/run/CP/test/send-challenge \
   >>/opt/osdp-conformance/log/action.log \
   2>>/opt/osdp-conformance/log/stderr &

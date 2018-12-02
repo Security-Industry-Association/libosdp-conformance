@@ -311,19 +311,25 @@ int osdp_validate_led_values
 } /* osdp_validate_led_values */
 
 
-void dump_buffer_log (OSDP_CONTEXT *ctx, char * tag, unsigned char *b, int l)
-{
+void dump_buffer_log
+  (OSDP_CONTEXT *ctx,
+  char * tag,
+  unsigned char *b,
+  int l)
+
+{ /* dump_buffer_log */
+
   int i;
   int l2;
 
   l2 = l;
   fprintf(ctx->log, "%s (L=%d.)", tag, l);
-  if (l2 > 48) l2 = 48;
   for (i=0; i<l2; i++)
     fprintf(ctx->log, " %02x", b [i]);
   fprintf(ctx->log, "\n");
   fflush(ctx->log);
-}
+
+} /* dump_buffer_log */
 
 
 void dump_buffer_stderr (char * tag, unsigned char *b, int l)

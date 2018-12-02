@@ -427,7 +427,15 @@ int
       msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
-      count = count - sizeof(*mrep) + 1;
+fprintf(stderr, "count is whole packet: %04x\n", count);
+      count = count - sizeof(*oh);
+fprintf(stderr, "count less main hdr: %04x\n", count);
+      if (oh->ctrl & 0x04)
+        count = count - 2;
+      else
+        count = count - 1;
+fprintf(stderr, "count less CRC/Checksum: %04x\n", count);
+
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
       process_as_special = 0;
       if (0 EQUALS memcmp(mrep->vendor_code, OSDP_VENDOR_INID, sizeof(OSDP_VENDOR_INID)))
@@ -441,11 +449,21 @@ int
       };
       if (process_as_special)
       {
+        sprintf(tlogmsg,
+          "  MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
+          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
+          mrep->command_id);
         switch (mrep->command_id)
         {
         case OSDP_CMD_MSC_CR_AUTH:
           {
             cr_auth = (OSDP_MSC_CR_AUTH *)(msg->data_payload);
+
+            // adjust buffer count so dump is accurate
+            count = count - sizeof(cr_auth->vendor_code);
+            count = count - sizeof(cr_auth->command_id);
+fprintf(stderr, "count without CRAUTH(%ld) hdr: %04x\n", sizeof(*cr_auth), count);
+
             sprintf(tmps,
 "MSC CRAUTH\n  TotSize:%d. Offset:%d FragSize: %d",
               cr_auth->mpd_size_total, cr_auth->mpd_offset,
@@ -497,15 +515,7 @@ int
       }; 
       if (count > 0)
       {
-        strcat(tlogmsg, "  Raw(MFG):");
-        for (idx=0;
-//sizeof(get_piv->command_id) + sizeof(get_piv->vendor_code);
-          idx<count; idx++)
-        {
-          sprintf(tmps, " %02x", *(unsigned char *)(&(mrep->data)+idx));
-          strcat(tlogmsg, tmps);
-        };
-        strcat(tlogmsg, "\n");
+        dump_buffer_log(&context, "  Raw(MFG): ", &(mrep->data), count);
       };
     };
     break;

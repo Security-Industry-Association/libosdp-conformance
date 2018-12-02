@@ -678,7 +678,8 @@ int
   {
     m->check_size = 1;
     m_check = OSDP_CHECKSUM; // Issue #11
-fprintf(stderr, "m_check set to CHECKSUM (parse)\n");
+    if (context->verbosity > 3)
+      fprintf(context->log, "m_check set to CHECKSUM (parse)\n");
     osdp_conformance.checksum.test_status =
       OCONFORM_EXERCISED;
   }
