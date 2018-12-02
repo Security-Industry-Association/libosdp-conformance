@@ -61,10 +61,13 @@ int
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
+  if (context.verbosity > 3)
+  {
 if (status != ST_MSG_TOO_SHORT)
 {
   fprintf(stderr, "after input s=%d leftover_length %d\n", status, leftover_length);
-}
+};
+  };
   if (status EQUALS ST_MSG_TOO_SHORT)
     status = ST_SERIAL_IN;
   if (status EQUALS ST_OK)
@@ -82,7 +85,6 @@ if (status != ST_MSG_TOO_SHORT)
       fprintf (stderr, "\n");
     };
     status = process_osdp_message (&context, &msg);
-fprintf(stderr, "process_osdp_message returned %d.\n", status);
   };
 
   // if there's a leftover command to send then send it now.  Only get to do one of these.
