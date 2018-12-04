@@ -81,11 +81,7 @@
 #define OSDP_KEY_SIZE (128)
 
 // OSDP commands
-// 0x6c - 0x 6f
-// 0x70 - 0x79
-// 0x80
-// 0xA0 - 0xA1
-// replies 0x40 41 45 46 48-4B 50-58 76 78 90 79 b1
+
 #define OSDP_UNDEF    (0x01) // undefined command
 #define OSDP_POLL     (0x60)
 #define OSDP_ID       (0x61)
@@ -108,9 +104,10 @@
 #define OSDP_CHLNG    (0x76)
 #define OSDP_ACURXSIZE    (0x7B)
 #define OSDP_FILETRANSFER (0x7C)
-#define OSDP_MFG      (0x80)
-#define OSDP_XWR      (0xA1)
-#define OSDP_BOGUS    (0xFF) // bogus command code to induce NAK
+#define OSDP_MFG          (0x80)
+#define OSDP_KEEPACTIVE   (0xA1)
+#define OSDP_XWR          (0xA1)
+#define OSDP_BOGUS        (0xFF) // bogus command code to induce NAK
 
 #define OSDP_ACK      (0x40)
 #define OSDP_NAK      (0x41)
