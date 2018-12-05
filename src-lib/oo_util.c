@@ -1203,6 +1203,7 @@ fprintf(stderr, "lstat 1000\n");
             wire_crc, parsed_crc);
         };
         status = ST_BAD_CRC;
+        context->bad_crc_count ++;
       };
     }
     else

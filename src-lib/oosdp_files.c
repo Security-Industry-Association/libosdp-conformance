@@ -235,9 +235,11 @@ int
       ctx->cp_polls);
     fprintf (sf, "          \"pd_acks\" : \"%d\",\n",
       ctx->pd_acks);
+    fprintf (sf, "           \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
     fprintf (sf,
-"           \"sent_naks\" : \"%d\",\n",
-      ctx->sent_naks);
+"           \"bad_crc_count\" : \"%d\",\n", ctx->bad_crc_count);
+    fprintf (sf,
+"           \"checksum_errs\" : \"%d\",\n", ctx->checksum_errs);
     fprintf(sf,
 "    \"buffer-overflows\" : \"%d\",\n",
       osdp_buf.overflow);
