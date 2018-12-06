@@ -659,6 +659,20 @@ fprintf(stderr, "enable_secure_channel %d\n", context->enable_secure_channel);
       status = ST_OK;
       break;
 
+    case OSDP_CMDB_KEEPACTIVE:
+      // details is the time, as an int; convert to network time (short int)
+      {
+        short int keepactive_time;
+
+        keepactive_time = *(int *)details;
+        keepactive_time = htons(keepactive_time);
+        status = ST_OK;
+        status = send_message (context,
+          OSDP_KEEPACTIVE, p_card.addr, &current_length,
+          sizeof (keepactive_time), (unsigned char *)&keepactive_time);
+      };
+      break;
+
     case OSDP_CMDB_KEYPAD:
       {
         char

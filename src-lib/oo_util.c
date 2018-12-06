@@ -312,6 +312,14 @@ int
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_KEEPACTIVE:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_KEEPACTIVE");
+      osdp_conformance.cmd_keepactive.test_status = OCONFORM_EXERCISED;
+      break;
+
     case OSDP_LED:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -1024,6 +1032,14 @@ fprintf(stderr, "second istatr switch\n");
         strcpy (tlogmsg2, "osdp_ISTATR");
       break;
 
+    case OSDP_KEEPACTIVE:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_KEEEPACTIVE");
+      break;
+
     case OSDP_KEYPAD:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
@@ -1360,6 +1376,11 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+    case OSDP_KEEPACTIVE:
+      status = oosdp_make_message (OOSDP_MSG_KEEPACTIVE, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_MFG:
       status = oosdp_make_message (OOSDP_MSG_MFG, tlogmsg, msg);
       if (status == ST_OK)
@@ -1679,6 +1700,10 @@ int
           fprintf (context->log, "%s\n", logmsg);
         };
       };
+      break;
+
+    case OSDP_KEEPACTIVE:
+      status = action_osdp_KEEPACTIVE (context, msg);
       break;
 
     case OSDP_LED:

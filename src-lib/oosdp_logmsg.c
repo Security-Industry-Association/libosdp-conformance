@@ -295,6 +295,22 @@ int
     };
     break;
 
+  case OOSDP_MSG_KEEPACTIVE:
+    {
+      msg = (OSDP_MSG *) aux;
+      if (msg->security_block_length > 0)
+      {
+        strcat(tlogmsg, "(KEYPAD message contents encrypted)\n");
+      };
+      if (msg->security_block_length EQUALS 0)
+      {
+        sprintf (tlogmsg,
+"Keep credential read active %02x %02x",
+          *(msg->data_payload+0), *(msg->data_payload+1));
+      };
+    };
+    break;
+
   case OOSDP_MSG_KEYPAD:
     {
       int

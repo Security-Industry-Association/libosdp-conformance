@@ -99,6 +99,7 @@ char
     case OSDP_FILETRANSFER: strcpy(cmd_rep_s, "osdp_FILETRANSFER"); break;
     case OSDP_ID: strcpy(cmd_rep_s, "osdp_ID"); break;
     case OSDP_ISTAT: strcpy(cmd_rep_s, "osdp_ISTAT"); break;
+    case OSDP_KEEPACTIVE: strcpy(cmd_rep_s, "osdp_KEEPACTIVE"); break;
     case OSDP_KEYSET: strcpy(cmd_rep_s, "osdp_KEYSET"); break;
     case OSDP_LED: strcpy(cmd_rep_s, "osdp_LED"); break;
     case OSDP_LSTAT: strcpy(cmd_rep_s, "osdp_LSTAT"); break;

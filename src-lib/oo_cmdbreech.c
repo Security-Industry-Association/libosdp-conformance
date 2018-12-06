@@ -270,7 +270,7 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
     };
   };
 
-  // 2-14-3: rogue secure poll
+  // command conform_2-14-3: rogue secure poll
 
   if (status EQUALS ST_OK) {
     if (0 EQUALS strcmp (current_command, "conform_2_14_3")) {
@@ -287,6 +287,29 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
   if (status EQUALS ST_OK) {
     if (0 EQUALS strcmp (current_command, "induce-NAK")) {
       cmd->command = OSDP_CMDB_INDUCE_NAK; }; };
+
+  // command keep-active
+  // argument is time in milliseconds "milliseconds".  default is 7000;
+
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "keep-active"))
+    {
+      int i;
+      i = 7000;
+      cmd->command = OSDP_CMDB_KEEPACTIVE;
+      memcpy(cmd->details+1, &i, sizeof(i)); 
+      parameter = json_object_get (root, "milliseconds");
+      if (json_is_string (parameter))
+      {
+        strcpy (vstr, json_string_value (parameter));
+        sscanf (vstr, "%d", &i);
+      };
+      memcpy(cmd->details+1, &i, sizeof(i)); 
+    };
+  };
+
 
   // command MFG.  Arguments are OUI, command-id, command-specific-data.
   // c-s-d is is 2-hexit bytes, length inferred.
