@@ -466,12 +466,10 @@ typedef struct osdp_context
     packets_received;
   int
     cp_polls;
-  int
-    pd_acks;
-  int
-    sent_naks;
-  int
-    checksum_errs;
+  int pd_acks;
+  int sent_naks;
+  int crc_errs;
+  int checksum_errs;
   char
     init_command [1024];
   int

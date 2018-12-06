@@ -237,7 +237,7 @@ int
       ctx->pd_acks);
     fprintf (sf, "           \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
     fprintf (sf,
-"           \"bad_crc_count\" : \"%d\",\n", ctx->bad_crc_count);
+"           \"crc_errs\" : \"%d\",\n", ctx->crc_errs);
     fprintf (sf,
 "           \"checksum_errs\" : \"%d\",\n", ctx->checksum_errs);
     fprintf(sf,
@@ -262,7 +262,7 @@ int
       ctx->power_report);
     fprintf (sf, "        \"verbosity\" : \"%d\",\n",
       ctx->verbosity);
-    fprintf (sf, "              \"crc\" : \"%d\",\n",
+    fprintf (sf, "              \"crc-mode\" : \"%d\",\n",
       m_check);
     fprintf (sf, "          \"timeout\" : \"%ld\",\n",
       ctx->timer[0].i_sec);
