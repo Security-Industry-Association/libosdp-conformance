@@ -1379,8 +1379,6 @@ int
   };
   if (msg->direction != 0)
   {
-fprintf(stderr, "1375-dir %d cmd 0x%x\n",
-  msg->direction, msg->msg_cmd);
     switch (msg->msg_cmd)
     {
     case OSDP_CCRYPT:
