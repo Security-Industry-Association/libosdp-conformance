@@ -237,6 +237,10 @@ int
     // if the last thing was a NAK and a CRC error don't increment
     if (ctx->last_nak_error EQUALS OO_NAK_CHECK_CRC)
       do_increment = 0;
+
+    // if the last thing was a NAK for sequence error reset sequence to 0
+    if (ctx->last_nak_error EQUALS OO_NAK_SEQUENCE)
+      ctx->next_sequence = 0;
   };
   
   if (do_increment)
@@ -254,8 +258,8 @@ int
   else
   {
     if (ctx->verbosity > 2)
-      fprintf (ctx->log, "Last in was NAK/Err=1, sequence stays at %d\n",
-        ctx->next_sequence);
+      fprintf (ctx->log, "Last in was NAK (E=%d) Seq now %d\n",
+        ctx->last_nak_error, ctx->next_sequence);
   };
   return (current_sequence);
 

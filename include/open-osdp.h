@@ -129,8 +129,9 @@
 #define OSDP_XRD      (0xB1)
 
 // NAK error codes
-#define OO_NAK_CHECK_CRC (1)
-#define OO_NAK_UNK_CMD   (3)
+#define OO_NAK_CHECK_CRC  (1)
+#define OO_NAK_UNK_CMD    (3)
+#define OO_NAK_SEQUENCE   (4)
 #define OO_NAK_CMD_UNABLE (9)
 
 #define OSDP_MENU_TOP     (0x0000)

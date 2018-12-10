@@ -454,6 +454,7 @@ int
 
   OSDP_PDCAP_ENTRY *entry;
   int i;
+  int max_multipart;
   int num_entries;
   unsigned char *ptr;
   int status;
@@ -492,9 +493,18 @@ int
       fprintf(ctx->log, "Capability not processed in this CP: LED Control (%d)\n",
         entry->function_code);
       break;
+    case OSDP_CAP_MAX_MULTIPART:
+      max_multipart = entry->compliance;
+      max_multipart = max_multipart + (256*entry->number_of);
+      fprintf(ctx->log, "PD: largest combined message %d.(0x%x)\n",
+        max_multipart, max_multipart);
+      break;
     case OSDP_CAP_OUTPUT_CONTROL:
       fprintf(ctx->log, "Capability not processed in this CP: Output Control (%d)\n",
         entry->function_code);
+      break;
+    case OSDP_CAP_READERS:
+      fprintf(ctx->log, "PD: %d. Readers Compliance %x\n", entry->number_of, entry->compliance);
       break;
     case OSDP_CAP_REC_MAX:
       ctx->pd_cap.rec_max = entry->compliance + 256*entry->number_of;

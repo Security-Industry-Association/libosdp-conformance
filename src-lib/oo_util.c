@@ -1931,6 +1931,12 @@ fprintf(stderr, "lstat 1684\n");
         case 3:
           fprintf(context->log, "  NAK: Command not implemented by PD\n");
           break;
+        case 4:
+          fprintf(context->log, "  NAK: Unexpected sequence number\n");
+          break;
+        case 5:
+          fprintf(context->log, "  NAK: Security block not accepted\n");
+          break;
         };
       };
       osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
@@ -2134,6 +2140,7 @@ printf ("MMSG DONE\n");
         (msg->data_payload [1] EQUALS 0) &&
         (msg->data_payload [2] EQUALS 0))
       {
+        fprintf(context->log, "OUI in PDID is invalid (all 0's)\n");
         SET_FAIL ((context), "4-3-2");
       }
       else
