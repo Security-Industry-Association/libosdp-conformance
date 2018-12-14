@@ -284,7 +284,7 @@ fprintf(stderr,"w:%d (250)\n", context->last_was_processed);
         {
           fprintf(stderr, "busy before OSDP_MFG, skipping send\n");
           fflush(stderr); fflush(context->log);
-fprintf(stderr, "saving %02x d %02x-%02x-%02x L %d.\n",
+fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
   OSDP_MFG, data [0], data [1], data [2], send_length);
 
           leftover_command = OSDP_MFG;
