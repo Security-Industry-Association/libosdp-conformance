@@ -411,12 +411,12 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
     case OSDP_CMDB_XWRITE:
       {
-fprintf(stderr, "top of OSDP_CMDB_XWRITE\n");
         int payload_length;
 
         payload_length = *(short int *)(details+1);
         if (context->verbosity > 3)
-          fprintf(context->log, "Extended Write, action %d. payload is %d. bytes\n",
+          fprintf(context->log,
+            "Extended Write, action %d. payload is %d. bytes\n",
             details [0], payload_length);
 
         // details [0] is the action.  1=get-mode
@@ -438,10 +438,10 @@ fprintf(stderr, "top of OSDP_CMDB_XWRITE\n");
           status = osdp_xwrite_mode1
             (context, OSDP_XWR_1_SMART_CARD_SCAN, NULL, 0);
           break;
-        case 4: // set mode to 0
+        case 4: // set-mode-zero set mode to 0
           status = osdp_xwrite_set_mode(context, 0);
           break;
-        case 5: // stop smart card reading
+        case 5: // (done) stop smart card reading
           status = osdp_xwrite_mode1
             (context, OSDP_XWR_1_DONE, NULL, 0);
           break;

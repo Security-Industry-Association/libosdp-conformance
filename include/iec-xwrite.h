@@ -12,3 +12,7 @@ typedef struct osdp_xwr_command
 #define OSDP_XWR_1_DONE            (2) // per table 34 in 60839-11-5 and table 41
 #define OSDP_XWR_1_SMART_CARD_SCAN (4) // per table 34 in 60839-11-5 and table 43
 
+
+// prototypes here for segmentation
+int action_osdp_XRD(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+

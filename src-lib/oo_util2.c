@@ -234,8 +234,12 @@ int
     do_increment = 1;
   else
   {
+    // 20181213 clarification: if it was a NAK and we were to RETRY then don't increment the sequence number.
+
+    // this is not a retry this will be for a new message
+
     // if the last thing was a NAK and a CRC error don't increment
-    if (ctx->last_nak_error EQUALS OO_NAK_CHECK_CRC)
+    if (0) // (ctx->last_nak_error EQUALS OO_NAK_CHECK_CRC)
       do_increment = 0;
 
     // if the last thing was a NAK for sequence error reset sequence to 0
@@ -987,29 +991,19 @@ int
 
 int
   send_message
-    (OSDP_CONTEXT
-      *context,
-    int
-      command,
-    int
-      dest_addr,
-    int
-      *current_length,
-    int
-      data_length,
-    unsigned char
-      *data)
+    (OSDP_CONTEXT *context,
+    int command,
+    int dest_addr,
+    int *current_length,
+    int data_length,
+    unsigned char *data)
 
 { /* send_message */
 
-  unsigned char
-    buf [2];
-  int
-    status;
-  unsigned char
-    test_blk [1024];
-  int
-    true_dest;
+  unsigned char buf [2];
+  int status;
+  unsigned char test_blk [1024];
+  int true_dest;
 
 
   context->last_was_processed = 0; //starting fresh on the processing

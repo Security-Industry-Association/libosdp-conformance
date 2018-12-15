@@ -885,7 +885,7 @@ sample_1 [0] = tmp1_l;
     fprintf (stderr, "\n");
     fprintf (ctx->log, "Unknown RAW CARD DATA (%d. bits) first byte %02x\n %s\n",
       bits, *(msg->data_payload+4), hstr);
-    sprintf(cmd, "/opt/osdp-conformance/run/CP/action_raw \"%s\"",
+    sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_RAW \"%s\"",
       hstr);
     system(cmd);
     processed = 1;

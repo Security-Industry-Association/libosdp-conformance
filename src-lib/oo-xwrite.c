@@ -23,11 +23,52 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 
 #include <open-osdp.h>
 #include <iec-xwrite.h>
 extern OSDP_PARAMETERS p_card;
+char tlogmsg [1024];
+
+
+int
+  action_osdp_XRD
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_XRD */
+
+  char cmd [1024];
+  int status;
+
+
+  status = oosdp_make_message (OOSDP_MSG_XREAD, tlogmsg, msg);
+  if (status EQUALS ST_OK)
+    status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+
+  // if we know it's 7.25.5
+
+  if (*(msg->data_payload + 0) EQUALS 1)
+  {
+    if (*(msg->data_payload + 1) EQUALS 1)
+    {
+      sprintf(tlogmsg,
+"Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
+        *(msg->data_payload + 2), *(msg->data_payload + 3));
+      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
+      system(cmd);
+    };
+  };
+
+#if 0
+    fprintf (ctx->log, "Unknown RAW CARD DATA (%d. bits) first byte %02x\n %s\n",
+      bits, *(msg->data_payload+4), hstr);
+
+#endif
+  return (status);
+
+} /* action_osdp_XRD */
 
 
 int
@@ -57,12 +98,10 @@ int
   fprintf(ctx->log, "Extended Write: Mode 1: Command %d\n",
     xwr_cmd.xwr_pcmnd);
   memcpy(send_buffer, &xwr_cmd, sizeof(xwr_cmd));
-  if (command EQUALS OSDP_XWR_1_SMART_CARD_SCAN)
-    clth = 2; // no arg to scan
   if (command EQUALS OSDP_XWR_1_APDU)
   {
     memcpy(send_buffer+1+clth-1, payload, payload_length);
-    clth = clth + payload_length - 1;
+    clth = clth + payload_length;
   };
 
   // send command osdp_XWR payload is xwr_cmd

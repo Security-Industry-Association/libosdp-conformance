@@ -409,12 +409,9 @@ int
 
 int
   send_osdp_data
-    (OSDP_CONTEXT
-      *context,
-    unsigned char
-      *buf,
-    int
-      lth)
+    (OSDP_CONTEXT *context,
+    unsigned char *buf,
+    int lth)
 
 { /* send_osdp_data */
 

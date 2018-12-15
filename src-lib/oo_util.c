@@ -32,6 +32,7 @@
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+#include <iec-xwrite.h>
 
 
 extern OSDP_CONTEXT context;
@@ -925,7 +926,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
     {
       fprintf(stderr, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
-fprintf(stderr, "oo_util 999 cmd %0x\n", returned_hdr->command);
 
     switch (returned_hdr->command)
     {
@@ -1922,7 +1922,6 @@ fprintf(stderr, "lstat 1684\n");
         sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
           *(0+msg->data_payload), *(1+msg->data_payload));
         fprintf (context->log, "%s\n", tlogmsg);
-        fprintf (stderr, "%s\n", tlogmsg);
         switch(*(0+msg->data_payload))
         {
         case 1:
@@ -2027,6 +2026,8 @@ fprintf(stderr, "lstat 1684\n");
           if (mrdat != NULL)
           {
             int total_length;
+
+fprintf(stderr, "Opened %s for writing\n", mfg_rep_data_file);
 //KLUDGE count-6 blindly assumes 2-totlen 2-fraglen 2-fragoff
             fwrite(6+&(mfg->data), sizeof(unsigned char), count-6, mrdat);
 
@@ -2045,6 +2046,7 @@ fprintf(stderr, "lstat 1684\n");
               asmf = fopen("/opt/osdp-conformance/run/CP/mfg-rep.bin", "w");
               if (asmf != NULL)
               {
+fprintf(stderr, "Opened %s for writing\n", "/opt/osdp-conformance/run/CP/mfg-rep.bin");
                 fwrite(context->mmsgbuf, sizeof(unsigned char), total_length, asmf);
                 fclose(asmf);
                 context->next_in = 0;
@@ -2170,11 +2172,13 @@ printf ("MMSG DONE\n");
       break;
 
     case OSDP_XRD:
-fprintf(stderr, "stub: osdp_XRD not yet processed.\n");
+      status = action_osdp_XRD(context, msg);
+      break;
+#if 0
       status = oosdp_make_message (OOSDP_MSG_XREAD, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      break;
+#endif
 
     default:
       if (context->verbosity > 2)

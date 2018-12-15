@@ -355,8 +355,6 @@ int osdp_awaiting_response (OSDP_CONTEXT *ctx)
 
   if (ctx->last_was_processed)
   {
-    if (ctx->verbosity > 3)
-      fprintf(stderr, "waiting: last %d. r 0\n", ctx->last_was_processed);
     ret = 0;
   }
   else
