@@ -34,18 +34,16 @@ int
   process_current_command
     (void)
 
-{ /*process_current_command */
+{ /* process_current_command */
 
-  OSDP_COMMAND
-    cmd;
-  int
-    status;
+  OSDP_COMMAND cmd;
+  int status;
 
 
   status = read_command (&context, &cmd);
   if (status EQUALS ST_OK)
   {
-    status = process_command (cmd.command, &context, (char *)cmd.details);
+    status = process_command(cmd.command, &context, cmd.details_length, cmd.details_param_1, (char *)cmd.details);
   };
   if (status != ST_OK)
     fprintf (stderr, "process_current_command: status %d\n",

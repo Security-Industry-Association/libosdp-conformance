@@ -47,6 +47,7 @@ int
 
 { /* read_command */
 
+  unsigned short buffer_length;
   FILE *cmdf;
   char current_command [1024];
   char current_options [1024];
@@ -454,7 +455,7 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
       status = ST_OSDP_BAD_GENAUTH_3;
       if (json_is_string (value))
       {
-        int lth;
+        unsigned short int lth;
 
         lth = sizeof(cmd->details) - 2;
         status = osdp_string_to_buffer(ctx, (char *)json_string_value(value), cmd->details+2,  &lth);
@@ -770,8 +771,31 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
     {
       cmd->command = OSDP_CMDB_PRESENT_CARD;
       if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
+        fprintf(ctx->log, "Command %s submitted\n", test_command);
+
+      // if there's a "raw" option it's the data to use.  bits are also specified.
+
+      value = json_object_get (root, "raw");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        buffer_length = sizeof(cmd->details);
+        status = osdp_string_to_buffer(ctx, vstr, cmd->details, &buffer_length);
+        cmd->details_length = buffer_length;
+        cmd->details_param_1 = 26;  // assume 26 bits unless otherwise specified
+      };
+
+      value = json_object_get (root, "bits");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        sscanf(vstr, "%d", &i);
+        cmd->details_param_1 = i;
+      };
+      if (ctx->verbosity > 3)
+        if (cmd->details_length > 0)
+          fprintf(ctx->log, "present_card: raw (%d. bytes, %d. bits): %s\n",
+            cmd->details_length, cmd->details_param_1, vstr);
     };
   }; 
 
@@ -899,7 +923,7 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
         };
         if (0 EQUALS strcmp(json_string_value(value), "apdu"))
         {
-          int payload_length;
+          unsigned short int payload_length;
           char payload_value [1024];
 
           cmd->details [0] = 6;

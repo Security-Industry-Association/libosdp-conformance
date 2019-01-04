@@ -52,6 +52,8 @@ int
   process_command
   (int command,
   OSDP_CONTEXT *context,
+  unsigned int details_length,
+  int details_param_1,
   char *details)
 
 { /* process_command */
@@ -790,10 +792,18 @@ fprintf(stderr, "enable_secure_channel %d\n", context->enable_secure_channel);
 
     case OSDP_CMDB_PRESENT_CARD:
       /*
-        use card data from loaded config
+        use card data from loaded config if no details were provided
       */
-      context->card_data_valid = p_card.bits;
-      context->creds_a_avail = creds_buffer_a_lth;
+      if (details_length > 0)
+      {
+        context->card_data_valid = details_param_1;
+        context->creds_a_avail = details_length;
+      }
+      else
+      {
+        context->card_data_valid = p_card.bits;
+        context->creds_a_avail = creds_buffer_a_lth;
+      };
       if (context->verbosity > 2)
         fprintf (context->log, "Presenting card data (raw: %d, Creds A: %d)\n",
           context->card_data_valid, context->creds_a_avail);

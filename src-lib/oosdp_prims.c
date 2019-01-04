@@ -262,7 +262,7 @@ int osdp_string_to_buffer
   (OSDP_CONTEXT *ctx,
   char *instring,
   unsigned char *buffer,
-  int *buffer_length_returned)
+  unsigned short int *buffer_length_returned)
 
 {
   int bidx;

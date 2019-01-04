@@ -635,6 +635,7 @@ typedef struct osdp_command
 {
   int command;
   int details_length; 
+  int details_param_1;
   unsigned char details [8*1024]; // must be big enough to hold OSDP_MFG_ARGS
 } OSDP_COMMAND;
 
@@ -972,7 +973,7 @@ char *osdp_sec_block_dump (unsigned char *sec_block);
 int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
-int osdp_string_to_buffer (OSDP_CONTEXT *ctx, char *instring, unsigned char *buffer, int *buffer_length_returned);
+int osdp_string_to_buffer (OSDP_CONTEXT *ctx, char *instring, unsigned char *buffer, unsigned short int *buffer_length_returned);
 int osdp_timer_start (OSDP_CONTEXT *ctx, int timer_index);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
 void osdp_trace_dump (OSDP_CONTEXT *ctx);
@@ -986,7 +987,7 @@ int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);
 void preserve_current_command (void);
-int process_command (int command, OSDP_CONTEXT *context, char *details);
+int process_command (int command, OSDP_CONTEXT *context, unsigned int details_length, int details_param_1, char *details);
 int process_current_command (void);
 int process_osdp_input (OSDP_BUFFER *osdpbuf);
 int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
