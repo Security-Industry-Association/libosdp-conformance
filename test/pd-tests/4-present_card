@@ -1,7 +1,8 @@
 #!/bin/bash
+OSDP=opt/osdp-conformance
 echo configuration:
 grep bits open-osdp-params.json
 grep raw_value open-osdp-params.json
-/opt/open-osdp/bin/write-osdp-PD-command present_card
-/opt/open-osdp/bin/HUP-PD
+/${OSDP}/bin/write-osdp-PD-command present_card
+/${OSDP}/bin/HUP-PD
 

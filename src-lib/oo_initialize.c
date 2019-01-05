@@ -208,6 +208,12 @@ int
   context->vendor_code [2] = 0x17;
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;
+  p_card.value [0] = 0x00; // fc=1 card=1 in 26 bit wiegand
+  p_card.value [1] = 0x80; // fc=1 card=1 in 26 bit wiegand
+  p_card.value [2] = 0x00; // fc=1 card=1 in 26 bit wiegand
+  p_card.value [3] = 0x80; // fc=1 card=1 in 26 bit wiegand
+  p_card.value_len = 4;
+  p_card.bits = 26;
 
   m_check = OSDP_CRC;
   // to force checksum-only set m_check to OSDP_CHECKSUM here.

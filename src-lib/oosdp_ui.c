@@ -58,6 +58,7 @@ int
 
 { /* process_command */
 
+  extern unsigned char *creds_buffer_a;
   extern int creds_buffer_a_lth;
   int current_length;
   int processed;
@@ -798,11 +799,13 @@ fprintf(stderr, "enable_secure_channel %d\n", context->enable_secure_channel);
       {
         context->card_data_valid = details_param_1;
         context->creds_a_avail = details_length;
+        memcpy(context->credentials_data, details, details_length);
       }
       else
       {
         context->card_data_valid = p_card.bits;
         context->creds_a_avail = creds_buffer_a_lth;
+        memcpy(context->credentials_data, creds_buffer_a, context->creds_a_avail);
       };
       if (context->verbosity > 2)
         fprintf (context->log, "Presenting card data (raw: %d, Creds A: %d)\n",

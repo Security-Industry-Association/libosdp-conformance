@@ -37,14 +37,10 @@ int still_waiting;
 #include <osdp_conformance.h>
 
 
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-extern OSDP_CONTEXT
-  context;
-extern OSDP_PARAMETERS
-  p_card;
-char
-  tlogmsg [1024];
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_CONTEXT context;
+extern OSDP_PARAMETERS p_card;
+char tlogmsg [1024];
 
 
 void start_element (void *data, const char *element, const char **attribute);
@@ -819,16 +815,11 @@ fprintf (stderr, "processing value %s\n",
     /*
       accumulate the "value" field into p_card.value
     */
-    int
-      i;
-    int
-      idata;
-    int
-      idx;
-    int
-      rem;
-    char
-      tmps [3];
+    int i;
+    int idata;
+    int idx;
+    int rem;
+    char tmps [3];
 
     idx=0;
     idata = 0;

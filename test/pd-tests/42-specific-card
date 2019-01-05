@@ -1,0 +1,12 @@
+#!/bin/bash
+CMDPATH=/opt/osdp-conformance/run/PD/open_osdp_command.json
+echo "Raw data" $1 Bits $2
+mkdir -p /opt/osdp-conformance/run/PD
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "  \"command\" : \"present_card\","
+echo >>${CMDPATH} "  \"bits\" : \"$2\","
+echo >>${CMDPATH} "  \"raw\" : \"$1\","
+echo >>${CMDPATH} "  \"_#\" : \"end\""
+echo >>${CMDPATH} "}"
+/opt/osdp-conformance/bin/HUP-PD
+

@@ -763,6 +763,8 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
 
   if (status EQUALS ST_OK)
   {
+    json_t *option;
+
     value = json_object_get (root, "command");
 
     strcpy (this_command, json_string_value (value));
@@ -775,20 +777,20 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
 
       // if there's a "raw" option it's the data to use.  bits are also specified.
 
-      value = json_object_get (root, "raw");
-      if (json_is_string (value))
+      option = json_object_get (root, "raw");
+      if (json_is_string (option))
       {
-        strcpy (vstr, json_string_value (value));
+        strcpy (vstr, json_string_value (option));
         buffer_length = sizeof(cmd->details);
         status = osdp_string_to_buffer(ctx, vstr, cmd->details, &buffer_length);
         cmd->details_length = buffer_length;
         cmd->details_param_1 = 26;  // assume 26 bits unless otherwise specified
       };
 
-      value = json_object_get (root, "bits");
-      if (json_is_string (value))
+      option = json_object_get (root, "bits");
+      if (json_is_string (option))
       {
-        strcpy (vstr, json_string_value (value));
+        strcpy (vstr, json_string_value (option));
         sscanf(vstr, "%d", &i);
         cmd->details_param_1 = i;
       };

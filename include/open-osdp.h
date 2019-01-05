@@ -455,28 +455,20 @@ typedef struct osdp_context
   int next_nak; // nak the next incoming message from the CP
   int
     power_report;
-  int
-    card_data_valid;
-  int
-    creds_a_avail;
-  int
-    bytes_received;
-  int
-    bytes_sent;
-  int
-    packets_received;
-  int
-    cp_polls;
+  int card_data_valid; // bits
+  int creds_a_avail; // octets
+  char credentials_data [1024];
+  int bytes_received;
+  int bytes_sent;
+  int packets_received;
+  int cp_polls;
   int pd_acks;
   int sent_naks;
   int crc_errs;
   int checksum_errs;
-  char
-    init_command [1024];
-  int
-    cparm;
-  int
-    cparm_v;
+  char init_command [1024];
+  int cparm;
+  int cparm_v;
   unsigned char vendor_code [3];
   unsigned char model;
   unsigned char version;
