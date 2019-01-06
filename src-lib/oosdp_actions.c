@@ -858,15 +858,18 @@ char tstr [32];
         for (i=0; i<octet_count; i++)
         {
           d = *(unsigned char *)(msg->data_payload+4+i);
-          fprintf (stderr, " %02x", d);
-          sprintf (tstr, " %02x", d);
+          sprintf (tstr, "%02x", d);
           strcat (hstr, tstr);
         };
-        fprintf (stderr, "\n");
-        fprintf (ctx->log, "Unknown RAW CARD DATA (%d. bits) first byte %02x\n %s\n",
-          bits, *(msg->data_payload+4), hstr);
-        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_RAW \"%s\"",
-          hstr);
+        fprintf (ctx->log,
+          "Unknown RAW CARD DATA (%d. bits)\n %s\n",
+          bits, hstr);
+
+        // run the action routine with the bytesr,bit count,format
+
+        sprintf(cmd,
+          "/opt/osdp-conformance/run/ACU-actions/osdp_RAW \"%s %d %d\"",
+          hstr, bits, *(msg->data_payload+1));
         system(cmd);
         processed = 1;
       };
