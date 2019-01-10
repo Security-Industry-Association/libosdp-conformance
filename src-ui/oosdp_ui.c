@@ -140,7 +140,7 @@ status = -1;
       status = send_message (context,
         OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
       if (context->verbosity > 2)
-        fprintf (stderr, "Requesting Capabilities Report\n");
+        fprintf (stderr, "Requesting Local Status Report\n");
       break;
 
     case OSDP_CMD_RDR_STAT:
