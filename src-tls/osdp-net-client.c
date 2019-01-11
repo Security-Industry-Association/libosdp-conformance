@@ -530,7 +530,7 @@ int
                 {
                   close (c1);
 
-                  status = process_current_command ();
+                  status = process_current_command(&context);
                   if (status EQUALS ST_OK)
                     preserve_current_command ();
                   status = ST_OK;

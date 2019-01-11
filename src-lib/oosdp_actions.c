@@ -868,7 +868,7 @@ char tstr [32];
         // run the action routine with the bytesr,bit count,format
 
         sprintf(cmd,
-          "/opt/osdp-conformance/run/ACU-actions/osdp_RAW \"%s %d %d\"",
+          "/opt/osdp-conformance/run/ACU-actions/osdp_RAW %s %d %d",
           hstr, bits, *(msg->data_payload+1));
         system(cmd);
         processed = 1;

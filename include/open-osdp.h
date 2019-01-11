@@ -379,6 +379,23 @@ typedef struct osdp_context_filetransfer
 #define OSDP_XFER_STATE_FINISHING    (2)
 
 
+typedef struct osdp_command
+{
+  int command;
+  int details_length; 
+  int details_param_1;
+  unsigned char details [8*1024]; // must be big enough to hold OSDP_MFG_ARGS
+} OSDP_COMMAND;
+
+#define OSDP_COMMAND_QUEUE_SIZE (32)
+
+typedef struct osdp_command_queue
+{
+  int status; // 0=empty 1=contains entry
+  OSDP_COMMAND cmd;
+} OSDP_COMMAND_QUEUE;
+
+
 typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
@@ -390,6 +407,9 @@ typedef struct osdp_context
   char serial_speed [1024];
   int verbosity;
   unsigned char my_guid [128/8];
+
+  OSDP_COMMAND_QUEUE *q;
+  int cmd_q_overflow;
 
   // IO context
   int current_pid;
@@ -622,14 +642,6 @@ typedef struct osdp_buffer
   int next;
   int overflow;
 } OSDP_BUFFER;
-
-typedef struct osdp_command
-{
-  int command;
-  int details_length; 
-  int details_param_1;
-  unsigned char details [8*1024]; // must be big enough to hold OSDP_MFG_ARGS
-} OSDP_COMMAND;
 
 typedef struct osdp_param
 {
@@ -900,6 +912,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_BAD_GENAUTH_1        (71)
 #define ST_OSDP_BAD_GENAUTH_2        (72)
 #define ST_OSDP_BAD_GENAUTH_3        (73)
+#define ST_OSDP_COMMAND_OVERFLOW     (74)
 
 int
   m_version_minor;
@@ -980,7 +993,8 @@ int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context, unsigned int details_length, int details_param_1, char *details);
-int process_current_command (void);
+int process_command_from_queue(OSDP_CONTEXT *ctx);
+int process_current_command(OSDP_CONTEXT *ctx);
 int process_osdp_input (OSDP_BUFFER *osdpbuf);
 int monitor_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 char *osdp_message (int status, int detail_1, int detail_2, int detail_3);

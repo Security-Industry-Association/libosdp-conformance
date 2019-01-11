@@ -43,6 +43,7 @@ char multipart_message_buffer_1 [64*1024];
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 
+OSDP_COMMAND_QUEUE osdp_command_queue [OSDP_COMMAND_QUEUE_SIZE];
 
 int
   init_serial
@@ -196,6 +197,9 @@ int
   memset (&p_card, 0, sizeof (p_card));
 
   context->verbosity = 3;
+
+  context->q = osdp_command_queue;
+
   m_version_minor = OSDP_VERSION_MINOR;
   m_build = OSDP_VERSION_BUILD;
   context->model = 2;

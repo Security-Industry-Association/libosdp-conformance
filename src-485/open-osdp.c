@@ -328,7 +328,7 @@ int
           {
             close (c1);
 
-            status = process_current_command ();
+            status = process_current_command(&context);
             if (status EQUALS ST_OK)
               preserve_current_command ();
             check_for_command = 0;
@@ -393,6 +393,13 @@ int
       // if it's too short so far it'll be 'serial_in' so ignore that
       if (status EQUALS ST_SERIAL_IN)
         status = ST_OK;
+    };
+
+    // if we're not waiting for a response process the command queue
+
+    if (!osdp_awaiting_response(&context))
+    {
+      status = process_command_from_queue(&context);
     };
 
     if (status != ST_OK)
