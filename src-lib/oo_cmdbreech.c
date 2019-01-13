@@ -765,6 +765,8 @@ cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 
+  // present_card - provide card data for osdp_RAW response
+
   if (status EQUALS ST_OK)
   {
     json_t *option;

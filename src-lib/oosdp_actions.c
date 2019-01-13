@@ -558,28 +558,19 @@ int
     OSDP_MSG *msg)
 { /* action_osdp_POLL */
 
-  unsigned char
-    buffer [1024];
-  int
-    bufsize;
-  extern unsigned char
-    creds_buffer_a [];
-  extern int
-    creds_buffer_a_lth;
-  extern int
-    creds_buffer_a_next;
-  int
-    current_length;
-  int
-    done;
-  OSDP_MULTI_HDR
-    mmsg;
-  unsigned char
-    osdp_lstat_response_data [2];
+  int current_length;
+  int done;
+  unsigned char osdp_lstat_response_data [2];
   unsigned char osdp_raw_data [4+1024];
   int raw_lth;
   int status;
-  int to_send;
+//  unsigned char buffer [1024];
+//  int bufsize;
+//  extern unsigned char creds_buffer_a [];
+//  extern int creds_buffer_a_lth;
+//  extern int creds_buffer_a_next;
+//  OSDP_MULTI_HDR mmsg;
+//  int to_send;
 
 
   status = ST_OK;
@@ -686,6 +677,9 @@ int
     }
     else
     {
+
+// DISABLED not working
+#if 0
       /*
         this is the newer multi-part message for bigger credential responses,
         like a FICAM CHUID.
@@ -723,23 +717,24 @@ int
           };
           mmsg.MpdFragmentSize = to_send; 
 
-        // filled in all of mmsg now copy it to buffer
+          // filled in all of mmsg now copy it to buffer
 
-        memcpy (buffer, &mmsg, sizeof (mmsg));
+          memcpy (buffer, &mmsg, sizeof (mmsg));
 
-        // actual data goes after header in buffer.
-        memcpy (buffer+bufsize, creds_buffer_a+creds_buffer_a_next, to_send);
+          // actual data goes after header in buffer.
+          memcpy (buffer+bufsize, creds_buffer_a+creds_buffer_a_next, to_send);
 
-        current_length = 0;
-        status = send_message (ctx, OSDP_MFGREP, p_card.addr,
-          &current_length, bufsize+to_send, buffer);
+          current_length = 0;
+          status = send_message (ctx, OSDP_MFGREP, p_card.addr,
+            &current_length, bufsize+to_send, buffer);
 
-        // and after all that move the pointer within the buffer for where
-        // the next data is extracted from.
+          // and after all that move the pointer within the buffer for where
+          // the next data is extracted from.
 
-        creds_buffer_a_next = creds_buffer_a_next + to_send;
+          creds_buffer_a_next = creds_buffer_a_next + to_send;
         };
-      }
+      };
+#endif
     };
   };
   if (!done)

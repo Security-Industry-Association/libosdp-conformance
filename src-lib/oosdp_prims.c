@@ -359,13 +359,8 @@ int osdp_awaiting_response (OSDP_CONTEXT *ctx)
   }
   else
   {
-    if (ctx->verbosity > 3)
-      fprintf(stderr, "waiting: last %d. r 1\n", ctx->last_was_processed);
     if (ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED)
     {
-      if (ctx->verbosity > 3)
-        fprintf(stderr, "waiting: last %d. r 0 timeout\n",
-          ctx->last_was_processed);
       ret = 0; // if no response but timeout, call it "not waiting"
     };
   };
