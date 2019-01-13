@@ -1,8 +1,7 @@
 /*
   oo-xwrite - extended write and extended reader functions
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2018 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -47,7 +46,7 @@ int
   if (status EQUALS ST_OK)
     status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
 
-  // if we know it's 7.25.5
+  // if we know it's 7.25.5 it's a card-present alert
 
   if (*(msg->data_payload + 0) EQUALS 1)
   {
@@ -57,6 +56,31 @@ int
 "Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
         *(msg->data_payload + 2), *(msg->data_payload + 3));
       sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
+      system(cmd);
+    };
+  };
+
+  // if we know it's 7.25.8 it's an APDU from the card
+
+  if (*(msg->data_payload + 0) EQUALS 1)
+  {
+    if (*(msg->data_payload + 1) EQUALS 2)
+    {
+      char apdu [1024];
+      int i;
+      char octet [3];
+
+      apdu [0] = 0;
+      for (i=4; i<msg->data_length-4; i++)
+      {
+        sprintf(octet, "%02x", msg->data_payload [i]);
+        strcat(apdu, octet);
+      };
+
+      dump_buffer_log(ctx, "APDU: ", msg->data_payload+4, msg->data_length-4);
+
+      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_2 %s",
+        apdu);
       system(cmd);
     };
   };

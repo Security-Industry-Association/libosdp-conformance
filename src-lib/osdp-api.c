@@ -68,6 +68,8 @@ int
     };
 fprintf(stderr, "enqueue cmd to entry %2d\n", i);
     memcpy(&(ctx->q [i].cmd), cmd, sizeof(ctx->q [0].cmd));
+fprintf(stderr, "enq: %d: cmd %d\n", i, ctx->q[i].cmd.command);
+    ctx->q [i].status = 1;
   };
 
   return(status);
@@ -88,9 +90,6 @@ int
   status = read_command (&context, &cmd);
   if (status EQUALS ST_OK)
   {
-
-    status = enqueue_command(ctx, &cmd);
-
     status = process_command(cmd.command, &context, cmd.details_length, cmd.details_param_1, (char *)cmd.details);
   };
   if (status != ST_OK)
@@ -108,13 +107,15 @@ int
 { /* process_command_from_queue */
 
   OSDP_COMMAND *cmd;
+  OSDP_COMMAND extracted;
   int status;
 
 
   status = ST_OK;
-  if (ctx->q [0].status EQUALS 0) // meaning there's at least one command in the queue
+  if (ctx->q [0].status != 0) // meaning there's at least one command in the queue
   {
-    cmd = &(ctx->q [0].cmd);
+    memcpy(&extracted, &(ctx->q [0].cmd), sizeof(extracted));
+    cmd = &extracted;
 
     // move all commands up one position
     memcpy(ctx->q, ctx->q+1, (OSDP_COMMAND_QUEUE_SIZE-1)*sizeof(ctx->q [0]));

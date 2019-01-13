@@ -946,6 +946,7 @@ int display_menu (int menu);
 void display_sim_reader (OSDP_CONTEXT *ctx, char *str);
 void dump_buffer_log (OSDP_CONTEXT *ctx, char * tag, unsigned char *b, int l);
 void dump_buffer_stderr (char * tag, unsigned char *b, int l);
+int enqueue_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int fasc_n_75_to_string (char * s, long int *sample_1);
 int next_sequence (OSDP_CONTEXT *ctx);
 int initialize_osdp (OSDP_CONTEXT *ctx);

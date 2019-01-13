@@ -1,0 +1,7 @@
+#!/bin/bash
+echo >>/opt/osdp-conformance/log/action.log action for osdp_RAW called
+echo >>/opt/tester/log2/raw.log \
+  $2 "Bits, Format:" $3
+echo >>/opt/tester/log2/raw.log \
+  " Bytes:" $1
+

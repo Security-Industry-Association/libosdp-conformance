@@ -853,7 +853,6 @@ int octet_count;
 char tstr [32];
 
         hstr [0] = 0;
-        fprintf (stderr, "Raw Unknown:");
         octet_count = (bits+7)/8;
         for (i=0; i<octet_count; i++)
         {

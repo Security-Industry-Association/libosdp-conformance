@@ -68,8 +68,6 @@ int
   char vstr [1024];
 
 
-extern int still_waiting;
-fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_waiting);
   status = ST_CMD_PATH;
   cmdf = fopen (ctx->command_path, "r");
   if (cmdf != NULL)
@@ -337,6 +335,9 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
       {
         strcpy(mfg_args->oui, json_string_value(parameter));
       };
+fprintf(stderr, "test: queuing MFG %d\n", cmd->command);
+status = enqueue_command(ctx, cmd);
+cmd->command = OSDP_CMD_NOOP;
     };
   };
 
@@ -474,6 +475,9 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
+fprintf(stderr, "test: queuing %d\n", cmd->command);
+status = enqueue_command(ctx, cmd);
+cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 
@@ -943,6 +947,9 @@ fprintf(stderr, "w: %d still waiting: %d\n", ctx->last_was_processed, still_wait
           };
         };
       };
+fprintf(stderr, "test: queuing XWR %d\n", cmd->command);
+status = enqueue_command(ctx, cmd);
+cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 
