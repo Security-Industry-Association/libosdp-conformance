@@ -780,6 +780,9 @@ int
   status = ST_OK;
   if (ctx->role EQUALS OSDP_ROLE_CP)
   {
+    (void)oosdp_make_message (OOSDP_MSG_RAW, tlogmsg, msg);
+    fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log); tlogmsg [0] = 0;
+
     osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
     osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
     processed = 0;

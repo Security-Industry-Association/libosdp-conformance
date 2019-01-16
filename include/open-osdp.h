@@ -634,6 +634,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_XWRITE       (22)
 #define OOSDP_MSG_XREAD        (23)
 #define OOSDP_MSG_KEEPACTIVE   (24)
+#define OOSDP_MSG_RAW          (25)
 
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer
@@ -996,6 +997,7 @@ int oosdp_message_header_print (OSDP_CONTEXT *ctx, OSDP_MSG *msg, char *tlogmsg)
 int oosdp_print_message_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_LED(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_PD_IDENT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
+int oosdp_print_message_RAW(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_XRD(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context, unsigned int details_length, int details_param_1, char *details);

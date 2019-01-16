@@ -1501,10 +1501,9 @@ int
     break;
 
   case OSDP_RAW:
-    // in monitor mode we're really not supposed to use 'action' routines
-    // but all it does is printf.
-
-    status = action_osdp_RAW (context, msg);
+    status = oosdp_make_message(OOSDP_MSG_RAW, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
   };
   return (status);
