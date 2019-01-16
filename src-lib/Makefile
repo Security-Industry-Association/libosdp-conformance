@@ -1,6 +1,6 @@
 # Make file for libosdp
 
-#  (C)Copyright 2017-2018 Smithee Solutions LLC
+#  (C)Copyright 2017-2019 Smithee Solutions LLC
 #  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
@@ -38,13 +38,13 @@ clean:
 
 libosdp.a:	oo_initialize.o oo_process.o oo_util.o oo_util2.o \
 	  oo_cmdbreech.o \
-	  oo-logprims.o oo-xpm-actions.o oo-xwrite.o \
+	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_actions.o oosdp_crc.o oosdp_conformance.o \
 	  oosdp_files.o oosdp_logmsg.o oosdp_prims.o \
 	  oosdp_secure.o oosdp_secure_actions.o oosdp_ui.o osdp-api.o
 	ar r libosdp.a \
 	  oo_cmdbreech.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
-	  oo-logprims.o oo-xpm-actions.o oo-xwrite.o \
+	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_actions.o oosdp_conformance.o oosdp_crc.o oosdp_files.o \
 	  oosdp_logmsg.o oosdp_prims.o oosdp_secure.o \
 	  oosdp_secure_actions.o oosdp_ui.o \
@@ -71,6 +71,9 @@ oo_util2.o:	oo_util2.c ../include/open-osdp.h
 
 oo-logprims.o:	oo-logprims.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-logprims.c
+
+oo-printmsg.o:	oo-printmsg.c ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-printmsg.c
 
 oo-xpm-actions.o:	oo-xpm-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-xpm-actions.c

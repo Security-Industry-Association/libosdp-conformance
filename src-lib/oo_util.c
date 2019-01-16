@@ -661,6 +661,7 @@ int
   int display;
   int i;
   char logmsg [1024];
+
   unsigned int msg_lth;
   int msg_check_type;
   int msg_data_length;
@@ -801,9 +802,6 @@ int
         msg_data_length = msg_data_length - 4;
       sec_blk_length = (unsigned)*(m->ptr + 5);
       m->security_block_length = sec_blk_length;
-      if (context->verbosity > 8)
-        fprintf (stderr, "SECBLK: LEN=%d.(0x%02x) SEC_BLK_LEN=%d.\n",
-          msg_data_length, msg_data_length, sec_blk_length);
       m -> cmd_payload = m->ptr + 5 + sec_blk_length;
 
       // whole thing less 5 hdr less 1 cmd less sec blk less 2 crc
@@ -883,8 +881,9 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
         else
           status = oosdp_log (context, OSDP_LOG_STRING_PD, 1, tlogmsg);
       
+// don't dump sec block here, gets dumped in oo_util 
         // p2 = p1+5; // command/reply
-        if (p->ctrl & 0x08)
+        if (0) //(p->ctrl & 0x08)
         {
           strcpy(tlogmsg, osdp_sec_block_dump(p1+5));
           fprintf(context->log, "%s\n", tlogmsg);
@@ -1276,9 +1275,22 @@ status = ST_OK; // tolerate checksum error and continue
     {
       char cmd_rep_tag [1024];
       char log_line [1024];
+      char tlogmsg [1024];
+
 
       strcpy(cmd_rep_tag,
         osdp_command_reply_to_string(returned_hdr->command, m->direction));
+
+      // print "IEC" details of message
+      status = oosdp_message_header_print(context, m, tlogmsg);
+      if (((returned_hdr->command != OSDP_POLL) &&
+        (returned_hdr->command != OSDP_ACK)) ||
+        (context->verbosity > 3))
+      {
+        fprintf (context->log, "%s\n", tlogmsg);
+        tlogmsg [0] = 0;
+      };
+
       sprintf (log_line, "  Message: %s %s", cmd_rep_tag, tlogmsg);
       sprintf (tlogmsg2, " A:%02x S:%02x Ck %x Sec %x CRC %04x",
         (0x7F & p->addr), msg_sqn, msg_check_type, msg_scb, wire_crc);
@@ -1367,11 +1379,6 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
-    case OSDP_CHLNG:
-      status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
-      if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      break;
     case OSDP_COMSET:
       status = oosdp_make_message (OOSDP_MSG_COMSET, tlogmsg, msg);
       if (status == ST_OK)
@@ -1427,6 +1434,11 @@ int
   };
   switch (msg->msg_cmd)
   {
+  case OSDP_CHLNG:
+    status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
   case OSDP_FILETRANSFER:
     if (context->verbosity > 3)
     {

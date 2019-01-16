@@ -1,3 +1,5 @@
+/*
+*/
 #define OSDP_CMD_MSC_GETPIV  (0x10)
 #define OSDP_CMD_MSC_KP_ACT  (0x13)
 #define OSDP_CMD_MSC_CR_AUTH (0x14)
@@ -109,16 +111,13 @@ int
 { /* oosdp_make_message */
 
   OSDP_SC_CCRYPT *ccrypt_payload;
-  OSDP_SC_CHLNG *chlng_payload;
   int count;
   OSDP_MSC_CR_AUTH *cr_auth;
   OSDP_MSC_CR_AUTH_RESPONSE *cr_auth_response;
-  char filename [1024];
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
   OSDP_MSC_GETPIV *get_piv;
   OSDP_HDR *hdr;
-  FILE *identf;
   int idx;
   OSDP_MSC_STATUS *msc_status;
   OSDP_MSG *msg;
@@ -126,7 +125,10 @@ int
   unsigned short int newmax;
   OSDP_HDR *oh;
   unsigned char osdp_command;
+  OSDP_HDR *osdp_wire_message;
   OSDP_MSC_PIV_DATA *piv_data;
+  int scb_present;
+  char *sec_block;
   char tlogmsg [1024];
   char tmps [1024];
   char tmpstr [1024];
@@ -149,6 +151,7 @@ int
     sprintf(tlogmsg, "ACU Receive Size: %0x\n", c);
     };
     break;
+
   case OOSDP_MSG_BUZ:
     msg = (OSDP_MSG *) aux;
     sprintf(tlogmsg, "BUZ: Rdr %02x Tone Code %02x On=%d(ms) Off=%d(ms) Count %d\n",
@@ -177,15 +180,8 @@ int
     break;
 
   case OOSDP_MSG_CHLNG:
-    // in this case 'aux' is a pointer to a marshalled message that's just been sent out the door.
     msg = (OSDP_MSG *) aux;
-    chlng_payload = (OSDP_SC_CHLNG *)(msg->data_payload);
-    sprintf (tlogmsg,
-"CHLNG: RND.A %02x%02x%02x%02x-%02x%02x%02x%02x\n",
-      chlng_payload->rnd_a [0], chlng_payload->rnd_a [1],
-      chlng_payload->rnd_a [2], chlng_payload->rnd_a [3],
-      chlng_payload->rnd_a [4], chlng_payload->rnd_a [5],
-      chlng_payload->rnd_a [6], chlng_payload->rnd_a [7]);
+    status = oosdp_print_message_CHLNG(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_COM:
@@ -270,7 +266,7 @@ int
     tlogmsg [0] = 0;
     if (msg->security_block_length > 0)
     {
-      strcat(tlogmsg, "(ISTATR message contents encrypted)\n");
+      strcat(tlogmsg, "  (ISTATR message contents encrypted)\n");
     };
     if (msg->security_block_length EQUALS 0)
     {
@@ -300,7 +296,7 @@ int
       msg = (OSDP_MSG *) aux;
       if (msg->security_block_length > 0)
       {
-        strcat(tlogmsg, "(KEYPAD message contents encrypted)\n");
+        strcat(tlogmsg, "  (KEYPAD message contents encrypted)\n");
       };
       if (msg->security_block_length EQUALS 0)
       {
@@ -322,7 +318,7 @@ int
 
       if (msg->security_block_length > 0)
       {
-        strcat(tlogmsg, "(KEYPAD message contents encrypted)\n");
+        strcat(tlogmsg, "  (KEYPAD message contents encrypted)\n");
       };
       if (msg->security_block_length EQUALS 0)
       {
@@ -344,75 +340,8 @@ int
     break;
 
   case OOSDP_MSG_LED:
-    {
-      char color_name_off [1024];
-      char color_name_on [1024];
-      int count;
-      int i;
-      int j;
-      OSDP_RDR_LED_CTL *led_ctl;
-      unsigned char *p;
-      char tmpstr [1024];
-
-
-      msg = (OSDP_MSG *) aux;
-
-      // count of LED command structures is inferred from message header
-      oh = (OSDP_HDR *)(msg->ptr);
-      count = oh->len_lsb + (oh->len_msb << 8);
-      count = count - 7;
-      count = count / sizeof (*led_ctl);
-
-      // msg body is one or more of these structures per section 3.10 of 2.1.7
-      led_ctl = (OSDP_RDR_LED_CTL *)(msg->data_payload);
-      tlogmsg [0] = 0;
-
-      if (msg->security_block_length > 0)
-      {
-        strcat(tlogmsg, "(LED message contents encrypted)\n");
-      };
-      if (msg->security_block_length EQUALS 0)
-      {
-        sprintf(tmpstr, "LED Control: %d. commands\n", count);
-        strcat(tlogmsg, tmpstr);
-        for (i=0; i<count; i++)
-        {
-        strcpy(color_name_on, osdp_led_color_lookup(led_ctl->temp_on_color));
-        strcpy(color_name_off, osdp_led_color_lookup(led_ctl->temp_off_color));
-        sprintf(tmpstr,
-" %02d Rdr %02d LED %02d Temp Ctl=%02d ON=%d(ms)-%s OFF %d(ms)-%s blinkTime %d.(ms)\n",
-          i, led_ctl->reader, led_ctl->led,
-          led_ctl->temp_control,
-          led_ctl->temp_on*100, color_name_on,
-          led_ctl->temp_off*100, color_name_off,
-          ((led_ctl->temp_timer_msb * 256) + led_ctl->temp_timer_lsb) * 100);
-        strcat(tlogmsg, tmpstr);
-        strcpy(color_name_on, osdp_led_color_lookup(led_ctl->perm_on_color));
-        strcpy(color_name_off, osdp_led_color_lookup(led_ctl->perm_off_color));
-        sprintf(tmpstr,
-"                  Perm Ctl=%02d ON %d(ms)-%s OFF %d(ms)-%s\n",
-          led_ctl->perm_control, led_ctl->perm_on_time*100, color_name_on,
-          led_ctl->perm_off_time, color_name_off);
-        strcat(tlogmsg, tmpstr);
-        if (context.verbosity > 3)
-        {
-          strcpy(tmpstr, "(Raw(LED):");
-          strcat(tlogmsg, tmpstr);
-          tmpstr [0] = 0;
-          p = (unsigned char *)led_ctl;
-          for (j=0; j<16; j++)
-          {
-            sprintf(tmpstr, " %02x", *p);
-            p++;
-            strcat(tlogmsg, tmpstr);
-          };
-          strcat(tlogmsg, ")\n");
-        };
-
-        led_ctl++; // increment structure pointer to next LED
-      };
-    };
-    };
+    msg = (OSDP_MSG *) aux;
+    status = oosdp_print_message_LED(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_LSTATR:
@@ -422,7 +351,7 @@ int
       msg = (OSDP_MSG *) aux;
       if (msg->security_block_length > 0)
       {
-        strcat(tlogmsg, "(LSTATR message contents encrypted)\n");
+        strcat(tlogmsg, "  (LSTATR message contents encrypted)\n");
       };
       if (msg->security_block_length EQUALS 0)
       {
@@ -629,6 +558,53 @@ fprintf(stderr, "count without CRAUTH(%ld) hdr: %04x\n", sizeof(*cr_auth), count
   case OOSDP_MSG_OSDP:
     osdp_command = *(unsigned char *)aux;
     hdr = 2+aux;
+
+    // dump as named in the IEC spec
+    msg = (OSDP_MSG *) aux;
+    osdp_wire_message = (OSDP_HDR *)(msg->ptr); // actual message off the wire
+    sprintf(tmpstr2, "SOM ADDR=%02x LEN_LSB=%02x LEN_MSB=%02x\n",
+      osdp_wire_message->addr, osdp_wire_message->len_lsb,
+      osdp_wire_message->len_msb);
+    strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+    sprintf(tlogmsg, "  CTRL=%02x (", osdp_wire_message->ctrl);
+    strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+    if (osdp_wire_message->ctrl & 0x08)
+    {
+      scb_present = 1;
+      sprintf(tlogmsg, "Security Control Block Present; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+    }
+    else
+    {
+      scb_present = 0;
+      sprintf(tlogmsg, "No Security Control Block; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+    };
+    if (scb_present)
+    {
+      sec_block = (char *)&(osdp_wire_message->command);
+      switch (sec_block[1])  // "sec block type"
+      {
+      case OSDP_SEC_SCS_11:
+        sprintf(tlogmsg, "SCS_11; ");
+        strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+        break;
+      case OSDP_SEC_SCS_12:
+        sprintf(tlogmsg, "SCS_12; ");
+        strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+        break;
+      default:
+fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
+        break;
+      };
+      if (sec_block [2] EQUALS OSDP_KEY_SCBK_D)
+        sprintf(tlogmsg, "Key=SCBK-D(default) ");
+      else
+        sprintf(tlogmsg, "Key=SCBK ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      strcat(tlogmsg, "\n");
+    };
+
     strcpy(tmpstr, osdp_command_reply_to_string(osdp_command, *(unsigned char *)(1+aux)));
     sprintf(tmpstr2, "Message: %s\n", tmpstr);
     strcpy(tmpstr, osdp_sec_block_dump(2+aux+sizeof(*hdr)-1));
@@ -645,9 +621,16 @@ fprintf(stderr, "count without CRAUTH(%ld) hdr: %04x\n", sizeof(*cr_auth), count
 
       // assume one only
 
-      sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x\n",
-        out_message->output_number, out_message->control_code,
-        out_message->timer_lsb, out_message->timer_msb);
+      if (msg->security_block_length > 0)
+      {
+        strcat(tlogmsg, "  (OUT message contents encrypted)\n");
+      };
+      if (msg->security_block_length EQUALS 0)
+      {
+        sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x\n",
+          out_message->output_number, out_message->control_code,
+          out_message->timer_lsb, out_message->timer_msb);
+      };
     };
     break;
 
@@ -734,38 +717,7 @@ fprintf(stderr, "count without CRAUTH(%ld) hdr: %04x\n", sizeof(*cr_auth), count
 
   case OOSDP_MSG_PD_IDENT:
     msg = (OSDP_MSG *) aux;
-    oh = (OSDP_HDR *)(msg->ptr);
-    sprintf (filename, 
-      "/opt/osdp-conformance/run/CP/ident_from_PD%02x.json",
-      (0x7f&oh->addr));
-    identf = fopen (filename, "w");
-    if (identf != NULL)
-    {
-      fprintf (identf, "{\n");
-      fprintf (identf, "  \"#\" : \"PD address %02x\",\n",
-        (0x7f&oh->addr));
-      fprintf (identf, "  \"OUI\" : \"%02x-%02x-%02x\",\n",
-        *(msg->data_payload + 0), *(msg->data_payload + 1),
-        *(msg->data_payload + 2));
-      fprintf (identf, "  \"version\" : \"model-%d-ver-%d\",\n",
-        *(msg->data_payload + 3), *(msg->data_payload + 4));
-      fprintf (identf, "  \"serial\" : \"%02x%02x%02x%02x\",\n",
-        *(msg->data_payload + 5), *(msg->data_payload + 6),
-        *(msg->data_payload + 7), *(msg->data_payload + 8));
-      fprintf (identf, "  \"firmware\" : \"%d.%d-build-%d\"\n",
-        *(msg->data_payload + 9), *(msg->data_payload + 10),
-        *(msg->data_payload + 11));
-      fprintf (identf, "}\n");
-      fclose (identf);
-    };
-    sprintf (tlogmsg, 
-"  PD Identification\n    OUI %02x-%02x-%02x Model %d Ver %d SN %02x%02x%02x%02x FW %d.%d Build %d\n",
-        *(msg->data_payload + 0), *(msg->data_payload + 1),
-        *(msg->data_payload + 2), *(msg->data_payload + 3),
-        *(msg->data_payload + 4), *(msg->data_payload + 5),
-        *(msg->data_payload + 6), *(msg->data_payload + 7),
-        *(msg->data_payload + 8), *(msg->data_payload + 9),
-        *(msg->data_payload + 10), *(msg->data_payload + 11));
+    status = oosdp_print_message_PD_IDENT(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_PKT_STATS:
@@ -776,36 +728,7 @@ fprintf(stderr, "count without CRAUTH(%ld) hdr: %04x\n", sizeof(*cr_auth), count
 
   case OOSDP_MSG_XREAD:
     msg = (OSDP_MSG *) aux;
-
-    // default...
-
-    sprintf(tlogmsg, "Extended Read: %02x %02x %02x %02x\n",
-      *(msg->data_payload + 0), *(msg->data_payload + 1),
-      *(msg->data_payload + 2), *(msg->data_payload + 3));
-
-    // if we know it's 7.25.3
-
-    if (*(msg->data_payload + 0) EQUALS 0)
-    {
-      if (*(msg->data_payload + 1) EQUALS 1)
-      {
-        sprintf(tlogmsg,
-"Extended Read: osdp_PR00REQR Current Mode %02x Configuration %02x\n",
-          *(msg->data_payload + 2), *(msg->data_payload + 3));
-      };
-    };
-
-    // if we know it's 7.25.5
-
-    if (*(msg->data_payload + 0) EQUALS 1)
-    {
-      if (*(msg->data_payload + 1) EQUALS 1)
-      {
-        sprintf(tlogmsg,
-"Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
-          *(msg->data_payload + 2), *(msg->data_payload + 3));
-      };
-    };
+    status = oosdp_print_message_XRD(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_XWRITE:

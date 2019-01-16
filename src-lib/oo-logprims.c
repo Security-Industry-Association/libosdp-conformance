@@ -30,6 +30,96 @@ extern char trace_in_buffer [];
 extern char trace_out_buffer [];
 
 
+int
+  oosdp_message_header_print
+  (OSDP_CONTEXT *ctx,
+  OSDP_MSG *msg,
+  char *tlogmsg)
+
+{ /* osdp_message_header_print */
+
+  OSDP_HDR *osdp_wire_message;
+  int scb_present;
+  char *sec_block;
+  int status;
+  char tmpstr2 [1024];
+
+
+  status = ST_OK;
+  // dump as named in the IEC spec
+  osdp_wire_message = (OSDP_HDR *)(msg->ptr); // actual message off the wire
+  sprintf(tmpstr2, "    SOM ADDR=%02x LEN_LSB=%02x LEN_MSB=%02x",
+    osdp_wire_message->addr, osdp_wire_message->len_lsb,
+    osdp_wire_message->len_msb);
+  strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+  sprintf(tmpstr2, "  CTRL=%02x", osdp_wire_message->ctrl);
+  strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+  if (osdp_wire_message->ctrl & 0x08)
+  {
+    scb_present = 1;
+    sprintf(tmpstr2, "[SCB; ");
+    strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+  }
+  else
+  {
+    scb_present = 0;
+    sprintf(tmpstr2, " "); //"No Security Control Block; ");
+    strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+  };
+  if (scb_present)
+  {
+    sec_block = (char *)&(osdp_wire_message->command);
+    switch (sec_block[1])  // "sec block type"
+    {
+    case OSDP_SEC_SCS_11:
+      sprintf(tmpstr2, "SCS_11; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    case OSDP_SEC_SCS_12:
+      sprintf(tmpstr2, "SCS_12; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    case OSDP_SEC_SCS_13:
+      sprintf(tmpstr2, "SCS_13; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    case OSDP_SEC_SCS_14:
+      sprintf(tmpstr2, "SCS_14; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    case OSDP_SEC_SCS_15:
+      sprintf(tmpstr2, "SCS_15; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    case OSDP_SEC_SCS_16:
+      sprintf(tmpstr2, "SCS_16; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    case OSDP_SEC_SCS_17:
+      sprintf(tmpstr2, "SCS_17; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    case OSDP_SEC_SCS_18:
+      sprintf(tmpstr2, "SCS_18; ");
+      strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      break;
+    default:
+fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
+      break;
+    };
+    if (sec_block [2] EQUALS OSDP_KEY_SCBK_D)
+      sprintf(tmpstr2, "Key=SCBK-D(default)");
+    else
+      sprintf(tmpstr2, "Key=SCBK");
+    strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+    strcat(tlogmsg, "]");
+  };
+
+  return(status);
+
+} /* osdp_message_header_print */
+
+
 char
   *osdp_led_color_lookup
     (unsigned char led_color_number)
