@@ -155,8 +155,7 @@ fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
 
 int
   initialize_osdp
-    (OSDP_CONTEXT
-      *context)
+    (OSDP_CONTEXT *context)
 
 { /* initialize */
 
@@ -199,6 +198,7 @@ int
   context->verbosity = 3;
 
   context->q = osdp_command_queue;
+  context->enable_poll = 1;
 
   m_version_minor = OSDP_VERSION_MINOR;
   m_build = OSDP_VERSION_BUILD;

@@ -78,6 +78,8 @@ int
     {
       send_poll = 0;
     };
+    if (!(context->enable_poll))
+      send_poll = 0;
   if (send_poll)
   {
     current_length = 0;

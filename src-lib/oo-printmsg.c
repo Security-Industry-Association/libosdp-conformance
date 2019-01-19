@@ -211,6 +211,7 @@ int
 
 
   status = ST_OK;
+  tlogmsg [0] = 0;
   /*
     this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
   */
@@ -238,7 +239,9 @@ int
       sprintf(raw_fmt, "unknown(%d)", *(osdp_msg->data_payload+1));
 
     bits = *(osdp_msg->data_payload+2) + ((*(osdp_msg->data_payload+3))<<8);
-    fprintf(ctx->log, "Raw data: Format %s (Reader %d) %d bits\n", raw_fmt, *(osdp_msg->data_payload+0), bits);
+    sprintf(tlogmsg,
+      "Raw data: Format %s (Reader %d) %d bits",
+      raw_fmt, *(osdp_msg->data_payload+0), bits);
 
     hstr [0] = 0;
     octet_count = (bits+7)/8;

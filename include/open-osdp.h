@@ -402,6 +402,7 @@ typedef struct osdp_context
   // configuration
   int disable_certificate_checking;
   int enable_secure_channel; // 1=yes, 2=yes and use default
+  int enable_poll; // usuall 1 for enable, 0=disable
   char fqdn [1024];
   char log_path [1024];
   char serial_speed [1024];

@@ -101,6 +101,16 @@ int
       fprintf (stderr, "command was %s\n", current_command);
   };
 
+// experimental "polling" toggles polling enabled
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "polling"))
+    {
+      ctx->enable_poll = 1 ^ ctx->enable_poll;
+fprintf(ctx->log, "enable_polling now %x\n", ctx->enable_poll);
+    };
+  };
   // command bio_read
 
   if (status EQUALS ST_OK)
