@@ -199,10 +199,12 @@ int
 { /* oosdp_print_message_RAW */
 
   int bits;
+  int count;
   unsigned d;
   char hstr [1024];
   int i;
   int octet_count;
+  OSDP_HDR *oh;
   char raw_fmt [1024];
   int status;
   char tstr [32];
@@ -212,27 +214,44 @@ int
   /*
     this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
   */
-
-  strcpy(raw_fmt, "unspecified");
-  if (*(osdp_msg->data_payload+1) EQUALS 1)
-    strcpy(raw_fmt, "P/data/P");
-  if (*(osdp_msg->data_payload+1) > 1)
-    sprintf(raw_fmt, "unknown(%d)", *(osdp_msg->data_payload+1));
-
-  bits = *(osdp_msg->data_payload+2) + ((*(osdp_msg->data_payload+3))<<8);
-  fprintf(ctx->log, "Raw data: Format %s (Reader %d) %d bits\n", raw_fmt, *(osdp_msg->data_payload+0), bits);
-
-  hstr [0] = 0;
-  octet_count = (bits+7)/8;
-  for (i=0; i<octet_count; i++)
+  if (osdp_msg->security_block_length > 0)
   {
-    d = *(unsigned char *)(osdp_msg->data_payload+4+i);
-    sprintf(tstr, "%02x", d);
-    strcat(hstr, tstr);
+    oh = (OSDP_HDR *)(osdp_msg->ptr);
+    tlogmsg [0] = 0;
+    count = oh->len_lsb + (oh->len_msb << 8);
+    count = count - 8;
+    for (i=0; i<count; i++)
+    {
+      d = *(unsigned char *)(osdp_msg->data_payload+i);
+      sprintf(tstr, "%02x", d);
+      strcat(hstr, tstr);
+    };
+    sprintf(tlogmsg,
+      "  Encrypted RAW Payload (%d. bytes) %s\n", count, hstr);
+  }
+  else
+  {
+    strcpy(raw_fmt, "unspecified");
+    if (*(osdp_msg->data_payload+1) EQUALS 1)
+      strcpy(raw_fmt, "P/data/P");
+    if (*(osdp_msg->data_payload+1) > 1)
+      sprintf(raw_fmt, "unknown(%d)", *(osdp_msg->data_payload+1));
+
+    bits = *(osdp_msg->data_payload+2) + ((*(osdp_msg->data_payload+3))<<8);
+    fprintf(ctx->log, "Raw data: Format %s (Reader %d) %d bits\n", raw_fmt, *(osdp_msg->data_payload+0), bits);
+
+    hstr [0] = 0;
+    octet_count = (bits+7)/8;
+    for (i=0; i<octet_count; i++)
+    {
+      d = *(unsigned char *)(osdp_msg->data_payload+4+i);
+      sprintf(tstr, "%02x", d);
+      strcat(hstr, tstr);
+    };
+    fprintf (ctx->log,
+      "  RAW CARD DATA %s\n",
+      hstr);
   };
-  fprintf (ctx->log,
-    "  RAW CARD DATA %s\n",
-    hstr);
 
   return(status);
 

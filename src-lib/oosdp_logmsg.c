@@ -114,10 +114,13 @@ int
   int count;
   OSDP_MSC_CR_AUTH *cr_auth;
   OSDP_MSC_CR_AUTH_RESPONSE *cr_auth_response;
+  int d;
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
   OSDP_MSC_GETPIV *get_piv;
   OSDP_HDR *hdr;
+  char hstr [1024];
+  int i;
   int idx;
   OSDP_MSC_STATUS *msc_status;
   OSDP_MSG *msg;
@@ -154,10 +157,28 @@ int
 
   case OOSDP_MSG_BUZ:
     msg = (OSDP_MSG *) aux;
-    sprintf(tlogmsg, "BUZ: Rdr %02x Tone Code %02x On=%d(ms) Off=%d(ms) Count %d\n",
-      *(msg->data_payload + 0), *(msg->data_payload + 1),
-      100 * *(msg->data_payload + 2), 100 * *(msg->data_payload + 3),
-      *(msg->data_payload + 4));
+    if (msg->security_block_length > 0)
+    {
+      oh = (OSDP_HDR *)(msg->ptr);
+      tlogmsg [0] = 0;
+      count = oh->len_lsb + (oh->len_msb << 8);
+      count = count - 8;
+      for (i=0; i<count; i++)
+      {
+        d = *(unsigned char *)(msg->data_payload+i);
+        sprintf(tmpstr, "%02x", d);
+        strcat(hstr, tmpstr);
+      };
+      sprintf(tlogmsg,
+        "  Encrypted BUZ Payload (%d. bytes) %s\n", count, hstr);
+    }
+    else
+    {
+      sprintf(tlogmsg, "BUZ: Rdr %02x Tone Code %02x On=%d(ms) Off=%d(ms) Count %d\n",
+        *(msg->data_payload + 0), *(msg->data_payload + 1),
+        100 * *(msg->data_payload + 2), 100 * *(msg->data_payload + 3),
+        *(msg->data_payload + 4));
+    };
     break;
 
   case OOSDP_MSG_CCRYPT:
