@@ -24,9 +24,13 @@
 #include <termios.h>
 #include <time.h>
 
+#ifndef json_t
+#include <jansson.h>
+#endif
+
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR ( 4)
-#define OSDP_VERSION_BUILD ( 5)
+#define OSDP_VERSION_MINOR (41)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -176,7 +180,10 @@
 #define OSDP_CMDB_CHALLENGE      (1033)
 #define OSDP_CMDB_XWRITE         (1034)
 #define OSDP_CMDB_KEEPACTIVE     (1035)
-
+#define OSDP_CMDB_BIOREAD        (1036)
+#define OSDP_CMDB_POLLING        (1037)
+#define OSDP_CMDB_RESET          (1038)
+#define OSDP_CMDB_BIOREADER      (1039)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -950,9 +957,9 @@ void dump_buffer_log (OSDP_CONTEXT *ctx, char * tag, unsigned char *b, int l);
 void dump_buffer_stderr (char * tag, unsigned char *b, int l);
 int enqueue_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int fasc_n_75_to_string (char * s, long int *sample_1);
-int next_sequence (OSDP_CONTEXT *ctx);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
+int next_sequence (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
 int osdp_awaiting_response(OSDP_CONTEXT *ctx);
@@ -963,11 +970,13 @@ int osdp_build_secure_message (OSDP_CONTEXT *ctx, unsigned char *buf, int *updat
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
+int osdp_command_match (OSDP_CONTEXT *ctx, json_t *root, char *command, int *command_id);
 char *osdp_command_reply_to_string (unsigned char cmdrep, int role);
-void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
-void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
 void osdp_create_keys (OSDP_CONTEXT *ctx);
+void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
+void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
+
 int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
 int osdp_filetransfer_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FILETRANSFER *msg, unsigned short int *fragsize, unsigned int *offset);
 int osdp_ftstat_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *msg);

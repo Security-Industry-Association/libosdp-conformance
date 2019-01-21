@@ -401,6 +401,7 @@ fprintf(stderr, "count less main hdr: %04x\n", count);
       else
         count = count - 1;
 fprintf(stderr, "count less CRC/Checksum: %04x\n", count);
+      count = count - 3 - 1; // less OUI and command
 
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
       process_as_special = 0;
@@ -424,11 +425,6 @@ fprintf(stderr, "count less CRC/Checksum: %04x\n", count);
         case OSDP_CMD_MSC_CR_AUTH:
           {
             cr_auth = (OSDP_MSC_CR_AUTH *)(msg->data_payload);
-
-            // adjust buffer count so dump is accurate
-            count = count - sizeof(cr_auth->vendor_code);
-            count = count - sizeof(cr_auth->command_id);
-fprintf(stderr, "count without CRAUTH(%ld) hdr: %04x\n", sizeof(*cr_auth), count);
 
             sprintf(tmps,
 "MSC CRAUTH\n  TotSize:%d. Offset:%d FragSize: %d",

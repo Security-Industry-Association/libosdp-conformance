@@ -40,10 +40,8 @@ extern OSDP_PARAMETERS
 
 int
   read_command
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_COMMAND
-      *cmd)
+    (OSDP_CONTEXT *ctx,
+    OSDP_COMMAND *cmd)
 
 { /* read_command */
 
@@ -93,35 +91,41 @@ int
   };
   if (status EQUALS ST_OK)
   {
-    value = json_object_get (root, "command");
-    strcpy (current_command, json_string_value (value));
-    if (!json_is_string (value))
-      status = ST_CMD_INVALID;
+    status = osdp_command_match(ctx, root, current_command, &(cmd->command));
     if (ctx->verbosity > 3)
       fprintf (stderr, "command was %s\n", current_command);
   };
+  switch (cmd->command)
+  {
+  // command bio_read send bio read template command
+
+  case OSDP_CMDB_BIOREAD:
+    cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
+    status = send_bio_read_template (ctx);
+    break;
 
 // experimental "polling" toggles polling enabled
+  case OSDP_CMDB_POLLING:
+    ctx->enable_poll = 1 ^ ctx->enable_poll;
+    fprintf(ctx->log, "enable_polling now %x\n", ctx->enable_poll);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
 
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "polling"))
-    {
-      ctx->enable_poll = 1 ^ ctx->enable_poll;
-fprintf(ctx->log, "enable_polling now %x\n", ctx->enable_poll);
-    };
+  // command reset - reset "link" i.e. sequence number
+
+  case OSDP_CMDB_RESET:
+    ctx->next_sequence = 0;
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
+  default:
+    fprintf(stderr, "command not processed in switch (%d.)\n", cmd->command);
+    status = ST_OK; // ok to proceed with old way
+    break;
   };
-  // command bio_read
-
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "bio_read"))
-    {
-      cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
-
-      status = send_bio_read_template (ctx);
-    };
-  };
+  value = json_object_get (root, "command");
+  strcpy (current_command, json_string_value (value));
+  if (!json_is_string (value)) status = ST_CMD_INVALID;
 
   // command busy
 

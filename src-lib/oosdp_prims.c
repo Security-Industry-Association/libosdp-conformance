@@ -39,6 +39,78 @@ void
 } /* osdp_array_to_quadByte */
 
 
+int
+  osdp_awaiting_response
+    (OSDP_CONTEXT *ctx)
+
+{ /* osdp_awaiting_response */
+
+  int ret;
+
+
+  ret = 1;
+
+  if (ctx->last_was_processed)
+  {
+    ret = 0;
+  }
+  else
+  {
+    if (ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED)
+    {
+      ret = 0; // if no response but timeout, call it "not waiting"
+    };
+  };
+  return (ret);
+
+} /* osdp_awaiting_response */
+
+
+int
+  osdp_command_match
+    (OSDP_CONTEXT *ctx,
+    json_t *root,
+    char *command,
+    int *command_id)
+
+{ /* osdp_command_match */
+
+  int ret_cmd;
+  int status;
+  json_t *value;
+
+
+  status = ST_CMD_UNKNOWN;
+  ret_cmd = -1;
+  value = json_object_get (root, "command");
+  if (!json_is_string (value))
+    status = ST_CMD_INVALID;
+  else
+  {
+    status = ST_OK;
+    strcpy (command, json_string_value (value));
+  };
+
+  if (status EQUALS ST_OK)
+  {
+    ret_cmd = -1;
+    status = ST_CMD_UNKNOWN;
+    if (0 EQUALS strcmp(command, "bio_read"))
+      ret_cmd = OSDP_CMDB_BIOREAD;
+    if (0 EQUALS strcmp(command, "polling"))
+      ret_cmd = OSDP_CMDB_POLLING;
+    if (0 EQUALS strcmp(command, "reset"))
+      ret_cmd = OSDP_CMDB_RESET;
+    if (ret_cmd != -1)
+      status = ST_OK;
+  };
+
+  *command_id = ret_cmd;
+  return(status);
+
+} /* osdp_command_match */
+
+
 // direction is the CP/PD bit e.g. 0 or 128
 
 char
@@ -291,6 +363,39 @@ int osdp_string_to_buffer
 }
 
 
+// osdp_timer_start - start a timer.  uses preset values
+
+int osdp_timer_start
+   (OSDP_CONTEXT *ctx,
+   int timer_index)
+
+{ /* osdp_timer_start */
+
+  int status;
+
+
+  status = ST_OK;
+  if ((timer_index < 0) || (timer_index > OSDP_TIMER_MAX))
+    status = ST_OSDP_BAD_TIMER;
+  if (status EQUALS ST_OK)
+  {
+    if (ctx->timer [timer_index].i_sec > 0)
+    {
+      ctx->timer [timer_index].current_seconds = ctx->timer [timer_index].i_sec;
+      ctx->timer [timer_index].status = OSDP_TIMER_RESTARTED;
+    };
+    if (ctx->timer [timer_index].i_nsec > 0)
+    {
+      ctx->timer [timer_index].current_nanoseconds = ctx->timer [timer_index].i_nsec;
+      ctx->timer [timer_index].status = OSDP_TIMER_RESTARTED;
+    };
+  };
+
+  return (status);
+
+} /* osdp_timer_start */
+
+
 int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds,
       unsigned char *errdeets,
@@ -346,57 +451,4 @@ void dump_buffer_stderr (char * tag, unsigned char *b, int l)
   fprintf(stderr, "\n");
   fflush(stderr);
 }
-
-int osdp_awaiting_response (OSDP_CONTEXT *ctx)
-{
-  int ret;
-
-  ret = 1;
-
-  if (ctx->last_was_processed)
-  {
-    ret = 0;
-  }
-  else
-  {
-    if (ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED)
-    {
-      ret = 0; // if no response but timeout, call it "not waiting"
-    };
-  };
-  return (ret);
-}
-
-
-// osdp_timer_start - start a timer.  uses preset values
-
-int osdp_timer_start
-   (OSDP_CONTEXT *ctx,
-   int timer_index)
-
-{ /* osdp_timer_start */
-
-  int status;
-
-
-  status = ST_OK;
-  if ((timer_index < 0) || (timer_index > OSDP_TIMER_MAX))
-    status = ST_OSDP_BAD_TIMER;
-  if (status EQUALS ST_OK)
-  {
-    if (ctx->timer [timer_index].i_sec > 0)
-    {
-      ctx->timer [timer_index].current_seconds = ctx->timer [timer_index].i_sec;
-      ctx->timer [timer_index].status = OSDP_TIMER_RESTARTED;
-    };
-    if (ctx->timer [timer_index].i_nsec > 0)
-    {
-      ctx->timer [timer_index].current_nanoseconds = ctx->timer [timer_index].i_nsec;
-      ctx->timer [timer_index].status = OSDP_TIMER_RESTARTED;
-    };
-  };
-
-  return (status);
-
-} /* osdp_timer_start */
 
