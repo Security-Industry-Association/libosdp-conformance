@@ -401,7 +401,6 @@ fprintf(stderr, "count less main hdr: %04x\n", count);
       else
         count = count - 1;
 fprintf(stderr, "count less CRC/Checksum: %04x\n", count);
-      count = count - 3 - 1; // less OUI and command
 
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
       process_as_special = 0;
@@ -475,6 +474,7 @@ fprintf(stderr, "count less CRC/Checksum: %04x\n", count);
           break;
         };
       }; 
+      count = count - 4; // less OUI (3) and command (1)
       if (count > 0)
       {
         dump_buffer_log(&context, "  Raw(MFG): ", &(mrep->data), count);
@@ -640,7 +640,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
 
       if (msg->security_block_length > 0)
       {
-        strcat(tlogmsg, "  (OUT message contents encrypted)\n");
+        sprintf(tlogmsg, "  (OUT message contents encrypted)\n");
       };
       if (msg->security_block_length EQUALS 0)
       {

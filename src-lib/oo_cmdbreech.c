@@ -124,8 +124,9 @@ int
     break;
   };
   value = json_object_get (root, "command");
-  strcpy (current_command, json_string_value (value));
   if (!json_is_string (value)) status = ST_CMD_INVALID;
+  if (status EQUALS ST_OK)
+    strcpy (current_command, json_string_value (value));
 
   // command busy
 

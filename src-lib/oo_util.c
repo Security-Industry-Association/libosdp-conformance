@@ -1513,10 +1513,8 @@ int
 
 int
   process_osdp_message
-    (OSDP_CONTEXT
-      *context,
-     OSDP_MSG
-       *msg)
+    (OSDP_CONTEXT *context,
+     OSDP_MSG *msg)
 
 { /* process_osdp_message */
 
@@ -1724,10 +1722,8 @@ int
         They switch on or off.  They don't blink.
       */
       {
-        int
-          count;
-        OSDP_RDR_LED_CTL
-          *led_ctl;
+        int count;
+        OSDP_RDR_LED_CTL *led_ctl;
 
         status = ST_OK;
         oh = (OSDP_HDR *)(msg->ptr);
@@ -1930,8 +1926,15 @@ fprintf(stderr, "lstat 1684\n");
 
       if (context->verbosity > 2)
       {
-        sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
-          *(0+msg->data_payload), *(1+msg->data_payload));
+        count = oh->len_lsb + (oh->len_msb << 8);
+        count = count - 6 - 2; // less header less CRC
+        if (count > 1)
+          sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
+            *(0+msg->data_payload), *(1+msg->data_payload));
+        else
+          sprintf (tlogmsg, "osdp_NAK: Error Code %02x",
+            *(0+msg->data_payload));
+
         fprintf (context->log, "%s\n", tlogmsg);
         switch(*(0+msg->data_payload))
         {
