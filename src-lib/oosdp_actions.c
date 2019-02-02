@@ -1,7 +1,7 @@
 /*
   oosdp-actions - open osdp action routines
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2019 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -787,7 +787,7 @@ int
     osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
     processed = 0;
     raw_data = msg->data_payload + 4;
-    dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, 16);
+    dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, msg->data_length);
     if (msg->security_block_length > 0)
     {
       fprintf (ctx->log, "(RAW card data contents encrypted)\n");
@@ -796,7 +796,7 @@ int
     {
       char raw_fmt [1024];
       /*
-        this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
+        this processes an osdp_RAW.  byte 0=rdr, b1=fmt, 2-3 are length (2=lsb)
       */
 
       strcpy(raw_fmt, "unspecified");

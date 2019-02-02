@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# assumes you did git clone https://github.com/kokke/tiny-AES-c in the same place you cloned libosdp-conformance
+# assumes you did git clone https://github.com/kokke/tiny-AES-c in the same
+# place you cloned libosdp-conformance
 # assumes you have read/write access to create /opt/osdp-conformance
 
 mkdir -p /opt/osdp-conformance/include

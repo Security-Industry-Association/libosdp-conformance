@@ -203,7 +203,6 @@ int
   unsigned d;
   char hstr [1024];
   int i;
-  int octet_count;
   OSDP_HDR *oh;
   char raw_fmt [1024];
   int status;
@@ -211,16 +210,18 @@ int
 
 
   status = ST_OK;
+  oh = (OSDP_HDR *)(osdp_msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 8;  // payload
+  count = count - 3; // 1 for reader number, 2 for no. of bits
+  hstr [0] = 0;
   tlogmsg [0] = 0;
   /*
     this processes an osdp_RAW.  byte 0=rdr, b1=format, 2-3 are length (2=lsb)
   */
   if (osdp_msg->security_block_length > 0)
   {
-    oh = (OSDP_HDR *)(osdp_msg->ptr);
     tlogmsg [0] = 0;
-    count = oh->len_lsb + (oh->len_msb << 8);
-    count = count - 8;
     for (i=0; i<count; i++)
     {
       d = *(unsigned char *)(osdp_msg->data_payload+i);
@@ -240,20 +241,18 @@ int
 
     bits = *(osdp_msg->data_payload+2) + ((*(osdp_msg->data_payload+3))<<8);
     sprintf(tlogmsg,
-      "Raw data: Format %s (Reader %d) %d bits",
-      raw_fmt, *(osdp_msg->data_payload+0), bits);
+      "Raw data: Format %s (Reader %d) %d bits (%d bytes in payload)\n",
+      raw_fmt, *(osdp_msg->data_payload+0), bits, count);
 
     hstr [0] = 0;
-    octet_count = (bits+7)/8;
-    for (i=0; i<octet_count; i++)
+    for (i=0; i<count; i++)
     {
       d = *(unsigned char *)(osdp_msg->data_payload+4+i);
       sprintf(tstr, "%02x", d);
       strcat(hstr, tstr);
     };
-    fprintf (ctx->log,
-      "  RAW CARD DATA %s\n",
-      hstr);
+    sprintf(tstr, "  RAW CARD DATA %s\n", hstr);
+    strcat(tlogmsg, tstr);
   };
 
   return(status);

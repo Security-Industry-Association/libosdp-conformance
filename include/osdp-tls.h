@@ -1,6 +1,7 @@
 /*
   osdp-tls.h - defitions for osdp-tls
 
+  (C)Copyright 2017-2019 Smithee Solutions LLC
   (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");

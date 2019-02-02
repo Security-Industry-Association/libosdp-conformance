@@ -1,8 +1,7 @@
-//#define SAMPLE 1
 /*
   oo_util - open osdp utility routines
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2019 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -688,7 +687,7 @@ int
   {
     m->check_size = 1;
     m_check = OSDP_CHECKSUM; // Issue #11
-    if (context->verbosity > 3)
+    if (context->verbosity > 9)
       fprintf(context->log, "m_check set to CHECKSUM (parse)\n");
     osdp_conformance.checksum.test_status =
       OCONFORM_EXERCISED;
@@ -1365,6 +1364,7 @@ int
 
 
   status = ST_OK;
+  memset(tlogmsg, 0, sizeof(tlogmsg));
   if (msg->direction EQUALS 0)
   {
     switch (msg->msg_cmd)
