@@ -81,7 +81,7 @@ int
 
 
   status = ST_CMD_UNKNOWN;
-  ret_cmd = -1;
+  ret_cmd = OSDP_CMDB_NOOP; // no-op if not known
   value = json_object_get (root, "command");
   if (!json_is_string (value))
     status = ST_CMD_INVALID;
@@ -93,7 +93,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    ret_cmd = -1;
+    ret_cmd = OSDP_CMDB_NOOP;
     status = ST_CMD_UNKNOWN;
     if (0 EQUALS strcmp(command, "bio_read"))
       ret_cmd = OSDP_CMDB_BIOREAD;

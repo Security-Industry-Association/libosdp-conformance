@@ -421,8 +421,7 @@ void
 
 { /* dump_conformance */
 
-  char
-    *profile_tag;
+  char *profile_tag;
 
 
   oconf->pass = 0;
@@ -434,7 +433,7 @@ void
     role_tag = "CP";
   else
     role_tag = "PD";
-  profile_tag = "";
+  profile_tag = "Basic"; // really should constrain tests to use etc.
 
   skip_conformance_tests (ctx, oconf);
 
@@ -564,7 +563,7 @@ void
 "2-14-2 SCB absent                         %s",
     conformance_status (oconf->scb_absent.test_status)));
   LOG_REPORT ((log_string,
-"2-14-3 SCB absent                         %s",
+"2-14-3 Rogue Secure Poll                  %s",
     conformance_status (oconf->rogue_secure_poll.test_status)));
   LOG_REPORT ((log_string,
 "2-15-1 Incoming C/R valid                 %s",

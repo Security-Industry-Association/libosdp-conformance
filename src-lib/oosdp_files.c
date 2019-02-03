@@ -179,6 +179,7 @@ int
   time_t current_time;
   int i;
   int j;
+  extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
   extern OSDP_BUFFER osdp_buf;
   FILE *sf;
   char statfile [1024];
@@ -214,6 +215,9 @@ int
     fprintf (sf,
 "          \"last_update\" : \"%s\",\n",
       current_date_string);
+    fprintf(sf,
+"                       mmt: %d\n",
+      osdp_conformance.conforming_messages);
     if (strlen (ctx->text) > 0)
       fprintf (sf,
 "                 \"text\" : \"%s\",\n",
@@ -229,19 +233,23 @@ int
     fprintf (sf,
 "           \"pd_address\" : \"%02x\",\n",
       p_card.addr);
-    fprintf (sf,       "\"max_pd_send\" : \"%d\",\n",
-      ctx->max_message);
-    fprintf (sf, "         \"cp_polls\" : \"%d\",\n",
-      ctx->cp_polls);
-    fprintf (sf, "          \"pd_acks\" : \"%d\",\n",
-      ctx->pd_acks);
-    fprintf (sf, "           \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
-    fprintf (sf,
-"           \"crc_errs\" : \"%d\",\n", ctx->crc_errs);
-    fprintf (sf,
-"           \"checksum_errs\" : \"%d\",\n", ctx->checksum_errs);
     fprintf(sf,
-"    \"buffer-overflows\" : \"%d\",\n",
+"          \"max_pd_send\" : \"%d\",\n",
+      ctx->max_message);
+    fprintf(sf,
+"             \"cp_polls\" : \"%d\",\n",
+      ctx->cp_polls);
+    fprintf(sf,
+"              \"pd_acks\" : \"%d\",\n",
+      ctx->pd_acks);
+    fprintf(sf,
+"            \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
+    fprintf (sf,
+"             \"crc_errs\" : \"%d\",\n", ctx->crc_errs);
+    fprintf (sf,
+"        \"checksum_errs\" : \"%d\",\n", ctx->checksum_errs);
+    fprintf(sf,
+"     \"buffer-overflows\" : \"%d\",\n",
       osdp_buf.overflow);
     for (j=0; j<OSDP_MAX_LED; j++)
     {

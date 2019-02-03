@@ -145,6 +145,7 @@
 
 // commands used through breech-loading interface
 // by convention starts above 1000
+#define OSDP_CMDB_NOOP           (-1)
 #define OSDP_CMDB_DUMP_STATUS    (1001)
 #define OSDP_CMDB_SEND_POLL      (1002)
 #define OSDP_CMDB_IDENT          (1003)
