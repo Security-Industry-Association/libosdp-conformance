@@ -468,7 +468,7 @@ void
   LOG_REPORT ((log_string,
     "Testing %s\n", role_tag));
   LOG_REPORT ((log_string, "Conformance Tester Version: %d.%d Build %d\n",
-    ctx->fw_version [0], ctx->fw_version [1], ctx->fw_version [2]));
+    OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD));
 
   osdp_report (ctx);
 
