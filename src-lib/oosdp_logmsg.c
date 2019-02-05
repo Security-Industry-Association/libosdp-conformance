@@ -1,4 +1,5 @@
 /*
+  (C)Copyright 2017-2019 Smithee Solutions LLC
 */
 #define OSDP_CMD_MSC_GETPIV  (0x10)
 #define OSDP_CMD_MSC_KP_ACT  (0x13)

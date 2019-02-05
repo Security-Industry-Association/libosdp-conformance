@@ -1,3 +1,6 @@
+/*
+  (C)Copyright 2017-2019 Smithee Solutions LLC
+*/
 #include <stdio.h>
 #include <string.h>
 //#include <time.h>

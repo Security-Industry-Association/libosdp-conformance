@@ -1,7 +1,7 @@
 /*
   oosdp_files - osdp file io/
 
-  (C)2017-2018 Smithee Solutions LLC
+  (C)2017-2019 Smithee Solutions LLC
   (C)2016 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association

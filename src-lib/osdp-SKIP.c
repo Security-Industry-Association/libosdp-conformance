@@ -1,3 +1,6 @@
+/*
+  (C)Copyright 2017-2019 Smithee Solutions LLC
+*/
 void
   skip_conformance_tests
     (OSDP_CONTEXT *ctx,

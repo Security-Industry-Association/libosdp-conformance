@@ -244,8 +244,9 @@ int
       if (ctx->verbosity > 2) \
         strcpy (tlogmsg2, osdp_command_reply_to_string(command, ctx->role)); /* osdp_tag */ \
       osdp_conformance.conformance_test.test_status = OCONFORM_EXERCISED; \
-      if (osdp_conformance.conforming_messages < PARAM_MMT) \
-        osdp_conformance.conforming_messages ++;
+      if (osdp_conformance.conforming_messages < PARAM_MMT) { \
+if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conformance.conforming_messages); \
+        osdp_conformance.conforming_messages ++;};
 
     case OSDP_BUZ:
 #ifndef NOSQUISH
@@ -404,8 +405,7 @@ fprintf(stderr, "lstat 335\n");
         strcpy (tlogmsg2, "osdp_POLL");
 
       ctx->cp_polls ++;
-      if (osdp_conformance.conforming_messages < PARAM_MMT)
-        osdp_conformance.conforming_messages ++;
+      // this is used for parsing so don't score conforming messages here.
       break;
 
     case OSDP_RSTAT:
@@ -708,9 +708,6 @@ int
     // now that we have a bit of header figure out how much the whole thing is.  need all of it to process it.
     if (m->lth < msg_lth)
       status = ST_MSG_TOO_SHORT;
-    else
-      osdp_conformance.multibyte_data_encoding.test_status =
-        OCONFORM_EXERCISED;
   };
   if (status != ST_OK)
   {
@@ -1518,10 +1515,13 @@ int
 
 { /* process_osdp_message */
 
+  char cmd [1024];
   int count;
   int current_length;
   int i;
   char logmsg [1024];
+  char nak_code;
+  char nak_data;
   unsigned char osdp_nak_response_data [2];
   OSDP_HDR *oh;
   int status;
@@ -1786,6 +1786,7 @@ int
       break;
 
     case OSDP_POLL:
+fprintf(stderr, "osdp_POLL 1791\n");
       status = action_osdp_POLL (context, msg);
       break;
 
@@ -1928,12 +1929,25 @@ fprintf(stderr, "lstat 1684\n");
       {
         count = oh->len_lsb + (oh->len_msb << 8);
         count = count - 6 - 2; // less header less CRC
+
+        nak_code = *(msg->data_payload);
+        nak_data = 0;
         if (count > 1)
+        {
+          nak_data = *(1+msg->data_payload);
           sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
             *(0+msg->data_payload), *(1+msg->data_payload));
+        }
         else
+        {
           sprintf (tlogmsg, "osdp_NAK: Error Code %02x",
             *(0+msg->data_payload));
+        };
+
+        sprintf(cmd,
+          "/opt/osdp-conformance/run/ACU-actions/osdp_NAK %x %x",
+          nak_code, nak_data);
+        system(cmd);
 
         fprintf (context->log, "%s\n", tlogmsg);
         switch(*(0+msg->data_payload))

@@ -5,7 +5,7 @@ int leftover_length;
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2019 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -73,6 +73,10 @@ int
     status = ST_SERIAL_IN;
   if (status EQUALS ST_OK)
   {
+    // the message was good.  update conformance status.
+    osdp_conformance.multibyte_data_encoding.test_status =
+      OCONFORM_EXERCISED;
+
     if (context.verbosity > 9)
     {
       int i;

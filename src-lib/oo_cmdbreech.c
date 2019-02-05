@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2019 Smithee Solutions LLC
   (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association

@@ -1,7 +1,7 @@
 /*
   oo-xpm-actions - action routines for extended packet mode
 
-  (C)Copyright 2018 Smithee Solutions LLC
+  (C)Copyright 2019 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
