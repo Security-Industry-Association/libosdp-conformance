@@ -254,6 +254,9 @@ int
     ctx->next_sequence++;
     if (ctx->next_sequence > 3)
       ctx->next_sequence = 1;
+// if they disabled polling don't increment the sequence number
+if (!(ctx->enable_poll))
+  ctx->next_sequence = 0;
   }
   else
   {

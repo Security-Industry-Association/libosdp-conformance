@@ -753,12 +753,6 @@ int
       m -> cmd_payload = m->ptr + 5;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-
-      // really was a 0 in the Security Control Block marker, in unencrypted 
-      // messages.  sanity check for conformance.
-
-      osdp_conformance.scb_absent.test_status =
-        OCONFORM_EXERCISED;
     }
     else
     {

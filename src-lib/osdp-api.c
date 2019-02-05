@@ -67,9 +67,9 @@ int
         i++;
       };
     };
-fprintf(stderr, "enqueue cmd to entry %2d\n", i);
+    if (i > 0)
+      fprintf(stderr, "enqueue cmd to entry %2d\n", i);
     memcpy(&(ctx->q [i].cmd), cmd, sizeof(ctx->q [0].cmd));
-fprintf(stderr, "enq: %d: cmd %d\n", i, ctx->q[i].cmd.command);
     ctx->q [i].status = 1;
   };
 

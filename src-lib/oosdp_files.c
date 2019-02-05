@@ -216,7 +216,7 @@ int
 "          \"last_update\" : \"%s\",\n",
       current_date_string);
     fprintf(sf,
-"                       mmt: %d\n",
+"                  \"mmt\" : \"%d\"\n",
       osdp_conformance.conforming_messages);
     if (strlen (ctx->text) > 0)
       fprintf (sf,

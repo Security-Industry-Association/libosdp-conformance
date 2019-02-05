@@ -394,14 +394,11 @@ int
       msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
-fprintf(stderr, "count is whole packet: %04x\n", count);
       count = count - sizeof(*oh);
-fprintf(stderr, "count less main hdr: %04x\n", count);
       if (oh->ctrl & 0x04)
         count = count - 2;
       else
         count = count - 1;
-fprintf(stderr, "count less CRC/Checksum: %04x\n", count);
 
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
       process_as_special = 0;

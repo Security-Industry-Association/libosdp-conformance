@@ -104,6 +104,12 @@ int
     status = send_bio_read_template (ctx);
     break;
 
+  case OSDP_CMDB_NOOP:
+    // command parser no-op so OK command no-op
+    cmd->command = OSDP_CMD_NOOP;
+    status = ST_OK;
+    break;
+
 // experimental "polling" toggles polling enabled
   case OSDP_CMDB_POLLING:
     ctx->enable_poll = 1 ^ ctx->enable_poll;
