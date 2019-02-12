@@ -656,13 +656,15 @@ int
     {
       done = 1;
       // send data if it's there (value is number of bits)
+
+      // osdp_RAW is reader, format, countHigh, countLow, data
+
       osdp_raw_data [ 0] = 0; // one reader, reader 0
-      osdp_raw_data [ 1] = 0; 
+      osdp_raw_data [ 1] = ctx->card_format; 
       osdp_raw_data [ 2] = ctx->card_data_valid;
       osdp_raw_data [ 3] = 0;
-      raw_lth = ctx->creds_a_avail;
+      raw_lth = 4+ctx->creds_a_avail;
       memcpy (osdp_raw_data+4, ctx->credentials_data, ctx->creds_a_avail);
-      raw_lth = raw_lth + ctx->creds_a_avail;
       current_length = 0;
       status = send_message (ctx,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data);

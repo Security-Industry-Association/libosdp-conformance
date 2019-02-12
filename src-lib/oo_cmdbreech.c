@@ -32,11 +32,8 @@
 #include <osdp_conformance.h>
 
 
-extern OSDP_OUT_CMD
-  current_output_command [];
-extern OSDP_PARAMETERS
-  p_card;
-
+extern OSDP_OUT_CMD current_output_command [];
+extern OSDP_PARAMETERS p_card; 
 
 int
   read_command
@@ -802,6 +799,11 @@ cmd->command = OSDP_CMD_NOOP;
       if (ctx->verbosity > 3)
         fprintf(ctx->log, "Command %s submitted\n", test_command);
 
+      // if no options are given, use preset value
+      cmd->details_length = p_card.value_len;
+      cmd->details_param_1 = p_card.bits;
+      memcpy(cmd->details, p_card.value, p_card.value_len);
+
       // if there's a "raw" option it's the data to use.  bits are also specified.
 
       option = json_object_get (root, "raw");
@@ -821,10 +823,22 @@ cmd->command = OSDP_CMD_NOOP;
         sscanf(vstr, "%d", &i);
         cmd->details_param_1 = i;
       };
+
+      // format can be specified (raw or p/data/p)
+      option = json_object_get (root, "format");
+      if (json_is_string (option))
+      {
+        strcpy (vstr, json_string_value (option));
+        if (0 EQUALS strcmp(vstr, "p-data-p"))
+          ctx->card_format = 1;
+        else
+          ctx->card_format = 0;
+      };
+
       if (ctx->verbosity > 3)
         if (cmd->details_length > 0)
-          fprintf(ctx->log, "present_card: raw (%d. bytes, %d. bits): %s\n",
-            cmd->details_length, cmd->details_param_1, vstr);
+          fprintf(ctx->log, "present_card: raw (%d. bytes, %d. bits, fmt %d): %s\n",
+            cmd->details_length, cmd->details_param_1, ctx->card_format, vstr);
     };
   }; 
 

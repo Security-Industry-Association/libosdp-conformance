@@ -344,19 +344,33 @@ int
       };
       if (msg->security_block_length EQUALS 0)
       {
+        char character [8];
+        char tstring [1024];
+
         keycount = *(msg->data_payload+1);
         memset (tmpstr, 0, sizeof (tmpstr));
+        tstring [0] = 0;
         memcpy (tmpstr, msg->data_payload+2, *(msg->data_payload+1));
         for (i=0; i<keycount; i++)
         {
+          memset(character, 0, sizeof(character));
+          character [0] = tmpstr[i];
           if (tmpstr [i] EQUALS 0x7F)
-            tmpstr [i] = '#';
+            character [0] = '#';
           if (tmpstr [i] EQUALS 0x0D)
-            tmpstr [i] = '*';
+            character [0] = '*';
+
+          // if not printable ascii and not already found character
+
+          if ((tmpstr [i] < 0x20) ||
+            (tmpstr [i] > 0x7e))
+              if (character [0] != 0)
+                sprintf(tmpstr, "<%02x>", tmpstr [i]);
+          strcat(tstring, character);
         };
         sprintf (tlogmsg,
-"Keypad Input Rdr %d, %d digits: %s",
-          *(msg->data_payload+0), keycount, tmpstr);
+"Keypad Input Rdr %d, %d digits: %s\n",
+          *(msg->data_payload+0), keycount, tstring);
       };
     };
     break;

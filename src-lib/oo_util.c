@@ -1356,6 +1356,12 @@ int
 
   status = ST_OK;
   memset(tlogmsg, 0, sizeof(tlogmsg));
+if ((msg->msg_cmd) != OSDP_ACK)
+{
+  fprintf(stderr, "monitor: d: %x cmd %d\n",
+    msg->direction, msg->msg_cmd);
+};
+
   if (msg->direction EQUALS 0)
   {
     switch (msg->msg_cmd)
@@ -1365,11 +1371,13 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+#if 0
     case OSDP_BUZ:
       status = oosdp_make_message (OOSDP_MSG_BUZ, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+#endif
     case OSDP_COMSET:
       status = oosdp_make_message (OOSDP_MSG_COMSET, tlogmsg, msg);
       if (status == ST_OK)
@@ -1425,6 +1433,11 @@ int
   };
   switch (msg->msg_cmd)
   {
+  case OSDP_BUZ:
+    status = oosdp_make_message (OOSDP_MSG_BUZ, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
   case OSDP_CHLNG:
     status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
     if (status == ST_OK)
@@ -1780,7 +1793,6 @@ int
       break;
 
     case OSDP_POLL:
-fprintf(stderr, "osdp_POLL 1791\n");
       status = action_osdp_POLL (context, msg);
       break;
 

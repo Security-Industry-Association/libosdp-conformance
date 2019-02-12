@@ -824,6 +824,9 @@ fprintf (stderr, "processing value %s\n",
     int rem;
     char tmps [3];
 
+    ctx->card_format = 1; // default to P/Data/P
+
+    p_card.value_len = 0;
     idx=0;
     idata = 0;
     rem = strlen (this_value);

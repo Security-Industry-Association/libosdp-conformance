@@ -213,7 +213,7 @@ int
   oh = (OSDP_HDR *)(osdp_msg->ptr);
   count = oh->len_lsb + (oh->len_msb << 8);
   count = count - 8;  // payload
-  count = count - 3; // 1 for reader number, 2 for no. of bits
+  count = count - 4; // 1 for reader number, 1 for format, 2 for no. of bits
   hstr [0] = 0;
   tlogmsg [0] = 0;
   /*
