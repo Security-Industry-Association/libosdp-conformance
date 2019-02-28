@@ -112,7 +112,7 @@ int
       sprintf(tmpstr,
 "                  Perm Ctl=%02d ON %d(ms)-%s OFF %d(ms)-%s\n",
         led_ctl->perm_control, led_ctl->perm_on_time*100, color_name_on,
-        led_ctl->perm_off_time, color_name_off);
+        led_ctl->perm_off_time*100, color_name_off);
       strcat(tlogmsg, tmpstr);
       if (ctx->verbosity > 3)
       {

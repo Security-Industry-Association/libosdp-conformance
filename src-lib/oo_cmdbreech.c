@@ -601,7 +601,7 @@ cmd->command = OSDP_CMD_NOOP;
         fprintf (stderr, "command was %s\n",
           this_command);
 
-      value = json_object_get (root, "led_number");
+      value = json_object_get (root, "led-number");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -622,7 +622,7 @@ cmd->command = OSDP_CMD_NOOP;
         sscanf (vstr, "%d", &i);
         led_ctl->perm_off_time = i;
       };
-      value = json_object_get (root, "perm_off_color");
+      value = json_object_get (root, "perm-off-color");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -636,14 +636,14 @@ cmd->command = OSDP_CMD_NOOP;
         sscanf (vstr, "%d", &i);
         led_ctl->perm_on_time = i;
       };
-      value = json_object_get (root, "perm_on_color");
+      value = json_object_get (root, "perm-on-color");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         led_ctl->perm_on_color = i;
       };
-      value = json_object_get (root, "temp_off_color");
+      value = json_object_get (root, "temp-off-color");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -652,7 +652,7 @@ cmd->command = OSDP_CMD_NOOP;
         if (i > 0)
           set_led_temp = 1;
       };
-      value = json_object_get (root, "temp_off");
+      value = json_object_get (root, "temp-off");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -661,7 +661,7 @@ cmd->command = OSDP_CMD_NOOP;
         if (i > 0)
           set_led_temp = 1;
       };
-      value = json_object_get (root, "temp_on");
+      value = json_object_get (root, "temp-on");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -670,7 +670,7 @@ cmd->command = OSDP_CMD_NOOP;
         if (i > 0)
           set_led_temp = 1;
       };
-      value = json_object_get (root, "temp_on_color");
+      value = json_object_get (root, "temp-on-color");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -679,7 +679,7 @@ cmd->command = OSDP_CMD_NOOP;
         if (i > 0)
           set_led_temp = 1;
       };
-      value = json_object_get (root, "temp_timer");
+      value = json_object_get (root, "temp-timer");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -693,7 +693,7 @@ cmd->command = OSDP_CMD_NOOP;
       // lastly look for "temp-control".  If it's set it overrides the
       // implicit temp-control from other values being set.
 
-      value = json_object_get (root, "temp_control");
+      value = json_object_get (root, "temp-control");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));

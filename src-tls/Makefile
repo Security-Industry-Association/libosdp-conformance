@@ -24,6 +24,7 @@ CC=gcc
 #CC=clang
 CFLAGS=-I /opt/tester/include
 LDFLAGS=/opt/osdp-conformance/lib/aes.o -L /opt/osdp-conformance/lib -L /opt/tester/lib
+# note you should put LDFLAGS as far to the back of the command line as possible
 
 
 PROGS = osdp-net-client osdp-net-server initiator \
@@ -43,15 +44,27 @@ initiator:	initiator.o Makefile
 
 osdp-net-client:	osdp-net-client.o osdp-local-config.h \
 	  ../src-lib/libosdp.a Makefile
-	${CC} ${LDFLAGS} -o osdp-net-client -g osdp-net-client.o \
+	${CC} -o osdp-net-client -g osdp-net-client.o \
 	  -L ../src-lib -losdp \
-	  -lgnutls -ljansson -lrt
+	  -lgnutls -ljansson -lrt ${LDFLAGS}
 
 osdp-net-server:	osdp-net-server.o osdp-local-config.h \
 	  ../src-lib/libosdp.a Makefile
-	${CC} ${LDFLAGS} -o osdp-net-server -g osdp-net-server.o \
+	${CC} -o osdp-net-server -g osdp-net-server.o \
 	  -L ../src-lib -losdp \
-	  -lgnutls -ljansson -lrt
+	  -lgnutls -ljansson -lrt ${LDFLAGS}
+
+osdp-tcp-client:	osdp-tcp-client.o \
+	  ../src-lib/libosdp.a Makefile
+	${CC} -o osdp-tcp-client -g osdp-tcp-client.o \
+	  -L ../src-lib -losdp \
+	  -ljansson -lrt ${LDFLAGS}
+
+osdp-tcp-server:	osdp-tcp-server.o \
+	  ../src-lib/libosdp.a Makefile
+	${CC} -o osdp-tcp-server -g osdp-tcp-server.o \
+	  -L ../src-lib -losdp \
+	  -ljansson -lrt ${LDFLAGS}
 
 initiator.o:	initiator.c
 	${CC} ${CFLAGS} -c -g -Wall -Werror \
@@ -69,23 +82,11 @@ osdp-net-server.o:	osdp-net-server.c \
 	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
 	  osdp-net-server.c
 
-osdp-tcp-client:	osdp-tcp-client.o \
-	  ../src-lib/libosdp.a Makefile
-	${CC} ${LDFLAGS} -o osdp-tcp-client -g osdp-tcp-client.o \
-	  -L ../src-lib -losdp \
-	  -ljansson -lrt
-
 osdp-tcp-client.o:	osdp-tcp-client.c \
 	  ../include/osdp_conformance.h ../include/osdp-tls.h \
 	  ../include/open-osdp.h
 	${CC} ${CFLAGS} -c -g -I. -I../include -Wall -Werror \
 	  osdp-tcp-client.c
-
-osdp-tcp-server:	osdp-tcp-server.o \
-	  ../src-lib/libosdp.a Makefile
-	${CC} ${LDFLAGS} -o osdp-tcp-server -g osdp-tcp-server.o \
-	  -L ../src-lib -losdp \
-	  -ljansson -lrt
 
 osdp-tcp-server.o:	osdp-tcp-server.c \
 	  ../include/osdp_conformance.h ../include/osdp-tls.h \
