@@ -840,7 +840,7 @@ if (strcmp ("CP", role_tag)==0)
 else
   sprintf (address_suffix, " A=%02x(hex)", context->this_message_addr);
     sprintf (timestamp,
-"---OSDP %s Frame:%04d%s\nTimestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
+"\n---\n---OSDP %s Frame:%04d%s Timestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %ld %ld)\n",
       role_tag, context->packets_received, address_suffix,
       1900+current_cooked_time->tm_year, 1+current_cooked_time->tm_mon,
       current_cooked_time->tm_mday,
