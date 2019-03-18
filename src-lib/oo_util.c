@@ -334,7 +334,6 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       break;
 
     case OSDP_LSTAT:
-fprintf(stderr, "lstat 335\n");
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
       if (ctx->verbosity > 2)
@@ -657,10 +656,10 @@ int
 
 { /* osdp_parse_message */
 
+  char check_value [1024];
   int display;
   int i;
   char logmsg [1024];
-
   unsigned int msg_lth;
   int msg_check_type;
   int msg_data_length;
@@ -671,6 +670,7 @@ int
   int sec_blk_length;
   int sec_block_type;
   int status;
+  unsigned wire_cksum;
   unsigned short int wire_crc;
 
 
@@ -771,7 +771,6 @@ int
           };
       };
       strcat(tlogmsg, "\n");
-//      fprintf (context->log, "%s", tlogmsg);
       tlogmsg [0] = 0;
       tlogmsg2 [0] = 0;
 
@@ -1214,7 +1213,6 @@ fprintf(stderr, "lstat 1000\n");
     else
     {
       unsigned parsed_cksum;
-      unsigned wire_cksum;
 
       // checksum
 
@@ -1282,8 +1280,14 @@ status = ST_OK; // tolerate checksum error and continue
       };
 
       sprintf (log_line, "  Message: %s %s", cmd_rep_tag, tlogmsg);
-      sprintf (tlogmsg2, " A:%02x S:%02x Ck %x Sec %x CRC %04x",
-        (0x7F & p->addr), msg_sqn, msg_check_type, msg_scb, wire_crc);
+
+      // "Chk/CRC" is either 1 byte or 2 depending on Checksum or CRC used
+      sprintf(check_value, "CRC %04x", wire_crc);
+      if (m->check_size != 2)
+        sprintf(check_value, "Checksum %02x", wire_cksum);
+
+      sprintf (tlogmsg2, " A:%02x S:%02x Ck %x Sec %x %s",
+        (0x7F & p->addr), msg_sqn, msg_check_type, msg_scb, check_value);
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
         (returned_hdr->command != OSDP_ACK)) ||
