@@ -1360,11 +1360,6 @@ int
 
   status = ST_OK;
   memset(tlogmsg, 0, sizeof(tlogmsg));
-if ((msg->msg_cmd) != OSDP_ACK)
-{
-  fprintf(stderr, "monitor: d: %x cmd %d\n",
-    msg->direction, msg->msg_cmd);
-};
 
   if (msg->direction EQUALS 0)
   {

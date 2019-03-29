@@ -470,12 +470,16 @@ int
     {
     case OSDP_CAP_AUDIBLE_OUT:
       fprintf(ctx->log,
-"Capability not processed in this CP: Audible Output (%d)\n",
+"Capability not processed in this ACU: Audible Output (%d)\n",
         entry->function_code);
+      break;
+    case OSDP_CAP_BIOMETRICS:
+      fprintf(ctx->log,
+"Capability not processed in this ACU: Biometrics\n");
       break;
     case OSDP_CAP_CARD_FORMAT:
       fprintf(ctx->log,
-"Capability not processed in this CP: Card Format (%d)\n",
+"Capability not processed in this ACU: Card Format (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_CHECK_CRC:
@@ -486,11 +490,11 @@ int
       };
       break;
     case OSDP_CAP_CONTACT_STATUS:
-      fprintf(ctx->log, "Capability not processed in this CP: Contact Status (%d)\n",
+      fprintf(ctx->log, "Capability not processed in this ACU: Contact Status (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_LED_CONTROL:
-      fprintf(ctx->log, "Capability not processed in this CP: LED Control (%d)\n",
+      fprintf(ctx->log, "Capability not processed in this ACU: LED Control (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_MAX_MULTIPART:
@@ -500,7 +504,7 @@ int
         max_multipart, max_multipart);
       break;
     case OSDP_CAP_OUTPUT_CONTROL:
-      fprintf(ctx->log, "Capability not processed in this CP: Output Control (%d)\n",
+      fprintf(ctx->log, "Capability not processed in this ACU: Output Control (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_READERS:
@@ -529,13 +533,19 @@ int
         fprintf(ctx->log, "PD Supports Extended Packet Mode\n");
       };
       break;
+    case OSDP_CAP_SPE:
+      fprintf(ctx->log, "Capability not processed in this ACU: Secure PIN Entry\n");
+      break;
     case OSDP_CAP_TEXT_OUT:
-      fprintf(ctx->log, "Capability not processed in this CP: Text Output (%d)\n",
+      fprintf(ctx->log, "Capability not processed in this ACU: Text Output (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_TIME_KEEPING:
-      fprintf(ctx->log, "Capability not processed in this CP: Time Keeping (%d)\n",
+      fprintf(ctx->log, "Capability not processed in this ACU: Time Keeping (%d)\n",
         entry->function_code);
+      break;
+    case OSDP_CAP_VERSION:
+      fprintf(ctx->log, "PD supports IEC 60839-11-5 dialect.\n");
       break;
     default:
       status = ST_OSDP_UNKNOWN_CAPABILITY;
