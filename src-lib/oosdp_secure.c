@@ -1,3 +1,5 @@
+// repair: /* osdp_create_client_cryptogram */
+// repair: /* osdp_create_keys */
 /*
   oosdp-secure - open osdp secure channel routines
 
@@ -37,6 +39,8 @@
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 char tlogmsg [1024];
+void osdp_pad_message
+  (unsigned char *outblock, unsigned char *inblock, unsigned int inlength);
 
 
 int
@@ -155,10 +159,20 @@ int
 
 { /* osdp_calculate_secure_channel_mac */
 
+  unsigned char padded_block [OSDP_KEY_OCTETS];
   int status;
 
 
   status = ST_OK;
+dump_buffer_log(ctx, "mac-calc input", msg_to_send, msg_lth);
+  if (msg_lth <= OSDP_KEY_OCTETS)
+  {
+    osdp_pad_message(padded_block, msg_to_send, msg_lth);
+//zzz iv is rmac_i
+//zzz key is mac2
+//encrypt
+
+  };
   mac [0] = 0xaa;
   mac [1] = 0xbb;
   mac [2] = 0xcc;
@@ -203,8 +217,6 @@ int
   else
     check_size = 2;
   new_length = *updated_length;
-fprintf(stderr, "277 nl %d. ul %d.\n",
-  new_length, *updated_length);
 
   p = (OSDP_HDR *)buf;
   p->som = C_SOM;
@@ -233,11 +245,6 @@ fprintf(stderr, "277 nl %d. ul %d.\n",
     (sec_block_type EQUALS OSDP_SEC_SCS_18))
     whole_msg_lth = whole_msg_lth + 4;
   whole_msg_lth = whole_msg_lth + check_size; // including CRC
-fprintf(stderr, "301 nl %d. wml %d.\n",
-  new_length, whole_msg_lth);
-
-  if (ctx->verbosity > 8)
-    dump_buffer_log(ctx, "Secure Before length set", buf, whole_msg_lth);
 
   p->len_lsb = 0x00ff & whole_msg_lth;
   new_length ++;
@@ -247,9 +254,6 @@ fprintf(stderr, "301 nl %d. wml %d.\n",
   // control
   p->ctrl = 0;
   p->ctrl = p->ctrl | (0x3 & sequence);
-  if (ctx->verbosity > 4)
-    fprintf (stderr, "build msg: seq %d added ctl now %02x m_check %d\n",
-      sequence, p->ctrl, m_check);
 
   // set CRC depending on current value of global parameter
   if (m_check EQUALS OSDP_CRC)
@@ -272,9 +276,7 @@ fprintf(stderr, "301 nl %d. wml %d.\n",
     memcpy (sp, sec_blk, sec_block_length);
   sp = sp + sec_block_length;
   cmd_ptr = sp;
-  fprintf(stderr, "bef sec block to new length %d.\n", new_length);
   new_length = new_length + 2+ sec_block_length; // account for lth/typ
-fprintf(stderr, "340 nl %d\n", new_length);
   
   *cmd_ptr = command;
   new_length++;
@@ -285,8 +287,6 @@ fprintf(stderr, "340 nl %d\n", new_length);
     int i;
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
-    if (ctx->verbosity > 3)
-      fprintf (stderr, "orig (s) next_data %lx\n", (unsigned long)next_data);
     for (i=0; i<data_length; i++)
     {
       *(sptr+i) = *(i+data);
@@ -346,6 +346,38 @@ fprintf(stderr, "340 nl %d\n", new_length);
 
 
 void
+  osdp_pad_message
+    (unsigned char *outblock,
+    unsigned char *inblock,
+    unsigned int inlength)
+
+{ /* osdp_pad_message */
+
+  int padlength;
+
+
+  padlength = 0;
+  if (inlength < OSDP_KEY_OCTETS)
+  {
+    padlength = OSDP_KEY_OCTETS - inlength;
+  };
+  if (inlength <= OSDP_KEY_OCTETS)  // stop crazy input
+  {
+    memcpy(outblock, inblock, inlength);
+    if (padlength > 0)
+    {
+      outblock [padlength] = 0x80;
+      if (padlength > 1)
+      {
+        memset(outblock+inlength+1, 0, padlength-1);
+      };
+    };
+  };
+
+} /* osdp_pad_message */
+
+
+void
   osdp_create_client_cryptogram
     (OSDP_CONTEXT
       *ctx,
@@ -354,12 +386,11 @@ void
 
 { /* osdp_create_client_cryptogram */
 
-  struct AES_ctx
-    aes_context_s_enc;
-  unsigned char
-    iv [16];
-  unsigned char
-    message [16];
+#if 0
+  struct AES_ctx aes_context_s_enc;
+#endif
+  unsigned char iv [16];
+  unsigned char message [16];
 
 
   memset (iv, 0, sizeof (iv));
@@ -373,10 +404,12 @@ if (ctx->verbosity > 8)
     fprintf (stderr, "%02x", ctx->s_enc [i]);
   fprintf (stderr, "\n");
 };
+#if 0
   AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
   AES_ctx_set_iv (&aes_context_s_enc, iv);
   memcpy (ccrypt_response->cryptogram, message, sizeof (ccrypt_response->cryptogram));
-  //AES_CBC_encrypt_buffer (ccrypt_response->cryptogram, message, sizeof (message), ctx->s_enc, iv);
+  AES_CBC_encrypt_buffer (ccrypt_response->cryptogram, message, sizeof (message), ctx->s_enc, iv);
+#endif
   
   return;
 
@@ -443,9 +476,11 @@ void
   (void) oosdp_log_key (ctx,
 "   cleartext calculating s_mac2: ", cleartext);
   memcpy (ctx->s_mac2, cleartext, sizeof (ctx->s_mac2));
+#if 0
   AES_ctx_set_iv (&aes_context_scbk, iv);
   AES_CBC_encrypt_buffer (&aes_context_scbk, ctx->s_mac1, sizeof (ctx->s_mac1));
-  //AES_CBC_encrypt_buffer (ctx->s_mac2, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+  AES_CBC_encrypt_buffer (ctx->s_mac2, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
+#endif
   (void) oosdp_log_key (ctx,
 "     s_mac2 in osdp_create_keys: ", ctx->s_mac2);
 
@@ -454,14 +489,18 @@ void
 } /* osdp_create_keys */
 
 
+/*
+  get a key.  if default key was requested, use it.
+  if non-default key was requested but it hasn't been loaded return an error.
+
+  uses secure_channel_use [OO_SCU_KEYED]
+*/
+
 int
    osdp_get_key_slot
-     (OSDP_CONTEXT
-       *ctx,
-     OSDP_MSG
-       *msg,
-     int
-       *returned_key_slot)
+     (OSDP_CONTEXT *ctx,
+     OSDP_MSG *msg,
+     int *returned_key_slot)
 
 { /* osdp_get_key_slot */
 
@@ -669,21 +708,22 @@ int
 { /* send_secure_message */
 
   unsigned char buf [2];
-  int i;
+  OSDP_MSG m;
+  int old_state;
   int status;
   unsigned char test_blk [1024];
   int true_dest;
 
 
   status = ST_OK;
-  fprintf (ctx->log,
-    "Top of send_secure_message (%02x):\n", command);
   fflush (ctx->log);
   true_dest = dest_addr;
   *current_length = 0;
 
   // so we remember our state
-  ctx->secure_channel_use [OO_SCU_ENAB] = 128 + sec_block_type;
+  old_state = 128 + sec_block_type;
+  if (ctx->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
+    ctx->secure_channel_use [OO_SCU_ENAB] = old_state;
 
   status = osdp_build_secure_message
     (ctx,
@@ -697,26 +737,24 @@ int
     sec_block_type, sec_block_length, sec_blk); // security values
   if (status EQUALS ST_OK)
   {
-    if ((ctx->verbosity > 3) || (command != OSDP_ACK))
-    {
-       fprintf (ctx->log, "Sending(secure) lth %d.=", *current_length);
-       for (i=0; i<*current_length; i++)
-         fprintf (ctx->log, " %02x", test_blk [i]);
-       fprintf (ctx->log, "\n");
-       fflush (ctx->log);
-    };
     buf [0] = 0xff;
     // send start-of-message marker (0xff)
     send_osdp_data (ctx, &(buf[0]), 1);
 
+    fprintf(stderr, "717 scu 0x%x\n", ctx->secure_channel_use[0]);
     if (sec_block_type EQUALS OSDP_SEC_SCS_11)
       ctx->secure_channel_use [0] = 128 + OSDP_SEC_SCS_11;
+    fprintf(stderr, "720 scu 0x%x\n", ctx->secure_channel_use[0]);
 
-    if (ctx->verbosity > 4)
-      fprintf(ctx->log,
-        "send_secure_message: sending(secure) %d\n", *current_length);
-       
     send_osdp_data (ctx, test_blk, *current_length);
+
+    m.direction = ctx->role;
+    m.msg_cmd = command;
+fprintf(stderr, "send secure %02x\n", m.msg_cmd);
+    m.ptr = test_blk; // marshalled outbound message
+    m.lth = *current_length;
+    m.data_payload = data;
+    (void)monitor_osdp_message(ctx, &m);
   };
   return (status);
 

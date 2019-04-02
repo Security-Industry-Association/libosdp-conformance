@@ -927,21 +927,15 @@ int
 
 int
   action_osdp_TEXT
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* action_osdp_TEXT */
 
-  int
-    current_length;
-  int
-    status;
-  int
-    text_length;
-  char
-    tlogmsg  [1024];
+  int current_length;
+  int status;
+  int text_length;
+  char tlogmsg  [1024];
 
 
   status = ST_OK;

@@ -1508,6 +1508,12 @@ int
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
+
+  case OSDP_TEXT:
+    status = oosdp_make_message(OOSDP_MSG_TEXT, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
   };
   return (status);
 

@@ -608,13 +608,18 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         // if default enabled use SCBK-D
         // if not default if key pre-loaded use that else error
 fprintf(stderr, "enable_secure_channel %d\n", context->enable_secure_channel);
-        if (context->enable_secure_channel EQUALS 2)
+        if (context->enable_secure_channel EQUALS 0)
+          status = ST_OSDP_SECURE_NOT_ENABLED;
+        if (status EQUALS ST_OK)
         {
-          sec_blk_1 [0] = OSDP_KEY_SCBK_D;
-        }
-        else
-        {
-          sec_blk_1 [0] = OSDP_KEY_SCBK;
+          if (context->enable_secure_channel EQUALS 2)
+          {
+            sec_blk_1 [0] = OSDP_KEY_SCBK_D;
+          }
+          else
+          {
+            sec_blk_1 [0] = OSDP_KEY_SCBK;
+          };
         };
         if (status EQUALS ST_OK)
         {

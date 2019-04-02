@@ -188,37 +188,23 @@ int
 
 int
   action_osdp_SCRYPT
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* action_osdp_SCRYPT */
 
-  struct AES_ctx
-    aes_context_s_enc;
-  struct AES_ctx
-    aes_context_mac1;
-  struct AES_ctx
-    aes_context_mac2;
-  int
-    current_key_slot;
-  int
-    current_length;
-  unsigned char
-    iv [16];
-  unsigned char
-    message1 [16];
-  unsigned char
-    message2 [16];
-  unsigned char
-    message3 [16];
-  unsigned char
-    sec_blk [1];
-  unsigned char
-    server_cryptogram [16]; // size of RND.B plus RND.A
-  int
-    status;
+  struct AES_ctx aes_context_s_enc;
+  struct AES_ctx aes_context_mac1;
+  struct AES_ctx aes_context_mac2;
+  int current_key_slot;
+  int current_length;
+  unsigned char iv [16];
+  unsigned char message1 [16];
+  unsigned char message2 [16];
+  unsigned char message3 [16];
+  unsigned char sec_blk [1];
+  unsigned char server_cryptogram [16]; // size of RND.B plus RND.A
+  int status;
 
 
   status = ST_OK;
@@ -256,7 +242,9 @@ fprintf (stderr,"TODO: osdp_SCRYPT\n");
       AES_ctx_set_iv (&aes_context_mac2, iv);
       AES_CBC_encrypt_buffer (&aes_context_mac2, message3, sizeof (message3));
 
-      ctx->secure_channel_use [OO_SCU_ENAB] = 128+OSDP_SEC_SCS_14;
+      // mark enabled state as operational since we're done initializing
+
+      ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_OPERATIONAL;
       current_length = 0;
       status = send_secure_message (ctx,
         OSDP_RMAC_I, p_card.addr, &current_length, 

@@ -52,13 +52,16 @@ int
 { /* background */
 
   int current_length;
+  int send_secure_poll;
   int send_poll;
   int status;
+  unsigned char sec_blk [1];
 
 
   status = ST_OK;
 //  send_poll = 1;  // assume we're supposed to poll
   send_poll = 0;
+  send_secure_poll = 0;
 
   // if we're not in a file transfer...
   // if we're not set up with an operational secure channel
@@ -70,6 +73,19 @@ int
       if (context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
         if (!(context->secure_channel_use [OO_SCU_ENAB] & 0x80))
           send_poll = 1;
+
+  // if we're in secure channel and the other conditions, do a secure poll
+
+  if (context->role EQUALS OSDP_ROLE_CP)
+  {
+    if (context->xferctx.total_length EQUALS 0)
+    {
+      if (context->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+      {
+        send_secure_poll = 1;
+      };
+    };
+  };
 
   // if waiting for response to last message then do NOT poll
 
@@ -85,6 +101,11 @@ int
     current_length = 0;
     status = send_message (context,
       OSDP_POLL, p_card.addr, &current_length, 0, NULL); 
+  };
+  if (send_secure_poll)
+  {
+    status = send_secure_message(context, OSDP_POLL, p_card.addr,
+      &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, sec_blk);
   };
 
   return (status);
@@ -1034,14 +1055,10 @@ int
 
     // if (context->verbosity > 3)
     {
-      OSDP_MSG
-        m;
-      int
-        parse_role;
-      OSDP_HDR
-        returned_hdr;
-      int
-        status_monitor;
+      OSDP_MSG m;
+      int parse_role;
+      OSDP_HDR returned_hdr;
+      int status_monitor;
 
       memset (&m, 0, sizeof (m));
 
