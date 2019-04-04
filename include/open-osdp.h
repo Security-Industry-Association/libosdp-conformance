@@ -450,22 +450,16 @@ typedef struct osdp_context
   OSDP_PD_CAPABILITY pd_cap;
 
   // secure channel
-  unsigned char
-    current_received_mac [OSDP_KEY_OCTETS];
-  unsigned char
-    current_scbk [OSDP_KEY_OCTETS];
-  unsigned char
-    rnd_a [8];
-  unsigned char
-    rnd_b [8];
-  unsigned char
-    s_enc [16];
-  unsigned char
-    s_mac1 [16];
-  unsigned char
-    s_mac2 [16];
-  int
-    secure_channel_use [4]; // see OO_SCU_... use
+  unsigned char last_calculated_in_mac [OSDP_KEY_OCTETS];
+  unsigned char last_calculated_out_mac [OSDP_KEY_OCTETS];
+  unsigned char current_scbk [OSDP_KEY_OCTETS];
+  unsigned char rnd_a [8];
+  unsigned char rnd_b [8];
+  unsigned char s_enc [16];
+  unsigned char s_mac1 [16];
+  unsigned char s_mac2 [16];
+  int secure_channel_use [4]; // see OO_SCU_... use
+  unsigned char rmac_i [OSDP_KEY_OCTETS];
 
   char
     new_address;
@@ -799,6 +793,7 @@ typedef struct osdp_msg
   unsigned char * crc_check;
   int check_size;
   int remainder;
+  int security_block_type;
   int security_block_length;
 } OSDP_MSG;
 
@@ -957,6 +952,8 @@ int fasc_n_75_to_string (char * s, long int *sample_1);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
 int next_sequence (OSDP_CONTEXT *ctx);
+int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
+  int security_block_type, unsigned char *hash, int message_length);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
 int osdp_awaiting_response(OSDP_CONTEXT *ctx);

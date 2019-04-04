@@ -658,6 +658,7 @@ int
 
   char check_value [1024];
   int display;
+  int hashable_length;
   int i;
   char logmsg [1024];
   unsigned int msg_lth;
@@ -702,6 +703,7 @@ int
   {
     status = ST_OK;
     msg_lth = p->len_lsb + (256*p->len_msb);
+    hashable_length = msg_lth;
     if ((m->lth) > msg_lth)
       m->remainder = msg_lth - m->lth;
 
@@ -790,6 +792,7 @@ int
         (sec_block_type EQUALS OSDP_SEC_SCS_18))
         msg_data_length = msg_data_length - 4;
       sec_blk_length = (unsigned)*(m->ptr + 5);
+      m->security_block_type = sec_block_type;
       m->security_block_length = sec_blk_length;
       m -> cmd_payload = m->ptr + 5 + sec_blk_length;
 
@@ -1184,6 +1187,8 @@ fprintf(stderr, "lstat 1000\n");
 
     if (m->check_size EQUALS 2)
     {
+      hashable_length = hashable_length - 2;
+
       // figure out where crc or checksum starts
       m->crc_check = m->cmd_payload + 1 + msg_data_length;
 
@@ -1213,6 +1218,8 @@ fprintf(stderr, "lstat 1000\n");
     else
     {
       unsigned parsed_cksum;
+
+      hashable_length = hashable_length - 1;
 
       // checksum
 
@@ -1259,6 +1266,19 @@ status = ST_OK; // tolerate checksum error and continue
         context->checksum_errs ++;
       };
     };
+
+    // check the MAC if it's secure channel formatted
+
+    if (status EQUALS ST_OK)
+    {
+      if (msg_scb != 0)
+      {
+fprintf(stderr, "checking hash %02x%02x%02x%02x\n",
+  *(m->crc_check-4), *(m->crc_check-3), *(m->crc_check-2), *(m->crc_check-1));
+        status = oo_hash_check(context, m->ptr, sec_block_type, m->crc_check-4, hashable_length);
+      }; 
+    };
+
     if ((context->verbosity > 2) || (m_dump > 0))
     {
       char cmd_rep_tag [1024];
@@ -1883,6 +1903,13 @@ fprintf(stderr, "lstat 1684\n");
       // really should be more fine-grained
 
       context->last_was_processed = 1;
+
+fprintf(stderr, "osdp_ACK received. sec blk typ %02x\n", msg->security_block_type);
+      if (msg->security_block_type >= OSDP_SEC_SCS_11)
+      {
+        if (context->verbosity > 3)
+          fprintf(stderr, "Received SCS %02x on osdp_ACK\n", msg->security_block_type);
+      };
       break;
 
     case OSDP_BUSY:

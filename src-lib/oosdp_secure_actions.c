@@ -152,10 +152,8 @@ if (ctx->verbosity > 8)
 
 int
   action_osdp_RMAC_I
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* action_osdp_RMAC_I */
 
@@ -172,7 +170,10 @@ int
 
   if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS 128+OSDP_SEC_SCS_13)
   {
-    memcpy (ctx->current_received_mac, msg->data_payload, msg->data_length);
+    memcpy (ctx->rmac_i, msg->data_payload, msg->data_length);
+    memcpy(ctx->rmac_i, msg->data_payload, sizeof(ctx->rmac_i));
+    memcpy(ctx->last_calculated_out_mac, ctx->rmac_i, sizeof(ctx->last_calculated_out_mac));
+    memcpy(ctx->last_calculated_in_mac, ctx->rmac_i, sizeof(ctx->last_calculated_in_mac));
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_OPERATIONAL;
     fprintf (ctx->log, "*** SECURE CHANNEL OPERATIONAL***\n");
   }

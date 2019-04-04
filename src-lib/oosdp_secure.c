@@ -34,8 +34,8 @@
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+void osdp_sc_pad (unsigned char *block, int current_length);
 
-//extern OSDP_CONTEXT context;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 char tlogmsg [1024];
@@ -45,10 +45,9 @@ void osdp_pad_message
 
 int
   action_osdp_CHLNG
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
 { /* action_osdp_CHLNG */
 
   OSDP_SC_CCRYPT ccrypt_response;
@@ -150,6 +149,11 @@ printf ("fixme: RND.B\n");
 } /* action_osdp_CHLNG */
 
 
+/*
+  osdp_calculate_secure_channel_mac
+    - calculates MAC for outbound
+*/
+
 int
   osdp_calculate_secure_channel_mac
     (OSDP_CONTEXT *ctx,
@@ -159,24 +163,41 @@ int
 
 { /* osdp_calculate_secure_channel_mac */
 
+  struct AES_ctx aes_context_mac2;
   unsigned char padded_block [OSDP_KEY_OCTETS];
   int status;
 
 
   status = ST_OK;
-dump_buffer_log(ctx, "mac-calc input", msg_to_send, msg_lth);
+
+  // if it's short use MAC2 ("for the last block")
+
   if (msg_lth <= OSDP_KEY_OCTETS)
   {
-    osdp_pad_message(padded_block, msg_to_send, msg_lth);
-//zzz iv is rmac_i
-//zzz key is mac2
-//encrypt
+    unsigned char hashbuffer [OSDP_KEY_OCTETS];
 
+    osdp_pad_message(padded_block, msg_to_send, msg_lth);
+    if (ctx->verbosity > 3)
+    {
+      dump_buffer_log(ctx, "mac2", ctx->s_mac2, sizeof(ctx->s_mac2));
+      dump_buffer_log(ctx, "rmac_i", ctx->rmac_i, sizeof(ctx->rmac_i));
+      dump_buffer_log(ctx, "padded mac block", padded_block, OSDP_KEY_OCTETS);
+    };
+    AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
+    AES_ctx_set_iv (&aes_context_mac2, ctx->rmac_i);
+    memcpy (hashbuffer, padded_block, sizeof(hashbuffer));
+    AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, sizeof(hashbuffer));
+
+    // update the out-mac for next time
+    memcpy(ctx->last_calculated_out_mac, hashbuffer, sizeof(ctx->last_calculated_in_mac));
+
+    if (ctx->verbosity > 3)
+      dump_buffer_log(ctx, "encrypted mac block", hashbuffer, OSDP_KEY_OCTETS);
+    mac [0] = hashbuffer [0];
+    mac [1] = hashbuffer [1];
+    mac [2] = hashbuffer [2];
+    mac [3] = hashbuffer [3];
   };
-  mac [0] = 0xaa;
-  mac [1] = 0xbb;
-  mac [2] = 0xcc;
-  mac [3] = 0xdd;
   return (status);
 
 } /* osdp_calculate_secure_channel_mac */
@@ -379,10 +400,8 @@ void
 
 void
   osdp_create_client_cryptogram
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_SC_CCRYPT
-      *ccrypt_response)
+    (OSDP_CONTEXT *ctx,
+    OSDP_SC_CCRYPT *ccrypt_response)
 
 { /* osdp_create_client_cryptogram */
 
@@ -422,12 +441,9 @@ void
 
 { /* osdp_create_keys */
 
-  struct AES_ctx
-    aes_context_scbk;
-  unsigned char
-    cleartext [OSDP_KEY_OCTETS];
-  unsigned char
-    iv [OSDP_KEY_OCTETS];
+  struct AES_ctx aes_context_scbk;
+  unsigned char cleartext [OSDP_KEY_OCTETS];
+  unsigned char iv [OSDP_KEY_OCTETS];
 
 
   fflush (ctx->log);
@@ -469,18 +485,15 @@ void
 "     s_mac1 in osdp_create_keys: ", ctx->s_mac1);
 
   // S-MAC-2
-  memset (ctx->s_mac1, 0, sizeof (ctx->s_mac1));
+  memset (ctx->s_mac2, 0, sizeof (ctx->s_mac2));
   cleartext [0] = 1;
   cleartext [1] = 2;
   memcpy (cleartext+2, ctx->rnd_a, 6);
   (void) oosdp_log_key (ctx,
 "   cleartext calculating s_mac2: ", cleartext);
   memcpy (ctx->s_mac2, cleartext, sizeof (ctx->s_mac2));
-#if 0
   AES_ctx_set_iv (&aes_context_scbk, iv);
-  AES_CBC_encrypt_buffer (&aes_context_scbk, ctx->s_mac1, sizeof (ctx->s_mac1));
-  AES_CBC_encrypt_buffer (ctx->s_mac2, cleartext, OSDP_KEY_OCTETS, ctx->current_scbk, iv);
-#endif
+  AES_CBC_encrypt_buffer (&aes_context_scbk, ctx->s_mac2, sizeof (ctx->s_mac1));
   (void) oosdp_log_key (ctx,
 "     s_mac2 in osdp_create_keys: ", ctx->s_mac2);
 
@@ -504,12 +517,9 @@ int
 
 { /* osdp_get_key_slot */
 
-  int
-    key_slot;
-  OSDP_SECURE_MESSAGE
-    *s_msg;
-  int
-    status;
+  int key_slot;
+  OSDP_SECURE_MESSAGE *s_msg;
+  int status;
 
 
   status = ST_OK;
@@ -541,8 +551,7 @@ int
 
 void
   osdp_reset_secure_channel
-    (OSDP_CONTEXT
-      *ctx)
+    (OSDP_CONTEXT *ctx)
 
 { /* osdp_reset_secure_channel */
 
@@ -555,15 +564,101 @@ void
   // refresh rnd.b
   memcpy (ctx->rnd_b, "abcdefgh", 8);
 
-  memset (ctx->current_received_mac, 0, sizeof (ctx->current_received_mac));
+  memset (ctx->last_calculated_in_mac, 0, sizeof (ctx->last_calculated_in_mac));
+  memset (ctx->last_calculated_out_mac, 0, sizeof (ctx->last_calculated_out_mac));
   ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_DISABLED;
   if (ctx->enable_secure_channel > 0)
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
   fprintf (ctx->log, "Resetting Secure Channel\n");
-fprintf(stderr, "s-c-u %d e s c %d\n",
-  ctx->secure_channel_use[OO_SCU_ENAB], ctx->enable_secure_channel);
 
 } /* osdp_reset_secure_channel */
+
+/*
+  oo_hash_check
+    - calculate MAC for inbound
+*/
+
+int
+  oo_hash_check
+    (OSDP_CONTEXT *ctx,
+    unsigned char *message,
+    int security_block_type,
+    unsigned char *hash,
+    int message_length)
+
+{ /* oo_hash_check */
+
+  struct AES_ctx aes_context_mac2;
+  int current_length;
+  unsigned char hashbuffer [OSDP_KEY_OCTETS];
+  unsigned char last_block [OSDP_KEY_OCTETS];
+  unsigned char *message_pointer;
+  int status;
+
+
+  status = ST_OK;
+  if (security_block_type > OSDP_SEC_SCS_14)
+  {
+    if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "...hash check: checking %02x%02x%02x%02x\n",
+        hash[0], hash[1], hash[2], hash[3]);
+    };
+    message_pointer = message;
+    current_length = message_length - 4; // less hash on wire
+    if (current_length > OSDP_KEY_OCTETS)
+    {
+      fprintf(ctx->log, "... first several blocks...\n");
+    };
+
+    // process the last block
+    memset(last_block, 0, sizeof(last_block));
+    memcpy(last_block, message_pointer, current_length);
+    if (current_length != OSDP_KEY_OCTETS)
+    {
+      osdp_sc_pad(last_block, current_length);
+    };
+if (ctx->verbosity > 3)
+{
+  dump_buffer_log(ctx, "hashable message", last_block, sizeof(last_block));
+  dump_buffer_log(ctx, "s_mac2", ctx->s_mac2, sizeof(ctx->s_mac2));
+  dump_buffer_log(ctx, "rmac_i", ctx->rmac_i, sizeof(ctx->rmac_i));
+};
+    AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
+    AES_ctx_set_iv (&aes_context_mac2, ctx->last_calculated_in_mac);
+    memcpy (hashbuffer, last_block, sizeof(last_block));
+    AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, sizeof(hashbuffer));
+    memcpy(ctx->last_calculated_in_mac, hashbuffer, sizeof(ctx->last_calculated_in_mac));
+    dump_buffer_log(ctx, "calc hash", hashbuffer, sizeof(hashbuffer));
+
+    if (0 EQUALS memcmp(last_block, hash, 4))
+      fprintf(stderr, "HASH MATCHES\n");
+  };
+  return(status);
+
+} /* oo_hash_check */
+
+
+void osdp_sc_pad
+  (unsigned char *block,
+  int current_length)
+
+{ /* osdp_sc_pad */
+
+  unsigned char *next_octet;
+  int pad_count;
+
+  pad_count = 0;
+  next_octet = block;
+  if (current_length != OSDP_KEY_OCTETS)
+  {
+    pad_count = OSDP_KEY_OCTETS - current_length - 1;
+    next_octet = block + current_length;
+    *next_octet = 0x80;
+    memset(next_octet+1, 0, pad_count);
+  };
+
+} /* osdp_sc_pad */
 
 
 // return a string to dump containing the security block.
@@ -652,10 +747,8 @@ int
 
 { /* osdp_setup_scbk */
 
-  OSDP_SECURE_MESSAGE
-    *secure_message;
-  int
-    status;
+  OSDP_SECURE_MESSAGE *secure_message;
+  int status;
 
 
   status= ST_OK;
@@ -688,7 +781,7 @@ int
 
 
 /*
-  send_secure_message - send an OSDP "security" message
+  send_secure_message - send an OSDP secure channel message
 
   assumes command is a valid value.
 */
@@ -741,16 +834,13 @@ int
     // send start-of-message marker (0xff)
     send_osdp_data (ctx, &(buf[0]), 1);
 
-    fprintf(stderr, "717 scu 0x%x\n", ctx->secure_channel_use[0]);
     if (sec_block_type EQUALS OSDP_SEC_SCS_11)
       ctx->secure_channel_use [0] = 128 + OSDP_SEC_SCS_11;
-    fprintf(stderr, "720 scu 0x%x\n", ctx->secure_channel_use[0]);
 
     send_osdp_data (ctx, test_blk, *current_length);
 
     m.direction = ctx->role;
     m.msg_cmd = command;
-fprintf(stderr, "send secure %02x\n", m.msg_cmd);
     m.ptr = test_blk; // marshalled outbound message
     m.lth = *current_length;
     m.data_payload = data;

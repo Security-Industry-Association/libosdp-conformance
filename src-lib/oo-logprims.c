@@ -246,14 +246,10 @@ int
 
 { /* oosdp_log_key */
 
-  int
-    i;
-  int
-    status;
-  char
-    tlogmsg [1024];
-  char
-    tlogmsg2 [1024];
+  int i;
+  int status;
+  char tlogmsg [1024];
+  char tlogmsg2 [1024];
 
 
   status = ST_OK;
@@ -266,6 +262,7 @@ int
       strcat (tlogmsg, tlogmsg2);
     };
     fprintf (ctx->log, "%s\n", tlogmsg);
+    fflush(ctx->log);
   };
   return (status);
 
