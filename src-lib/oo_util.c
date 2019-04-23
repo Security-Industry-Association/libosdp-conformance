@@ -1275,7 +1275,13 @@ status = ST_OK; // tolerate checksum error and continue
       {
 fprintf(stderr, "checking hash %02x%02x%02x%02x\n",
   *(m->crc_check-4), *(m->crc_check-3), *(m->crc_check-2), *(m->crc_check-1));
-        status = oo_hash_check(context, m->ptr, sec_block_type, m->crc_check-4, hashable_length);
+        status = oo_hash_check(context, m->ptr, sec_block_type,
+          m->crc_check-4, hashable_length);
+        if (status != ST_OK)
+        {
+          if (context->verbosity > 3)
+            fprintf(context->log, "Secure Channel Hash check failed.\n");
+        };
       }; 
     };
 
@@ -1306,8 +1312,15 @@ fprintf(stderr, "checking hash %02x%02x%02x%02x\n",
       if (m->check_size != 2)
         sprintf(check_value, "Checksum %02x", wire_cksum);
 
-      sprintf (tlogmsg2, " A:%02x S:%02x Ck %x Sec %x %s",
-        (0x7F & p->addr), msg_sqn, msg_check_type, msg_scb, check_value);
+      {
+        char scb_tag[1024];
+        strcpy(scb_tag, "");
+        if (msg_scb)
+          strcpy(scb_tag, "Sec block present;");
+
+        sprintf (tlogmsg2, " A:%02x S:%02x Ck %x %s %s",
+          (0x7F & p->addr), msg_sqn, msg_check_type, scb_tag, check_value);
+      };
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
         (returned_hdr->command != OSDP_ACK)) ||
@@ -1904,7 +1917,6 @@ fprintf(stderr, "lstat 1684\n");
 
       context->last_was_processed = 1;
 
-fprintf(stderr, "osdp_ACK received. sec blk typ %02x\n", msg->security_block_type);
       if (msg->security_block_type >= OSDP_SEC_SCS_11)
       {
         if (context->verbosity > 3)

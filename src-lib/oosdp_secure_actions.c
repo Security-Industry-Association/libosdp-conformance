@@ -157,12 +157,12 @@ int
 
 { /* action_osdp_RMAC_I */
 
-  unsigned char
-    iv [16];
-  int
-    status;
+  unsigned char iv [16];
+  int status;
 
 
+fprintf(stderr, "verbose at inbound osdp_RMAC_I\n");
+ctx->verbosity=9;
   status = ST_OK;
   memset (iv, 0, sizeof (iv));
 

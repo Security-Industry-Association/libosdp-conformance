@@ -186,7 +186,7 @@ int
     msg = (OSDP_MSG *) aux;
     ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
     sprintf (tlogmsg,
-"CCRYPT: cUID %02x%02x%02x%02x-%02x%02x%02x%02x RND.B %02x%02x%02x%02x-%02x%02x%02x%02x Client Cryptogram %02x%02x%02x%02x-%02x%02x%02x%02x\n",
+"CCRYPT: cUID %02x%02x%02x%02x-%02x%02x%02x%02x RND.B %02x%02x%02x%02x-%02x%02x%02x%02x Client Cryptogram %02x%02x%02x%02x-%02x%02x%02x%02x",
       ccrypt_payload->client_id [0], ccrypt_payload->client_id [1],
       ccrypt_payload->client_id [2], ccrypt_payload->client_id [3],
       ccrypt_payload->client_id [4], ccrypt_payload->client_id [5],

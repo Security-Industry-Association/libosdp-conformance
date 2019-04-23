@@ -879,7 +879,6 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_TLS_CLIENT_HANDSHAKE (40)
 #define ST_OSDP_TCP_NONBLOCK         (41)
 
-#define ST_CMD_UNDERFLOW             (41)
 #define ST_CMD_PATH                  (42)
 #define ST_PARSE_ERROR               (43)
 #define ST_OUT_TOO_MANY              (44)
@@ -914,6 +913,8 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_BAD_GENAUTH_3        (73)
 #define ST_OSDP_COMMAND_OVERFLOW     (74)
 #define ST_OSDP_SECURE_NOT_ENABLED   (75)
+#define ST_OSDP_SC_BAD_HASH          (76)
+#define ST_CMD_UNDERFLOW             (77)
 
 int
   m_version_minor;

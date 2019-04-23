@@ -179,17 +179,17 @@ int
     osdp_pad_message(padded_block, msg_to_send, msg_lth);
     if (ctx->verbosity > 3)
     {
-      dump_buffer_log(ctx, "mac2", ctx->s_mac2, sizeof(ctx->s_mac2));
-      dump_buffer_log(ctx, "rmac_i", ctx->rmac_i, sizeof(ctx->rmac_i));
-      dump_buffer_log(ctx, "padded mac block", padded_block, OSDP_KEY_OCTETS);
+      //dump_buffer_log(ctx, "mac2", ctx->s_mac2, sizeof(ctx->s_mac2));
+      //dump_buffer_log(ctx, "padded mac block", padded_block, OSDP_KEY_OCTETS);
     };
     AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
-    AES_ctx_set_iv (&aes_context_mac2, ctx->rmac_i);
+    AES_ctx_set_iv (&aes_context_mac2, ctx->last_calculated_in_mac);
     memcpy (hashbuffer, padded_block, sizeof(hashbuffer));
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, sizeof(hashbuffer));
 
     // update the out-mac for next time
-    memcpy(ctx->last_calculated_out_mac, hashbuffer, sizeof(ctx->last_calculated_in_mac));
+    memcpy(ctx->last_calculated_out_mac, hashbuffer,
+      sizeof(ctx->last_calculated_out_mac));
 
     if (ctx->verbosity > 3)
       dump_buffer_log(ctx, "encrypted mac block", hashbuffer, OSDP_KEY_OCTETS);
@@ -599,9 +599,11 @@ int
   status = ST_OK;
   if (security_block_type > OSDP_SEC_SCS_14)
   {
+    status = ST_OSDP_SC_BAD_HASH;
     if (ctx->verbosity > 3)
     {
-      fprintf(ctx->log, "...hash check: checking %02x%02x%02x%02x\n",
+      fprintf(ctx->log,
+"...oo_hash_check:hash check: checking %02x%02x%02x%02x\n",
         hash[0], hash[1], hash[2], hash[3]);
     };
     message_pointer = message;
@@ -620,19 +622,29 @@ int
     };
 if (ctx->verbosity > 3)
 {
-  dump_buffer_log(ctx, "hashable message", last_block, sizeof(last_block));
-  dump_buffer_log(ctx, "s_mac2", ctx->s_mac2, sizeof(ctx->s_mac2));
-  dump_buffer_log(ctx, "rmac_i", ctx->rmac_i, sizeof(ctx->rmac_i));
+  dump_buffer_log(ctx,
+    "oo_hash_check: hashable message", last_block, sizeof(last_block));
+  //dump_buffer_log(ctx, "s_mac2", ctx->s_mac2, sizeof(ctx->s_mac2));
+  //dump_buffer_log(ctx, "rmac_i", ctx->rmac_i, sizeof(ctx->rmac_i));
+  dump_buffer_log(ctx, "last out MAC",
+    ctx->last_calculated_out_mac, sizeof(ctx->rmac_i));
 };
     AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
-    AES_ctx_set_iv (&aes_context_mac2, ctx->last_calculated_in_mac);
+    AES_ctx_set_iv (&aes_context_mac2, ctx->last_calculated_out_mac);
     memcpy (hashbuffer, last_block, sizeof(last_block));
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, sizeof(hashbuffer));
-    memcpy(ctx->last_calculated_in_mac, hashbuffer, sizeof(ctx->last_calculated_in_mac));
+    memcpy(ctx->last_calculated_in_mac,
+      hashbuffer, sizeof(ctx->last_calculated_in_mac));
     dump_buffer_log(ctx, "calc hash", hashbuffer, sizeof(hashbuffer));
 
-    if (0 EQUALS memcmp(last_block, hash, 4))
-      fprintf(stderr, "HASH MATCHES\n");
+    // the hash we calculated (hashbuffer) should match the hash extracted
+    // from the message (hash)
+
+    if (0 EQUALS memcmp(hash, hashbuffer, 4))
+    {
+      status = ST_OK;
+      fprintf(ctx->log, "HASH MATCHES\n");
+    };
   };
   return(status);
 

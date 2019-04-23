@@ -607,7 +607,10 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         // if default enabled use SCBK-D
         // if not default if key pre-loaded use that else error
         if (context->enable_secure_channel EQUALS 0)
+        {
           status = ST_OSDP_SECURE_NOT_ENABLED;
+          fprintf(context->log, "Secure Channel not enabled.\n");
+        };
         if (status EQUALS ST_OK)
         {
           if (context->enable_secure_channel EQUALS 2)
