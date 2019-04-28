@@ -29,8 +29,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (43)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_MINOR (44)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -934,6 +934,7 @@ int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_OSTAT(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_PDCAP (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_POLL (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_RAW (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

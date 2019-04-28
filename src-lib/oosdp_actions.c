@@ -444,6 +444,37 @@ done = 1; // just first one for now.
 
 } /* action_osdp_OUT */
 
+int
+  action_osdp_OSTAT
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_OSTAT */
+
+  unsigned char buffer [1024];
+  int current_length;
+  int j;
+  unsigned char out_status [OSDP_MAX_OUT];
+  int status;
+  int to_send;
+
+
+  status = ST_OK;
+  osdp_conformance.cmd_ostat.test_status = OCONFORM_EXERCISED;
+
+  for (j=0; j<OSDP_MAX_OUT; j++)
+  {
+    out_status [j] = ctx->out[j].current;
+  };
+  to_send = OSDP_MAX_OUT;
+  memcpy (buffer, out_status, OSDP_MAX_OUT);
+  current_length = 0;
+  status = send_message (ctx, OSDP_OSTATR, p_card.addr,
+    &current_length, to_send, buffer);
+  return (status);
+
+} /* action_osdp_OUT */
+
 
 int
   action_osdp_PDCAP

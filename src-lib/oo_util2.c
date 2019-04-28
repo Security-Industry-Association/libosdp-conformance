@@ -476,6 +476,25 @@ int
     p_card.bits = i;
   }; 
 
+  // parameter "check"
+  // value is "CRC" or "CHECKSUM"
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "check");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    strcpy (vstr, json_string_value (value));
+    if (0 EQUALS strcmp(vstr, "CHECKSUM"))
+      m_check = OSDP_CHECKSUM;
+    else
+      m_check = OSDP_CRC;
+  }; 
+
   // parameter "disable_checking"
 
   if (status EQUALS ST_OK)

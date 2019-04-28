@@ -1524,6 +1524,12 @@ int
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
 
+  case OSDP_OSTATR:
+    status = oosdp_make_message (OOSDP_MSG_OUT_STATUS, tlogmsg, msg);
+    if (status EQUALS ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
   case OSDP_PDCAP:
     status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
     if (status == ST_OK)
@@ -1824,6 +1830,10 @@ int
         if (context->verbosity > 9)
           fprintf (stderr, "Responding with OSDP_ACK\n");
       };
+      break;
+
+    case OSDP_OSTAT:
+      status = action_osdp_OSTAT(context, msg);
       break;
 
     case OSDP_OUT:

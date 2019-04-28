@@ -1,7 +1,7 @@
 /*
   open-osdp-PD-status - display PD status as refreshing HTML page
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2019 Smithee Solutions LLC
   (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -28,42 +28,38 @@
 
 #include <jansson.h>
 #include <open-osdp.h>
-OSDP_CONTEXT
-  osdp_context;
+OSDP_CONTEXT osdp_context;
 
 
 void
   display_sim_reader
-  (OSDP_CONTEXT 
-    *ctx,
-  char
-    *buffer)
+  (OSDP_CONTEXT *ctx,
+  char *buffer)
 {
-  char
-    field [1024];
-  int
-    found_field;
-  char
-    json_string [4096];
-  json_t
-    *root;
-  int
-    status;
-  json_error_t
-    status_json;
-  json_t
-    *value;
+  char field [1024];
+  int found_field;
+  char json_string [4096];
+  int i;
+  char message_string [1024];
+  char *out_status [OSDP_MAX_OUT];
+  json_t *root;
+  int status;
+  json_error_t status_json;
+  json_t *value;
 
-  unsigned int
-    led_color;
-  int
-    pd_address;
+  unsigned int led_color;
+  int pd_address;
 
 
   status = ST_OK;
   found_field = 0;
   pd_address = 0;
   led_color = 0;
+  for (i=0; i<OSDP_MAX_OUT; i++)
+  {
+    out_status [i] = malloc(1024);
+    *(out_status [i]) = 0;
+  };
   if (status EQUALS ST_OK)
   {
     root = json_loads (buffer, 0, &status_json);
@@ -119,22 +115,44 @@ fprintf (stdout, "led color %06x\n", i);
   {
     strcpy (ctx->text, json_string_value (value));
   };
-  printf ("libosdp PD Reader<BR>\n");
+  printf ("libosdp-conformance PD Reader<BR>\n");
   printf ("A: %02x<BR>\n",
     pd_address);
-printf ("<BR><SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
-  led_color);
+  printf ("<SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
+    led_color);
   printf ("Message Text: %s<BR>\n",
     ctx->text);
+  message_string [0] = 0;
+  for (i=0; i<OSDP_MAX_OUT; i++)
+  {
+    sprintf(field, "out-%02d", i);
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      sprintf(out_status [i], "&nbsp; &nbsp;");
+    else
+    {
+      char vstring [1024];
+      strcpy(vstring, json_string_value(value));
+
+      if (0 EQUALS strcmp(vstring, "0"))
+        sprintf(out_status [i], "&nbsp; &nbsp; %s ", vstring);
+      else
+        sprintf(out_status [i], "&nbsp; &nbsp; <SPAN STYLE=\"BACKGROUND-COLOR:DODGERBLUE;\">%s</SPAN>\n", vstring);
+    };
+    strcat(message_string, out_status [i]);
+  };
+  printf("%s<BR>\n", message_string);
+  printf(
+"&nbsp; 00 &nbsp; 01 &nbsp; 02 &nbsp; 03 &nbsp; 04 &nbsp; 05 &nbsp; 06 &nbsp; 07 &nbsp; 08 &nbsp; 09 &nbsp; 10 &nbsp 11 &nbsp 12 &nbsp 13 &nbsp 14 &nbsp 15<BR>\n");
+
+  // yes I'm sloppy and left the out strings allocated.
 }
 
 
 int
   main
-    (int
-      argc,
-    char
-      *argv [])
+    (int argc,
+    char *argv [])
 
 { /* main for open-osdp-PD-status */
 

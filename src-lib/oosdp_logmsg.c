@@ -665,8 +665,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
 
   case OOSDP_MSG_OUT_STATUS:
     {
-      int
-        i;
+      int i;
       unsigned char *out_status;
       char tmpstr [1024];
 
@@ -674,11 +673,11 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - 8;
-      tlogmsg [0] = 0;
+      strcpy(tlogmsg, "I/O Status-OUT:");
       out_status = msg->data_payload;
       for (i=0; i<count; i++)
       {
-        sprintf (tmpstr, " Out-%02d = %d\n",
+        sprintf (tmpstr, " %02d:%d",
           i, out_status [i]);
         strcat (tlogmsg, tmpstr);
       };
