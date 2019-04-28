@@ -760,6 +760,8 @@ fprintf(stderr,
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         current_output_command [0].output_number = i;
+fprintf(stderr, "DEBUG: output-number set to %d\n", 
+  current_output_command [0].output_number);
       };
       value = json_object_get (root, "control-code");
       if (json_is_string (value))

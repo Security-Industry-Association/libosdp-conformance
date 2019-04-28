@@ -356,25 +356,17 @@ fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
 
 int
   action_osdp_OUT
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* action_osdp_OUT */
 
-  unsigned char
-    buffer [1024];
-  int
-    current_length;
-  int
-    done;
-  OSDP_OUT_MSG
-    *outmsg;
-  int
-    status;
-  int
-    to_send;
+  unsigned char buffer [1024];
+  int current_length;
+  int done;
+  OSDP_OUT_MSG *outmsg;
+  int status;
+  int to_send;
 
 
   status = ST_OK;
@@ -384,8 +376,6 @@ fprintf (stderr, "data_length in OSDP_OUT: %d\n",
 #if 0
 // if too many for me (my MAX) then error and NAK?
 // set 'timer' to msb*256+lsb
-#define OSDP_OUT_NOP              (0)
-#define OSDP_OUT_OFF_PERM_ABORT   (1)
 #define OSDP_OUT_OFF_PERM_TIMEOUT (3)
 #define OSDP_OUT_ON_PERM_TIMEOUT  (4)
 #define OSDP_OUT_ON_TEMP_TIMEOUT  (5)
@@ -398,16 +388,22 @@ fprintf (stderr, "data_length in OSDP_OUT: %d\n",
   {
     outmsg = (OSDP_OUT_MSG *)(msg->data_payload);
     sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x",
-    outmsg->output_number, outmsg->control_code,
-    outmsg->timer_lsb, outmsg->timer_msb);
+      outmsg->output_number, outmsg->control_code,
+      outmsg->timer_lsb, outmsg->timer_msb);
     fprintf (ctx->log, "%s\n", tlogmsg);
     if ((outmsg->output_number < 0) ||
-      (outmsg->output_number > OSDP_MAX_OUT))
+      (outmsg->output_number > (OSDP_MAX_OUT-1)))
       status = ST_OUT_TOO_MANY;
     if (status EQUALS ST_OK)
     {
       switch (outmsg->control_code)
       {
+      case OSDP_OUT_NOP:
+        break;
+      case OSDP_OUT_OFF_PERM_ABORT:
+        ctx->out [outmsg->output_number].current = 0;
+        ctx->out [outmsg->output_number].timer = 0;
+        break;  
       case OSDP_OUT_ON_PERM_ABORT:
         ctx->out [outmsg->output_number].current = 1;
         ctx->out [outmsg->output_number].timer = 0;

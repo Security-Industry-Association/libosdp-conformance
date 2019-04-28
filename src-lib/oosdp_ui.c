@@ -796,6 +796,8 @@ fprintf(stderr,
           out_lth;
 
         current_length = 0;
+fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
+  current_output_command [0].output_number);
         osdp_out_msg [0].output_number =
           current_output_command [0].output_number;
         osdp_out_msg [0].control_code = current_output_command [0].control_code;
