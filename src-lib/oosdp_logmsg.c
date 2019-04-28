@@ -143,18 +143,23 @@ int
 
 
   status = ST_OK;
+  msg = NULL;
+  oh = NULL;
 
-  // set up the OSDP header structure
-  msg = (OSDP_MSG *) aux;
-  oh = (OSDP_HDR *)(msg->ptr);
+  // set up the OSDP header structure (if we have something to work with)
+  if (aux)
+  {
+    msg = (OSDP_MSG *) aux;
+    oh = (OSDP_HDR *)(msg->ptr);
 
-  // calculate the payload size, accounting for CRC vs. CHECKSUM
-  count = oh->len_lsb + (oh->len_msb << 8);
-  count = count - sizeof(*oh);
-  if (oh->ctrl & 0x04)
-    count = count - 2;
-  else
-    count = count - 1;
+    // calculate the payload size, accounting for CRC vs. CHECKSUM
+    count = oh->len_lsb + (oh->len_msb << 8);
+    count = count - sizeof(*oh);
+    if (oh->ctrl & 0x04)
+      count = count - 2;
+    else
+      count = count - 1;
+  };
 
   switch (msgtype)
   {
@@ -690,6 +695,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
           i, out_status [i]);
         strcat (tlogmsg, tmpstr);
       };
+      strcat(tlogmsg, "\n");
     };
     break;
 
