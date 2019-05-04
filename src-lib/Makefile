@@ -32,6 +32,8 @@ CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -I/opt/osdp-conformance/include \
 all:	${OUTLIB}
 
 build:	all
+	mkdir -p ../opt/osdp-conformance/lib
+	cp ${OUTLIB} ../opt/osdp-conformance/lib
 
 clean:
 	rm -f core *.o ${OUTLIB}
