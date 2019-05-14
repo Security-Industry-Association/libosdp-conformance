@@ -23,11 +23,8 @@
 
 #include <stdio.h>
 #include <string.h>
-//#include <time.h>
-//#include <arpa/inet.h>
 
 
-//#include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 
@@ -46,16 +43,13 @@ int
       *ctx);
 int
   osdp_test_set_status
-    (char
-      *test,
-    int
-      test_status);
+    (char *test,
+    int test_status);
 
 
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-char
-  log_string [1024];
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+char log_string [1024];
+OSDP_CONTEXT context;
 
 // test control info
 typedef struct osdp_conformance_test
@@ -783,19 +777,14 @@ OSDP_SCORE_COUNTERS
 
 int
   osdp_test_set_status
-    (char
-      *test,
-    int
-      test_status)
+    (char *test,
+    int test_status)
 
 { /* osdp_test_set_status */
 
-  int
-    done;
-  int
-    idx;
-  int
-    status;
+  int done;
+  int idx;
+  int status;
 
 
   status = ST_OK;
@@ -803,6 +792,14 @@ int
   done = 0;
   while (!done)
   {
+    //DEBUG
+    if (context.verbosity > 9)
+    {
+      fprintf(context.log, "osdp_test_set_status: checking %d.\n", idx);
+      fflush(context.log);
+      fprintf(context.log, "osdp_test_set_status: name %s\n", test_control [idx].name);
+      fflush(context.log);
+    };
     if (strcmp (test_control [idx].name, test) EQUALS 0)
     {
       *(test_control [idx].conformance) = test_status;

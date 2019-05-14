@@ -597,8 +597,16 @@ int
 
   case OOSDP_MSG_NAK:
     msg = (OSDP_MSG *) aux;
-    sprintf (tlogmsg, "NAK: Error Code %02x Data %02x\n",
-      *(0+msg->data_payload), *(1+msg->data_payload));
+    if (count > 0)
+    {
+      sprintf (tlogmsg, "NAK: Error Code %02x Data %02x\n",
+        *(0+msg->data_payload), *(1+msg->data_payload));
+    }
+    else
+    {
+      sprintf (tlogmsg, "NAK: Error Code %02x\n",
+        *(0+msg->data_payload));
+    };
     break;
 
   // special case - this outputs the basic "Message:.." message

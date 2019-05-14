@@ -442,7 +442,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
     switch (command)
     {
     default:
-      fprintf(stderr, "possible bad response 0x%02x\n", command);
+      fprintf(ctx->log, "***possible bad response 0x%02x\n", command);
       // status = ST_OSDP_BAD_COMMAND_REPLY;
       m->data_payload = m->cmd_payload + 1;
       if (ctx->verbosity > 2)
@@ -909,13 +909,13 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
     if (status != ST_OSDP_CMDREP_FOUND)
     {
       if (status != ST_OK)
-        fprintf (stderr,
-          "Status %d Unknown command? (%02x), default msg_data_length was %d\n",
+        fprintf (context->log,
+          "***Status %d Unknown command? (%02x), default msg_data_length was %d\n",
           status, returned_hdr->command, msg_data_length);
 
     if (context->verbosity > 8)
     {
-      fprintf(stderr, "osdp_parse_message: command %02x\n", returned_hdr->command);
+      fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
 
     switch (returned_hdr->command)
@@ -924,9 +924,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       //status = ST_PARSE_UNKNOWN_CMD;
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = 0;
-      fprintf (stderr,
-        "Unknown command (%02x), default msg_data_length was %d\n",
-        returned_hdr->command, msg_data_length);
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
 
