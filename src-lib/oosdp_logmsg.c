@@ -782,6 +782,11 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     status = oosdp_print_message_RAW(&context, msg, tlogmsg);
     break;
 
+  case OOSDP_MSG_SCRYPT:
+    msg = (OSDP_MSG *) aux;
+    status = oosdp_print_message_SCRYPT(&context, msg, tlogmsg);
+    break;
+
   case OOSDP_MSG_TEXT:
     msg = (OSDP_MSG *) aux;
     status = oosdp_print_message_TEXT(&context, msg, tlogmsg);

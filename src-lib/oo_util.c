@@ -419,6 +419,14 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_SCRYPT:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      osdp_conformance.cmd_scrypt.test_status = OCONFORM_EXERCISED;
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
+      break;
+
     case OSDP_TEXT:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -886,9 +894,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
         {
           if (msg_data_length > 0)
           {
-            fprintf (context->log,
-              "  DATA (%d. bytes):\n",
-              msg_data_length);
             p1 = m->ptr + (msg_lth-msg_data_length-2);
             for (i=0; i<msg_data_length; i++)
             {
@@ -1270,10 +1275,14 @@ status = ST_OK; // tolerate checksum error and continue
     {
       if (msg_scb != 0)
       {
-fprintf(stderr, "checking hash %02x%02x%02x%02x\n",
-  *(m->crc_check-4), *(m->crc_check-3), *(m->crc_check-2), *(m->crc_check-1));
-        status = oo_hash_check(context, m->ptr, sec_block_type,
-          m->crc_check-4, hashable_length);
+        // skip hash check if we're in monitor mode.
+        // rolling hash/mac calculation gets screwed up...
+
+        if (context->role != OSDP_ROLE_MONITOR)
+        {
+          status = oo_hash_check(context, m->ptr, sec_block_type,
+            m->crc_check-4, hashable_length);
+        };
         if (status != ST_OK)
         {
           if (context->verbosity > 3)
@@ -1391,7 +1400,7 @@ int
   status = ST_OK;
   memset(tlogmsg, 0, sizeof(tlogmsg));
 
-  if (msg->direction EQUALS 0)
+  if (msg->direction EQUALS 0) // direction 0 is TO the PD
   {
     switch (msg->msg_cmd)
     {
@@ -1427,6 +1436,11 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+    case OSDP_SCRYPT:
+      status = oosdp_make_message(OOSDP_MSG_SCRYPT, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_XWR:
       status = oosdp_make_message(OOSDP_MSG_XWRITE, tlogmsg, msg);
       if (status == ST_OK)
@@ -1434,7 +1448,7 @@ int
       break;
     };
   };
-  if (msg->direction != 0)
+  if (msg->direction != 0) // direction non-0 (128) is FROM the PD
   {
     switch (msg->msg_cmd)
     {

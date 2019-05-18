@@ -41,6 +41,7 @@ int
   OSDP_HDR *osdp_wire_message;
   int scb_present;
   char *sec_block;
+  char sec_block_decoded [1024];
   int status;
   char tmpstr2 [1024];
 
@@ -48,16 +49,16 @@ int
   status = ST_OK;
   // dump as named in the IEC spec
   osdp_wire_message = (OSDP_HDR *)(msg->ptr); // actual message off the wire
-  sprintf(tmpstr2, "    SOM ADDR=%02x LEN_LSB=%02x LEN_MSB=%02x",
+  sprintf(tmpstr2, " SOM ADDR=%02x LEN_LSB=%02x LEN_MSB=%02x",
     osdp_wire_message->addr, osdp_wire_message->len_lsb,
     osdp_wire_message->len_msb);
   strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
-  sprintf(tmpstr2, "  CTRL=%02x", osdp_wire_message->ctrl);
+  sprintf(tmpstr2, " CTRL=%02x", osdp_wire_message->ctrl);
   strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
   if (osdp_wire_message->ctrl & 0x08)
   {
     scb_present = 1;
-    sprintf(tmpstr2, "[SCB; ");
+    sprintf(tmpstr2, " [SCB; ");
     strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
   }
   else
@@ -69,6 +70,10 @@ int
   if (scb_present)
   {
     sec_block = (char *)&(osdp_wire_message->command);
+    if (sec_block [2] EQUALS OSDP_KEY_SCBK_D)
+      sprintf(sec_block_decoded, "Key=SCBK-D(default)");
+    else
+      sprintf(sec_block_decoded, "Key=SCBK");
     switch (sec_block[1])  // "sec block type"
     {
     case OSDP_SEC_SCS_11:
@@ -86,6 +91,10 @@ int
     case OSDP_SEC_SCS_14:
       sprintf(tmpstr2, "SCS_14; ");
       strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+      if (sec_block [2] EQUALS 1)
+        strcpy(sec_block_decoded, "Session-ok");
+      else
+        strcpy(sec_block_decoded, "Session-bad");
       break;
     case OSDP_SEC_SCS_15:
       sprintf(tmpstr2, "SCS_15; ");
@@ -107,11 +116,7 @@ int
 fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
       break;
     };
-    if (sec_block [2] EQUALS OSDP_KEY_SCBK_D)
-      sprintf(tmpstr2, "Key=SCBK-D(default)");
-    else
-      sprintf(tmpstr2, "Key=SCBK");
-    strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+    strcat(tlogmsg, sec_block_decoded); tmpstr2 [0] = 0;
     strcat(tlogmsg, "]");
   };
 
@@ -304,7 +309,7 @@ void
   };
   if (strlen(trace_in_buffer) > 0)
   {
-    fprintf(ctx->log, " Trace Data IN: %s\n", trace_in_buffer);
+    fprintf(ctx->log, "\nINPUT Trace: %s\n", trace_in_buffer);
     trace_in_buffer [0] = 0;
   };
 

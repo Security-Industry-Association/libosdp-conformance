@@ -261,6 +261,46 @@ int
 
 
 int
+  oosdp_print_message_SCRYPT
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *osdp_msg,
+    char *tlogmsg)
+
+{ /* oosdp_print_message_SCRYPT */
+
+  int count;
+  char hstr [1024];
+  int i;
+  OSDP_HDR *oh;
+  unsigned char *server_cryptogram;
+  int status;
+  char tstr [1024];
+
+
+  status = ST_OK;
+  *tlogmsg = 0;
+  *hstr = 0;
+  oh = (OSDP_HDR *)(osdp_msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 8;  // payload
+  server_cryptogram = (unsigned char *)(osdp_msg->data_payload);
+  for (i=0; i<count; i++)
+  {
+    sprintf(tstr, "%02x", server_cryptogram [i]);
+    strcat(hstr, tstr);
+    if (i != (count-1))
+      if (3 EQUALS (i%4))
+        strcat(hstr, "-");
+  };
+  sprintf(tstr, "  Server Cryptogram: %s\n", hstr);
+    strcat(tlogmsg, tstr);
+
+  return(status);
+
+} /* oosdp_print_message_SCRYPT */
+
+
+int
   oosdp_print_message_TEXT
   (OSDP_CONTEXT *ctx,
   OSDP_MSG *osdp_msg,

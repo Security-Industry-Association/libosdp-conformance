@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (44)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_BUILD ( 3)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -633,6 +633,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_KEEPACTIVE   (24)
 #define OOSDP_MSG_RAW          (25)
 #define OOSDP_MSG_TEXT         (26)
+#define OOSDP_MSG_SCRYPT       (27)
 
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer
@@ -1004,6 +1005,7 @@ int oosdp_print_message_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogm
 int oosdp_print_message_LED(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_PD_IDENT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_RAW(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
+int oosdp_print_message_SCRYPT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_TEXT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_XRD(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 void preserve_current_command (void);
