@@ -36,18 +36,6 @@
 extern OSDP_PARAMETERS p_card;
 char tlogmsg [1024];
 
-#if 0
-#include <stdlib.h>
-
-
-
-
-
-
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-#endif
-
 
 int
   action_osdp_CCRYPT
@@ -69,9 +57,12 @@ int
 
   status = ST_OK;
 
+// DEBUG
+#if 0
   // display it first.
   (void)oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
+#endif
 
   memset (iv, 0, sizeof (iv));
 
@@ -161,8 +152,6 @@ int
   int status;
 
 
-fprintf(stderr, "verbose at inbound osdp_RMAC_I\n");
-ctx->verbosity=9;
   status = ST_OK;
   memset (iv, 0, sizeof (iv));
 
@@ -209,7 +198,6 @@ int
 
 
   status = ST_OK;
-fprintf (stderr,"TODO: osdp_SCRYPT\n");
   memset (iv, 0, sizeof (iv));
 
   // check for proper state
@@ -219,12 +207,28 @@ fprintf (stderr,"TODO: osdp_SCRYPT\n");
     status = osdp_get_key_slot (ctx, msg, &current_key_slot);
     if (status EQUALS ST_OK)
     {
+      memcpy(server_cryptogram, msg->data_payload, sizeof(message1));
+
       AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
       AES_ctx_set_iv (&aes_context_s_enc, iv);
-      AES_CBC_decrypt_buffer (&aes_context_s_enc, server_cryptogram, sizeof (server_cryptogram));
-      //AES_CBC_decrypt_buffer (server_cryptogram, msg->data_payload, msg->data_length, ctx->s_enc, iv);
+      AES_CBC_decrypt_buffer (&aes_context_s_enc,
+        server_cryptogram, sizeof (server_cryptogram));
+      if (ctx->verbosity > 3)
+      {
+        dump_buffer_log(ctx,
+"SrvCgram:",
+          msg->data_payload, OSDP_KEY_OCTETS);
+        dump_buffer_log(ctx,
+"   s-enc:", ctx->s_enc, OSDP_KEY_OCTETS);
+        dump_buffer_log(ctx,
+"      iv:", iv, OSDP_KEY_OCTETS);
+        dump_buffer_log(ctx,
+" Decrypt:",
+          server_cryptogram, OSDP_KEY_OCTETS);
+      };
       if ((0 != memcmp (server_cryptogram, ctx->rnd_b, sizeof (ctx->rnd_b))) ||
-        (0 != memcmp (server_cryptogram+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a))))
+        (0 != memcmp (server_cryptogram+sizeof (ctx->rnd_b),
+          ctx->rnd_a, sizeof (ctx->rnd_a))))
         status = ST_OSDP_SCRYPT_DECRYPT;
     };
     if (status EQUALS ST_OK)
@@ -242,6 +246,10 @@ fprintf (stderr,"TODO: osdp_SCRYPT\n");
       memcpy (message3, message2, sizeof (message3));
       AES_ctx_set_iv (&aes_context_mac2, iv);
       AES_CBC_encrypt_buffer (&aes_context_mac2, message3, sizeof (message3));
+
+      memcpy(ctx->rmac_i, message3, sizeof(ctx->rmac_i));
+      memcpy(ctx->last_calculated_in_mac, ctx->rmac_i, sizeof(ctx->last_calculated_in_mac));
+      memcpy(ctx->last_calculated_out_mac, ctx->rmac_i, sizeof(ctx->last_calculated_out_mac));
 
       // mark enabled state as operational since we're done initializing
 

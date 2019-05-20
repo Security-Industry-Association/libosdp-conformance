@@ -138,11 +138,14 @@ fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
       context->serial_speed);
   };
   status_io = cfsetispeed (&(context->tio), serial_speed_cfg_value);
-  fprintf (stderr, "cfsetispeed returned %d\n", status_io);
+  if (context->verbosity > 3)
+    fprintf (stderr, "cfsetispeed returned %d\n", status_io);
   status_io = cfsetospeed (&(context->tio), serial_speed_cfg_value);
-  fprintf (stderr, "cfsetospeed returned %d\n", status_io);
+  if (context->verbosity > 3)
+    fprintf (stderr, "cfsetospeed returned %d\n", status_io);
   status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
-  fprintf (stderr, "tcsetattr returned %d\n", status_io);
+  if (context->verbosity > 3)
+    fprintf (stderr, "tcsetattr returned %d\n", status_io);
   if (status_io != 0)
     status = ST_SERIAL_SET_ERR;
 };

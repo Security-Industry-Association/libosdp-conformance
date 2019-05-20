@@ -208,21 +208,15 @@ status = -2;
 
 int
   osdp_check_command_reply
-    (int
-      role,
-    int
-      command,
-    OSDP_MSG
-      *m,
-    char
-      *tlogmsg2)
+    (int role,
+    int command,
+    OSDP_MSG *m,
+    char *tlogmsg2)
 
 { /* osdp_check_command_reply */
 
-  OSDP_CONTEXT
-    *ctx;
-  int
-    status;
+  OSDP_CONTEXT *ctx;
+  int status;
 
 
   ctx = &context;
@@ -319,6 +313,10 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_KEEPACTIVE");
       osdp_conformance.cmd_keepactive.test_status = OCONFORM_EXERCISED;
+      break;
+
+    case OSDP_KEYSET:
+      OSDP_CHECK_CMDREP ("osdp_KEYSET", cmd_comset, 1);
       break;
 
     case OSDP_LED:
@@ -668,7 +666,6 @@ int
   int display;
   int hashable_length;
   int i;
-  char logmsg [1024];
   unsigned int msg_lth;
   int msg_check_type;
   int msg_data_length;
@@ -684,7 +681,6 @@ int
 
 
   status = ST_MSG_TOO_SHORT;
-  logmsg [0] = 0;
 
   m->data_payload = NULL;
   m->security_block_length = 0; // assume no security block
@@ -863,11 +859,8 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
     if (display)
     {
       char dirtag [1024];
-        int i;
-        unsigned char
-          *p1;
-        char
-          tlogmsg [1024];
+      unsigned char *p1;
+      char tlogmsg [1024];
 
 
         strcpy (tlogmsg, "");
@@ -890,21 +883,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
           fflush (context->log);
           // p2 = p1+5+*(p1+5); // before-secblk and secblk
         };
-        if (context->verbosity > 3)
-        {
-          if (msg_data_length > 0)
-          {
-            p1 = m->ptr + (msg_lth-msg_data_length-2);
-            for (i=0; i<msg_data_length; i++)
-            {
-              fprintf (context->log, " %02x", *(i+p1));
-              if (31 EQUALS (i % 32))
-                fprintf(context->log, "\n");
-            };
-          if (32 != (msg_data_length % 32))
-            fprintf (context->log, "\n");
-        };
-      };
     };
 
     m->data_length = msg_data_length;
@@ -923,6 +901,8 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
 
+// DEBUG
+fprintf(stderr, "switch in osdp_parse_message: %02x\n", returned_hdr->command);
     switch (returned_hdr->command)
     {
     default:
@@ -1367,9 +1347,6 @@ status = ST_OK; // tolerate checksum error and continue
 
   if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT))
   {
-    if (strlen (logmsg) > 0)
-      fprintf (context->log, "%s\n", logmsg);
-
     // if parse failed report the status code
     if ((context->verbosity > 3) && (status != ST_MONITOR_ONLY))
     {
@@ -1423,6 +1400,11 @@ int
       break;
     case OSDP_KEEPACTIVE:
       status = oosdp_make_message (OOSDP_MSG_KEEPACTIVE, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_KEYSET:
+      status = oosdp_make_message (OOSDP_MSG_KEYSET, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
@@ -1559,6 +1541,12 @@ int
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
 
+  case OSDP_RMAC_I:
+    status = oosdp_make_message(OOSDP_MSG_RMAC_I, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+    break;
+
   case OSDP_TEXT:
     status = oosdp_make_message(OOSDP_MSG_TEXT, tlogmsg, msg);
     if (status == ST_OK)
@@ -1604,7 +1592,7 @@ int
     if ((oh->ctrl & 0x03) EQUALS 0)
     {
       fprintf (context->log,
-        "CP sent sequence 0 - resetting sequence numbers\n");
+        "  CP sent sequence 0 - resetting sequence numbers\n");
       context->next_sequence = 0;
     };
 
@@ -1886,6 +1874,10 @@ fprintf(stderr, "lstat 1684\n");
 
     case OSDP_RSTAT:
       status = action_osdp_RSTAT (context, msg);
+      break;
+
+    case OSDP_SCRYPT:
+      status = action_osdp_SCRYPT (context, msg);
       break;
 
     case OSDP_TEXT:
@@ -2264,10 +2256,6 @@ printf ("MMSG DONE\n");
       context->last_was_processed = 1;
 
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
-      break;
-
-    case OSDP_SCRYPT:
-      status = action_osdp_SCRYPT (context, msg);
       break;
 
     case OSDP_XRD:

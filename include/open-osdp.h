@@ -136,6 +136,7 @@
 #define OO_NAK_CHECK_CRC  (1)
 #define OO_NAK_UNK_CMD    (3)
 #define OO_NAK_SEQUENCE   (4)
+#define OO_NAK_UNSUP_SECBLK (5)
 #define OO_NAK_CMD_UNABLE (9)
 
 #define OSDP_MENU_TOP     (0x0000)
@@ -607,33 +608,37 @@ typedef struct osdp_parameters
 #define OSDP_LOG_STRING_CP   (3)
 #define OSDP_LOG_STRING_PD   (4)
 
-#define OOSDP_MSG_PD_IDENT     (1)
-#define OOSDP_MSG_KEYPAD       (2)
 #define OOSDP_MSG_PKT_STATS    (3)
-#define OOSDP_MSG_PD_CAPAS     (4)
 #define OOSDP_MSG_OUT_STATUS   (5)
+#define OOSDP_MSG_OSDP         (11)
+
+#define OOSDP_MSG_ACURXSIZE    (21)
+#define OOSDP_MSG_BUZ          (18)
 #define OOSDP_MSG_CCRYPT       (6)
+#define OOSDP_MSG_CHLNG        (10)
+#define OOSDP_MSG_COM          (20)
+#define OOSDP_MSG_COMSET       (19)
 #define OOSDP_MSG_FILETRANSFER (7)
 #define OOSDP_MSG_FTSTAT       (8)
-#define OOSDP_MSG_LED          (9)
-#define OOSDP_MSG_CHLNG        (10)
-#define OOSDP_MSG_OSDP         (11)
-#define OOSDP_MSG_NAK          (12)
-#define OOSDP_MSG_LSTATR       (13)
-#define OOSDP_MSG_MFGREP       (14)
-#define OOSDP_MSG_MFG          (15)
-#define OOSDP_MSG_OUT          (16)
 #define OOSDP_MSG_ISTATR       (17)
-#define OOSDP_MSG_BUZ          (18)
-#define OOSDP_MSG_COMSET       (19)
-#define OOSDP_MSG_COM          (20)
-#define OOSDP_MSG_ACURXSIZE    (21)
-#define OOSDP_MSG_XWRITE       (22)
-#define OOSDP_MSG_XREAD        (23)
 #define OOSDP_MSG_KEEPACTIVE   (24)
+#define OOSDP_MSG_KEYSET       (103)
+#define OOSDP_MSG_KEYPAD       (2)
+#define OOSDP_MSG_LED          (9)
+#define OOSDP_MSG_LSTATR       (13)
+#define OOSDP_MSG_MFG          (15)
+#define OOSDP_MSG_MFGREP       (14)
+#define OOSDP_MSG_NAK          (12)
+#define OOSDP_MSG_OUT          (16)
+#define OOSDP_MSG_PD_CAPAS     (4)
+#define OOSDP_MSG_PD_IDENT     (1)
 #define OOSDP_MSG_RAW          (25)
+#define OOSDP_MSG_RMAC_I       (102)
+#define OOSDP_MSG_SCRYPT       (101)
 #define OOSDP_MSG_TEXT         (26)
-#define OOSDP_MSG_SCRYPT       (27)
+#define OOSDP_MSG_XREAD        (23)
+#define OOSDP_MSG_XWRITE       (22)
+
 
 #define OSDP_BUF_MAX (8192)
 typedef struct osdp_buffer
@@ -1002,9 +1007,11 @@ int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);
 int oosdp_message_header_print (OSDP_CONTEXT *ctx, OSDP_MSG *msg, char *tlogmsg);
 int oosdp_print_message_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
+int oosdp_print_message_KEYSET(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_LED(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_PD_IDENT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_RAW(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
+int oosdp_print_message_RMAC_I(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_SCRYPT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_TEXT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_XRD(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);

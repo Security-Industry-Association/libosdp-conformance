@@ -57,6 +57,50 @@ int
 
 
 int
+  oosdp_print_message_KEYSET
+  (OSDP_CONTEXT *ctx,
+  OSDP_MSG *osdp_msg,
+  char *tlogmsg)
+
+{ /* oosdp_print_message_KEYSET */
+
+  int count;
+  unsigned char *keyset_payload;
+  OSDP_HDR *oh;
+  int status;
+  char tstr [1024];
+
+  char hstr [1024];
+  int i;
+
+
+  status = ST_OK;
+  *tlogmsg = 0;
+  oh = (OSDP_HDR *)(osdp_msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 8;  // payload
+  keyset_payload = (unsigned char *)(osdp_msg->data_payload);
+
+  sprintf(tstr, "  Key_Type %02x Key Length %d.\n",
+    keyset_payload [0], keyset_payload [1]);
+
+  *hstr = 0;
+  for (i=0; i<count; i++)
+  {
+    sprintf(tstr, "%02x", keyset_payload [2+i]);
+    strcat(hstr, tstr);
+    if (i != (count-1))
+      if (3 EQUALS (i%4))
+        strcat(hstr, "-");
+  };
+  sprintf(tstr, "  New SCBK: %s\n", hstr);
+    strcat(tlogmsg, tstr);
+  return(status);
+
+} /* oosdp_print_message_KEYSET */
+
+
+int
   oosdp_print_message_LED
   (OSDP_CONTEXT *ctx,
   OSDP_MSG *osdp_msg,
@@ -259,6 +303,47 @@ int
 
 } /* oosdp_print_message_RAW */
 
+
+int
+  oosdp_print_message_RMAC_I
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *osdp_msg,
+    char *tlogmsg)
+
+{ /* oosdp_print_message_RMAC_I */
+
+  int count;
+  char hstr [1024];
+  int i;
+  OSDP_HDR *oh;
+  unsigned char *mac_i;
+  int status;
+  char tstr [1024];
+
+
+  status = ST_OK;
+  *tlogmsg = 0;
+  *hstr = 0;
+  oh = (OSDP_HDR *)(osdp_msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 8;  // payload
+  count = count - 3; // sec block
+//DEBUG
+fprintf(stderr, "oh lth %d.\n", (int)sizeof(*oh));
+  mac_i = (unsigned char *)(osdp_msg->data_payload);
+  for (i=0; i<count; i++)
+  {
+    sprintf(tstr, "%02x", mac_i [i]);
+    strcat(hstr, tstr);
+    if (i != (count-1))
+      if (3 EQUALS (i%4))
+        strcat(hstr, "-");
+  };
+  sprintf(tstr, "  MAC_I: %s\n", hstr);
+    strcat(tlogmsg, tstr);
+  return(status);
+
+} /* oosdp_print_message_RMAC_I */
 
 int
   oosdp_print_message_SCRYPT

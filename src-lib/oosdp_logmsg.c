@@ -204,7 +204,7 @@ int
     msg = (OSDP_MSG *) aux;
     ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
     sprintf (tlogmsg,
-"CCRYPT: cUID %02x%02x%02x%02x-%02x%02x%02x%02x RND.B %02x%02x%02x%02x-%02x%02x%02x%02x Client Cryptogram %02x%02x%02x%02x-%02x%02x%02x%02x",
+"  CCRYPT: cUID %02x%02x%02x%02x-%02x%02x%02x%02x RND.B %02x%02x%02x%02x-%02x%02x%02x%02x Client Cryptogram %02x%02x%02x%02x-%02x%02x%02x%02x",
       ccrypt_payload->client_id [0], ccrypt_payload->client_id [1],
       ccrypt_payload->client_id [2], ccrypt_payload->client_id [3],
       ccrypt_payload->client_id [4], ccrypt_payload->client_id [5],
@@ -391,6 +391,11 @@ int
           *(msg->data_payload+0), keycount, tstring);
       };
     };
+    break;
+
+  case OOSDP_MSG_KEYSET:
+    msg = (OSDP_MSG *) aux;
+    status = oosdp_print_message_KEYSET(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_LED:
@@ -597,8 +602,11 @@ int
 
   case OOSDP_MSG_NAK:
     msg = (OSDP_MSG *) aux;
-    if (count > 0)
+    if (msg->data_length > 0)
     {
+// DEBUG
+fprintf(stderr, "llsb 0x%02x lmsb 0x%02x msg->data_length 0x%02x\n",
+  oh->len_lsb, oh->len_msb, msg->data_length);
       sprintf (tlogmsg, "NAK: Error Code %02x Data %02x\n",
         *(0+msg->data_payload), *(1+msg->data_payload));
     }
@@ -780,6 +788,11 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
   case OOSDP_MSG_RAW:
     msg = (OSDP_MSG *) aux;
     status = oosdp_print_message_RAW(&context, msg, tlogmsg);
+    break;
+
+  case OOSDP_MSG_RMAC_I:
+    msg = (OSDP_MSG *) aux;
+    status = oosdp_print_message_RMAC_I(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_SCRYPT:

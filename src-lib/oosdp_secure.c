@@ -62,13 +62,16 @@ int
 
   // make sure this PD was enabled for secure channel (see enable-secure-channel command)
 
-fprintf(stderr, "enab? %d\n", ctx->secure_channel_use[OO_SCU_ENAB]);
   if (OO_SCS_USE_ENABLED != ctx->secure_channel_use[OO_SCU_ENAB])
     nak = 1;
   if (nak)
   {
+    /*
+      secure channel is not enabled on this PD.  Therefore osdp_CHLNG is not a valid command.
+      NAK it with the code specified in Annex D (SCS_11 gets NAK 5) 
+    */
     current_length = 0;
-    osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+    osdp_nak_response_data [0] = OO_NAK_UNSUP_SECBLK;
     osdp_nak_response_data [1] = 0xff;
     status = send_message (ctx,
       OSDP_NAK, p_card.addr, &current_length,
@@ -77,7 +80,7 @@ fprintf(stderr, "enab? %d\n", ctx->secure_channel_use[OO_SCU_ENAB]);
     osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
     if (ctx->verbosity > 2)
     {
-      fprintf (ctx->log, "NAK: osdp_CHLNG but Secure Channel disabled\n");
+      fprintf (ctx->log, "NAK(5): osdp_CHLNG but Secure Channel disabled\n");
     };
   };
   if (!nak)
@@ -315,7 +318,7 @@ int
       next_data ++; // where crc goes (after data)
     };
   };
-  if (ctx->verbosity > 8)
+  if (ctx->verbosity > 9)
     dump_buffer_log(ctx, "Secure Before MAC append", buf, new_length);
 
   // append 4-byte partial MAC for SCS_15-18
@@ -332,7 +335,7 @@ int
       new_length = new_length + 4;
     };
   };
-  if (ctx->verbosity > 8)
+  if (ctx->verbosity > 9)
     dump_buffer_log(ctx, "Secure After MAC append", buf, new_length);
 
   // crc
@@ -564,12 +567,13 @@ void
   // refresh rnd.b
   memcpy (ctx->rnd_b, "abcdefgh", 8);
 
+  memset(ctx->rmac_i, 0, sizeof(ctx->rmac_i));
   memset (ctx->last_calculated_in_mac, 0, sizeof (ctx->last_calculated_in_mac));
   memset (ctx->last_calculated_out_mac, 0, sizeof (ctx->last_calculated_out_mac));
   ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_DISABLED;
   if (ctx->enable_secure_channel > 0)
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
-  fprintf (ctx->log, "Resetting Secure Channel\n");
+  fprintf (ctx->log, "  Resetting Secure Channel\n");
 
 } /* osdp_reset_secure_channel */
 
@@ -588,11 +592,17 @@ int
 
 { /* oo_hash_check */
 
+  struct AES_ctx aes_context_mac1;
   struct AES_ctx aes_context_mac2;
+  unsigned char current_iv [OSDP_KEY_OCTETS];
   int current_length;
+  unsigned char *current_pointer;
+  int first_blocks_length;
   unsigned char hashbuffer [OSDP_KEY_OCTETS];
   unsigned char last_block [OSDP_KEY_OCTETS];
+  int last_block_length;
   unsigned char *message_pointer;
+  unsigned char first_blocks_temp [OSDP_BUF_MAX];
   int status;
 
 
@@ -608,17 +618,41 @@ int
     };
     message_pointer = message;
     current_length = message_length - 4; // less hash on wire
+    current_pointer = message;
+    last_block_length = current_length;
+    memcpy(current_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
     if (current_length > OSDP_KEY_OCTETS)
     {
-      fprintf(ctx->log, "... first several blocks...\n");
+      first_blocks_length = (current_length/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
+      last_block_length = current_length - (current_length/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
+      if (last_block_length EQUALS 0)
+      {
+        first_blocks_length = first_blocks_length - OSDP_KEY_OCTETS;
+        last_block_length = OSDP_KEY_OCTETS;
+      };
+      memcpy(current_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
+dump_buffer_log(ctx, "s_mac1:", ctx->s_mac1, OSDP_KEY_OCTETS);
+dump_buffer_log(ctx, "iv:", current_iv, OSDP_KEY_OCTETS);
+
+      AES_init_ctx(&aes_context_mac1, ctx->s_mac1);
+      AES_ctx_set_iv(&aes_context_mac1, current_iv);
+      memcpy(first_blocks_temp, current_pointer, first_blocks_length);
+dump_buffer_log(ctx, "first blocks from wire:", first_blocks_temp, first_blocks_length);
+      AES_CBC_encrypt_buffer(&aes_context_mac1, first_blocks_temp, first_blocks_length);
+      memcpy(current_iv, first_blocks_temp + (first_blocks_length - OSDP_KEY_OCTETS), OSDP_KEY_OCTETS);
+
+      current_pointer = message_pointer + first_blocks_length;
+
+// DEBUG
+dump_buffer_log(ctx, "IV after mac1:", current_iv, OSDP_KEY_OCTETS);
     };
 
     // process the last block
     memset(last_block, 0, sizeof(last_block));
-    memcpy(last_block, message_pointer, current_length);
-    if (current_length != OSDP_KEY_OCTETS)
+    memcpy(last_block, current_pointer, last_block_length);
+    if (last_block_length != OSDP_KEY_OCTETS)
     {
-      osdp_sc_pad(last_block, current_length);
+      osdp_sc_pad(last_block, last_block_length);
     };
 if (ctx->verbosity > 3)
 {
@@ -630,7 +664,7 @@ if (ctx->verbosity > 3)
     ctx->last_calculated_out_mac, sizeof(ctx->rmac_i));
 };
     AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
-    AES_ctx_set_iv (&aes_context_mac2, ctx->last_calculated_out_mac);
+    AES_ctx_set_iv (&aes_context_mac2, current_iv);
     memcpy (hashbuffer, last_block, sizeof(last_block));
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, sizeof(hashbuffer));
     memcpy(ctx->last_calculated_in_mac,
@@ -646,6 +680,7 @@ if (ctx->verbosity > 3)
       fprintf(ctx->log, "HASH MATCHES\n");
     };
   };
+  fflush(ctx->log);
   return(status);
 
 } /* oo_hash_check */
@@ -813,7 +848,6 @@ int
 { /* send_secure_message */
 
   unsigned char buf [2];
-  OSDP_MSG m;
   int old_state;
   int status;
   unsigned char test_blk [1024];
@@ -842,6 +876,32 @@ int
     sec_block_type, sec_block_length, sec_blk); // security values
   if (status EQUALS ST_OK)
   {
+    OSDP_MSG m;
+    int parse_role;
+    OSDP_HDR returned_hdr;
+    int status_monitor;
+
+    memset (&m, 0, sizeof (m));
+    m.ptr = test_blk; // marshalled outbound message
+    m.lth = *current_length;
+
+    // parse the message for display.  role to parse is the OTHER guy
+    parse_role = OSDP_ROLE_CP;
+    if (ctx->role EQUALS OSDP_ROLE_CP)
+      parse_role = OSDP_ROLE_PD;
+    status_monitor = osdp_parse_message (ctx, parse_role,
+      &m, &returned_hdr);
+    if (ctx->verbosity > 8)
+      if (status_monitor != ST_OK)
+      {
+        sprintf (tlogmsg,"parse_message for monitoring returned %d.\n",
+          status_monitor);
+        status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
+      };
+    (void)monitor_osdp_message (ctx, &m);
+  };
+  if (status EQUALS ST_OK)
+  {
     buf [0] = 0xff;
     // send start-of-message marker (0xff)
     send_osdp_data (ctx, &(buf[0]), 1);
@@ -850,13 +910,6 @@ int
       ctx->secure_channel_use [0] = 128 + OSDP_SEC_SCS_11;
 
     send_osdp_data (ctx, test_blk, *current_length);
-
-    m.direction = ctx->role;
-    m.msg_cmd = command;
-    m.ptr = test_blk; // marshalled outbound message
-    m.lth = *current_length;
-    m.data_payload = data;
-    (void)monitor_osdp_message(ctx, &m);
   };
   return (status);
 

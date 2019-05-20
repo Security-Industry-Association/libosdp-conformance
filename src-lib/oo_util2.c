@@ -1099,16 +1099,6 @@ int
         };
       (void)monitor_osdp_message (context, &m);
     };
-    if (context->verbosity > 4)
-    {
-      int
-        i;
-
-       fprintf (context->log, "Sending lth %d.=", *current_length);
-       for (i=0; i<*current_length; i++)
-         fprintf (context->log, " %02x", test_blk [i]);
-       fprintf (context->log, "\n");
-    };
 
     buf [0] = 0xff;
     // send start-of-message marker (0xff)
@@ -1116,6 +1106,11 @@ int
 
     if (status EQUALS ST_OK)
       status = send_osdp_data (context, test_blk, *current_length);
+
+    if (context->verbosity > 4)
+    {
+      osdp_trace_dump(context);
+    };
   };
   if (status EQUALS ST_OK)
   {

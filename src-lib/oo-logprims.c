@@ -304,12 +304,14 @@ void
 
   if (strlen(trace_out_buffer) > 0)
   {
-    fprintf(ctx->log, "Trace Data OUT: %s\n", trace_out_buffer);
+    fprintf(ctx->log,
+"\nOUTPUT Trace: %s\n", trace_out_buffer);
     trace_out_buffer [0] = 0;
   };
   if (strlen(trace_in_buffer) > 0)
   {
-    fprintf(ctx->log, "\nINPUT Trace: %s\n", trace_in_buffer);
+    fprintf(ctx->log,
+"\n INPUT Trace: %s\n", trace_in_buffer);
     trace_in_buffer [0] = 0;
   };
 
