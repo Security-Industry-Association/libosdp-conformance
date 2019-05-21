@@ -368,6 +368,51 @@ int
 
 } /* osdp_build_message */
 
+int
+  osdp_decrypt_payload
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* osdp_decrypt_payload */
+
+  struct AES_ctx aes_context_decrypt;
+
+
+// DEBUG
+fprintf(stderr, "osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n", msg->security_block_type,
+  msg->data_length);
+  if (msg->security_block_type > OSDP_SEC_SCS_16)
+  {
+dump_buffer_log(ctx, "payload to decrypt:", msg->data_payload, msg->data_length);
+    AES_init_ctx(&aes_context_decrypt, ctx->s_enc);
+    AES_ctx_set_iv(&aes_context_decrypt, ctx->last_calculated_in_mac);
+    AES_CBC_decrypt_buffer(&aes_context_decrypt, msg->data_payload, msg->data_length);
+dump_buffer_log(ctx, "payload decrypted:", msg->data_payload, msg->data_length);
+  };
+#if 0
+blocksize=0
+current = last octet
+current_actual = msg size
+while not done
+  if current is not 0
+    if current is not 0x80
+      error and done
+  if current is 0
+    decrement
+    decrement current actual
+    increment blocksize
+    if blocksize > KEY OCTETS -1
+      error and done
+  if current is 0x80
+  {
+    decrement current actual
+    done
+  }
+#endif
+return(ST_OK);
+} /* osdp_decrypt_payload */
+
+
 
 void
   osdp_pad_message
@@ -408,9 +453,7 @@ void
 
 { /* osdp_create_client_cryptogram */
 
-#if 0
   struct AES_ctx aes_context_s_enc;
-#endif
   unsigned char iv [16];
   unsigned char message [16];
 
@@ -418,21 +461,11 @@ void
   memset (iv, 0, sizeof (iv));
   memcpy (message, ctx->rnd_a, 8);
   memcpy (message+8, ctx->rnd_b, 8);
-if (ctx->verbosity > 8)
-{
-  int i;
-  fprintf (stderr, "s_enc in osdp_create_client_cryptogram: ");
-  for (i=0; i<OSDP_KEY_OCTETS; i++)
-    fprintf (stderr, "%02x", ctx->s_enc [i]);
-  fprintf (stderr, "\n");
-};
-#if 0
-  AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
-  AES_ctx_set_iv (&aes_context_s_enc, iv);
-  memcpy (ccrypt_response->cryptogram, message, sizeof (ccrypt_response->cryptogram));
-  AES_CBC_encrypt_buffer (ccrypt_response->cryptogram, message, sizeof (message), ctx->s_enc, iv);
-#endif
-  
+
+  AES_init_ctx(&aes_context_s_enc, ctx->s_enc);
+  AES_ctx_set_iv(&aes_context_s_enc, iv);
+  memcpy(ccrypt_response->cryptogram, message, sizeof (ccrypt_response->cryptogram));
+  AES_CBC_encrypt_buffer(&aes_context_s_enc, ccrypt_response->cryptogram, sizeof (message));
   return;
 
 } /* osdp_create_client_cryptogram */
@@ -610,12 +643,6 @@ int
   if (security_block_type > OSDP_SEC_SCS_14)
   {
     status = ST_OSDP_SC_BAD_HASH;
-    if (ctx->verbosity > 3)
-    {
-      fprintf(ctx->log,
-"...oo_hash_check:hash check: checking %02x%02x%02x%02x\n",
-        hash[0], hash[1], hash[2], hash[3]);
-    };
     message_pointer = message;
     current_length = message_length - 4; // less hash on wire
     current_pointer = message;
@@ -654,15 +681,6 @@ dump_buffer_log(ctx, "IV after mac1:", current_iv, OSDP_KEY_OCTETS);
     {
       osdp_sc_pad(last_block, last_block_length);
     };
-if (ctx->verbosity > 3)
-{
-  dump_buffer_log(ctx,
-    "oo_hash_check: hashable message", last_block, sizeof(last_block));
-  //dump_buffer_log(ctx, "s_mac2", ctx->s_mac2, sizeof(ctx->s_mac2));
-  //dump_buffer_log(ctx, "rmac_i", ctx->rmac_i, sizeof(ctx->rmac_i));
-  dump_buffer_log(ctx, "last out MAC",
-    ctx->last_calculated_out_mac, sizeof(ctx->rmac_i));
-};
     AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
     AES_ctx_set_iv (&aes_context_mac2, current_iv);
     memcpy (hashbuffer, last_block, sizeof(last_block));

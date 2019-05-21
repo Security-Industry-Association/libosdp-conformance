@@ -1123,3 +1123,94 @@ int
 
 } /* send_message */
 
+
+/*
+  send_message_ex - send an OSDP message (extended features)
+
+  sends a message in cleartext or secure channel.
+*/
+
+int
+  send_message_ex
+    (OSDP_CONTEXT *ctx,
+    int command,
+    int dest_addr,
+    int *current_length,
+    int data_length,
+    unsigned char *data,
+    int sec_block_type,
+    int sec_block_length,
+    unsigned char *sec_block)
+
+{ /* send_message_ex */
+
+  unsigned char current_sec_block [3];
+  int current_sec_block_length;
+  int current_sec_block_type;
+  int status;
+
+
+//DEBUG
+fprintf(ctx->log, "send_message_ex: top sbt %x scu-e %x dlth %d.\n",
+  sec_block_type, ctx->secure_channel_use[OO_SCU_ENAB], data_length);
+
+  status = ST_OK;
+  current_sec_block_type = sec_block_type;
+  current_sec_block_length = sec_block_length;
+  memset(current_sec_block, 0, sizeof(current_sec_block));
+  if (sec_block != NULL)
+    memcpy(current_sec_block, sec_block, sizeof(current_sec_block));
+
+  // if we're not in secure channel it's all cleartext
+
+  if (ctx->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
+    current_sec_block_type = OSDP_SEC_NOT_SCS;
+
+  // if we're in secure channel and it's not a known block it's an SCS_15/16
+  // unless there's data in which case it's a 17/18
+
+  current_sec_block_length = 0;
+
+  if (current_sec_block_type EQUALS OSDP_SEC_NOT_SCS)
+  {
+    if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+    {
+      if (ctx->verbosity > 3)
+      {
+        fprintf(ctx->log, "send: SC; dlth %d\n", data_length);
+      };
+      if (data_length > 0)
+      {
+        if (ctx->role EQUALS OSDP_ROLE_CP)
+          current_sec_block_type = OSDP_SEC_SCS_17;
+        else
+          current_sec_block_type = OSDP_SEC_SCS_18;
+      };
+      if (data_length EQUALS 0)
+      {
+        if (ctx->role EQUALS OSDP_ROLE_CP)
+          current_sec_block_type = OSDP_SEC_SCS_15;
+        else
+          current_sec_block_type = OSDP_SEC_SCS_16;
+      };
+    };
+  };
+  if (current_sec_block_type != OSDP_SEC_NOT_SCS)
+  {
+    if (ctx->verbosity > 9)
+    {
+      fprintf(ctx->log, "send: SC-%x\n", current_sec_block_type);
+    };
+    status = send_secure_message(ctx, command, dest_addr,
+      current_length, data_length, data,
+      current_sec_block_type, current_sec_block_length, current_sec_block);
+  }
+  else
+  {
+    status = send_message (ctx, command, dest_addr, current_length,
+      data_length, data);
+  };
+  return(status);
+
+} /* osdp_send_message_ex */
+

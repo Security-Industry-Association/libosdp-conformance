@@ -316,7 +316,11 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       break;
 
     case OSDP_KEYSET:
-      OSDP_CHECK_CMDREP ("osdp_KEYSET", cmd_comset, 1);
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      osdp_conformance.cmd_keyset.test_status = OCONFORM_EXERCISED;
+      if (osdp_conformance.conforming_messages < PARAM_MMT)
+        osdp_conformance.conforming_messages ++;
       break;
 
     case OSDP_LED:
@@ -729,11 +733,6 @@ int
   if (status EQUALS ST_OK)
   {    
     tlogmsg [0] = 0;
-    if (context->verbosity > 3)
-      // prints low 7 bits of addr field i.e. not request/reply
-      sprintf (tlogmsg,
-"A:%02x L:%d. C:%02x\n",
-        (0x7f & p->addr), msg_lth, p->ctrl);
    
     // must start with SOM
     if (p->som != C_SOM)
@@ -1262,6 +1261,9 @@ status = ST_OK; // tolerate checksum error and continue
         {
           status = oo_hash_check(context, m->ptr, sec_block_type,
             m->crc_check-4, hashable_length);
+          if (status EQUALS ST_OK)
+            status = osdp_decrypt_payload(context, m);
+
         };
         if (status != ST_OK)
         {
@@ -1393,6 +1395,11 @@ int
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
 #endif
+    case OSDP_CHLNG:
+      status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_COMSET:
       status = oosdp_make_message (OOSDP_MSG_COMSET, tlogmsg, msg);
       if (status == ST_OK)
@@ -1460,11 +1467,6 @@ int
   {
   case OSDP_BUZ:
     status = oosdp_make_message (OOSDP_MSG_BUZ, tlogmsg, msg);
-    if (status == ST_OK)
-      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-    break;
-  case OSDP_CHLNG:
-    status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
@@ -1601,6 +1603,7 @@ int
     this_command = msg->msg_cmd;
     if (context->next_nak)
       this_command = OSDP_BOGUS;
+    (void)monitor_osdp_message (context, msg);
 
     switch (this_command)
     {
@@ -1764,6 +1767,10 @@ int
 
     case OSDP_KEEPACTIVE:
       status = action_osdp_KEEPACTIVE (context, msg);
+      break;
+
+    case OSDP_KEYSET:
+      status = action_osdp_KEYSET (context, msg);
       break;
 
     case OSDP_LED:
@@ -2305,6 +2312,7 @@ printf ("MMSG DONE\n");
       break;
     };
   } /* role CP */
+
   if (status EQUALS ST_MSG_UNKNOWN)
     osdp_conformance.last_unknown_command = msg->msg_cmd;
   if (status != ST_OK)

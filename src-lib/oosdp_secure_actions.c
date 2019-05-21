@@ -142,6 +142,35 @@ if (ctx->verbosity > 8)
 
 
 int
+  action_osdp_KEYSET
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_KEYSET */
+
+  int status;
+
+
+  status = ST_OK;
+
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "*** STUB action_osdp_KEYSET ***\n");
+
+#if 0
+dump the payload ciphertext
+set up the key
+set up the iv
+decrypt
+identify actual length
+dump the cleartext
+#endif
+  };
+  return (status);
+
+} /* action_osdp_KEYSET */
+
+int
   action_osdp_RMAC_I
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)

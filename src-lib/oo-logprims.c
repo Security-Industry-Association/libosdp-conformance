@@ -69,11 +69,15 @@ int
   };
   if (scb_present)
   {
+    sec_block_decoded [0] = 0;
     sec_block = (char *)&(osdp_wire_message->command);
-    if (sec_block [2] EQUALS OSDP_KEY_SCBK_D)
-      sprintf(sec_block_decoded, "Key=SCBK-D(default)");
-    else
-      sprintf(sec_block_decoded, "Key=SCBK");
+    if (sec_block[1] < OSDP_SEC_SCS_15)
+    {
+      if (sec_block [2] EQUALS OSDP_KEY_SCBK_D)
+        sprintf(sec_block_decoded, "Key=SCBK-D(default)");
+      else
+        sprintf(sec_block_decoded, "Key=SCBK");
+    };
     switch (sec_block[1])  // "sec block type"
     {
     case OSDP_SEC_SCS_11:
@@ -97,19 +101,19 @@ int
         strcpy(sec_block_decoded, "Session-bad");
       break;
     case OSDP_SEC_SCS_15:
-      sprintf(tmpstr2, "SCS_15; ");
+      sprintf(tmpstr2, "SCS_15");
       strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
       break;
     case OSDP_SEC_SCS_16:
-      sprintf(tmpstr2, "SCS_16; ");
+      sprintf(tmpstr2, "SCS_16");
       strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
       break;
     case OSDP_SEC_SCS_17:
-      sprintf(tmpstr2, "SCS_17; ");
+      sprintf(tmpstr2, "SCS_17");
       strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
       break;
     case OSDP_SEC_SCS_18:
-      sprintf(tmpstr2, "SCS_18; ");
+      sprintf(tmpstr2, "SCS_18");
       strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
       break;
     default:

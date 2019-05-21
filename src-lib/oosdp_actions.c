@@ -593,6 +593,7 @@ int
   action_osdp_POLL
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
+
 { /* action_osdp_POLL */
 
   int current_length;
@@ -601,13 +602,6 @@ int
   unsigned char osdp_raw_data [4+1024];
   int raw_lth;
   int status;
-//  unsigned char buffer [1024];
-//  int bufsize;
-//  extern unsigned char creds_buffer_a [];
-//  extern int creds_buffer_a_lth;
-//  extern int creds_buffer_a_next;
-//  OSDP_MULTI_HDR mmsg;
-//  int to_send;
 
 
   status = ST_OK;
@@ -630,9 +624,9 @@ int
       ctx->next_response = 0;
       done = 1;
       current_length = 0;
-      status = send_message (ctx,
+      status = send_message_ex (ctx,
         OSDP_BUSY, p_card.addr, &current_length,
-        0, NULL);
+        0, NULL, OSDP_SEC_NOT_SCS, 0, NULL);
       SET_PASS (ctx, "4-16-1");
       if (ctx->verbosity > 2)
       {
@@ -667,9 +661,10 @@ int
     ctx->power_report = 0;
 
     current_length = 0;
-    status = send_message (ctx,
+    status = send_message_ex (ctx,
       OSDP_LSTATR, p_card.addr, &current_length,
-      sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
+      sizeof (osdp_lstat_response_data), osdp_lstat_response_data,
+      OSDP_SEC_NOT_SCS, 0, NULL);
     SET_PASS (ctx, "3-1-3");
     SET_PASS (ctx, "4-5-1");
     SET_PASS (ctx, "4-5-3");
@@ -703,8 +698,9 @@ int
       raw_lth = 4+ctx->creds_a_avail;
       memcpy (osdp_raw_data+4, ctx->credentials_data, ctx->creds_a_avail);
       current_length = 0;
-      status = send_message (ctx,
-        OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data);
+      status = send_message_ex (ctx,
+        OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data,
+        OSDP_SEC_NOT_SCS, 0, NULL);
       osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
       if (ctx->verbosity > 2)
       {
@@ -782,8 +778,9 @@ int
       if all else isn't interesting return a plain ack
     */
     current_length = 0;
-    status = send_message
-      (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+    status = send_message_ex
+      (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
+      OSDP_SEC_SCS_16, 0, NULL);
     osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
     osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
     if (ctx->verbosity > 9)

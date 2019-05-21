@@ -75,6 +75,7 @@
 #define OSDP_SEC_SCS_16 (0x16)
 #define OSDP_SEC_SCS_17 (0x17)
 #define OSDP_SEC_SCS_18 (0x18)
+#define OSDP_SEC_NOT_SCS (0x00)
 
 #define OSDP_KEY_OCTETS (16) // AES-128 CBC
 
@@ -938,6 +939,7 @@ int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_KEYSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OSTAT(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
@@ -960,6 +962,7 @@ int fasc_n_75_to_string (char * s, long int *sample_1);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
 int next_sequence (OSDP_CONTEXT *ctx);
+int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
@@ -1031,6 +1034,9 @@ int send_comset
   char *speed_string);
 int send_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int *current_length, int data_length, unsigned char *data);
+int send_message_ex(OSDP_CONTEXT *ctx, int command, int dest_addr,
+  int *current_length, int data_length, unsigned char *data, int sec_block_type,
+  int sec_block_length, unsigned char *sec_block);
 int send_osdp_data (OSDP_CONTEXT *ctx, unsigned char *buf, int lth);
 int send_secure_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int *current_length, int data_length, unsigned char *data, int sec_blk_type,
