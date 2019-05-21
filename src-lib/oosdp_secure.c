@@ -384,6 +384,8 @@ fprintf(stderr, "osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n",
   if (msg->security_block_type > OSDP_SEC_SCS_16)
   {
 dump_buffer_log(ctx, "payload to decrypt:", msg->data_payload, msg->data_length);
+dump_buffer_log(ctx, "payload key:", ctx->s_enc, OSDP_KEY_OCTETS);
+dump_buffer_log(ctx, "payload iv:", ctx->last_calculated_in_mac, OSDP_KEY_OCTETS);
     AES_init_ctx(&aes_context_decrypt, ctx->s_enc);
     AES_ctx_set_iv(&aes_context_decrypt, ctx->last_calculated_in_mac);
     AES_CBC_decrypt_buffer(&aes_context_decrypt, msg->data_payload, msg->data_length);

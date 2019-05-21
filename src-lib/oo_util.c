@@ -1830,8 +1830,8 @@ int
         // it asks about
 
         current_length = 0;
-        status = send_message
-          (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+        status = send_message_ex (context, OSDP_ACK, p_card.addr, &current_length,
+          0, NULL, OSDP_SEC_NOT_SCS, 0, NULL);
         context->pd_acks ++;
         if (context->verbosity > 9)
           fprintf (stderr, "Responding with OSDP_ACK\n");

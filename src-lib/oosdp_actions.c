@@ -432,8 +432,8 @@ done = 1; // just first one for now.
     to_send = OSDP_MAX_OUT;
     memcpy (buffer, out_status, OSDP_MAX_OUT);
     current_length = 0;
-    status = send_message (ctx, OSDP_OSTATR, p_card.addr,
-      &current_length, to_send, buffer);
+    status = send_message_ex (ctx, OSDP_OSTATR, p_card.addr,
+      &current_length, to_send, buffer, OSDP_SEC_SCS_18, 0, NULL);
   };
   status = ST_OK;
   return (status);
