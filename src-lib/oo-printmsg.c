@@ -80,12 +80,13 @@ int
   count = oh->len_lsb + (oh->len_msb << 8);
   count = count - 8;  // payload
   keyset_payload = (unsigned char *)(osdp_msg->data_payload);
+  count = osdp_msg->data_length;
 
   sprintf(tstr, "  Key_Type %02x Key Length %d.\n",
     keyset_payload [0], keyset_payload [1]);
 
   *hstr = 0;
-  for (i=0; i<count; i++)
+  for (i=0; i<(count-2); i++)
   {
     sprintf(tstr, "%02x", keyset_payload [2+i]);
     strcat(hstr, tstr);
@@ -93,7 +94,8 @@ int
       if (3 EQUALS (i%4))
         strcat(hstr, "-");
   };
-  sprintf(tstr, "  New SCBK: %s\n", hstr);
+  sprintf(tstr, "  New SCBK (Type=%02x Length=%02x): %s\n",
+    keyset_payload [0], keyset_payload [1], hstr);
     strcat(tlogmsg, tstr);
   return(status);
 

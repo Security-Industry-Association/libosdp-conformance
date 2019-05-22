@@ -31,6 +31,7 @@
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 
 
 extern OSDP_PARAMETERS p_card;
@@ -139,6 +140,115 @@ if (ctx->verbosity > 8)
   return (status);
 
 } /* action_osdp_CCRYPT */
+
+
+int
+  action_osdp_CHLNG
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_CHLNG */
+
+  OSDP_SC_CCRYPT ccrypt_response;
+  int current_length;
+  int nak;
+  unsigned char osdp_nak_response_data [2];
+  int status;
+
+
+  status = ST_OK;
+  nak = 0;
+
+  // make sure this PD was enabled for secure channel (see enable-secure-channel command)
+
+  if (OO_SCS_USE_ENABLED != ctx->secure_channel_use[OO_SCU_ENAB])
+    nak = 1;
+  if (nak)
+  {
+    /*
+      secure channel is not enabled on this PD.  Therefore osdp_CHLNG is not a valid command.
+      NAK it with the code specified in Annex D (SCS_11 gets NAK 5) 
+    */
+    current_length = 0;
+    osdp_nak_response_data [0] = OO_NAK_UNSUP_SECBLK;
+    osdp_nak_response_data [1] = 0xff;
+    status = send_message (ctx,
+      OSDP_NAK, p_card.addr, &current_length,
+      sizeof(osdp_nak_response_data), osdp_nak_response_data);
+    ctx->sent_naks ++;
+    osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+    if (ctx->verbosity > 2)
+    {
+      fprintf (ctx->log, "NAK(5): osdp_CHLNG but Secure Channel disabled\n");
+    };
+  };
+  if (!nak)
+  {
+    unsigned char sec_blk [1];
+
+    osdp_reset_secure_channel (ctx);
+    memcpy (ctx->rnd_a, msg->data_payload, sizeof (ctx->rnd_a));
+    status = osdp_setup_scbk (ctx, msg);
+    if (status != ST_OK)
+    {
+      nak = 1;
+      osdp_reset_secure_channel (ctx);
+      current_length = 0;
+      osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+      osdp_nak_response_data [1] = 0xFE;
+      status = send_message (ctx,
+        OSDP_NAK, p_card.addr, &current_length,
+        sizeof(osdp_nak_response_data), osdp_nak_response_data);
+      ctx->sent_naks ++;
+      osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+      if (ctx->verbosity > 2)
+      {
+        fprintf (ctx->log, "NAK: SCBK not initialized");
+      };
+    };
+    if (!nak && (status EQUALS ST_OK))
+    {
+      osdp_create_keys (ctx);
+
+      // build up an SCS_12 response
+
+      if (ctx->enable_secure_channel EQUALS 2)
+        sec_blk [0] = OSDP_KEY_SCBK_D;
+      else
+        sec_blk [0] = OSDP_KEY_SCBK;
+
+      // client ID
+#if SAMPLE
+            memset (ccrypt_response.client_id, 0,
+              sizeof (ccrypt_response.client_id));
+            ccrypt_response.client_id [0] = 1;
+#else
+      memcpy (ccrypt_response.client_id,
+        ctx->vendor_code, 3);
+      ccrypt_response.client_id [3] = ctx->model;
+      ccrypt_response.client_id [4] = ctx->version;
+      memcpy (ccrypt_response.client_id+5,
+        ctx->serial_number, 3);
+#endif
+
+      // RND.B
+      memcpy ((char *)(ctx->rnd_b), "abcdefgh", 8);
+      memcpy ((char *)(ccrypt_response.rnd_b), (char *)(ctx->rnd_b), sizeof (ccrypt_response.rnd_b));
+printf ("fixme: RND.B\n");
+
+      osdp_create_client_cryptogram (ctx, &ccrypt_response);
+
+      current_length = 0;
+ 
+      status = send_secure_message (ctx,
+        OSDP_CCRYPT, p_card.addr, &current_length, 
+        sizeof (ccrypt_response), (unsigned char *)&ccrypt_response,
+        OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
+    };
+  };
+  return (status);
+
+} /* action_osdp_CHLNG */
 
 
 int

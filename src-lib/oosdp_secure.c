@@ -43,115 +43,6 @@ void osdp_pad_message
   (unsigned char *outblock, unsigned char *inblock, unsigned int inlength);
 
 
-int
-  action_osdp_CHLNG
-    (OSDP_CONTEXT *ctx,
-    OSDP_MSG *msg)
-
-{ /* action_osdp_CHLNG */
-
-  OSDP_SC_CCRYPT ccrypt_response;
-  int current_length;
-  int nak;
-  unsigned char osdp_nak_response_data [2];
-  int status;
-
-
-  status = ST_OK;
-  nak = 0;
-
-  // make sure this PD was enabled for secure channel (see enable-secure-channel command)
-
-  if (OO_SCS_USE_ENABLED != ctx->secure_channel_use[OO_SCU_ENAB])
-    nak = 1;
-  if (nak)
-  {
-    /*
-      secure channel is not enabled on this PD.  Therefore osdp_CHLNG is not a valid command.
-      NAK it with the code specified in Annex D (SCS_11 gets NAK 5) 
-    */
-    current_length = 0;
-    osdp_nak_response_data [0] = OO_NAK_UNSUP_SECBLK;
-    osdp_nak_response_data [1] = 0xff;
-    status = send_message (ctx,
-      OSDP_NAK, p_card.addr, &current_length,
-      sizeof(osdp_nak_response_data), osdp_nak_response_data);
-    ctx->sent_naks ++;
-    osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
-    if (ctx->verbosity > 2)
-    {
-      fprintf (ctx->log, "NAK(5): osdp_CHLNG but Secure Channel disabled\n");
-    };
-  };
-  if (!nak)
-  {
-    unsigned char sec_blk [1];
-
-    osdp_reset_secure_channel (ctx);
-    memcpy (ctx->rnd_a, msg->data_payload, sizeof (ctx->rnd_a));
-    status = osdp_setup_scbk (ctx, msg);
-    if (status != ST_OK)
-    {
-      nak = 1;
-      osdp_reset_secure_channel (ctx);
-      current_length = 0;
-      osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
-      osdp_nak_response_data [1] = 0xFE;
-      status = send_message (ctx,
-        OSDP_NAK, p_card.addr, &current_length,
-        sizeof(osdp_nak_response_data), osdp_nak_response_data);
-      ctx->sent_naks ++;
-      osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
-      if (ctx->verbosity > 2)
-      {
-        fprintf (ctx->log, "NAK: SCBK not initialized");
-      };
-    };
-    if (!nak && (status EQUALS ST_OK))
-    {
-      osdp_create_keys (ctx);
-
-      // build up an SCS_12 response
-
-      if (ctx->enable_secure_channel EQUALS 2)
-        sec_blk [0] = OSDP_KEY_SCBK_D;
-      else
-        sec_blk [0] = OSDP_KEY_SCBK;
-
-      // client ID
-#if SAMPLE
-            memset (ccrypt_response.client_id, 0,
-              sizeof (ccrypt_response.client_id));
-            ccrypt_response.client_id [0] = 1;
-#else
-      memcpy (ccrypt_response.client_id,
-        ctx->vendor_code, 3);
-      ccrypt_response.client_id [3] = ctx->model;
-      ccrypt_response.client_id [4] = ctx->version;
-      memcpy (ccrypt_response.client_id+5,
-        ctx->serial_number, 3);
-#endif
-
-      // RND.B
-      memcpy ((char *)(ctx->rnd_b), "abcdefgh", 8);
-      memcpy ((char *)(ccrypt_response.rnd_b), (char *)(ctx->rnd_b), sizeof (ccrypt_response.rnd_b));
-printf ("fixme: RND.B\n");
-
-      osdp_create_client_cryptogram (ctx, &ccrypt_response);
-
-      current_length = 0;
- 
-      status = send_secure_message (ctx,
-        OSDP_CCRYPT, p_card.addr, &current_length, 
-        sizeof (ccrypt_response), (unsigned char *)&ccrypt_response,
-        OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
-    };
-  };
-  return (status);
-
-} /* action_osdp_CHLNG */
-
-
 /*
   osdp_calculate_secure_channel_mac
     - calculates MAC for outbound
@@ -225,9 +116,13 @@ int
   int check_size;
   unsigned char * cmd_ptr;
   unsigned char *crc_check;
+  unsigned char enc_buf [OSDP_BUF_MAX];
+  int encrypt_payload;
   int new_length;
   unsigned char * next_data;
   OSDP_HDR *p;
+  int padded_length;
+  int padding;
   unsigned short int parsed_crc;
   unsigned char sc_mac[4];
   unsigned char *sp;
@@ -263,6 +158,10 @@ int
 
   // if it gets a MAC suffix add in the length of that.
 
+  encrypt_payload = 0;
+  if ((sec_block_type EQUALS OSDP_SEC_SCS_17) ||
+    (sec_block_type EQUALS OSDP_SEC_SCS_18))
+    encrypt_payload = 1;
   if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
     (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
     (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
@@ -287,7 +186,7 @@ int
 
   // secure is bit 3 (mask 0x08)
   p->ctrl = p->ctrl | 0x08;
-  cmd_ptr = buf + 5; // STUB pretend security block is 3 bytes len len 1 payload
+  cmd_ptr = buf + 4; // assume security block is 2 bytes len=1 and type
 
   // fill in secure data.  first is length (lth,type,payload)
 
@@ -311,9 +210,23 @@ int
     int i;
     unsigned char *sptr;
     sptr = cmd_ptr + 1;
-    for (i=0; i<data_length; i++)
+
+    if (encrypt_payload)
     {
-      *(sptr+i) = *(i+data);
+      padded_length = sizeof(enc_buf);
+      status = osdp_encrypt_payload(ctx, data, data_length, enc_buf, &padded_length, &padding);
+// DEBUG
+fprintf(stderr, "padding was %d.\n", padding);
+    }
+    else
+    {
+      memcpy(enc_buf, data, data_length);
+      padded_length = data_length;
+    };
+
+    for (i=0; i<padded_length; i++)
+    {
+      *(sptr+i) = *(i+enc_buf);
       new_length ++;
       next_data ++; // where crc goes (after data)
     };
@@ -376,8 +289,20 @@ int
 { /* osdp_decrypt_payload */
 
   struct AES_ctx aes_context_decrypt;
+  unsigned char *cptr;
+  int cur_actual;
+  unsigned char decrypt_iv [OSDP_KEY_OCTETS];
+  int done;
+  int i;
+  int pad_blocksize;
+  int status;
 
 
+  status = ST_OK;
+  memcpy(decrypt_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
+dump_buffer_log(ctx, "pre-invert payload iv:", decrypt_iv, OSDP_KEY_OCTETS);
+  for(i=0; i<OSDP_KEY_OCTETS; i++)
+    decrypt_iv [i] = ~decrypt_iv [i];
 // DEBUG
 fprintf(stderr, "osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n", msg->security_block_type,
   msg->data_length);
@@ -385,33 +310,52 @@ fprintf(stderr, "osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n",
   {
 dump_buffer_log(ctx, "payload to decrypt:", msg->data_payload, msg->data_length);
 dump_buffer_log(ctx, "payload key:", ctx->s_enc, OSDP_KEY_OCTETS);
-dump_buffer_log(ctx, "payload iv:", ctx->last_calculated_in_mac, OSDP_KEY_OCTETS);
+dump_buffer_log(ctx, "payload iv:", decrypt_iv, OSDP_KEY_OCTETS);
     AES_init_ctx(&aes_context_decrypt, ctx->s_enc);
-    AES_ctx_set_iv(&aes_context_decrypt, ctx->last_calculated_in_mac);
+    AES_ctx_set_iv(&aes_context_decrypt, decrypt_iv);
     AES_CBC_decrypt_buffer(&aes_context_decrypt, msg->data_payload, msg->data_length);
 dump_buffer_log(ctx, "payload decrypted:", msg->data_payload, msg->data_length);
+
+    pad_blocksize = 0;
+    cptr = msg->data_payload + msg->data_length - 1;
+    cur_actual = msg->data_length;
+    done = 0;
+    while (!done)
+    {
+      if (*cptr != 0)
+      {
+        if (*cptr != 0x80)
+        {
+          done = 1;
+          status = ST_OSDP_SC_DECRYPT_LTH_1;
+        };
+      };
+      if (*cptr EQUALS 0)
+      {
+        cptr--;
+        cur_actual--;
+        pad_blocksize++;
+        if (pad_blocksize > (OSDP_KEY_OCTETS-1))
+        {
+          status = ST_OSDP_SC_DECRYPT_LTH_2;
+          done = 1;
+        };
+      };
+      if (*cptr EQUALS 0x80)
+      {
+        cur_actual--;
+        done = 1;
+      };
+    };
+    if (status EQUALS ST_OK)
+    {
+      msg->data_length = cur_actual;
+    };
   };
-#if 0
-blocksize=0
-current = last octet
-current_actual = msg size
-while not done
-  if current is not 0
-    if current is not 0x80
-      error and done
-  if current is 0
-    decrement
-    decrement current actual
-    increment blocksize
-    if blocksize > KEY OCTETS -1
-      error and done
-  if current is 0x80
-  {
-    decrement current actual
-    done
-  }
-#endif
-return(ST_OK);
+dump_buffer_log(ctx, "decrypted payload:", msg->data_payload, msg->data_length);
+
+  return(status);
+
 } /* osdp_decrypt_payload */
 
 
@@ -538,6 +482,67 @@ void
   return;
 
 } /* osdp_create_keys */
+
+
+int
+  osdp_encrypt_payload
+    (OSDP_CONTEXT *ctx,
+    unsigned char *data,
+    int data_length,
+    unsigned char *enc_buf,
+    int *padded_length,
+    int *padding)
+
+{ /* osdp_encrypt_payload */
+
+  struct AES_ctx aes_context_encrypt;
+  unsigned char encrypt_iv [OSDP_KEY_OCTETS];
+  int i;
+  int status;
+
+
+  status = ST_OK;
+  if (*padded_length <= data_length)
+    status = ST_OSDP_SC_ENCRYPT_LTH_1;
+  if (status EQUALS ST_OK)
+  {
+    if (data_length < 1)
+      status = ST_OSDP_SC_ENCRYPT_LTH_2;
+    if (status EQUALS ST_OK)
+      if (*padded_length < data_length)
+        status = ST_OSDP_SC_ENCRYPT_LTH_3;
+  };
+  if (status EQUALS ST_OK)
+  {
+    // zeroize the whole cyphertext buffer, then copy in the plaintext.
+
+    memset(enc_buf, 0, *padded_length);
+    memcpy(enc_buf, data, data_length);
+    *padded_length = data_length; // 'cause we just encrypt it without padding;
+
+    // if it's an even number of blocks just encrypt it.
+
+    if (0 != (data_length % (2^OSDP_KEY_OCTETS)))
+    {
+      // needs padding.  calc padding, add the padding marker.  buffer was zeroes already.
+
+      *padded_length =
+        ((data_length+(OSDP_KEY_OCTETS-1))/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
+      enc_buf [data_length] = 0x80;
+      *padding = *padded_length - data_length;
+    };
+  };
+  // do encryption.  key is s-enc; iv is inverse of last rec mac
+  memcpy(encrypt_iv, ctx->last_calculated_in_mac, OSDP_KEY_OCTETS);
+  for(i=0; i<OSDP_KEY_OCTETS; i++)
+    encrypt_iv [i] = ~encrypt_iv [i];
+  AES_init_ctx (&aes_context_encrypt, ctx->s_enc);
+  AES_ctx_set_iv (&aes_context_encrypt, encrypt_iv);
+  AES_CBC_encrypt_buffer(&aes_context_encrypt, enc_buf, *padded_length);
+
+  return(status);
+
+} /* osdp_encrypt_payload */
 
 
 /*

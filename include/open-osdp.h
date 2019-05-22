@@ -922,6 +922,11 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_SECURE_NOT_ENABLED   (75)
 #define ST_OSDP_SC_BAD_HASH          (76)
 #define ST_CMD_UNDERFLOW             (77)
+#define ST_OSDP_SC_DECRYPT_LTH_1     (78)
+#define ST_OSDP_SC_DECRYPT_LTH_2     (79)
+#define ST_OSDP_SC_ENCRYPT_LTH_1     (80)
+#define ST_OSDP_SC_ENCRYPT_LTH_2     (81)
+#define ST_OSDP_SC_ENCRYPT_LTH_3     (82)
 
 int
   m_version_minor;
@@ -980,6 +985,8 @@ char *osdp_command_reply_to_string (unsigned char cmdrep, int role);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
 void osdp_create_keys (OSDP_CONTEXT *ctx);
 void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
+int osdp_encrypt_payload(OSDP_CONTEXT *ctx, unsigned char *data, int data_length, unsigned char *enc_buf,
+  int *padded_length, int *padding);
 void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
 
 int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);

@@ -712,6 +712,7 @@ int
     status = ST_OK;
     msg_lth = p->len_lsb + (256*p->len_msb);
     hashable_length = msg_lth;
+fprintf(stderr, "m->lth %d. msg_lth %d.\n", m->lth, msg_lth);
     if ((m->lth) > msg_lth)
       m->remainder = msg_lth - m->lth;
 
@@ -1683,9 +1684,10 @@ int
 
         status = ST_OK;
         current_length = 0;
-        status = send_message (context,
+        status = send_message_ex(context,
           OSDP_PDCAP, p_card.addr, &current_length,
-          sizeof (osdp_cap_response_data), osdp_cap_response_data);
+            sizeof(osdp_cap_response_data), osdp_cap_response_data,
+            OSDP_SEC_SCS_18, 0, NULL);
         osdp_conformance.cmd_pdcap.test_status =
           OCONFORM_EXERCISED;
         osdp_conformance.rep_device_capas.test_status =
@@ -1727,9 +1729,8 @@ int
         osdp_pdid_response_data [11] = m_build;
         status = ST_OK;
         current_length = 0;
-        status = send_message (context, OSDP_PDID, p_card.addr,
-          &current_length,
-          sizeof (osdp_pdid_response_data), osdp_pdid_response_data);
+        status = send_message_ex(context, OSDP_PDID, p_card.addr,
+          &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, OSDP_SEC_SCS_18, 0, NULL);
         osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
         osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
         SET_PASS (context, "4-3-2");
