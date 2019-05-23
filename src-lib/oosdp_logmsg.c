@@ -730,6 +730,10 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - 8;
+      if (msg->security_block_length > 0)
+        sprintf(tstr, "PD Capabilities payload encrypted.\n");
+      else
+      {
       sprintf (tstr, "PD Capabilities (%d)\n", count/3);
       strcpy (tlogmsg, tstr);
 
@@ -771,6 +775,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
         };
         strcat (tlogmsg, tstr);
       };
+      }; // not an encrypted payload
     };
     break;
 

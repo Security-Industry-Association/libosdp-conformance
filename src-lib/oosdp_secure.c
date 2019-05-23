@@ -57,15 +57,87 @@ int
 
 { /* osdp_calculate_secure_channel_mac */
 
+  struct AES_ctx aes_context_mac1;
   struct AES_ctx aes_context_mac2;
+  int current_lth;
+  unsigned char hashbuffer [OSDP_BUF_MAX];
+  unsigned char last_iv [OSDP_KEY_OCTETS];
+  int last_part1_block_offset;
   unsigned char padded_block [OSDP_KEY_OCTETS];
+  int part1_block_length;
   int status;
 
 
+// DEBUG
+fprintf(stderr, "osdp_calculate_secure_channel_mac: top, lth=%d.\n", msg_lth);
+dump_buffer_log(ctx, "whole msg to mac:", msg_to_send, msg_lth);
   status = ST_OK;
+  memset(hashbuffer, 0, sizeof(hashbuffer));
+  memset(padded_block, 0, sizeof(padded_block));
+  part1_block_length = 0;
+  last_part1_block_offset = 0;
+  current_lth = msg_lth;
 
-  // if it's short use MAC2 ("for the last block")
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log,
+      "DEBUG calculating MAC for message of length %d.\n", msg_lth);
 
+  if (msg_lth > OSDP_BUF_MAX)
+    status = ST_OSDP_EXCEEDS_SC_MAX;
+
+  if (status EQUALS ST_OK)
+  {
+    memcpy(last_iv, ctx->last_calculated_in_mac, sizeof(last_iv));
+
+    // if it's longer than one block calculate the partial MAC using MAC1
+    if (msg_lth > OSDP_KEY_OCTETS)
+    {
+      part1_block_length = (msg_lth/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
+      last_part1_block_offset = part1_block_length - OSDP_KEY_OCTETS;
+      memcpy(hashbuffer, msg_to_send, part1_block_length);
+      dump_buffer_log(ctx, (char *)"message using mac1:",
+        hashbuffer, part1_block_length);
+      AES_init_ctx (&aes_context_mac1, ctx->s_mac1);
+      AES_ctx_set_iv (&aes_context_mac2, last_iv);
+      AES_CBC_encrypt_buffer(&aes_context_mac1, hashbuffer, part1_block_length);
+      current_lth = current_lth - part1_block_length;
+      memcpy(last_iv, hashbuffer+last_part1_block_offset, OSDP_KEY_OCTETS);
+    };
+
+    // use MAC2 ("for the last block")
+
+    memcpy(padded_block, msg_to_send+part1_block_length,
+      msg_lth-part1_block_length);
+    osdp_sc_pad(padded_block, current_lth);
+    if (ctx->verbosity > 3)
+    {
+      dump_buffer_log(ctx, (char *)"IV for last block in mac",
+        last_iv, sizeof(last_iv));
+      dump_buffer_log(ctx, (char *)"padded mac block",
+        padded_block, OSDP_KEY_OCTETS);
+    };
+    memcpy (hashbuffer, padded_block, OSDP_KEY_OCTETS);
+
+    // IV is last received MAC or last block of part1
+
+    AES_init_ctx (&aes_context_mac2, ctx->s_mac2);
+    AES_ctx_set_iv (&aes_context_mac2, last_iv);
+    memcpy (hashbuffer, padded_block, OSDP_KEY_OCTETS);
+    AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, OSDP_KEY_OCTETS);
+// DEBUG
+dump_buffer_log(ctx, "last block encrypted for MAC:", hashbuffer, OSDP_KEY_OCTETS);
+
+    // this MAC is saved as the last sent MAC
+
+    memcpy(ctx->last_calculated_out_mac, hashbuffer, sizeof(ctx->last_calculated_out_mac));
+
+    mac [0] = hashbuffer [0];
+    mac [1] = hashbuffer [1];
+    mac [2] = hashbuffer [2];
+    mac [3] = hashbuffer [3];
+  }; // ok msg_lth
+
+#if 0
   if (msg_lth <= OSDP_KEY_OCTETS)
   {
     unsigned char hashbuffer [OSDP_KEY_OCTETS];
@@ -92,6 +164,7 @@ int
     mac [2] = hashbuffer [2];
     mac [3] = hashbuffer [3];
   };
+#endif
   return (status);
 
 } /* osdp_calculate_secure_channel_mac */
@@ -205,6 +278,7 @@ int
   new_length++;
   next_data = 1+cmd_ptr;
 
+  padding = 0; // in case there's none
   if (data_length > 0)
   {
     int i;
@@ -234,12 +308,23 @@ fprintf(stderr, "padding was %d.\n", padding);
   if (ctx->verbosity > 9)
     dump_buffer_log(ctx, "Secure Before MAC append", buf, new_length);
 
+  // update message length to add crypto padding, add before MAC calculation
+
+  whole_msg_lth = whole_msg_lth + padding;
+// DEBUG
+fprintf(stderr, "message length now %d. was %d.\n",
+  whole_msg_lth+padding, whole_msg_lth);
+  p->len_lsb = 0x00ff & whole_msg_lth;
+  p->len_msb = (0xff00 & whole_msg_lth) >> 8;
+
   // append 4-byte partial MAC for SCS_15-18
   if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
     (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
     (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
     (sec_block_type EQUALS OSDP_SEC_SCS_18))
   {
+// DEBUG
+dump_buffer_log(ctx, "buffer for mac calc:", buf, new_length);
     status = osdp_calculate_secure_channel_mac(ctx, buf, new_length, sc_mac);
     if (status EQUALS 0)
     {
@@ -271,12 +356,17 @@ fprintf(stderr, "padding was %d.\n", padding);
       pchecksum;
 
     pchecksum = next_data;
+// DEBUG
+fprintf(stderr, "CRC calc on %d. bytes of message\n",
+  new_length);
     cksum = checksum (buf, new_length);
     *pchecksum = cksum;
     new_length ++;
   };
 
   *updated_length = new_length;
+// DEBUG
+dump_buffer_log(ctx, "buffer after build-secure:", (unsigned char *)p, *updated_length);
   return (status);
 
 } /* osdp_build_message */
@@ -532,13 +622,22 @@ int
       *padding = *padded_length - data_length;
     };
   };
+// DEBUG
+dump_buffer_log(ctx, "payload cleartext with padding:",
+  enc_buf, *padded_length);
   // do encryption.  key is s-enc; iv is inverse of last rec mac
   memcpy(encrypt_iv, ctx->last_calculated_in_mac, OSDP_KEY_OCTETS);
   for(i=0; i<OSDP_KEY_OCTETS; i++)
     encrypt_iv [i] = ~encrypt_iv [i];
+// DEBUG
+dump_buffer_log(ctx, "iv(inverted):", encrypt_iv, OSDP_KEY_OCTETS);
+dump_buffer_log(ctx, "s_enc:", ctx->s_enc, OSDP_KEY_OCTETS);
   AES_init_ctx (&aes_context_encrypt, ctx->s_enc);
   AES_ctx_set_iv (&aes_context_encrypt, encrypt_iv);
   AES_CBC_encrypt_buffer(&aes_context_encrypt, enc_buf, *padded_length);
+// DEBUG
+dump_buffer_log(ctx, "payload ciphertext:",
+  enc_buf, *padded_length);
 
   return(status);
 
@@ -902,7 +1001,7 @@ int
   if (status EQUALS ST_OK)
   {
     OSDP_MSG m;
-    int parse_role;
+//    int parse_role;
     OSDP_HDR returned_hdr;
     int status_monitor;
 
@@ -911,10 +1010,8 @@ int
     m.lth = *current_length;
 
     // parse the message for display.  role to parse is the OTHER guy
-    parse_role = OSDP_ROLE_CP;
-    if (ctx->role EQUALS OSDP_ROLE_CP)
-      parse_role = OSDP_ROLE_PD;
-    status_monitor = osdp_parse_message (ctx, parse_role,
+//    parse_role = OSDP_ROLE_CP; if (ctx->role EQUALS OSDP_ROLE_CP) parse_role = OSDP_ROLE_PD;
+    status_monitor = osdp_parse_message (ctx, OSDP_ROLE_MONITOR, //parse_role,
       &m, &returned_hdr);
     if (ctx->verbosity > 8)
       if (status_monitor != ST_OK)

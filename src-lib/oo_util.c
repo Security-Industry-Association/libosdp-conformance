@@ -712,7 +712,6 @@ int
     status = ST_OK;
     msg_lth = p->len_lsb + (256*p->len_msb);
     hashable_length = msg_lth;
-fprintf(stderr, "m->lth %d. msg_lth %d.\n", m->lth, msg_lth);
     if ((m->lth) > msg_lth)
       m->remainder = msg_lth - m->lth;
 
@@ -1258,13 +1257,12 @@ status = ST_OK; // tolerate checksum error and continue
         // skip hash check if we're in monitor mode.
         // rolling hash/mac calculation gets screwed up...
 
-        if (context->role != OSDP_ROLE_MONITOR)
+        if (role != OSDP_ROLE_MONITOR)
         {
           status = oo_hash_check(context, m->ptr, sec_block_type,
             m->crc_check-4, hashable_length);
           if (status EQUALS ST_OK)
             status = osdp_decrypt_payload(context, m);
-
         };
         if (status != ST_OK)
         {

@@ -927,6 +927,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_SC_ENCRYPT_LTH_1     (80)
 #define ST_OSDP_SC_ENCRYPT_LTH_2     (81)
 #define ST_OSDP_SC_ENCRYPT_LTH_3     (82)
+#define ST_OSDP_EXCEEDS_SC_MAX       (83)
 
 int
   m_version_minor;
