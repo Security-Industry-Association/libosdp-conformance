@@ -1150,10 +1150,6 @@ int
   int status;
 
 
-//DEBUG
-fprintf(ctx->log, "send_message_ex: top sbt %x scu-e %x dlth %d.\n",
-  sec_block_type, ctx->secure_channel_use[OO_SCU_ENAB], data_length);
-
   status = ST_OK;
   current_sec_block_type = sec_block_type;
   current_sec_block_length = sec_block_length;

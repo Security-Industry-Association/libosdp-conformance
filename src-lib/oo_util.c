@@ -1680,6 +1680,10 @@ int
             14,0,0  // no biometric
             };
 
+// DEBUG
+fprintf(stderr, "osdp_CAP: hotwire verbosity to 9\n");
+context->verbosity = 9;
+
         status = ST_OK;
         current_length = 0;
         status = send_message_ex(context,

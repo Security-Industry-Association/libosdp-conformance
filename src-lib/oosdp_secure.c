@@ -70,7 +70,7 @@ int
 
 // DEBUG
 fprintf(stderr, "osdp_calculate_secure_channel_mac: top, lth=%d.\n", msg_lth);
-dump_buffer_log(ctx, "whole msg to mac:", msg_to_send, msg_lth);
+dump_buffer_log(ctx, "whole msg for msg-auth:", msg_to_send, msg_lth);
   status = ST_OK;
   memset(hashbuffer, 0, sizeof(hashbuffer));
   memset(padded_block, 0, sizeof(padded_block));
@@ -88,6 +88,11 @@ dump_buffer_log(ctx, "whole msg to mac:", msg_to_send, msg_lth);
   if (status EQUALS ST_OK)
   {
     memcpy(last_iv, ctx->last_calculated_in_mac, sizeof(last_iv));
+// DEBUG
+dump_buffer_log(ctx, "S-MAC1 at osdp_calculate_secure_channel_mac:",
+  ctx->s_mac1, OSDP_KEY_OCTETS);
+dump_buffer_log(ctx, "last calc in MAC (iv for msg-auth calc first block):",
+  last_iv, OSDP_KEY_OCTETS);
 
     // if it's longer than one block calculate the partial MAC using MAC1
     if (msg_lth > OSDP_KEY_OCTETS)
@@ -95,10 +100,11 @@ dump_buffer_log(ctx, "whole msg to mac:", msg_to_send, msg_lth);
       part1_block_length = (msg_lth/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
       last_part1_block_offset = part1_block_length - OSDP_KEY_OCTETS;
       memcpy(hashbuffer, msg_to_send, part1_block_length);
-      dump_buffer_log(ctx, (char *)"message using mac1:",
-        hashbuffer, part1_block_length);
+// DEBUG
+dump_buffer_log(ctx, (char *)"msg-auth part 1 input:",
+  hashbuffer, part1_block_length);
       AES_init_ctx (&aes_context_mac1, ctx->s_mac1);
-      AES_ctx_set_iv (&aes_context_mac2, last_iv);
+      AES_ctx_set_iv (&aes_context_mac1, last_iv);
       AES_CBC_encrypt_buffer(&aes_context_mac1, hashbuffer, part1_block_length);
       current_lth = current_lth - part1_block_length;
       memcpy(last_iv, hashbuffer+last_part1_block_offset, OSDP_KEY_OCTETS);
@@ -390,21 +396,27 @@ int
 
   status = ST_OK;
   memcpy(decrypt_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
-dump_buffer_log(ctx, "pre-invert payload iv:", decrypt_iv, OSDP_KEY_OCTETS);
+  if (ctx->verbosity > 3)
+    dump_buffer_log(ctx, "pre-invert payload iv:", decrypt_iv, OSDP_KEY_OCTETS);
   for(i=0; i<OSDP_KEY_OCTETS; i++)
     decrypt_iv [i] = ~decrypt_iv [i];
-// DEBUG
-fprintf(stderr, "osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n", msg->security_block_type,
-  msg->data_length);
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log,
+"osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n", msg->security_block_type,
+      msg->data_length);
   if (msg->security_block_type > OSDP_SEC_SCS_16)
   {
-dump_buffer_log(ctx, "payload to decrypt:", msg->data_payload, msg->data_length);
-dump_buffer_log(ctx, "payload key:", ctx->s_enc, OSDP_KEY_OCTETS);
-dump_buffer_log(ctx, "payload iv:", decrypt_iv, OSDP_KEY_OCTETS);
+    if (ctx->verbosity > 3)
+    {
+      dump_buffer_log(ctx, "payload to decrypt:", msg->data_payload, msg->data_length);
+      dump_buffer_log(ctx, "payload key:", ctx->s_enc, OSDP_KEY_OCTETS);
+      dump_buffer_log(ctx, "payload iv:", decrypt_iv, OSDP_KEY_OCTETS);
+    };
     AES_init_ctx(&aes_context_decrypt, ctx->s_enc);
     AES_ctx_set_iv(&aes_context_decrypt, decrypt_iv);
     AES_CBC_decrypt_buffer(&aes_context_decrypt, msg->data_payload, msg->data_length);
-dump_buffer_log(ctx, "payload decrypted:", msg->data_payload, msg->data_length);
+    if (ctx->verbosity > 3)
+      dump_buffer_log(ctx, "payload decrypted:", msg->data_payload, msg->data_length);
 
     pad_blocksize = 0;
     cptr = msg->data_payload + msg->data_length - 1;

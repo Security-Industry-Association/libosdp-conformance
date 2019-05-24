@@ -432,13 +432,18 @@ void dump_buffer_log
   int l2;
 
   l2 = l;
-  fprintf(ctx->log, "%s (L=%d.)", tag, l);
+  fprintf(ctx->log, "%s (L=%d./0x%04x)\n    ", tag, l, l);
   for (i=0; i<l2; i++)
   {
     if (0 != (i % 4))
       fprintf(ctx->log, " ");
     else
-      fprintf(ctx->log, "-");
+    {
+      if (0 != (i % 16))
+        fprintf(ctx->log, "-");
+      else
+        fprintf(ctx->log, " ");
+    };
     fprintf(ctx->log, "%02x", b [i]);
     if (15 EQUALS (i % 16))
       if (i != (l2-1))
