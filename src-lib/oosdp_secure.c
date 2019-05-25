@@ -68,10 +68,9 @@ int
   int status;
 
 
-// DEBUG
-fprintf(stderr, "osdp_calculate_secure_channel_mac: top, lth=%d.\n", msg_lth);
-dump_buffer_log(ctx, "whole msg for msg-auth:", msg_to_send, msg_lth);
   status = ST_OK;
+  if (ctx->verbosity > 3)
+    dump_buffer_log(ctx, "whole msg for msg-auth:", msg_to_send, msg_lth);
   memset(hashbuffer, 0, sizeof(hashbuffer));
   memset(padded_block, 0, sizeof(padded_block));
   part1_block_length = 0;
@@ -295,8 +294,6 @@ int
     {
       padded_length = sizeof(enc_buf);
       status = osdp_encrypt_payload(ctx, data, data_length, enc_buf, &padded_length, &padding);
-// DEBUG
-fprintf(stderr, "padding was %d.\n", padding);
     }
     else
     {
@@ -317,9 +314,6 @@ fprintf(stderr, "padding was %d.\n", padding);
   // update message length to add crypto padding, add before MAC calculation
 
   whole_msg_lth = whole_msg_lth + padding;
-// DEBUG
-fprintf(stderr, "message length now %d. was %d.\n",
-  whole_msg_lth+padding, whole_msg_lth);
   p->len_lsb = 0x00ff & whole_msg_lth;
   p->len_msb = (0xff00 & whole_msg_lth) >> 8;
 

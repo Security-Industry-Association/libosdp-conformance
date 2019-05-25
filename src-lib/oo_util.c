@@ -1667,12 +1667,8 @@ int
             6,1,1, // 1 row of 16 characters
             //7 // assume 7 (time keeping) is deprecated
             8,1,0, // supports CRC-16
-#ifndef OSDP_SECURITY
+#define CAP_SCHAN_INDEX (7) // where in the array
             9,0,0, //no security
-#endif
-#if OSDP_SECURITY
-            9,1,1, //SCBK_D, AES 128
-#endif
             10,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // rec buf max
             11,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // largest msg
             12,0,0, // no smartcard
@@ -1680,9 +1676,12 @@ int
             14,0,0  // no biometric
             };
 
-// DEBUG
-fprintf(stderr, "osdp_CAP: hotwire verbosity to 9\n");
-context->verbosity = 9;
+         if (context->enable_secure_channel > 0)
+         {
+           // if enabled say AES128 support and SCBK-D support
+           osdp_cap_response_data [ (3*CAP_SCHAN_INDEX) + 1] = 1;
+           osdp_cap_response_data [ (3*CAP_SCHAN_INDEX) + 2] = 1;
+         };
 
         status = ST_OK;
         current_length = 0;
