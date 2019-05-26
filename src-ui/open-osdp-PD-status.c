@@ -84,7 +84,6 @@ void
     unsigned int i;
     strcpy (vstr, json_string_value (value));
     sscanf (vstr+1, "%x", &i);
-fprintf (stdout, "led color %06x\n", i);
     led_color = i;
   };
   if (status EQUALS ST_OK)
@@ -115,7 +114,7 @@ fprintf (stdout, "led color %06x\n", i);
   {
     strcpy (ctx->text, json_string_value (value));
   };
-  printf ("libosdp-conformance PD Reader<BR>\n");
+  printf ("<H3>libosdp-conformance PD Reader</H3>\n");
   printf ("A: %02x<BR>\n",
     pd_address);
   printf ("<SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",

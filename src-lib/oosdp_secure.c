@@ -356,9 +356,6 @@ dump_buffer_log(ctx, "buffer for mac calc:", buf, new_length);
       pchecksum;
 
     pchecksum = next_data;
-// DEBUG
-fprintf(stderr, "CRC calc on %d. bytes of message\n",
-  new_length);
     cksum = checksum (buf, new_length);
     *pchecksum = cksum;
     new_length ++;

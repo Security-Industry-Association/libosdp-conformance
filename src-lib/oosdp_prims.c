@@ -333,6 +333,10 @@ int
 } /* osdp_send_ftstat */
 
 
+/*
+  osdp_string_to_buffer - convert hex character string to bytes
+*/
+
 int osdp_string_to_buffer
   (OSDP_CONTEXT *ctx,
   char *instring,

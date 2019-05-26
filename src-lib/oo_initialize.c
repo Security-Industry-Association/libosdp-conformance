@@ -213,6 +213,11 @@ int
   context->vendor_code [0] = 0x0A;
   context->vendor_code [1] = 0x00;
   context->vendor_code [2] = 0x17;
+  context->serial_number [0] = 0xca;
+  context->serial_number [1] = 0xfe;
+  context->serial_number [2] = 0xde;
+  context->serial_number [3] = 0xad;
+
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;
   p_card.value [0] = 0x00; // fc=1 card=1 in 26 bit wiegand

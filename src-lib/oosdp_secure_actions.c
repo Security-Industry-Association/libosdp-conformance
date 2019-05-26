@@ -191,11 +191,12 @@ int
     status = osdp_setup_scbk (ctx, msg);
     if (status != ST_OK)
     {
+      fprintf(ctx->log, "SCBK Set-up error %d.\n", status);
       nak = 1;
       osdp_reset_secure_channel (ctx);
       current_length = 0;
       osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
-      osdp_nak_response_data [1] = 0xFE;
+      osdp_nak_response_data [1] = status;
       status = send_message (ctx,
         OSDP_NAK, p_card.addr, &current_length,
         sizeof(osdp_nak_response_data), osdp_nak_response_data);

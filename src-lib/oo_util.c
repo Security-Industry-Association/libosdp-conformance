@@ -1720,10 +1720,10 @@ int
         osdp_pdid_response_data [ 2] = context->vendor_code [2];
         osdp_pdid_response_data [ 3] = context->model;;
         osdp_pdid_response_data [ 4] = context->version;
-        osdp_pdid_response_data [ 5] = 0xca;
-        osdp_pdid_response_data [ 6] = 0xfe;
-        osdp_pdid_response_data [ 7] = 0xde;
-        osdp_pdid_response_data [ 8] = 0xad;
+        osdp_pdid_response_data [ 5] = context->serial_number [0];
+        osdp_pdid_response_data [ 6] = context->serial_number [1];
+        osdp_pdid_response_data [ 7] = context->serial_number [2];
+        osdp_pdid_response_data [ 8] = context->serial_number [3];
         osdp_pdid_response_data [ 9] =
           context->fw_version [0] = OSDP_VERSION_MAJOR;
         osdp_pdid_response_data [10] = m_version_minor;

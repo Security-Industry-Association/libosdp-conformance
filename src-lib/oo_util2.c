@@ -384,32 +384,19 @@ int
 
 { /* parse_json */
 
-  FILE
-    *cmdf;
-  char
-    field [1024];
-  int
-    found_field;
-  char
-    json_string [4096];
-  json_t
-    *root;
-  int
-    status;
-  int
-    status_io;
-  json_error_t
-    status_json;
-  char
-    *test_command;
-  char
-    this_command [1024];
-  char
-    this_value [1024];
-  json_t
-    *value;
-  int
-    was_valid;
+  FILE *cmdf;
+  char field [1024];
+  int found_field;
+  char json_string [4096];
+  json_t *root;
+  int status;
+  int status_io;
+  json_error_t status_json;
+  char *test_command;
+  char this_command [1024];
+  char this_value [1024];
+  json_t *value;
+  int was_valid;
 
 
   status = -1;
@@ -548,7 +535,11 @@ int
 
     strcpy (vstr, json_string_value (value));
     if (0 EQUALS strcmp (vstr, "DEFAULT"))
+    {
+      fprintf(ctx->log,
+        "Configuration: Secure Channel Enabled, SCBK-D Enabled\n");
       ctx->enable_secure_channel = 2;
+    };
   }; 
 
   // parameter "fqdn"
@@ -703,6 +694,26 @@ int
   // secure_install (normal or install)
   // secure_transmit (relaxed or strict)
 
+  // parameter "serial-number"
+  // argument is a four byte hex value.
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "serial-number");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    unsigned char serial_number [4];
+    unsigned short int serial_number_length;
+
+    serial_number_length = sizeof(serial_number);
+    status = osdp_string_to_buffer(ctx, (char *)json_string_value(value), serial_number, &serial_number_length);
+    if (status EQUALS ST_OK)
+      memcpy(ctx->serial_number, serial_number, sizeof(ctx->serial_number));
+  };
   // parameter "timeout"
   // note this is timer 0 (zero)
 
