@@ -75,7 +75,8 @@
 #define OSDP_SEC_SCS_16 (0x16)
 #define OSDP_SEC_SCS_17 (0x17)
 #define OSDP_SEC_SCS_18 (0x18)
-#define OSDP_SEC_NOT_SCS (0x00)
+#define OSDP_SEC_NOT_SCS    (0x00)
+#define OSDP_SEC_STAND_DOWN (0x01)
 
 #define OSDP_KEY_OCTETS (16) // AES-128 CBC
 

@@ -1,7 +1,7 @@
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2019 Smithee Solutions LLC
   (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -126,6 +126,7 @@ int
     {
       strcpy (context.init_parameters_path, argv [1]);
     };
+    fprintf(stderr, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
     status = initialize_osdp (&context);
   };
 

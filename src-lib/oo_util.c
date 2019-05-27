@@ -1569,6 +1569,7 @@ int
   char cmd [1024];
   int count;
   int current_length;
+  int current_security;
   int i;
   char logmsg [1024];
   char nak_code;
@@ -1685,10 +1686,16 @@ int
 
         status = ST_OK;
         current_length = 0;
+
+        // SPECIAL CASE: if osdp_CAP comes in in cleartext, answer it in cleartext
+
+        current_security = OSDP_SEC_SCS_18;
+        if (msg->security_block_length EQUALS 0)
+          current_security = OSDP_SEC_STAND_DOWN;
         status = send_message_ex(context,
           OSDP_PDCAP, p_card.addr, &current_length,
             sizeof(osdp_cap_response_data), osdp_cap_response_data,
-            OSDP_SEC_SCS_18, 0, NULL);
+            current_security, 0, NULL);
         osdp_conformance.cmd_pdcap.test_status =
           OCONFORM_EXERCISED;
         osdp_conformance.rep_device_capas.test_status =
@@ -1712,8 +1719,7 @@ int
 
     case OSDP_ID:
       {
-        unsigned char
-          osdp_pdid_response_data [12];
+        unsigned char osdp_pdid_response_data [12];
 
         osdp_pdid_response_data [ 0] = context->vendor_code [0];
         osdp_pdid_response_data [ 1] = context->vendor_code [1];
@@ -1730,8 +1736,14 @@ int
         osdp_pdid_response_data [11] = m_build;
         status = ST_OK;
         current_length = 0;
+        current_security = OSDP_SEC_SCS_18;
+
+        // SPECIAL CASE: if osdp_ID comes in in cleartext, answer it in cleartext
+
+        if (msg->security_block_length EQUALS 0)
+          current_security = OSDP_SEC_STAND_DOWN;
         status = send_message_ex(context, OSDP_PDID, p_card.addr,
-          &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, OSDP_SEC_SCS_18, 0, NULL);
+          &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
         osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
         osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
         SET_PASS (context, "4-3-2");

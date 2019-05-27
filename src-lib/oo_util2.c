@@ -1202,6 +1202,12 @@ int
       };
     };
   };
+
+  // the caller asked us to chillax even if it's in secure mode.
+
+  if (current_sec_block_type EQUALS OSDP_SEC_STAND_DOWN)
+    current_sec_block_type = OSDP_SEC_NOT_SCS;
+
   if (current_sec_block_type != OSDP_SEC_NOT_SCS)
   {
     if (ctx->verbosity > 9)
