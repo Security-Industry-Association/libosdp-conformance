@@ -493,6 +493,7 @@ typedef struct osdp_context
   int sent_naks;
   int crc_errs;
   int checksum_errs;
+  int hash_ok;
   char init_command [1024];
   int cparm;
   int cparm_v;
@@ -803,6 +804,7 @@ typedef struct osdp_msg
   int remainder;
   int security_block_type;
   int security_block_length;
+  int payload_decrypted;
 } OSDP_MSG;
 
 

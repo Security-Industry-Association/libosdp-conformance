@@ -137,7 +137,7 @@ int
   {
     strcat(tlogmsg, "  (LED message contents encrypted)\n");
   };
-  if (osdp_msg->security_block_length EQUALS 0)
+  if ((osdp_msg->security_block_length EQUALS 0) || (osdp_msg->payload_decrypted))
   {
     sprintf(tmpstr, "LED Control: %d. commands\n", count);
     strcat(tlogmsg, tmpstr);

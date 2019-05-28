@@ -36,14 +36,18 @@ void
   (OSDP_CONTEXT *ctx,
   char *buffer)
 {
+  time_t current_time;
+  struct timespec current_time_fine;
   char field [1024];
   int found_field;
-  char json_string [4096];
   int i;
+  char last_update [1024];
   char message_string [1024];
   char *out_status [OSDP_MAX_OUT];
   json_t *root;
   int status;
+  int stat_cp_polls;
+  int stat_hash_ok;
   json_error_t status_json;
   json_t *value;
 
@@ -52,6 +56,10 @@ void
 
 
   status = ST_OK;
+  stat_hash_ok = 0;
+  clock_gettime (CLOCK_REALTIME, &current_time_fine);
+  current_time = time (NULL);
+  strcpy(last_update, "?");
   found_field = 0;
   pd_address = 0;
   led_color = 0;
@@ -65,11 +73,48 @@ void
     root = json_loads (buffer, 0, &status_json);
     if (!root)
     {
-      printf ("JSON parser failed.  String was ->\n%s<-\n",
-        json_string);
+      printf ("Please stand by.  Updating status...\n");
       status = ST_CMD_ERROR;
     };
   }; 
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "cp-polls");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_cp_polls = i;
+  };
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "hash-ok");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_hash_ok = i;
+  };
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "last_update");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field) { strcpy (last_update, json_string_value (value)); };
   if (status EQUALS ST_OK)
   {
     found_field = 1;
@@ -105,18 +150,17 @@ void
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "text");
-    value = json_object_get (root, field);
+    value = json_object_get (root, "text");
     if (!json_is_string (value))
       found_field = 0;
   };
-  if (found_field)
-  {
-    strcpy (ctx->text, json_string_value (value));
-  };
+  if (found_field) { strcpy (ctx->text, json_string_value (value)); };
   printf ("<H3>libosdp-conformance PD Reader</H3>\n");
-  printf ("A: %02x<BR>\n",
-    pd_address);
+  printf ("Test Time: %08ld.%08ld\n",
+    (unsigned long int)current_time_fine.tv_sec, current_time_fine.tv_nsec);
+  printf("  Local: %s Last update: %s\n", asctime (localtime (&current_time)),
+    last_update);
+  printf ("A: %02x<BR>\n", pd_address);
   printf ("<SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
     led_color);
   printf ("Message Text: %s<BR>\n",
@@ -145,6 +189,9 @@ void
 "&nbsp; 00 &nbsp; 01 &nbsp; 02 &nbsp; 03 &nbsp; 04 &nbsp; 05 &nbsp; 06 &nbsp; 07 &nbsp; 08 &nbsp; 09 &nbsp; 10 &nbsp 11 &nbsp 12 &nbsp 13 &nbsp 14 &nbsp 15<BR>\n");
 
   // yes I'm sloppy and left the out strings allocated.
+
+  printf("<BR><PRE>Statistics:\n%5d CP Polls\n%5d PD Acks\n%5d NAKS\n%5d HASH OK\n",
+    stat_cp_polls, 0, 0, stat_hash_ok);
 }
 
 
@@ -155,16 +202,9 @@ int
 
 { /* main for open-osdp-PD-status */
 
-  char
-    buffer [16384];
-  time_t
-    current_time;
-  struct timespec
-    current_time_fine;
-  FILE
-    *sf;
-  int
-    status;
+  char buffer [16384];
+  FILE *sf;
+  int status;
 
 
   status = ST_OK;
@@ -180,15 +220,9 @@ int
     (void) fread (buffer, sizeof (buffer [0]), sizeof (buffer), sf);
     fclose (sf);
   };
-  clock_gettime (CLOCK_REALTIME, &current_time_fine);
-  current_time = time (NULL);
   display_sim_reader (&osdp_context, buffer);
 
   printf ("<PRE>\n");
-  printf ("Timestamp: %08ld.%08ld %s",
-      (unsigned long int)current_time_fine.tv_sec, current_time_fine.tv_nsec,
-      asctime (localtime (&current_time)));
-
   printf("PD Config:\n");
   fflush(stdout);
   system

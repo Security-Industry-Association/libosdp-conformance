@@ -226,8 +226,6 @@ int
 "                 \"role\" : \"%d\",\n",
       ctx->role);
     fprintf (sf,
-"                    \"#\" : \"0=CP 1=PD 2=MON\",\n");
-    fprintf (sf,
 "         \"serial_speed\" : \"%s\",\n",
       ctx->serial_speed);
     fprintf (sf,
@@ -237,13 +235,15 @@ int
 "          \"max_pd_send\" : \"%d\",\n",
       ctx->max_message);
     fprintf(sf,
-"             \"cp_polls\" : \"%d\",\n",
+"             \"cp-polls\" : \"%d\",\n",
       ctx->cp_polls);
     fprintf(sf,
 "              \"pd_acks\" : \"%d\",\n",
       ctx->pd_acks);
     fprintf(sf,
 "            \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
+    fprintf (sf,
+"        \"hash-ok\" : \"%d\",\n", ctx->hash_ok);
     fprintf (sf,
 "             \"crc_errs\" : \"%d\",\n", ctx->crc_errs);
     fprintf (sf,
@@ -263,9 +263,10 @@ int
     for (j=0; j<OSDP_MAX_OUT; j++)
     {
       fprintf (sf,
-                 "        \"out-%02d\" : \"%d\",\n",
+        " \"out-%02d\" : \"%d\",",
         j, ctx->out [j].current);
     };
+    fprintf(sf, "\n");
     fprintf (sf, "     \"power_report\" : \"%d\",\n",
       ctx->power_report);
     fprintf (sf, "        \"verbosity\" : \"%d\",\n",
@@ -276,8 +277,6 @@ int
       ctx->timer[0].i_sec);
     fprintf (sf, "             \"poll\" : \"%d\",\n",
       p_card.poll);
-    fprintf (sf, "             \"dump\" : \"%d\",\n",
-      m_dump);
     fprintf (sf,
 "  \"checksum_errors\" : \"%d\",\n",
       ctx->checksum_errs);
@@ -316,7 +315,7 @@ int
     fprintf(sf,
 "    \"last_update_timeT\" : %ld,\n", current_time);
 
-    fprintf(sf, "\"_#\" : \"_end\"\n");
+    fprintf(sf, "\"_#\" : \"_end\" ");
     fprintf (sf, "}\n");
 
     fclose (sf);

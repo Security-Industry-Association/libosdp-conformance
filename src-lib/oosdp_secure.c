@@ -79,7 +79,7 @@ int
 
   if (ctx->verbosity > 3)
     fprintf(ctx->log,
-      "DEBUG calculating MAC for message of length %d.\n", msg_lth);
+      "calculating MAC for message of length %d.\n", msg_lth);
 
   if (msg_lth > OSDP_BUF_MAX)
     status = ST_OSDP_EXCEEDS_SC_MAX;
@@ -87,11 +87,13 @@ int
   if (status EQUALS ST_OK)
   {
     memcpy(last_iv, ctx->last_calculated_in_mac, sizeof(last_iv));
-// DEBUG
-dump_buffer_log(ctx, "S-MAC1 at osdp_calculate_secure_channel_mac:",
-  ctx->s_mac1, OSDP_KEY_OCTETS);
-dump_buffer_log(ctx, "last calc in MAC (iv for msg-auth calc first block):",
-  last_iv, OSDP_KEY_OCTETS);
+    if (ctx->verbosity > 3)
+    {
+      dump_buffer_log(ctx, "S-MAC1 at osdp_calculate_secure_channel_mac:",
+        ctx->s_mac1, OSDP_KEY_OCTETS);
+      dump_buffer_log(ctx, "last calc in MAC (iv for msg-auth calc first block):",
+        last_iv, OSDP_KEY_OCTETS);
+    };
 
     // if it's longer than one block calculate the partial MAC using MAC1
     if (msg_lth > OSDP_KEY_OCTETS)
@@ -99,9 +101,11 @@ dump_buffer_log(ctx, "last calc in MAC (iv for msg-auth calc first block):",
       part1_block_length = (msg_lth/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
       last_part1_block_offset = part1_block_length - OSDP_KEY_OCTETS;
       memcpy(hashbuffer, msg_to_send, part1_block_length);
-// DEBUG
-dump_buffer_log(ctx, (char *)"msg-auth part 1 input:",
-  hashbuffer, part1_block_length);
+      if (ctx->verbosity > 3)
+      {
+        dump_buffer_log(ctx, (char *)"msg-auth part 1 input:",
+          hashbuffer, part1_block_length);
+      };
       AES_init_ctx (&aes_context_mac1, ctx->s_mac1);
       AES_ctx_set_iv (&aes_context_mac1, last_iv);
       AES_CBC_encrypt_buffer(&aes_context_mac1, hashbuffer, part1_block_length);
@@ -129,8 +133,8 @@ dump_buffer_log(ctx, (char *)"msg-auth part 1 input:",
     AES_ctx_set_iv (&aes_context_mac2, last_iv);
     memcpy (hashbuffer, padded_block, OSDP_KEY_OCTETS);
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, OSDP_KEY_OCTETS);
-// DEBUG
-dump_buffer_log(ctx, "last block encrypted for MAC:", hashbuffer, OSDP_KEY_OCTETS);
+    if (ctx->verbosity > 3)
+      dump_buffer_log(ctx, "last block encrypted for MAC:", hashbuffer, OSDP_KEY_OCTETS);
 
     // this MAC is saved as the last sent MAC
 
@@ -323,8 +327,8 @@ int
     (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
     (sec_block_type EQUALS OSDP_SEC_SCS_18))
   {
-// DEBUG
-dump_buffer_log(ctx, "buffer for mac calc:", buf, new_length);
+    if (ctx->verbosity > 3)
+      dump_buffer_log(ctx, "buffer for mac calc:", buf, new_length);
     status = osdp_calculate_secure_channel_mac(ctx, buf, new_length, sc_mac);
     if (status EQUALS 0)
     {
@@ -362,8 +366,8 @@ dump_buffer_log(ctx, "buffer for mac calc:", buf, new_length);
   };
 
   *updated_length = new_length;
-// DEBUG
-dump_buffer_log(ctx, "buffer after build-secure:", (unsigned char *)p, *updated_length);
+  if (ctx->verbosity > 3)
+    dump_buffer_log(ctx, "buffer after build-secure:", (unsigned char *)p, *updated_length);
   return (status);
 
 } /* osdp_build_message */
@@ -443,9 +447,11 @@ int
     if (status EQUALS ST_OK)
     {
       msg->data_length = cur_actual;
+      msg->payload_decrypted = 1;
     };
   };
-dump_buffer_log(ctx, "decrypted payload:", msg->data_payload, msg->data_length);
+  if (ctx->verbosity > 3)
+    dump_buffer_log(ctx, "decrypted payload:", msg->data_payload, msg->data_length);
 
   return(status);
 
@@ -796,7 +802,8 @@ dump_buffer_log(ctx, "IV after mac1:", current_iv, OSDP_KEY_OCTETS);
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, sizeof(hashbuffer));
     memcpy(ctx->last_calculated_in_mac,
       hashbuffer, sizeof(ctx->last_calculated_in_mac));
-    dump_buffer_log(ctx, "calc hash", hashbuffer, sizeof(hashbuffer));
+    if (ctx->verbosity > 9)
+      dump_buffer_log(ctx, "calc hash", hashbuffer, sizeof(hashbuffer));
 
     // the hash we calculated (hashbuffer) should match the hash extracted
     // from the message (hash)
@@ -804,7 +811,7 @@ dump_buffer_log(ctx, "IV after mac1:", current_iv, OSDP_KEY_OCTETS);
     if (0 EQUALS memcmp(hash, hashbuffer, 4))
     {
       status = ST_OK;
-      fprintf(ctx->log, "HASH MATCHES\n");
+      ctx->hash_ok ++;
     };
   };
   fflush(ctx->log);

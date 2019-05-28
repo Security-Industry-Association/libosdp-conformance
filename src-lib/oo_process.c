@@ -61,6 +61,19 @@ int
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
+  if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT) && (status != ST_SERIAL_IN))
+  {
+    int current_length;
+    unsigned char osdp_nak_response [2];
+
+    fprintf(context.log, "osdp_parse_message status was %d.\n", status);
+    current_length = 0;
+    osdp_nak_response [0] = 0xff;
+    status = send_message_ex(&context,
+      OSDP_NAK, p_card.addr, &current_length,
+      1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
+    context.sent_naks ++;
+  };
   if (context.verbosity > 9)
   {
     if (status != ST_MSG_TOO_SHORT)

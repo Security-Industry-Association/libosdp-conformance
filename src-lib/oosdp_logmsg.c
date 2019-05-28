@@ -703,15 +703,19 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
       unsigned char *out_status;
       char tmpstr [1024];
 
-      strcpy(tlogmsg, "I/O Status-OUT:");
-      out_status = msg->data_payload;
-      for (i=0; i<count; i++)
+      tlogmsg [0] = 0;
+      if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
       {
-        sprintf (tmpstr, " %02d:%d",
-          i, out_status [i]);
-        strcat (tlogmsg, tmpstr);
+        strcpy(tlogmsg, "I/O Status-OUT:");
+        out_status = msg->data_payload;
+        for (i=0; i<count; i++)
+        {
+          sprintf (tmpstr, " %02d:%d",
+            i, out_status [i]);
+          strcat (tlogmsg, tmpstr);
+        };
+        strcat(tlogmsg, "\n");
       };
-      strcat(tlogmsg, "\n");
     };
     break;
 
