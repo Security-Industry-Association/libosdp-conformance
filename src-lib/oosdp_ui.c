@@ -478,8 +478,9 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
             buzzer_control [1], buzzer_control [2],
             buzzer_control [3], buzzer_control [4]);
         current_length = 0;
-        status = send_message (context,
-          OSDP_BUZ, p_card.addr, &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control);
+        status = send_message_ex (context, OSDP_BUZ, p_card.addr,
+          &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control,
+          OSDP_SEC_SCS_18, 0, NULL);
       };
       break;
 
@@ -490,8 +491,9 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
         current_length = 0;
         param [0] = 0;
-        status = send_message (context,
-          OSDP_CAP, p_card.addr, &current_length, sizeof (param), param);
+        status = send_message_ex (context, OSDP_CAP, p_card.addr,
+          &current_length, sizeof (param), param,
+          OSDP_SEC_SCS_18, 0, NULL);
         if (context->verbosity > 2)
           fprintf (stderr, "Requesting Capabilities Report\n");
       };

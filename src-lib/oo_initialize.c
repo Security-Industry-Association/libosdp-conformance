@@ -203,6 +203,8 @@ int
   context->q = osdp_command_queue;
   context->enable_poll = 1;
 
+  context->current_key_slot = -1;
+
   m_version_minor = OSDP_VERSION_MINOR;
   m_build = OSDP_VERSION_BUILD;
   context->model = 2;

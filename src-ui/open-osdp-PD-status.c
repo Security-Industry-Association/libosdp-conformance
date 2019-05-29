@@ -48,6 +48,9 @@ void
   int status;
   int stat_cp_polls;
   int stat_hash_ok;
+  char stat_key [1024];
+  char stat_key_slot [1024];
+  int stat_pd_acks;
   json_error_t status_json;
   json_t *value;
 
@@ -57,6 +60,8 @@ void
 
   status = ST_OK;
   stat_hash_ok = 0;
+  stat_key_slot [0] = 0;
+  stat_key [0] = 0;
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   current_time = time (NULL);
   strcpy(last_update, "?");
@@ -134,6 +139,21 @@ void
   if (status EQUALS ST_OK)
   {
     found_field = 1;
+    value = json_object_get (root, "pd-acks");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_pd_acks = i;
+  };
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
     strcpy (field, "pd_address");
     value = json_object_get (root, field);
     if (!json_is_string (value))
@@ -148,18 +168,37 @@ void
     pd_address = i;
   };
   if (status EQUALS ST_OK)
-  {
-    found_field = 1;
-    value = json_object_get (root, "text");
-    if (!json_is_string (value))
-      found_field = 0;
-  };
+  { found_field = 1; value = json_object_get (root, "text"); if (!json_is_string (value)) found_field = 0; };
   if (found_field) { strcpy (ctx->text, json_string_value (value)); };
+
+  if (status EQUALS ST_OK)
+  { found_field = 1; value = json_object_get (root, "key-slot"); if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { strcpy (stat_key_slot, json_string_value (value)); };
+  if (status EQUALS ST_OK)
+  { found_field = 1; value = json_object_get (root, "scbk"); if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { strcpy (stat_key, json_string_value (value)); };
+  if ('1' EQUALS stat_key_slot [0])
+  {
+    strcpy(stat_key_slot, "SCBK-D");
+  }
+  else
+  {
+    if ('2' EQUALS stat_key_slot [0])
+    {
+      strcpy(stat_key_slot, "SCBK");
+    }
+    else
+    {
+      stat_key [0] = 0;
+    };
+  };
+
   printf ("<H3>libosdp-conformance PD Reader</H3>\n");
-  printf ("Test Time: %08ld.%08ld\n",
+  printf ("<FONT SIZE=+2>Test Time: %08ld.%08ld<BR>\n",
     (unsigned long int)current_time_fine.tv_sec, current_time_fine.tv_nsec);
-  printf("  Local: %s Last update: %s\n", asctime (localtime (&current_time)),
+  printf("&nbsp; Local: %s\n&nbsp; Last update: %s<BR>\n", asctime (localtime (&current_time)),
     last_update);
+  printf("</FONT>\n");
   printf ("A: %02x<BR>\n", pd_address);
   printf ("<SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
     led_color);
@@ -190,8 +229,14 @@ void
 
   // yes I'm sloppy and left the out strings allocated.
 
-  printf("<BR><PRE>Statistics:\n%5d CP Polls\n%5d PD Acks\n%5d NAKS\n%5d HASH OK\n",
-    stat_cp_polls, 0, 0, stat_hash_ok);
+  printf("<BR><PRE>Statistics:\n%5d CP Polls %5d PD Acks %5d NAKS %5d HASH OK ",
+    stat_cp_polls, stat_pd_acks, 0, stat_hash_ok);
+
+  if (strlen(stat_key) > 0)
+  {
+    printf("  Key %s (%s)", stat_key, stat_key_slot);
+  };
+  printf("\n");
 }
 
 

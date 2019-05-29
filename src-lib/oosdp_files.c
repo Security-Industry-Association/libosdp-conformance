@@ -215,9 +215,7 @@ int
     fprintf (sf,
 "          \"last_update\" : \"%s\",\n",
       current_date_string);
-    fprintf(sf,
-"                  \"mmt\" : \"%d\",\n",
-      osdp_conformance.conforming_messages);
+    fprintf(sf, " \"mmt\" : \"%d\",", osdp_conformance.conforming_messages);
     if (strlen (ctx->text) > 0)
       fprintf (sf,
 "                 \"text\" : \"%s\",\n",
@@ -225,6 +223,11 @@ int
     fprintf (sf,
 "                 \"role\" : \"%d\",\n",
       ctx->role);
+    fprintf(sf, " \"key-slot\" : \"%d\", ", ctx->current_key_slot);
+    fprintf(sf, " \"scbk\" : \"");
+    for (i=0; i<OSDP_KEY_OCTETS; i++)
+      fprintf(sf, "%02x", ctx->current_scbk [i]);
+    fprintf(sf, "\",\n");
     fprintf (sf,
 "         \"serial_speed\" : \"%s\",\n",
       ctx->serial_speed);
@@ -234,12 +237,8 @@ int
     fprintf(sf,
 "          \"max_pd_send\" : \"%d\",\n",
       ctx->max_message);
-    fprintf(sf,
-"             \"cp-polls\" : \"%d\",\n",
-      ctx->cp_polls);
-    fprintf(sf,
-"              \"pd_acks\" : \"%d\",\n",
-      ctx->pd_acks);
+    fprintf(sf, " \"cp-polls\" : \"%d\",", ctx->cp_polls);
+    fprintf(sf, " \"pd-acks\" : \"%d\",\n", ctx->pd_acks);
     fprintf(sf,
 "            \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
     fprintf (sf,

@@ -700,7 +700,7 @@ int
       current_length = 0;
       status = send_message_ex (ctx,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data,
-        OSDP_SEC_NOT_SCS, 0, NULL);
+        OSDP_SEC_SCS_18, 0, NULL);
       osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
       if (ctx->verbosity > 2)
       {

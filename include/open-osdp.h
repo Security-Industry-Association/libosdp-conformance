@@ -453,6 +453,7 @@ typedef struct osdp_context
   OSDP_PD_CAPABILITY pd_cap;
 
   // secure channel
+  int current_key_slot; // -1 or OSDP_SCBK_D or OSDP_SCBK
   unsigned char last_calculated_in_mac [OSDP_KEY_OCTETS];
   unsigned char last_calculated_out_mac [OSDP_KEY_OCTETS];
   unsigned char current_scbk [OSDP_KEY_OCTETS];

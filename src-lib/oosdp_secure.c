@@ -936,6 +936,7 @@ int
   if (msg != NULL)
   {
     secure_message = (OSDP_SECURE_MESSAGE *)(msg->ptr);
+    ctx->current_key_slot = secure_message->sec_blk_data;
     if (secure_message->sec_blk_data EQUALS OSDP_KEY_SCBK_D)
     {
       memcpy (ctx->current_scbk, OSDP_SCBK_DEFAULT, sizeof (ctx->current_scbk));
