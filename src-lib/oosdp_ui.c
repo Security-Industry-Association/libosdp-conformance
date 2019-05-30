@@ -151,8 +151,9 @@ fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         strcpy (context->test_in_progress, "2_11_3");
         param [0] = 0;
         current_length = 0;
-        status = send_message (context,
-          OSDP_ID, 0x7F, &current_length, sizeof (param), param);
+        status = send_message_ex (context, OSDP_ID, 0x7F,
+          &current_length, sizeof (param), param,
+          OSDP_SEC_SCS_17, 0, NULL);
 
         osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
         status = ST_OK;
@@ -480,7 +481,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         current_length = 0;
         status = send_message_ex (context, OSDP_BUZ, p_card.addr,
           &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control,
-          OSDP_SEC_SCS_18, 0, NULL);
+          OSDP_SEC_SCS_17, 0, NULL);
       };
       break;
 
@@ -493,7 +494,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         param [0] = 0;
         status = send_message_ex (context, OSDP_CAP, p_card.addr,
           &current_length, sizeof (param), param,
-          OSDP_SEC_SCS_18, 0, NULL);
+          OSDP_SEC_SCS_17, 0, NULL);
         if (context->verbosity > 2)
           fprintf (stderr, "Requesting Capabilities Report\n");
       };
@@ -588,8 +589,10 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         }
         else
         {
-          status = send_message (context,
-            OSDP_ID, p_card.addr, &current_length, sizeof (param), param);
+          status = send_message_ex (context, OSDP_ID, p_card.addr,
+            &current_length, sizeof (param), param,
+            OSDP_SEC_SCS_17, 0, NULL);
+
           if (context->verbosity > 3)
             fprintf (stderr, "Requesting PD Ident\n");
           osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;

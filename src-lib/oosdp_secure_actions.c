@@ -57,14 +57,6 @@ int
   int status;
 
   status = ST_OK;
-
-// DEBUG
-#if 0
-  // display it first.
-  (void)oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
-  fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
-#endif
-
   memset (iv, 0, sizeof (iv));
 
   // check for proper state AND secure channel enabled.
@@ -98,13 +90,15 @@ if (ctx->verbosity > 8)
       AES_ctx_set_iv (&aes_context_s_enc, iv);
       memcpy (message, client_cryptogram, sizeof (message));
       AES_CBC_decrypt_buffer (&aes_context_s_enc, message, sizeof (message));
-//      AES_CBC_decrypt_buffer (message, client_cryptogram, sizeof (message), ctx->s_enc, iv);
 
       if (0 != memcmp (message, ctx->rnd_a, sizeof (ctx->rnd_a)))
         status = ST_OSDP_CHLNG_DECRYPT;
     };
     if (status EQUALS ST_OK)
     {
+      dump_buffer_log(ctx, "Decrypted Client Cryptogram:",
+        message, sizeof(message));
+
       // client crytogram looks ok, save RND.B
 
       memcpy (ctx->rnd_b, message + sizeof (ctx->rnd_a), sizeof (ctx->rnd_b));

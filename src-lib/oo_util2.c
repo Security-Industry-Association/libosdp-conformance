@@ -1162,6 +1162,8 @@ int
 
 
   status = ST_OK;
+  if (ctx->role != OSDP_ROLE_MONITOR)
+  {
   current_sec_block_type = sec_block_type;
   current_sec_block_length = sec_block_length;
   memset(current_sec_block, 0, sizeof(current_sec_block));
@@ -1223,6 +1225,7 @@ int
     status = send_message (ctx, command, dest_addr, current_length,
       data_length, data);
   };
+  }; // not monitor
   return(status);
 
 } /* osdp_send_message_ex */
