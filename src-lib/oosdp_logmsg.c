@@ -721,14 +721,10 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
 
   case OOSDP_MSG_PD_CAPAS:
     {
-      int
-        i;
-      OSDP_HDR
-        *oh;
-      char
-        tstr [1024];
-      int
-        value;
+      int i;
+      OSDP_HDR *oh;
+      char tstr [1024];
+      int value;
 
       msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
@@ -736,50 +732,50 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
       count = count - 8;
       if (msg->security_block_length > 0)
         sprintf(tstr, "PD Capabilities payload encrypted.\n");
-      else
+      if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
       {
-      sprintf (tstr, "PD Capabilities (%d)\n", count/3);
-      strcpy (tlogmsg, tstr);
+        sprintf (tstr, "PD Capabilities (%d)\n", (msg->data_length)/3);
+        strcpy (tlogmsg, tstr);
 
-      for (i=0; i<count; i=i+3)
-      {
-        switch (*(i+0+msg->data_payload))
+        for (i=0; i<msg->data_length; i=i+3)
         {
-        case 4:
+          switch (*(i+0+msg->data_payload))
           {
-            int compliance;
-            char tstr2 [1024];
-            compliance = *(i+1+msg->data_payload);
-            strcpy (tstr2, "Compliance=?");
-            if (compliance == 1) strcpy (tstr2, "On/Off Only");
-            if (compliance == 2) strcpy (tstr2, "Timed");
-            if (compliance == 3) strcpy (tstr2, "Timed, Bi-color");
-            if (compliance == 4) strcpy (tstr2, "Timed, Tri-color");
-          sprintf (tstr, "  [%02d] %s %d LED's Compliance:%s;\n",
-            1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), 
-            *(i+2+msg->data_payload),
-            tstr2);
+          case 4:
+            {
+              int compliance;
+              char tstr2 [1024];
+              compliance = *(i+1+msg->data_payload);
+              strcpy (tstr2, "Compliance=?");
+              if (compliance == 1) strcpy (tstr2, "On/Off Only");
+              if (compliance == 2) strcpy (tstr2, "Timed");
+              if (compliance == 3) strcpy (tstr2, "Timed, Bi-color");
+              if (compliance == 4) strcpy (tstr2, "Timed, Tri-color");
+              sprintf (tstr, "  [%02d] %s %d LED's Compliance:%s;\n",
+                1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), 
+                *(i+2+msg->data_payload),
+                tstr2);
+            };
+            break;
+          case 10:
+            value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
+            sprintf (tstr, "  [%02d] %s %d;\n",
+              1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
+            break;
+          case 11:
+            value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
+            context.max_message = value; // SIDE EFFECT (naughty me) - sets value when displaying it.
+            sprintf (tstr, "  [%02d] %s %d;\n",
+              1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
+            break;
+          default:
+            sprintf (tstr, "  [%02d] %s %02x %02x;\n",
+              1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), *(i+1+msg->data_payload), *(i+2+msg->data_payload));
+            break;
           };
-          break;
-        case 10:
-          value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
-          sprintf (tstr, "  [%02d] %s %d;\n",
-            1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
-          break;
-        case 11:
-          value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
-          context.max_message = value; // SIDE EFFECT (naughty me) - sets value when displaying it.
-          sprintf (tstr, "  [%02d] %s %d;\n",
-            1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
-          break;
-        default:
-          sprintf (tstr, "  [%02d] %s %02x %02x;\n",
-            1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), *(i+1+msg->data_payload), *(i+2+msg->data_payload));
-          break;
+          strcat (tlogmsg, tstr);
         };
-        strcat (tlogmsg, tstr);
-      };
-      }; // not an encrypted payload
+      }; // decrypted or cleartext payload
     };
     break;
 

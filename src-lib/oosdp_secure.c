@@ -447,6 +447,9 @@ int
     if (status EQUALS ST_OK)
     {
       msg->data_length = cur_actual;
+if (ctx->verbosity > 3)
+  fprintf(ctx->log, "  Decrypted payload is %d. bytes\n", msg->data_length);
+
       msg->payload_decrypted = 1;
     };
   };
