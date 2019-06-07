@@ -131,13 +131,13 @@ int
         otxt.length = strlen (context->text);
         memcpy (otxt.text, context->text, 1024);
         current_length = 0;
-        status = send_message (context,
-          OSDP_TEXT, p_card.addr, &current_length,
+        status = send_message_ex(context, OSDP_TEXT, p_card.addr,
+          &current_length, 
           sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
-          (unsigned char *)&otxt);
+          (unsigned char *)&otxt,
+          OSDP_SEC_SCS_17, 0, NULL);
         osdp_conformance.packet_size_limits.test_status =
           OCONFORM_EXERCISED;
-fprintf (stderr, "2-6-1 packet_size_limits marked as exercised.\n");
         status = ST_OK;
       };
       break;
@@ -755,10 +755,9 @@ fprintf(stderr,
         if (status EQUALS ST_OK)
         {
           current_length = 0;
-          status = send_message (context,
-            OSDP_LED, p_card.addr, &current_length,
-            sizeof (led_control_message),
-            (unsigned char *)&led_control_message);
+          status = send_message_ex (context, OSDP_LED, p_card.addr,
+            &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message,
+            OSDP_SEC_SCS_17, 0, NULL);
         }
         else
         {
@@ -880,10 +879,11 @@ fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
         otxt.length = strlen (context->text);
         memcpy (otxt.text, context->text, 1024);
         current_length = 0;
-        status = send_message (context,
-          OSDP_TEXT, p_card.addr, &current_length,
+        status = send_message_ex(context, OSDP_TEXT, p_card.addr,
+          &current_length, 
           sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
-          (unsigned char *)&otxt);
+          (unsigned char *)&otxt,
+          OSDP_SEC_SCS_17, 0, NULL);
       };
       break;
 

@@ -72,9 +72,9 @@ int
         *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
         status = ST_OK;
         current_length = 0;
-        status = send_message (ctx,
-          OSDP_COM, p_card.addr, &current_length,
-          sizeof (osdp_com_response_data), osdp_com_response_data);
+        status = send_message_ex (ctx, OSDP_COM, p_card.addr,
+          &current_length, sizeof (osdp_com_response_data), osdp_com_response_data,
+          OSDP_SEC_SCS_18, 0, NULL);
   if (ctx->verbosity > 2)
   {
           sprintf (logmsg, "Responding with OSDP_COM");

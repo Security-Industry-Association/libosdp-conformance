@@ -110,7 +110,8 @@ int
 // experimental "polling" toggles polling enabled
   case OSDP_CMDB_POLLING:
     ctx->enable_poll = 1 ^ ctx->enable_poll;
-    fprintf(ctx->log, "enable_polling now %x\n", ctx->enable_poll);
+    ctx->next_sequence = 0;
+    fprintf(ctx->log, "enable_polling now %x, sequence reset to 0\n", ctx->enable_poll);
     cmd->command = OSDP_CMD_NOOP;
     break;
 

@@ -241,6 +241,9 @@ char
   case 14:
     strcpy (funcname, "Biometrics");
     break;
+  case OSDP_CAP_VERSION:
+    strcpy(funcname, "OSDP Protocol Version");
+    break;
   };
   return (funcname);
 }
