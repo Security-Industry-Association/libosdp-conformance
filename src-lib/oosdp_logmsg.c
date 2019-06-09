@@ -145,6 +145,7 @@ int
   status = ST_OK;
   msg = NULL;
   oh = NULL;
+  memset(hstr, 0, sizeof(hstr));
 
   // set up the OSDP header structure (if we have something to work with)
   if (aux)
@@ -602,11 +603,9 @@ int
 
   case OOSDP_MSG_NAK:
     msg = (OSDP_MSG *) aux;
-    if (msg->data_length > 0)
+    // it's 1 if just a nak code and more if there is nak 'data'
+    if (msg->data_length > 1)
     {
-// DEBUG
-fprintf(stderr, "llsb 0x%02x lmsb 0x%02x msg->data_length 0x%02x\n",
-  oh->len_lsb, oh->len_msb, msg->data_length);
       sprintf (tlogmsg, "NAK: Error Code %02x Data %02x\n",
         *(0+msg->data_payload), *(1+msg->data_payload));
     }

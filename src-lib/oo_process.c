@@ -66,12 +66,26 @@ int
     int current_length;
     unsigned char osdp_nak_response [2];
 
-    // fprintf(context.log, "osdp_parse_message status was %d.\n", status);
+// DEBUG
+fprintf(stderr, "process_osdp_input detected bad parse, NAK-ing...status=%d role=%d\n",
+  status, context.role);
     if (context.role != OSDP_ROLE_MONITOR)
     {
       current_length = 0;
       osdp_nak_response [0] = 0xff;
-      status = send_message_ex(&context,
+
+      // adjust NAK to the reason
+      switch(status)
+      {
+      default:
+        osdp_nak_response [0] = 0xff;
+        break;
+      case ST_OSDP_SC_BAD_HASH:
+        osdp_nak_response [0] = OO_NAK_ENCRYPTION_REQUIRED;
+        break;
+      };
+
+      (void)send_message_ex(&context,
         OSDP_NAK, p_card.addr, &current_length,
         1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
       context.sent_naks ++;
@@ -176,6 +190,7 @@ int
   if ((status EQUALS ST_PARSE_UNKNOWN_CMD) || \
     (status EQUALS ST_BAD_CRC) || \
     (status EQUALS ST_BAD_CHECKSUM) || \
+    (status EQUALS ST_OSDP_SC_BAD_HASH) || \
     (status EQUALS ST_NOT_MY_ADDR) || \
     (status EQUALS ST_MONITOR_ONLY) || \
     (status EQUALS ST_OK))

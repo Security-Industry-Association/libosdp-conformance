@@ -139,6 +139,7 @@
 #define OO_NAK_UNK_CMD    (3)
 #define OO_NAK_SEQUENCE   (4)
 #define OO_NAK_UNSUP_SECBLK (5)
+#define OO_NAK_ENCRYPTION_REQUIRED (6)
 #define OO_NAK_CMD_UNABLE (9)
 
 #define OSDP_MENU_TOP     (0x0000)
@@ -495,6 +496,7 @@ typedef struct osdp_context
   int crc_errs;
   int checksum_errs;
   int hash_ok;
+  int hash_bad;
   char init_command [1024];
   int cparm;
   int cparm_v;

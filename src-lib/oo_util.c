@@ -1261,13 +1261,17 @@ status = ST_OK; // tolerate checksum error and continue
         {
           status = oo_hash_check(context, m->ptr, sec_block_type,
             m->crc_check-4, hashable_length);
+// DEBUG
+if (status != ST_OK)
+  fprintf(stderr, "oo_hash_check failed, status %d\n", status);
           if (status EQUALS ST_OK)
             status = osdp_decrypt_payload(context, m);
         };
         if (status != ST_OK)
         {
           if (context->verbosity > 3)
-            fprintf(context->log, "Secure Channel Hash check failed.\n");
+            fprintf(context->log,
+              "  ..Secure Channel Hash check failed (%d).\n", status);
         };
       }; 
     };
@@ -1283,7 +1287,7 @@ status = ST_OK; // tolerate checksum error and continue
         osdp_command_reply_to_string(returned_hdr->command, m->direction));
 
       // print "IEC" details of message
-      status = oosdp_message_header_print(context, m, tlogmsg);
+      (void)oosdp_message_header_print(context, m, tlogmsg);
       if (((returned_hdr->command != OSDP_POLL) &&
         (returned_hdr->command != OSDP_ACK)) ||
         (context->verbosity > 3))
@@ -1651,8 +1655,9 @@ int
       osdp_conformance.cmd_buz.test_status =
         OCONFORM_EXERCISED;
       current_length = 0;
-      status = send_message
-        (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+      current_security = OSDP_SEC_SCS_15;
+      status = send_message_ex(context, OSDP_ACK, p_card.addr,
+        &current_length, 0, NULL, current_security, 0, NULL);
       context->pd_acks ++;
       break;
 

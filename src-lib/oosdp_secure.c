@@ -728,6 +728,7 @@ void
 
 } /* osdp_reset_secure_channel */
 
+
 /*
   oo_hash_check
     - calculate MAC for inbound
@@ -776,20 +777,21 @@ int
         last_block_length = OSDP_KEY_OCTETS;
       };
       memcpy(current_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
-dump_buffer_log(ctx, "s_mac1:", ctx->s_mac1, OSDP_KEY_OCTETS);
-dump_buffer_log(ctx, "iv:", current_iv, OSDP_KEY_OCTETS);
+      if (ctx->verbosity > 3)
+      {
+        dump_buffer_log(ctx, "s_mac1(oo_hash_check):", ctx->s_mac1, OSDP_KEY_OCTETS);
+        dump_buffer_log(ctx, "iv(oo_hash_check):", current_iv, OSDP_KEY_OCTETS);
+      };
 
       AES_init_ctx(&aes_context_mac1, ctx->s_mac1);
       AES_ctx_set_iv(&aes_context_mac1, current_iv);
       memcpy(first_blocks_temp, current_pointer, first_blocks_length);
-dump_buffer_log(ctx, "first blocks from wire:", first_blocks_temp, first_blocks_length);
+      if (ctx->verbosity > 3)
+        dump_buffer_log(ctx, "first blocks from wire:", first_blocks_temp, first_blocks_length);
       AES_CBC_encrypt_buffer(&aes_context_mac1, first_blocks_temp, first_blocks_length);
       memcpy(current_iv, first_blocks_temp + (first_blocks_length - OSDP_KEY_OCTETS), OSDP_KEY_OCTETS);
 
       current_pointer = message_pointer + first_blocks_length;
-
-// DEBUG
-dump_buffer_log(ctx, "IV after mac1:", current_iv, OSDP_KEY_OCTETS);
     };
 
     // process the last block
@@ -814,8 +816,16 @@ dump_buffer_log(ctx, "IV after mac1:", current_iv, OSDP_KEY_OCTETS);
     if (0 EQUALS memcmp(hash, hashbuffer, 4))
     {
       status = ST_OK;
+      if (ctx->verbosity > 3)
+        fprintf(ctx->log, "  ..SC MAC calculation matches\n");
       ctx->hash_ok ++;
     };
+  };
+  if (status EQUALS ST_OSDP_SC_BAD_HASH)
+  {
+    ctx->hash_bad ++;
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "  ..SC MAC calculation mis-match\n");
   };
   fflush(ctx->log);
   return(status);

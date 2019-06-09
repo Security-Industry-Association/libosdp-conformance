@@ -242,7 +242,7 @@ int
     fprintf(sf,
 "            \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
     fprintf (sf,
-"        \"hash-ok\" : \"%d\",\n", ctx->hash_ok);
+"  \"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
     fprintf (sf,
 "             \"crc_errs\" : \"%d\",\n", ctx->crc_errs);
     fprintf (sf,
