@@ -138,10 +138,8 @@ void
 
 { /* preserve_current_command */
 
-  char
-    command [1024];
-  char
-    preserve [1024];
+  char command [4*1024];
+  char preserve [2*1024];
 
 
   sprintf (preserve, "%s_%02d",

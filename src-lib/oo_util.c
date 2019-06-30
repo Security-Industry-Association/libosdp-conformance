@@ -45,7 +45,7 @@ unsigned int web_color_lookup [16] = {
   };
 time_t previous_time;
 char tlogmsg [1024];
-char tlogmsg2 [1024];
+char tlogmsg2 [3*1024];
 int mfg_rep_sequence;
 
 
@@ -1279,7 +1279,7 @@ if (status != ST_OK)
     if ((context->verbosity > 2) || (m_dump > 0))
     {
       char cmd_rep_tag [1024];
-      char log_line [1024];
+      char log_line [3*1024]; // 'cause contents could be 1k already
       char tlogmsg [1024];
 
 

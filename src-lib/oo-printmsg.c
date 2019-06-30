@@ -65,13 +65,12 @@ int
 { /* oosdp_print_message_KEYSET */
 
   int count;
+  char hstr [1024];
+  int i;
   unsigned char *keyset_payload;
   OSDP_HDR *oh;
   int status;
-  char tstr [1024];
-
-  char hstr [1024];
-  int i;
+  char tstr [2*1024];
 
 
   status = ST_OK;
@@ -119,7 +118,7 @@ int
   OSDP_HDR *oh;
   unsigned char *p;
   int status;
-  char tmpstr [1024];
+  char tmpstr [3*1024];
 
 
   status = 0;
@@ -252,7 +251,7 @@ int
   OSDP_HDR *oh;
   char raw_fmt [1024];
   int status;
-  char tstr [32];
+  char tstr [2*1024];
 
 
   status = ST_OK;
@@ -320,7 +319,7 @@ int
   OSDP_HDR *oh;
   unsigned char *mac_i;
   int status;
-  char tstr [1024];
+  char tstr [2*1024];
 
 
   status = ST_OK;
@@ -361,7 +360,7 @@ int
   OSDP_HDR *oh;
   unsigned char *server_cryptogram;
   int status;
-  char tstr [1024];
+  char tstr [2*1024];
 
 
   status = ST_OK;

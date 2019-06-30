@@ -182,9 +182,9 @@ int
   extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
   extern OSDP_BUFFER osdp_buf;
   FILE *sf;
-  char statfile [1024];
+  char statfile [2*1024];
   int status;
-  char tag [3];
+  char tag [1024];
   char val [1024];
 
 

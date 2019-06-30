@@ -38,7 +38,7 @@ int
 
 { /* action_osdp_XRD */
 
-  char cmd [1024];
+  char cmd [2*1024];
   int status;
 
 

@@ -133,10 +133,10 @@ int
   OSDP_MSC_PIV_DATA *piv_data;
   int scb_present;
   char *sec_block;
-  char tlogmsg [1024];
+  char tlogmsg [3*1024];
   char tmps [1024];
   char tmpstr [1024];
-  char tmpstr2 [1024];
+  char tmpstr2 [2*1024];
   int status;
   unsigned short int ustmp; // throw-away unsigned short integer (fits a "doubleByte")
   unsigned int utmp; // throw-away unsigned integer (fits a "quadByte")
@@ -722,7 +722,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     {
       int i;
       OSDP_HDR *oh;
-      char tstr [1024];
+      char tstr [2*1024];
       int value;
 
       msg = (OSDP_MSG *) aux;
@@ -843,18 +843,12 @@ int
 
 { /* oosdp_log */
 
-  time_t
-    current_raw_time;
-  struct tm
-    *current_cooked_time;
-  int
-    llogtype;
-  char
-    *role_tag;
-  int
-    status;
-  char
-    timestamp [1024];
+  time_t current_raw_time;
+  struct tm *current_cooked_time;
+  int llogtype;
+  char *role_tag;
+  int status;
+  char timestamp [2*1024];
 
 
   status = ST_OK;

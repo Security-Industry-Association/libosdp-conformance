@@ -459,7 +459,7 @@ int
           {
             if (context.verbosity > 8)
             {
-              char octet [3];
+              char octet [1024];
               sprintf(octet, " %02x", buffer [0]);
               strcat(trace_in_buffer, octet);
               dump_buffer_log(&context, "TCP Input:", osdp_buf.buf, osdp_buf.next);
@@ -589,7 +589,7 @@ int
 //    if (ctx->verbosity > 8)
     {
       int i;
-      char octet [3];
+      char octet [1024];
 
       for(i=0; i<status_io; i++)
       {
@@ -631,7 +631,7 @@ int
 //  if (ctx->verbosity > 8)
   {
     int i;
-    char octet [3];
+    char octet [1024];
 
     for(i=0; i<lth; i++)
     {

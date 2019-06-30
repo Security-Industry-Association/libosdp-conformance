@@ -583,7 +583,7 @@ int
           {
             {
               int i;
-              char octet [3];
+              char octet [1024];
 
               for(i=0; i<tls_current_length; i++)
               {

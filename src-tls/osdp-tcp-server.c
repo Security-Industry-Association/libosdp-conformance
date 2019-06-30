@@ -542,7 +542,7 @@ int
 //    if (ctx->verbosity > 8)
     {
       int i;
-      char octet [3];
+      char octet [1024];
 
       for(i=0; i<status_io; i++)
       {
@@ -635,7 +635,7 @@ int
 //  if (ctx->verbosity > 8)
   {
     int i;
-    char octet [3];
+    char octet [1024];
 
     for(i=0; i<lth; i++)
     {

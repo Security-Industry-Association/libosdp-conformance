@@ -322,7 +322,7 @@ int
     context->verbosity);
   {
     int idx;
-    char logmsg [1024];
+    char logmsg [2*1024]; // 'cause filename could be that long...
     char tlogmsg [1024];
 
     sprintf (logmsg, "Parameters:");

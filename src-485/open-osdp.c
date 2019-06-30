@@ -94,19 +94,14 @@ void
 
 int
   initialize
-    (int
-      argc,
-    char
-      *argv [])
+    (int argc,
+    char *argv [])
 
 { /* initialize */
 
-  char
-    command [1024];
-  pid_t
-    my_pid;
-  int
-    status;
+  char command [2*1024];
+  pid_t my_pid;
+  int status;
 
 
   status = ST_OK;
@@ -177,7 +172,7 @@ int
   int c1;
   int done;
   fd_set exceptfds;
-  char octet [3]; // used for text version of byte in tracing
+  char octet [1024]; // used for text version of byte in tracing
   fd_set readfds;
   int scount;
   const sigset_t sigmask;
@@ -205,12 +200,9 @@ int
 
   if (!done)
   {
-    char
-      sn [1024];
-    int
-      status_socket;
-    struct sockaddr_un
-      usock;
+    char sn [2*1024];
+    int status_socket;
+    struct sockaddr_un usock;
 
 
     memset (sn, 0, sizeof (1024));

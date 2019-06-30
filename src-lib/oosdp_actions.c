@@ -38,7 +38,7 @@ extern OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 extern OSDP_PARAMETERS
   p_card;
-char tlogmsg [1024];
+char tlogmsg [2*1024];
 
 
 int
@@ -812,7 +812,7 @@ int
 { /* action_osdp_RAW */
 
   int bits;
-  char cmd [1024];
+  char cmd [2*1024];
   int processed;
   unsigned char *raw_data;
   int status;
