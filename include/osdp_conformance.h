@@ -59,9 +59,10 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM busy_resend;             // 2-4-3
   OSDP_CONFORM new_on_busy;             // 2-4-4
   OSDP_CONFORM multibyte_data_encoding; // 2-5-1
-  OSDP_CONFORM packet_size_limits;      // 2-6-1
+  OSDP_CONFORM packet_size_limits;      // 2-6-1 // stress test ACU to PD
   OSDP_CONFORM packet_size_from_pd;     // 2-6-2
-  OSDP_CONFORM packet_size_stress_cp;   // 2-6-3
+  OSDP_CONFORM packet_size_stress_cp;   // 2-6-3 // stress test PD to ACU
+  OSDP_CONFORM packet_size_from_acu;    // 2-6-4 
   OSDP_CONFORM timing;                  // 2-7-1
   OSDP_CONFORM max_delay;               // 2-7-2
   OSDP_CONFORM offline_test;            // 2-7-3
@@ -114,7 +115,7 @@ typedef struct osdp_interop_assessment
   //OSDP_CONFORM cmd_cont;                // 3-19-1
   OSDP_CONFORM cmd_mfg;                 // 3-20-1
   OSDP_CONFORM cmd_stop_multi;          // 3-21-1
-  OSDP_CONFORM cmd_max_rec;             // 3-22-1
+  OSDP_CONFORM cmd_max_rec;             // 3-22-1 //ACURXSIZE
   OSDP_CONFORM cmd_filetransfer;        // 3-23-1
   OSDP_CONFORM cmd_keepactive;          // 3-24-2
 

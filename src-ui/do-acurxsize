@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2019 Smithee Solutions LLC
-# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2019 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,8 +17,8 @@
 echo "Content-type: text/html"
 echo ""
 
-echo "<HTML><HEAD><TITLE>TEXT</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\"><HEAD>"
+echo "<HTML><HEAD><TITLE>ACURXSIZE</TITLE>"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-CP.html\"><HEAD>"
 echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
@@ -32,9 +31,9 @@ CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
 sudo -n rm -f ${CMDPATH}
 
 sudo -n echo  >${CMDPATH} "{"
-sudo -n echo >>${CMDPATH} "   \"command\" : \"text\"",
-sudo -n echo >>${CMDPATH} "  \"message\" : \"$1\"",
-sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-led from UI\""
+sudo -n echo >>${CMDPATH} "   \"command\" : \"acurxsize\"",
+sudo -n echo >>${CMDPATH} "  \"thing1message\" : \"1024\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-acurxsize from UI\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}
 

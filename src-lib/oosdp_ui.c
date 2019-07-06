@@ -64,6 +64,7 @@ int
   int processed;
   unsigned char sec_blk [1];
   int status;
+  unsigned char value [4];
 
 
   status = ST_CMD_UNKNOWN;
@@ -82,6 +83,26 @@ int
   {
     switch (command)
     {
+    case OSDP_CMDB_ACURXSIZE:
+      {
+        int max_size;
+
+        max_size = OSDP_BUF_MAX;
+        if (max_size > OSDP_OFFICIAL_MSG_MAX)
+          max_size = OSDP_OFFICIAL_MSG_MAX;
+        value [0] = 0x00ff & max_size;
+        value [1] = (0xff & max_size) >> 8;
+        current_length = 0;
+        status = send_message_ex(context, OSDP_ACURXSIZE, p_card.addr,
+          &current_length, 2, value,
+          OSDP_SEC_SCS_17, 0, NULL);
+        osdp_conformance.packet_size_from_acu.test_status =
+          OCONFORM_EXERCISED;
+        osdp_conformance.cmd_max_rec.test_status =
+          OCONFORM_EXERCISED;
+      };
+      break;
+
     case OSDP_CMDB_BUSY:
       context->next_response = OSDP_BUSY;
       if (context->verbosity > 2)

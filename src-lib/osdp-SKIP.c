@@ -26,8 +26,6 @@ void
     OCONFORM_SKIP;
   oconf->cmd_stop_multi.test_status =
     OCONFORM_SKIP;
-  oconf->cmd_max_rec.test_status =
-    OCONFORM_SKIP;
   oconf->control_2.test_status =
     OCONFORM_SKIP;
   oconf->ctl_seq.test_status = OCONFORM_SKIP;

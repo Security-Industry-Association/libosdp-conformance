@@ -65,33 +65,39 @@ Recent CP
   <TD><SPAN STYLE="background-color: #C0C0C0">send new on busy</SPAN></TD>
 <TD ALIGN="CENTER">2-5-1</TD>
   <TD>Multi-byte encoding [4]</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_6_1">
-  2-6-1</A></TD>
-  <TD>Packet size limit (send)</TD>
+<TD ALIGN="CENTER">-</TD><TD>-</TD>
 </TR>
 <TR>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-2</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  pkt limit pd to cp</SPAN></TD>
+<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_6_1">
+  2-6-1</A></TD>
+  <TD>Stress ACU to PD</TD>
+<TD ALIGN="CENTER">2-6-2</TD> <TD>Pkt size PD to ACU [4]</TD>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-3</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">
-  Stress size pd to cp</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-1</SPAN></TD>
+  Stress PD to ACU</SPAN></TD>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-4</SPAN></TD>
+  <TD><SPAN STYLE="background-color: #C0C0C0">
+  Stress PD to ACU</SPAN></TD>
+</TR>
+<TR>
+<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-1</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">
   timing</SPAN></TD>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-2</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">
   max delay</SPAN></TD>
-</TR>
-<TR>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-3</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">
   offline test</SPAN></TD>
+<TD ALIGN="CENTER">-</TD><TD>-</TD>
+</TR>
+<TR>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-8-1</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">
   synchronization</SPAN></TD>
 <TD ALIGN="CENTER">2-9-1</TD><TD>Packet format [4]</TD>
 <TD ALIGN="CENTER">2-10-1</TD><TD>SOM [4]</TD>
+<TD ALIGN="CENTER">-</TD><TD>-</TD>
 </TR>
 <TR>
 <TD ALIGN="CENTER">2-10-2</TD><TD>SOM sent [4]</TD>
@@ -241,9 +247,7 @@ Recent CP
 </TR>
 
 <TR>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-22-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Max msg CP accepts</SPAN></TD>
+  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-acurxsize">3-22-1</TD><TD>ACURXSIZE</TD>
   <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-transfer">3-23-1</TD>
     <TD>File Transfer</TD>
   <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-get-piv-cak-cert">3-24-1</TD>
@@ -315,9 +319,9 @@ Recent CP
     <TD><SPAN STYLE="background-color: #C0C0C0">
     Formatted Read</SPAN></TD>
   <TD ALIGN="CENTER">
-    4-11-1 [4]</TD>
+    4-11-1</TD>
     <TD>
-    Keypad</TD>
+    Keypad [4]</TD>
   <TD ALIGN="CENTER"><SPAN>4-12-1</SPAN></TD>
     <TD><SPAN>
     COM Report</SPAN></TD>

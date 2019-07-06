@@ -102,6 +102,8 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-6-3", &(osdp_conformance.packet_size_stress_cp.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
+    { "2-6-4", &(osdp_conformance.packet_size_from_acu.test_status),
+      1, 0, 0, 0, 0, "---"}, // stress PD to ACU
     { "2-7-1", &(osdp_conformance.timing.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-7-2", &(osdp_conformance.max_delay.test_status),
@@ -391,6 +393,9 @@ void
     conformance_status (oconf->packet_size_from_pd.test_status)));
   LOG_REPORT ((log_string,
 "2-6-3  Packet size stress CP              %s",
+    conformance_status (oconf->packet_size_stress_cp.test_status)));
+  LOG_REPORT ((log_string,
+"2-6-4  Stress PD to ACU                   %s",
     conformance_status (oconf->packet_size_stress_cp.test_status)));
   LOG_REPORT ((log_string,
 "2-7-1  Timing                             %s",

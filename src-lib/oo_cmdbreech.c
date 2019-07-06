@@ -132,6 +132,16 @@ int
   if (status EQUALS ST_OK)
     strcpy (current_command, json_string_value (value));
 
+  // command acurxsize.  Sends the proper value (as the ACU)
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp(current_command, "acurxsize"))
+    {
+      cmd->command = OSDP_CMDB_ACURXSIZE;
+    };
+  };
+
   // command busy
 
   if (status EQUALS ST_OK)

@@ -189,6 +189,7 @@
 #define OSDP_CMDB_POLLING        (1037)
 #define OSDP_CMDB_RESET          (1038)
 #define OSDP_CMDB_BIOREADER      (1039)
+#define OSDP_CMDB_ACURXSIZE      (1040)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
@@ -647,6 +648,8 @@ typedef struct osdp_parameters
 
 
 #define OSDP_BUF_MAX (8192)
+#define OSDP_OFFICIAL_MSG_MAX (1440)
+
 typedef struct osdp_buffer
 {
   unsigned char buf [OSDP_BUF_MAX];
