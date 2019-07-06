@@ -283,7 +283,7 @@ int
     // copy in the keyboard "buffer"
 
     fprintf (sf,
-"    \"keypad_last_8\" : \"%02x%02x- %02x%02x- %02x%02x- %02x%02x\",\n",
+"    \"keypad_last_8\" : \"%02x%02x-%02x%02x-%02x%02x-%02x%02x\",\n",
       ctx->last_keyboard_data [0], ctx->last_keyboard_data [1],
       ctx->last_keyboard_data [2], ctx->last_keyboard_data [3],
       ctx->last_keyboard_data [4], ctx->last_keyboard_data [5],
@@ -312,7 +312,7 @@ int
       ctx->xferctx.current_send_length);
 
     fprintf(sf,
-"    \"last_update_timeT\" : %ld,\n", current_time);
+"    \"last_update_timeT\" : \"%ld\",\n", current_time);
 
     fprintf(sf, "\"_#\" : \"_end\" ");
     fprintf (sf, "}\n");

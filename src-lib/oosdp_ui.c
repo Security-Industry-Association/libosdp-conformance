@@ -589,6 +589,11 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         }
         else
         {
+          if (context->verbosity > 3)
+          {
+            fprintf(context->log, "    osdp_ID, L=%ld V=%02x\n",
+              sizeof(param), param [0]);
+          };
           status = send_message_ex (context, OSDP_ID, p_card.addr,
             &current_length, sizeof (param), param,
             OSDP_SEC_SCS_17, 0, NULL);
