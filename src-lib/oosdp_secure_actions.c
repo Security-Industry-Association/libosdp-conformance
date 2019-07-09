@@ -253,27 +253,30 @@ int
 
 { /* action_osdp_KEYSET */
 
+  unsigned char *keyset_payload;
+  int new_key_length;
   int status;
 
 
   status = ST_OK;
+  keyset_payload = (unsigned char *)(msg->data_payload);
+  // new key type is ignored
 
-  if (ctx->verbosity > 3)
+  new_key_length = keyset_payload [1];
+  if (new_key_length != OSDP_KEY_OCTETS)
   {
-    fprintf(ctx->log, "*** STUB action_osdp_KEYSET ***\n");
-
-#if 0
-dump the payload ciphertext
-set up the key
-set up the iv
-decrypt
-identify actual length
-dump the cleartext
-#endif
+    fprintf(ctx->log,
+"Bad key (%d.) sent, using %d instead.\n", new_key_length, OSDP_KEY_OCTETS);
   };
+
+  memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
+  fprintf(ctx->log, "NEW KEY SET\n");
+  (void)oo_save_pd_parameters(ctx, "./osdp-saved-pd-parameters.json");
+
   return (status);
 
 } /* action_osdp_KEYSET */
+
 
 int
   action_osdp_RMAC_I

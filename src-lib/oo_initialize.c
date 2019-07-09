@@ -386,13 +386,24 @@ int
   memset (&osdp_buf, 0, sizeof (osdp_buf));
   context->current_menu = OSDP_MENU_TOP;
 
+    status = oo_load_pd_parameters(context, "./osdp-saved-pd-parameters.json");
+    if (status != 0)
+    {
+      fprintf(context->log, "Problem loading saved parameters (%d)\n", status);
+      status = 0;
+    }
+    {
+      fprintf(context->log, "Saved parameters loaded.\n");
+    };
+
+
   // we are ready to party.  "last was processed"
   context->last_was_processed = 1;
 
   }; // end lock file not found
 
   if (status EQUALS ST_OK)
-    status = write_status (context);
+    status = oo_write_status (context);
   return (status);
 
 } /* initialize_osdp */

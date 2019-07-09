@@ -745,7 +745,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
               int compliance;
               char tstr2 [1024];
               compliance = *(i+1+msg->data_payload);
-              strcpy (tstr2, "Compliance=?");
+              sprintf(tstr2, "?(0x%x)", compliance);
               if (compliance == 1) strcpy (tstr2, "On/Off Only");
               if (compliance == 2) strcpy (tstr2, "Timed");
               if (compliance == 3) strcpy (tstr2, "Timed, Bi-color");

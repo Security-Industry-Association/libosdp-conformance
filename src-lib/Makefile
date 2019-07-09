@@ -107,20 +107,16 @@ oosdp_prims.o:	oosdp_prims.c /opt/osdp-conformance/include/open-osdp.h
 	${CC} ${CFLAGS} oosdp_prims.c
 
 oosdp_secure.o:	oosdp_secure.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oosdp_secure.c
+	${CC} ${CFLAGS} oosdp_secure.c
 
 oosdp_secure_actions.o:	oosdp_secure_actions.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oosdp_secure_actions.c
+	${CC} ${CFLAGS} oosdp_secure_actions.c
 
 oosdp_ui.o:	oosdp_ui.c ../include/open-osdp.h ../include/iec-xwrite.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oosdp_ui.c
+	${CC} ${CFLAGS} oosdp_ui.c
 
 osdp-api.o:	osdp-api.c ../include/osdp-tls.h ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  osdp-api.c
+	${CC} ${CFLAGS} osdp-api.c
 
 /opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
 	cp ../include/open-osdp.h /opt/osdp-conformance/include

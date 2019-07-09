@@ -479,7 +479,7 @@ int
           {
             // if timer 0 expired dump the status
             if (context.timer[OSDP_TIMER_STATISTICS].status EQUALS OSDP_TIMER_RESTARTED)
-              status = write_status (&context);
+              status = oo_write_status (&context);
 
             // if "the timer" went off, do the background process
 

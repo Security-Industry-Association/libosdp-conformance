@@ -579,7 +579,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
       };
 #endif
       {
-        status = write_status (context);
+        status = oo_write_status (context);
 
         dump_conformance (context, &osdp_conformance);
         status = ST_OK;

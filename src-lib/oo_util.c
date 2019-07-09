@@ -1682,6 +1682,9 @@ int
             14,0,0  // no biometric
             };
 
+         // for any kind of secure channel enablement set the PDCAP values
+         // "we always support SCBK-D"
+
          if (context->enable_secure_channel > 0)
          {
            // if enabled say AES128 support and SCBK-D support

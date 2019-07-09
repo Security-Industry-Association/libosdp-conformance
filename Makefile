@@ -31,7 +31,7 @@ osdp-tls:	release
 	(cd src-tls; make build; cd ..)
 	(cd src-ui; make build-tls; cd ..)
 	rm -f release-osdp-conformance.tgz
-	tar czvf release-osdp-conformance.tgz opt/*
+	tar czf release-osdp-conformance.tgz opt/*
 
 clean:
 	(cd src-lib; make clean; cd ..)
@@ -59,5 +59,5 @@ build:	all
 	(cd test; make build-test; cd ..)
 
 release:	build
-	tar czvf release-osdp-conformance.tgz opt/*
+	tar czf release-osdp-conformance.tgz opt/*
 

@@ -59,19 +59,19 @@ int
   i = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
     (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
 
-  sprintf (logmsg, "COMSET Data Payload %02x %02x%02x%02x%02x %d. 0x%x",
-          *(0+msg->data_payload), *(1+msg->data_payload),
-          *(2+msg->data_payload), *(3+msg->data_payload),
-          *(4+msg->data_payload), i, i);
-        fprintf (ctx->log, "%s\n", logmsg);
+  sprintf(logmsg, "COMSET Data Payload %02x %02x%02x%02x%02x %d. 0x%x",
+    *(0+msg->data_payload), *(1+msg->data_payload),
+    *(2+msg->data_payload), *(3+msg->data_payload),
+    *(4+msg->data_payload), i, i);
+  fprintf(ctx->log, "%s\n", logmsg);
 
   p_card.addr = *(msg->data_payload); // first byte is new PD addr
   fprintf (ctx->log, "PD Address set to %02x\n", p_card.addr);
 
   osdp_com_response_data [0] = p_card.addr;
-        *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
-        status = ST_OK;
-        current_length = 0;
+  *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
+  status = ST_OK;
+  current_length = 0;
         status = send_message_ex (ctx, OSDP_COM, p_card.addr,
           &current_length, sizeof (osdp_com_response_data), osdp_com_response_data,
           OSDP_SEC_SCS_18, 0, NULL);
@@ -82,15 +82,16 @@ int
   };
   if (status EQUALS ST_OK)
   {
-          ctx->new_address = p_card.addr;
-          sprintf(ctx->serial_speed, "%d", i);
+    ctx->new_address = p_card.addr;
+    sprintf(ctx->serial_speed, "%d", i);
 
-fprintf(stderr, "comset to addr %02x speed %s\n",
-  p_card.addr, ctx->serial_speed);
-  if (ctx->verbosity > 2)
-    fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",
+    fprintf(ctx->log, "comset to addr %02x speed %s\n",
       p_card.addr, ctx->serial_speed);
-  status = init_serial (ctx, p_card.filename);
+    if (ctx->verbosity > 2)
+      fprintf(ctx->log, "OSDP_COMSET received, setting addr to %02x speed to %s.\n",
+        p_card.addr, ctx->serial_speed);
+    (void)oo_save_pd_parameters(ctx, "./osdp-saved-pd-parameters.json");
+    status = init_serial (ctx, p_card.filename);
   };
   return (status);
 
@@ -199,7 +200,7 @@ fprintf(stderr, "response mmax %02x %02x\n",
 
   // update status json
   if (status EQUALS ST_OK)
-    status = write_status (ctx);
+    status = oo_write_status (ctx);
   return (status);
 
 } /* action_osdp_FILETRANSFER */
@@ -261,7 +262,7 @@ fprintf(stderr, "t=%d o=%d\n",
   };
   };
   if (status EQUALS ST_OK)
-    status = write_status (ctx);
+    status = oo_write_status (ctx);
   return (status);
 
 } /* action_osdp_FTSTAT */
@@ -797,7 +798,7 @@ int
 
   // update status json
   if (status EQUALS ST_OK)
-    status = write_status (ctx);
+    status = oo_write_status (ctx);
 
   return (status);
 
@@ -857,7 +858,7 @@ int
         octets = sizeof (ctx->last_raw_read_data);
       memcpy (ctx->last_raw_read_data, raw_data, octets);
   };
-      status = write_status (ctx);
+      status = oo_write_status (ctx);
       if (bits EQUALS 26)
       {
 int idx;

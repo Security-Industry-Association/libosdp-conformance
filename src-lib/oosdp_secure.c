@@ -969,6 +969,8 @@ int
     if (ctx->enable_secure_channel EQUALS 1)
       if (ctx->secure_channel_use [OO_SCU_KEYED] != OO_SECPOL_KEYLOADED)
         status = ST_OSDP_NO_SCBK;
+    if (ctx->enable_secure_channel > 0)
+      dump_buffer_log(ctx, "Current SCBK:", ctx->current_scbk, sizeof(ctx->current_scbk));
   };
   return (status);
 

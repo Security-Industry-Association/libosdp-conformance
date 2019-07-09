@@ -378,11 +378,11 @@ if (i != OSDP_TIMER_RESPONSE)
    
 
 int
-  parse_json
+  oo_parse_config_parameters
     (OSDP_CONTEXT
       *ctx)
 
-{ /* parse_json */
+{ /* oo_parse_config_parameters */
 
   FILE *cmdf;
   char field [1024];
@@ -896,7 +896,7 @@ fprintf (stderr, "processing value %s\n",
 
   return (status);
 
-} /* parse_json */
+} /* oo_parse_config_parameters */
 
 
 int
@@ -914,7 +914,7 @@ int
   ctx->cparm = PARAMETER_NONE;
   ctx->cparm_v = PARMV_NONE;
 
-  status = parse_json (ctx);
+  status = oo_parse_config_parameters(ctx);
 //  status = parse_xml (test_buffer, sizeof (test_buffer));
 
   if (p_card.value_len EQUALS 26)
@@ -1017,8 +1017,9 @@ int
   param [4] = (new_speed & 0xff000000) >> 24;
   current_length = 0;
   osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
-  status = send_message (ctx,
-    OSDP_COMSET, pd_address, &current_length, sizeof (param), param);
+  status = send_message_ex(ctx, OSDP_COMSET, pd_address, &current_length,
+    sizeof(param), param, OSDP_SEC_SCS_17, 0, NULL);
+
   sprintf (ctx->serial_speed, "%d", new_speed);
   if (ctx->verbosity > 2)
     fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",

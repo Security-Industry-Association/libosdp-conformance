@@ -414,7 +414,7 @@ typedef struct osdp_context
   int process_lock; // file handle to exclusivity lock
   // configuration
   int disable_certificate_checking;
-  int enable_secure_channel; // 1=yes, 2=yes and use default
+  int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled
   int enable_poll; // usuall 1 for enable, 0=disable
   char fqdn [1024];
   char log_path [1024];
@@ -980,6 +980,9 @@ int next_sequence (OSDP_CONTEXT *ctx);
 int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
+int oo_load_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
+int oo_save_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
+int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
 int osdp_awaiting_response(OSDP_CONTEXT *ctx);
@@ -1060,5 +1063,4 @@ int send_secure_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int sec_blk_lth, unsigned char *sec_blk);
 void signal_callback_handler (int signum);
 unsigned short int fCrcBlk (unsigned char *pData, unsigned short int nLength);
-int write_status (OSDP_CONTEXT *ctx);
 

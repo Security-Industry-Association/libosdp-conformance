@@ -169,7 +169,70 @@ void
 
 
 int
-  write_status
+  oo_load_pd_parameters
+    (OSDP_CONTEXT *ctx,
+    char *filename)
+
+{ /* oo_load_pd_parameters */
+
+  fprintf(ctx->log, "STUB: loading PD parameters...\n");
+  return(ST_OK);
+
+} /* oo_load_pd_parameters */
+
+
+int
+  oo_save_pd_parameters
+    (OSDP_CONTEXT *ctx,
+    char *filename)
+
+{ /* oo_save_pd_parameters */
+
+  int i;
+  FILE *pf;
+  char tlogmsg [2*1024];
+  char tlogmsg2 [1024];
+
+
+  tlogmsg[0] = 0;
+  fprintf(ctx->log, "STUB: saving PD parameters...\n");
+  for (i=0; i<OSDP_KEY_OCTETS; i++)
+  {
+    sprintf(tlogmsg2, "%02x", ctx->current_scbk [i]);
+    if ((OSDP_KEY_OCTETS-1) != i)
+    {
+      if (3 EQUALS ((1+i) % 4))
+        strcat(tlogmsg, "-");
+      else
+      {
+        if (1 EQUALS ((1+i) % 2))
+          strcat(tlogmsg, ":");
+      };
+    };
+    strcat(tlogmsg, tlogmsg2);
+  };
+  fprintf(ctx->log, "  Saving key=%s\n", tlogmsg);
+  pf = fopen(filename, "w");
+  if (pf != NULL)
+  {
+    fprintf(pf, "{\n  \"key\" : \"");
+
+    // warning assumes key is last, no trailing comma
+
+    for (i=0; i<OSDP_KEY_OCTETS; i++)
+    {
+      fprintf(pf, "%02x", ctx->current_scbk [i]);
+    };
+    fprintf(pf, "\"\n}\n");
+    fclose(pf);
+  };
+  return(ST_OK);
+
+} /* oo_save_pd_parameters */
+
+
+int
+  oo_write_status
     (OSDP_CONTEXT
       *ctx)
 
@@ -325,5 +388,5 @@ int
   };
   return (status);
 
-} /* write_status */
+} /* oo_write_status */
 
