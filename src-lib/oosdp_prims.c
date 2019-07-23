@@ -14,6 +14,44 @@ extern OSDP_PARAMETERS
   p_card;
 
 
+char *
+  oo_lookup_nak_text
+    (int nak_code)
+
+{ /* oo_lookup_nak_text */
+
+  char *nak_text;
+
+
+  switch(nak_code)
+  {
+  default:
+    nak_text = "Unknown code";
+    break;
+  case OO_NAK_CHECK_CRC:
+    nak_text = "Message check";
+    break;
+  case OO_NAK_CMD_UNABLE:
+    nak_text = "Unable to process command";
+    break;
+  case OO_NAK_ENCRYPTION_REQUIRED:
+    nak_text = "Encrypted communications required";
+    break;
+  case OO_NAK_SEQUENCE:
+    nak_text = "Unexpected sequence number";
+    break;
+  case OO_NAK_UNK_CMD:
+    nak_text = "Unknown command";
+    break;
+  case OO_NAK_UNSUP_SECBLK:
+    nak_text = "Unsupported security block";
+    break;
+//2 7 8
+  };
+  return(nak_text);
+
+} /* oo_lookup_nak_text */
+
 void
   osdp_array_to_doubleByte
     (unsigned char a [2],

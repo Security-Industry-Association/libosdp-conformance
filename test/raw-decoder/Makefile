@@ -5,7 +5,7 @@ CGI_PROGS=osdp-decode osdp-packet-decode
 CC=clang
 OSDPLIB=../../opt/osdp-conformance/lib
 OSDPINCLUDE=../../include
-CFLAGS=-c -g -I${OSDPINCLUDE} -I/opt/tester/include -Wall -Werror
+CFLAGS=-c -g -I${OSDPINCLUDE} -I/opt/osdp-conformance/include -Wall -Werror
 LINK=clang
 LDFLAGS=-g /opt/osdp-conformance/lib/aes.o -L ${OSDPLIB} -l osdp -ljansson
 

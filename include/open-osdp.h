@@ -135,12 +135,12 @@
 #define OSDP_XRD      (0xB1)
 
 // NAK error codes
-#define OO_NAK_CHECK_CRC  (1)
-#define OO_NAK_UNK_CMD    (3)
-#define OO_NAK_SEQUENCE   (4)
-#define OO_NAK_UNSUP_SECBLK (5)
+#define OO_NAK_CHECK_CRC           (1)
+#define OO_NAK_UNK_CMD             (3)
+#define OO_NAK_SEQUENCE            (4)
+#define OO_NAK_UNSUP_SECBLK        (5)
 #define OO_NAK_ENCRYPTION_REQUIRED (6)
-#define OO_NAK_CMD_UNABLE (9)
+#define OO_NAK_CMD_UNABLE          (9)
 
 #define OSDP_MENU_TOP     (0x0000)
 #define OSDP_MENU_CP_DIAG (0x0100)
@@ -981,6 +981,7 @@ int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
 int oo_load_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
+char * oo_lookup_nak_text(int nak_code);
 int oo_save_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);

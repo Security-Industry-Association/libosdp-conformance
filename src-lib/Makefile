@@ -92,16 +92,13 @@ oosdp_conformance.o:	oosdp_conformance.c osdp-SKIP.c
 	  oosdp_conformance.c
 
 oosdp_crc.o:	oosdp_crc.c
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oosdp_crc.c
+	${CC} ${CFLAGS} oosdp_crc.c
 
 oosdp_files.o:	oosdp_files.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oosdp_files.c
+	${CC} ${CFLAGS} oosdp_files.c
 
 oosdp_logmsg.o:	oosdp_logmsg.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oosdp_logmsg.c
+	${CC} ${CFLAGS} oosdp_logmsg.c
 
 oosdp_prims.o:	oosdp_prims.c /opt/osdp-conformance/include/open-osdp.h
 	${CC} ${CFLAGS} oosdp_prims.c
