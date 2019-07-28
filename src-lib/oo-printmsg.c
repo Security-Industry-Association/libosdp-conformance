@@ -198,10 +198,16 @@ int
 
   status = ST_OK;
   oh = (OSDP_HDR *)(osdp_msg->ptr);
-  sprintf (filename, 
-    "/opt/osdp-conformance/run/CP/ident_from_PD%02x.json",
-    (0x7f&oh->addr));
-  identf = fopen (filename, "w");
+  if (osdp_msg->security_block_length > 0)
+  {
+    strcat(tlogmsg, "  (PDID message contents encrypted)\n");
+  };
+  if ((osdp_msg->security_block_length EQUALS 0) || (osdp_msg->payload_decrypted))
+  {
+    sprintf (filename, 
+      "/opt/osdp-conformance/run/CP/ident_from_PD%02x.json",
+      (0x7f&oh->addr));
+    identf = fopen (filename, "w");
   if (identf != NULL)
   {
     fprintf (identf, "{\n");
@@ -222,13 +228,14 @@ int
     fclose (identf);
   };
   sprintf (tlogmsg, 
-"  PD Identification\n    OUI %02x-%02x-%02x Model %d Ver %d SN %02x%02x%02x%02x FW %d.%d Build %d\n",
+"  PD Identification: OUI %02x-%02x-%02x Model %d Ver %d SN %02x%02x%02x%02x FW %d.%d Build %d\n",
      *(osdp_msg->data_payload + 0), *(osdp_msg->data_payload + 1),
      *(osdp_msg->data_payload + 2), *(osdp_msg->data_payload + 3),
      *(osdp_msg->data_payload + 4), *(osdp_msg->data_payload + 5),
      *(osdp_msg->data_payload + 6), *(osdp_msg->data_payload + 7),
      *(osdp_msg->data_payload + 8), *(osdp_msg->data_payload + 9),
      *(osdp_msg->data_payload + 10), *(osdp_msg->data_payload + 11));
+  };
 
   return(status);
 
@@ -286,7 +293,7 @@ int
 
     bits = *(osdp_msg->data_payload+2) + ((*(osdp_msg->data_payload+3))<<8);
     sprintf(tlogmsg,
-      "Raw data: Format %s (Reader %d) %d bits (%d bytes in payload)\n",
+      "  Raw card: Format %s (Reader %d) %d bits (%d bytes in payload)\n",
       raw_fmt, *(osdp_msg->data_payload+0), bits, count);
 
     hstr [0] = 0;
@@ -296,7 +303,7 @@ int
       sprintf(tstr, "%02x", d);
       strcat(hstr, tstr);
     };
-    sprintf(tstr, "  RAW CARD DATA %s\n", hstr);
+    sprintf(tstr, "  Card data: %s\n", hstr);
     strcat(tlogmsg, tstr);
   };
 

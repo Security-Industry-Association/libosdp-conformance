@@ -209,9 +209,9 @@ int
         omfg.command_id = 1;
         omfg.data = 0xff;
         current_length = 0;
-        status = send_message (context,
-          OSDP_MFG, p_card.addr, &current_length, sizeof(omfg),
-          (unsigned char *)&omfg);
+        status = send_message_ex(context, OSDP_MFG, p_card.addr,
+          &current_length, sizeof(omfg), (unsigned char *)&omfg,
+          OSDP_SEC_SCS_17, 0, NULL);
         if (status EQUALS ST_OK)
           SET_PASS (context, "3-20-1");
         status = ST_OK;

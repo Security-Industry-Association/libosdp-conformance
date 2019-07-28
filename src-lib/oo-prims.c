@@ -14,6 +14,24 @@ extern OSDP_PARAMETERS
   p_card;
 
 
+void
+  dump_buffer_stderr
+    (char * tag, unsigned char *b, int l)
+
+{
+  int i;
+  int l2;
+
+  l2 = l;
+  fprintf(stderr, "%s (L=%d.)", tag, l);
+  if (l2 > 48) l2 = 48;
+  for (i=0; i<l2; i++)
+    fprintf(stderr, " %02x", b [i]);
+  fprintf(stderr, "\n");
+  fflush(stderr);
+}
+
+
 char *
   oo_lookup_nak_text
     (int nak_code)
@@ -51,6 +69,26 @@ char *
   return(nak_text);
 
 } /* oo_lookup_nak_text */
+
+unsigned char
+  oo_response_address
+    (OSDP_CONTEXT *ctx,
+    unsigned char from_address)
+
+{ /* oo_response_address */
+
+  int ret_addr;
+
+  ret_addr = 0;
+  if (from_address != OSDP_CONFIGURATION_ADDRESS)
+    ret_addr = from_address;
+  else
+  {
+    ret_addr = OSDP_CONFIGURATION_ADDRESS;
+  };
+  return(ret_addr);
+
+} /* oo_response_address */
 
 void
   osdp_array_to_doubleByte
@@ -495,19 +533,4 @@ void dump_buffer_log
   fflush(ctx->log);
 
 } /* dump_buffer_log */
-
-
-void dump_buffer_stderr (char * tag, unsigned char *b, int l)
-{
-  int i;
-  int l2;
-
-  l2 = l;
-  fprintf(stderr, "%s (L=%d.)", tag, l);
-  if (l2 > 48) l2 = 48;
-  for (i=0; i<l2; i++)
-    fprintf(stderr, " %02x", b [i]);
-  fprintf(stderr, "\n");
-  fflush(stderr);
-}
 

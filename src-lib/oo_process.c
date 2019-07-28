@@ -67,9 +67,6 @@ int
     unsigned char osdp_nak_response [2];
     int send_response;
 
-// DEBUG
-fprintf(stderr, "process_osdp_input detected bad parse, NAK-ing...status=%d role=%d\n",
-  status, context.role);
     send_response = 0;
     if (context.role != OSDP_ROLE_MONITOR)
     {

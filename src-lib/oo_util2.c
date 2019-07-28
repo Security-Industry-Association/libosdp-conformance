@@ -536,8 +536,6 @@ int
     strcpy (vstr, json_string_value (value));
     if (0 EQUALS strcmp (vstr, "DEFAULT"))
     {
-      fprintf(ctx->log,
-        "Configuration: Secure Channel Enabled, SCBK-D Enabled\n");
       ctx->enable_secure_channel = 2;
     };
   }; 

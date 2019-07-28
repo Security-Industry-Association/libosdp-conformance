@@ -666,7 +666,6 @@ int
 
 { /* osdp_parse_message */
 
-  char check_value [1024];
   int display;
   int hashable_length;
   int i;
@@ -1298,19 +1297,16 @@ if (status != ST_OK)
 
       sprintf (log_line, "  Message: %s %s", cmd_rep_tag, tlogmsg);
 
-      // "Chk/CRC" is either 1 byte or 2 depending on Checksum or CRC used
-      sprintf(check_value, "CRC %04x", wire_crc);
-      if (m->check_size != 2)
-        sprintf(check_value, "Checksum %02x", wire_cksum);
-
       {
         char scb_tag[1024];
         strcpy(scb_tag, "");
         if (msg_scb)
           strcpy(scb_tag, "Sec block present;");
 
-        sprintf (tlogmsg2, " A:%02x S:%02x Ck %x %s %s",
-          (0x7F & p->addr), msg_sqn, msg_check_type, scb_tag, check_value);
+        sprintf (tlogmsg2, " A:%02x Lth:%d. S:%02x Ck %x %s",
+          (0x7F & p->addr), (p->len_msb)*256+(p->len_lsb),
+          msg_sqn, msg_check_type, scb_tag);
+
       };
       strcat (log_line, tlogmsg2);
       if (((returned_hdr->command != OSDP_POLL) &&
@@ -1332,7 +1328,7 @@ if (status != ST_OK)
     context->packets_received ++;
 
     if (context->role EQUALS OSDP_ROLE_PD)
-      if ((p_card.addr != (0x7f & p->addr)) && (p->addr != 0x7f))
+      if ((p_card.addr != (0x7f & p->addr)) && (p->addr != OSDP_CONFIGURATION_ADDRESS))
       {
         if (context->verbosity > 3)
           fprintf (stderr, "addr mismatch for: %02x me: %02x\n",
@@ -1391,13 +1387,6 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
-#if 0
-    case OSDP_BUZ:
-      status = oosdp_make_message (OOSDP_MSG_BUZ, tlogmsg, msg);
-      if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      break;
-#endif
     case OSDP_CHLNG:
       status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
       if (status == ST_OK)
@@ -1607,10 +1596,34 @@ int
     this_command = msg->msg_cmd;
     if (context->next_nak)
       this_command = OSDP_BOGUS;
+    if (oh->addr EQUALS OSDP_CONFIGURATION_ADDRESS)
+    {
+      if ((this_command != OSDP_ID) && (this_command != OSDP_CAP) && (this_command != OSDP_COM))
+      {
+        this_command = OSDP_ILLICIT;
+      };
+    };
     (void)monitor_osdp_message (context, msg);
 
     switch (this_command)
     {
+    case OSDP_ACURXSIZE:
+      context->max_acu_receive = 
+        (*(msg->data_payload + 1) * 256) + *(msg->data_payload + 0);
+
+      sprintf (logmsg, "  ACU Receive Buffer %d. bytes\n",
+        context->max_acu_receive);
+      fprintf (context->log, "%s", logmsg);
+      logmsg[0]=0;
+      osdp_conformance.cmd_max_rec.test_status =
+        OCONFORM_EXERCISED;
+      current_length = 0;
+      current_security = OSDP_SEC_SCS_15;
+      status = send_message_ex(context, OSDP_ACK, p_card.addr,
+        &current_length, 0, NULL, current_security, 0, NULL);
+      context->pd_acks ++;
+      break;
+
     case OSDP_BIOREAD:
       sprintf (logmsg, "BIOREAD rdr=%02x type=%02x format=%02x quality=%02x\n",
           *(msg->data_payload + 0), *(msg->data_payload + 1),
@@ -1750,7 +1763,7 @@ int
 
         if (msg->security_block_length EQUALS 0)
           current_security = OSDP_SEC_STAND_DOWN;
-        status = send_message_ex(context, OSDP_PDID, p_card.addr,
+        status = send_message_ex(context, OSDP_PDID, oo_response_address(context, oh->addr),
           &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
         osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
         osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
@@ -1913,25 +1926,38 @@ fprintf(stderr, "lstat 1684\n");
       status = action_osdp_TEXT (context, msg);
       break;
 
+    case OSDP_ILLICIT:
+      {
+        osdp_nak_response_data [0] = 0xe0;
+        status = send_message_ex(context, OSDP_NAK, p_card.addr,
+          &current_length, 1, osdp_nak_response_data, OSDP_SEC_SCS_18, 0, NULL);
+        context->sent_naks ++;
+      };
+      break;
+
     case OSDP_BOGUS:
     default:
       status = ST_OK;
       {
-        unsigned char
-          osdp_nak_response_data [2];
+        int nak_length;
+        unsigned char osdp_nak_response_data [2];
+
+        nak_length = 1;
         current_length = 0;
         osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
         osdp_nak_response_data [1] = 0xff;
+        nak_length = 2;
  
         // if it was an induced NAK then call it error code 0xff and detail 0xee
         if (context->next_nak)
         {
           osdp_nak_response_data [0] = 0xff;
           osdp_nak_response_data [1] = 0xee;
+          nak_length = 2;
         };
 
         status = send_message (context,
-          OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
+          OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
         osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
         if (context->verbosity > 2)

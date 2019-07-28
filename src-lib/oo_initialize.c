@@ -318,8 +318,10 @@ int
       "%s (Rcvd Frame %6d)", logmsg, context->packets_received);
   };
 
-  fprintf (context->log, "Verbosity set to %d.\n",
-    context->verbosity);
+  fprintf (context->log, "Verbosity %d. Device %s Address %2d Speed %s\n",
+    context->verbosity, p_card.filename, p_card.addr, "?");
+
+  if (context->role != OSDP_ROLE_MONITOR)
   {
     int idx;
     char logmsg [2*1024]; // 'cause filename could be that long...
@@ -348,7 +350,10 @@ int
     };
     fprintf (stderr, "%s\n", logmsg);
     fprintf (context->log, "%s\n", logmsg);
-  };
+
+  
+  memset (&osdp_buf, 0, sizeof (osdp_buf));
+  context->current_menu = OSDP_MENU_TOP;
 
   if (status EQUALS ST_OK)
   {
@@ -382,9 +387,6 @@ int
       status = ST_OK;
     };
   };
-  
-  memset (&osdp_buf, 0, sizeof (osdp_buf));
-  context->current_menu = OSDP_MENU_TOP;
 
     status = oo_load_pd_parameters(context, "./osdp-saved-pd-parameters.json");
     if (status != 0)
@@ -395,6 +397,7 @@ int
     {
       fprintf(context->log, "Saved parameters loaded.\n");
     };
+  }; // NOT monitor mode
 
 
   // we are ready to party.  "last was processed"

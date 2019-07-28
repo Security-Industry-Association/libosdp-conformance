@@ -29,8 +29,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (44)
-#define OSDP_VERSION_BUILD ( 8)
+#define OSDP_VERSION_MINOR (45)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 
@@ -114,6 +114,7 @@
 #define OSDP_XWR          (0xA1)
 #define OSDP_KEEPACTIVE   (0xA7)
 #define OSDP_BOGUS        (0xFF) // bogus command code to induce NAK
+#define OSDP_ILLICIT      (0x00)
 
 #define OSDP_ACK      (0x40)
 #define OSDP_NAK      (0x41)
@@ -443,6 +444,8 @@ typedef struct osdp_context
   unsigned char this_message_addr;
   unsigned char MFG_oui [3];
   int last_was_processed;
+  int max_message; // max message from PD, if set
+  int max_acu_receive;
 
   // OSDP protocol context
   char last_command_sent;
@@ -507,8 +510,6 @@ typedef struct osdp_context
   unsigned char serial_number [4];
   unsigned char fw_version [3]; //major minor build
 
-  int
-    max_message; // max message from PD, if set
 
   // for multipart messages, in or out
   char
@@ -982,6 +983,7 @@ int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
 int oo_load_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
+unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);

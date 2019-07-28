@@ -122,6 +122,7 @@ int
       strcpy (context.init_parameters_path, argv [1]);
     };
     fprintf(stderr, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
+fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
     status = initialize_osdp (&context);
   };
 

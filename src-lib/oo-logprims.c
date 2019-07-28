@@ -38,23 +38,37 @@ int
 
 { /* osdp_message_header_print */
 
+  int msg_data_length;
   OSDP_HDR *osdp_wire_message;
   int scb_present;
   char *sec_block;
   char sec_block_decoded [1024];
   int status;
   char tmpstr2 [1024];
+  unsigned short int wire_cksum;
+  unsigned short int wire_crc;
 
 
   status = ST_OK;
+  tlogmsg [0] = 0;
   // dump as named in the IEC spec
   osdp_wire_message = (OSDP_HDR *)(msg->ptr); // actual message off the wire
-  sprintf(tmpstr2, " SOM ADDR=%02x LEN_LSB=%02x LEN_MSB=%02x",
+  sprintf(tmpstr2, "  SOM ADDR=%02x LEN_LSB=%02x LEN_MSB=%02x",
     osdp_wire_message->addr, osdp_wire_message->len_lsb,
     osdp_wire_message->len_msb);
   strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
   sprintf(tmpstr2, " CTRL=%02x", osdp_wire_message->ctrl);
   strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+
+  // "Chk/CRC" is either 1 byte or 2 depending on Checksum or CRC used
+  wire_crc = *(1+msg->crc_check) << 8 | *(msg->crc_check);
+  msg_data_length = osdp_wire_message->len_lsb + (osdp_wire_message->len_msb << 8);
+  wire_cksum = *(msg->cmd_payload + 2 + msg_data_length);
+  sprintf(tmpstr2, " CRC=%04x", wire_crc);
+  if (msg->check_size != 2)
+    sprintf(tmpstr2, " Checksum=%02x", wire_cksum);
+  strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+
   if (osdp_wire_message->ctrl & 0x08)
   {
     scb_present = 1;
