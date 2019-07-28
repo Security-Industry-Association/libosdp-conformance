@@ -427,6 +427,8 @@ int
       OSDP_MFG_HEADER *mrep;
       int process_as_special;
 
+      if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
+      {
       memset(tlogmsg, 0, sizeof(tlogmsg));
       process_as_special = 0;
       msg = (OSDP_MSG *) aux;
@@ -514,6 +516,12 @@ int
       if (count > 0)
       {
         dump_buffer_log(&context, "  Raw(MFG): ", &(mrep->data), count);
+      };
+      }
+      else
+      {
+        sprintf(tlogmsg,
+          "  (MFG message contents encrypted)\n");
       };
     };
     break;
@@ -607,6 +615,8 @@ int
       char nak_detail_text [1024];
       char tmpmsg2 [2*1024];
 
+      if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
+      {
       msg = (OSDP_MSG *) aux;
       nak_code = *(0+msg->data_payload);
       // it's 1 if just a nak code and more if there is nak 'data'
@@ -614,13 +624,18 @@ int
       sprintf(tmpmsg2, " (%s)", nak_detail_text);
       if (msg->data_length > 1)
       {
-        sprintf (tlogmsg, "NAK: Error Code %02x%s Data %02x\n",
+        sprintf(tlogmsg, "  NAK: Error Code %02x%s Data %02x\n",
           *(0+msg->data_payload), tmpmsg2, *(1+msg->data_payload));
       }
       else
       {
         sprintf (tlogmsg, "NAK: Error Code %02x%s\n",
           *(0+msg->data_payload), tmpmsg2);
+      };
+      }
+      else
+      {
+        sprintf(tlogmsg, "  NAK: (Details encrypted)\n");
       };
     };
     break;

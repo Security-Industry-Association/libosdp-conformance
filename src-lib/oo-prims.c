@@ -238,7 +238,7 @@ char
   {
     switch (cmdrep)
     {
-    default: strcpy(cmd_rep_s, "???1"); break;
+    default: sprintf(cmd_rep_s, "???1(%02x)", cmdrep); break;
     case OSDP_ACURXSIZE: strcpy(cmd_rep_s, "osdp_ACURXSIZE"); break;
     case OSDP_BIOREAD:   strcpy(cmd_rep_s, "osdp_BIOREAD"); break;
     case OSDP_BUZ:       strcpy(cmd_rep_s, "osdp_BUZ"); break;

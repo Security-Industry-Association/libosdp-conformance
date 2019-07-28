@@ -634,16 +634,20 @@ int
       *padding = *padded_length - data_length;
     };
   };
-// DEBUG
-dump_buffer_log(ctx, "payload cleartext with padding:",
-  enc_buf, *padded_length);
+  if (ctx->verbosity > 3)
+  {
+    dump_buffer_log(ctx, "payload cleartext with padding:",
+      enc_buf, *padded_length);
+  };
   // do encryption.  key is s-enc; iv is inverse of last rec mac
   memcpy(encrypt_iv, ctx->last_calculated_in_mac, OSDP_KEY_OCTETS);
   for(i=0; i<OSDP_KEY_OCTETS; i++)
     encrypt_iv [i] = ~encrypt_iv [i];
-// DEBUG
-dump_buffer_log(ctx, "iv(inverted):", encrypt_iv, OSDP_KEY_OCTETS);
-dump_buffer_log(ctx, "s_enc:", ctx->s_enc, OSDP_KEY_OCTETS);
+  if (ctx->verbosity > 3)
+  {
+    dump_buffer_log(ctx, "iv(inverted):", encrypt_iv, OSDP_KEY_OCTETS);
+    dump_buffer_log(ctx, "s_enc:", ctx->s_enc, OSDP_KEY_OCTETS);
+  };
   AES_init_ctx (&aes_context_encrypt, ctx->s_enc);
   AES_ctx_set_iv (&aes_context_encrypt, encrypt_iv);
   AES_CBC_encrypt_buffer(&aes_context_encrypt, enc_buf, *padded_length);
