@@ -176,6 +176,8 @@ int
     status = ST_CMD_UNKNOWN;
     if (0 EQUALS strcmp(command, "bio_read"))
       ret_cmd = OSDP_CMDB_BIOREAD;
+    if (0 EQUALS strcmp(command, "factory-default"))
+      ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
     if (0 EQUALS strcmp(command, "polling"))
       ret_cmd = OSDP_CMDB_POLLING;
     if (0 EQUALS strcmp(command, "reset"))

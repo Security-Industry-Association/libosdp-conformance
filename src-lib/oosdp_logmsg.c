@@ -166,12 +166,15 @@ int
   {
   case OOSDP_MSG_ACURXSIZE:
     {
-    int c;
+      int c;
 
-    msg = (OSDP_MSG *) aux;
-    c = msg->data_payload [0];
-    c = 256*c + msg->data_payload [1];
-    sprintf(tlogmsg, "ACU Receive Size: %0x\n", c);
+      msg = (OSDP_MSG *) aux;
+
+      // per spec it is lsb/msb
+
+      c = msg->data_payload [0];
+      c = 256*c + msg->data_payload [1];
+      sprintf(tlogmsg, "ACU Receive Size: %0x\n", c);
     };
     break;
 

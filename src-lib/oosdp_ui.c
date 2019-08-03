@@ -922,29 +922,3 @@ fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
 
 } /* process_command */
 
-
-int
-  usage
-    (void)
-
-{ /* usage */
-
-  int
-    status;
-
-  status = -3;
-  printf ("Usage:\n");
-  printf ("--checksum - use checksum\n");
-  printf ("--cp       - configure as CP\n");
-  printf ("--crc      - use CRC\n");
-  printf ("--debug    - generate debug messages\n");
-  printf ("--device=/dev/ttyUSB0 - specify device\n");
-  printf ("--init-command[=command-script] - generate init command for port\n");
-  printf ("--no-poll  - refrain from polling every few seconds\n");
-  printf ("--pd       - configure as PD\n");
-  printf ("--pd-addr=[0-126] - PD addres in decimal range 0-126\n");
-  printf ("--?        - this message\n");
-  return (status);
-
-} /* usage */
-

@@ -44,9 +44,9 @@ int
 
   unsigned short buffer_length;
   FILE *cmdf;
+  char command [1024];
   char current_command [1024];
   char current_options [1024];
-//  char field [1024];
   int i;
   char json_string [16384];
   OSDP_MFG_ARGS *mfg_args;
@@ -101,6 +101,13 @@ int
     status = send_bio_read_template (ctx);
     break;
 
+  case OSDP_CMDB_FACTORY_DEFAULT:
+    fprintf(ctx->log, "***RESET TO FACTORY DEFAULT***\n");
+    sprintf(command, "rm -f %s", OSDP_PD_PARAMETERS);
+    system(command);
+    status = ST_OK;
+    break;
+
   case OSDP_CMDB_NOOP:
     // command parser no-op so OK command no-op
     cmd->command = OSDP_CMD_NOOP;
@@ -123,7 +130,8 @@ int
     break;
 
   default:
-    fprintf(stderr, "command not processed in switch (%d.)\n", cmd->command);
+    if (ctx->verbosity > 3)
+      fprintf(stderr, "command not processed in switch (%d.)\n", cmd->command);
     status = ST_OK; // ok to proceed with old way
     break;
   };

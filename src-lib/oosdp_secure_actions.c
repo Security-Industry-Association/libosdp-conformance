@@ -271,7 +271,7 @@ int
 
   memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
   fprintf(ctx->log, "NEW KEY SET\n");
-  (void)oo_save_pd_parameters(ctx, "./osdp-saved-pd-parameters.json");
+  (void)oo_save_pd_parameters(ctx, OSDP_PD_PARAMETERS);
 
   return (status);
 
