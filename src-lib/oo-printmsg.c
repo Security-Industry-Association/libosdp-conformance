@@ -336,8 +336,6 @@ int
   count = oh->len_lsb + (oh->len_msb << 8);
   count = count - 8;  // payload
   count = count - 3; // sec block
-//DEBUG
-fprintf(stderr, "oh lth %d.\n", (int)sizeof(*oh));
   mac_i = (unsigned char *)(osdp_msg->data_payload);
   for (i=0; i<count; i++)
   {

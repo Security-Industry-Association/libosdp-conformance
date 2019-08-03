@@ -899,8 +899,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
 
-// DEBUG
-fprintf(stderr, "switch in osdp_parse_message: %02x\n", returned_hdr->command);
     switch (returned_hdr->command)
     {
     default:
