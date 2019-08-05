@@ -259,17 +259,17 @@ int
     current_time = time (NULL);
     strcpy (current_date_string, asctime (localtime (&current_time)));
     current_date_string [strlen (current_date_string)-1] = 0;
-    fprintf (sf, "{\n");
+    fprintf (sf, "{");
     fprintf (sf,
-"          \"last_update\" : \"%s\",\n",
+"\"last_update\" : \"%s\",\n",
       current_date_string);
     fprintf(sf, " \"mmt\" : \"%d\",", osdp_conformance.conforming_messages);
     if (strlen (ctx->text) > 0)
-      fprintf (sf,
-"                 \"text\" : \"%s\",\n",
+    fprintf (sf,
+"\"text\" : \"%s\",",
         ctx->text);
     fprintf (sf,
-"                 \"role\" : \"%d\",\n",
+"\"role\" : \"%d\",\n",
       ctx->role);
     fprintf(sf, " \"key-slot\" : \"%d\", ", ctx->current_key_slot);
     fprintf(sf, " \"scbk\" : \"");
@@ -277,26 +277,26 @@ int
       fprintf(sf, "%02x", ctx->current_scbk [i]);
     fprintf(sf, "\",\n");
     fprintf (sf,
-"         \"serial_speed\" : \"%s\",\n",
+"\"serial_speed\" : \"%s\",",
       ctx->serial_speed);
     fprintf (sf,
-"           \"pd_address\" : \"%02x\",\n",
+"\"pd_address\" : \"%02x\",\n",
       p_card.addr);
     fprintf(sf,
-"          \"max_pd_send\" : \"%d\",\n",
+"\"max_pd_send\" : \"%d\",\n",
       ctx->max_message);
-    fprintf(sf, " \"cp-polls\" : \"%d\",", ctx->cp_polls);
-    fprintf(sf, " \"pd-acks\" : \"%d\",\n", ctx->pd_acks);
+    fprintf(sf, "\"cp-polls\" : \"%d\",", ctx->cp_polls);
+    fprintf(sf, " \"pd-acks\" : \"%d\",", ctx->pd_acks);
     fprintf(sf,
-"            \"sent_naks\" : \"%d\",\n", ctx->sent_naks);
+"\"sent_naks\" : \"%d\",", ctx->sent_naks);
     fprintf (sf,
-"  \"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
+"\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",", ctx->hash_ok, ctx->hash_bad);
     fprintf (sf,
-"             \"crc_errs\" : \"%d\",\n", ctx->crc_errs);
+"\"crc_errs\" : \"%d\",", ctx->crc_errs);
     fprintf (sf,
-"        \"checksum_errs\" : \"%d\",\n", ctx->checksum_errs);
+"\"checksum_errs\" : \"%d\",", ctx->checksum_errs);
     fprintf(sf,
-"     \"buffer-overflows\" : \"%d\",\n",
+"\"buffer-overflows\" : \"%d\",\n",
       osdp_buf.overflow);
     for (j=0; j<OSDP_MAX_LED; j++)
     {

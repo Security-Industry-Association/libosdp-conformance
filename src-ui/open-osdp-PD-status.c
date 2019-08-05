@@ -46,7 +46,10 @@ void
   char *out_status [OSDP_MAX_OUT];
   json_t *root;
   int status;
+  int stat_buffer_overflows;
+  int stat_checksum_errs;
   int stat_cp_polls;
+  int stat_crc_errs;
   int stat_hash_bad;
   int stat_hash_ok;
   int stat_naks;
@@ -61,9 +64,13 @@ void
 
 
   status = ST_OK;
+  stat_buffer_overflows = 0;
+  stat_checksum_errs = 0;
+  stat_crc_errs = 0;
   stat_hash_ok = 0;
   stat_key_slot [0] = 0;
   stat_key [0] = 0;
+
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   current_time = time (NULL);
   strcpy(last_update, "?");
@@ -84,6 +91,20 @@ void
       status = ST_CMD_ERROR;
     };
   }; 
+  if (status EQUALS ST_OK) {
+    found_field = 1; value = json_object_get (root, "buffer-overflows");
+    if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { char vstr [1024]; int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_buffer_overflows = i; };
+  if (status EQUALS ST_OK) {
+    found_field = 1; value = json_object_get (root, "checksum_errs");
+    if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { char vstr [1024]; int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_checksum_errs = i; };
   if (status EQUALS ST_OK)
   {
     found_field = 1;
@@ -99,6 +120,13 @@ void
     sscanf (vstr, "%d", &i);
     stat_cp_polls = i;
   };
+  if (status EQUALS ST_OK) {
+    found_field = 1; value = json_object_get (root, "crc_errs");
+    if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { char vstr [1024]; int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_crc_errs = i; };
   if (status EQUALS ST_OK) {
     found_field = 1; value = json_object_get (root, "sent_naks");
     if (!json_is_string (value)) found_field = 0; };
@@ -239,9 +267,8 @@ void
 
   printf("<BR><PRE>Statistics:\n%5d CP Polls %5d PD Acks %5d HASH OK\n",
     stat_cp_polls, stat_pd_acks, stat_hash_ok);
-  printf("%5d HASH Bad %5d NAKS\n",
-    stat_hash_bad, stat_naks);
-
+  printf("%5d HASH Bad %5d NAKS %5d CRC Errs %5d Checksum Errs %5d Buffer Overflows\n",
+    stat_hash_bad, stat_naks, stat_crc_errs, stat_checksum_errs, stat_buffer_overflows);
   if (strlen(stat_key) > 0)
   {
     printf("  Key %s (%s)", stat_key, stat_key_slot);

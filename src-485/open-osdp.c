@@ -402,6 +402,7 @@ int
   if (status != ST_OK)
     fprintf (stderr, "open-osdp return status %d\n",
       status);
+  fprintf(stderr, "open-osdp halted.\n");
 
   return (status);
 

@@ -91,7 +91,7 @@ int
         if (max_size > OSDP_OFFICIAL_MSG_MAX)
           max_size = OSDP_OFFICIAL_MSG_MAX;
         value [0] = 0x00ff & max_size;
-        value [1] = (0xff & max_size) >> 8;
+        value [1] = (0xff00 & max_size) >> 8;
         current_length = 0;
         status = send_message_ex(context, OSDP_ACURXSIZE, p_card.addr,
           &current_length, 2, value,

@@ -913,6 +913,15 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       SET_FAIL ((context), "2-15-1");
       break;
 
+    case OSDP_ACURXSIZE:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_BIOREAD");
+      osdp_conformance.cmd_bioread.test_status = OCONFORM_EXERCISED;
+      break;
+
     case OSDP_BIOREAD:
       m->data_payload = NULL;
       msg_data_length = 0;
