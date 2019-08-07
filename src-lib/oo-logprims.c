@@ -38,7 +38,6 @@ int
 
 { /* osdp_message_header_print */
 
-  int msg_data_length;
   OSDP_HDR *osdp_wire_message;
   int scb_present;
   char *sec_block;
@@ -61,12 +60,10 @@ int
   strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
 
   // "Chk/CRC" is either 1 byte or 2 depending on Checksum or CRC used.
-  // set up msg_data_length and crc_check to get this.
 
-  msg_data_length = osdp_wire_message->len_lsb + (osdp_wire_message->len_msb << 8);
-  msg->crc_check = msg->cmd_payload + 1 + msg_data_length;
   wire_crc = *(1+msg->crc_check) << 8 | *(msg->crc_check);
-  wire_cksum = *(msg->cmd_payload + 2 + msg_data_length);
+  wire_cksum = *(msg->crc_check);
+
   sprintf(tmpstr2, " CRC=%04x", wire_crc);
   if (msg->check_size != 2)
     sprintf(tmpstr2, " Checksum=%02x", wire_cksum);

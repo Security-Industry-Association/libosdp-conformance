@@ -1,3 +1,15 @@
+/*
+  osdp-sc-calc - calculate secure channel values
+
+  Usage:
+
+    osdp-sc-calc chlng ccrypt cc dd
+
+  Where:
+    chlng is the osdp_CHLNG payload
+    ccrypt is the osdp_CCRYPT client cryptogram
+*/
+
 #include <string.h>
 #include <stdio.h>
 
@@ -70,7 +82,9 @@ int
   memset(rnd_a, 0, sizeof(rnd_a));
   rnd_a_lth = 0;
   if (argc > 1)
+  {
     bytes_from_string(argv [1], (char *)payload_chlng, &payload_chlng_lth);
+  };
   if (payload_chlng_lth EQUALS 8)
   {
     rnd_a_lth = 8;

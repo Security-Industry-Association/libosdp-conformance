@@ -1115,7 +1115,12 @@ int
     status = send_osdp_data (context, buf, 1);
 
     if (status EQUALS ST_OK)
+    {
       status = send_osdp_data (context, test_blk, *current_length);
+
+      // and after we sent the whole PDU bump the counter
+      context->pdus_sent++;
+    };
 
     if (context->verbosity > 4)
     {

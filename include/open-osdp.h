@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (45)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_BUILD ( 3)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_PD_PARAMETERS    "osdp-saved-pd-parameters.json"
@@ -503,6 +503,8 @@ typedef struct osdp_context
   int checksum_errs;
   int hash_ok;
   int hash_bad;
+  int pdus_received;
+  int pdus_sent;
   char init_command [1024];
   int cparm;
   int cparm_v;

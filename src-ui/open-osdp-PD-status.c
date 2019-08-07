@@ -53,6 +53,8 @@ void
   int stat_hash_bad;
   int stat_hash_ok;
   int stat_naks;
+  int stat_pdus_received;
+  int stat_pdus_sent;
   char stat_key [1024];
   char stat_key_slot [1024];
   int stat_pd_acks;
@@ -120,6 +122,20 @@ void
     sscanf (vstr, "%d", &i);
     stat_cp_polls = i;
   };
+  if (status EQUALS ST_OK) {
+    found_field = 1; value = json_object_get (root, "pdus-received");
+    if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { char vstr [1024]; int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_pdus_received = i; };
+  if (status EQUALS ST_OK) {
+    found_field = 1; value = json_object_get (root, "pdus-sent");
+    if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { char vstr [1024]; int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_pdus_sent = i; };
   if (status EQUALS ST_OK) {
     found_field = 1; value = json_object_get (root, "crc_errs");
     if (!json_is_string (value)) found_field = 0; };
@@ -236,7 +252,7 @@ void
     last_update);
   printf("</FONT>\n");
   printf ("A: %02x<BR>\n", pd_address);
-  printf ("<SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
+  printf ("LED: <SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
     led_color);
   printf ("Message Text: %s<BR>\n",
     ctx->text);
@@ -265,8 +281,8 @@ void
 
   // yes I'm sloppy and left the out strings allocated.
 
-  printf("<BR><PRE>Statistics:\n%5d CP Polls %5d PD Acks %5d HASH OK\n",
-    stat_cp_polls, stat_pd_acks, stat_hash_ok);
+  printf("<BR><PRE>Statistics:\n%5d CP Polls %5d PD Acks %5d HASH OK %5d Sent %5d Recd\n",
+    stat_cp_polls, stat_pd_acks, stat_hash_ok, stat_pdus_sent, stat_pdus_received);
   printf("%5d HASH Bad %5d NAKS %5d CRC Errs %5d Checksum Errs %5d Buffer Overflows\n",
     stat_hash_bad, stat_naks, stat_crc_errs, stat_checksum_errs, stat_buffer_overflows);
   if (strlen(stat_key) > 0)

@@ -287,10 +287,12 @@ int
       ctx->max_message);
     fprintf(sf, "\"cp-polls\" : \"%d\",", ctx->cp_polls);
     fprintf(sf, " \"pd-acks\" : \"%d\",", ctx->pd_acks);
+    fprintf(sf, " \"pdus-received\" : \"%d\", \"pdus-sent\" : \"%d\",\n",
+      ctx->pdus_received, ctx->pdus_sent);
     fprintf(sf,
 "\"sent_naks\" : \"%d\",", ctx->sent_naks);
     fprintf (sf,
-"\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",", ctx->hash_ok, ctx->hash_bad);
+"\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
     fprintf (sf,
 "\"crc_errs\" : \"%d\",", ctx->crc_errs);
     fprintf (sf,

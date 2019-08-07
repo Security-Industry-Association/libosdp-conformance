@@ -1,4 +1,7 @@
 /*
+
+  oosdp_logmsg.c - prints log messages
+
   (C)Copyright 2017-2019 Smithee Solutions LLC
 */
 #define OSDP_CMD_MSC_GETPIV  (0x10)
@@ -9,6 +12,7 @@
 #define OSDP_REP_MSC_STAT    (0xFD)
 
 char OSDP_VENDOR_INID [] = { 0x00, 0x75, 0x32 };
+char OSDP_VENDOR_WAVELYNX [] = { 0x5C, 0x26, 0x23 };
 
 typedef struct __attribute__((packed)) osdp_msc_crauth
 {
@@ -208,7 +212,7 @@ int
     msg = (OSDP_MSG *) aux;
     ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
     sprintf (tlogmsg,
-"  CCRYPT: cUID %02x%02x%02x%02x-%02x%02x%02x%02x RND.B %02x%02x%02x%02x-%02x%02x%02x%02x Client Cryptogram %02x%02x%02x%02x-%02x%02x%02x%02x\n",
+"  CCRYPT: cUID %02x%02x%02x%02x-%02x%02x%02x%02x RND.B %02x%02x%02x%02x-%02x%02x%02x%02x Client Cryptogram %02x%02x%02x%02x-%02x%02x%02x%02x %02x%02x%02x%02x-%02x%02x%02x%02x\n",
       ccrypt_payload->client_id [0], ccrypt_payload->client_id [1],
       ccrypt_payload->client_id [2], ccrypt_payload->client_id [3],
       ccrypt_payload->client_id [4], ccrypt_payload->client_id [5],
@@ -220,7 +224,11 @@ int
       ccrypt_payload->cryptogram [0], ccrypt_payload->cryptogram [1],
       ccrypt_payload->cryptogram [2], ccrypt_payload->cryptogram [3],
       ccrypt_payload->cryptogram [4], ccrypt_payload->cryptogram [5],
-      ccrypt_payload->cryptogram [6], ccrypt_payload->cryptogram [7]);
+      ccrypt_payload->cryptogram [6], ccrypt_payload->cryptogram [7],
+      ccrypt_payload->cryptogram [8], ccrypt_payload->cryptogram [9],
+      ccrypt_payload->cryptogram [10], ccrypt_payload->cryptogram [11],
+      ccrypt_payload->cryptogram [12], ccrypt_payload->cryptogram [13],
+      ccrypt_payload->cryptogram [14], ccrypt_payload->cryptogram [15]);
     break;
 
   case OOSDP_MSG_CHLNG:
@@ -445,7 +453,13 @@ int
 
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
       process_as_special = 0;
-      if (0 EQUALS memcmp(mrep->vendor_code, OSDP_VENDOR_INID, sizeof(OSDP_VENDOR_INID)))
+      if (0 EQUALS
+        memcmp(mrep->vendor_code, OSDP_VENDOR_INID,
+          sizeof(OSDP_VENDOR_INID)))
+        process_as_special = 1;
+      if (0 EQUALS
+        memcmp(mrep->vendor_code, OSDP_VENDOR_WAVELYNX,
+          sizeof(OSDP_VENDOR_WAVELYNX)))
         process_as_special = 1;
       if (!process_as_special)
       {

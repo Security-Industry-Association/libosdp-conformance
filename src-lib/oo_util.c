@@ -1610,6 +1610,11 @@ int
         this_command = OSDP_ILLICIT;
       };
     };
+
+
+    // update count of whole messages
+    context->pdus_received ++;
+
     (void)monitor_osdp_message (context, msg);
 
     switch (this_command)
