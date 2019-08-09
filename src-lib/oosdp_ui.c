@@ -264,6 +264,23 @@ multipart fragsize msb is total_size >> 8
       };
       break;
 
+    case OSDP_CMDB_KEYSET:
+      {
+        unsigned char key_buffer [OSDP_KEY_OCTETS];
+        unsigned short int keybuflth;
+
+        keybuflth = sizeof(key_buffer);
+        status = osdp_string_to_buffer(context,
+          details, key_buffer, &keybuflth);
+        current_length = 0;
+        status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
+          &current_length, keybuflth, key_buffer,
+          OSDP_SEC_SCS_17, 0, NULL);
+        osdp_conformance.cmd_keyset.test_status =
+          OCONFORM_EXERCISED;
+      };
+      break;
+
     case OSDP_CMDB_MFG:
       {
         unsigned char data [1024];

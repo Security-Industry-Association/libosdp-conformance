@@ -570,6 +570,22 @@ cmd->command = OSDP_CMD_NOOP;
     };
   };
 
+  // command "keyset" to send a KEYSET using the supplied key
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "keyset"))
+    {
+      cmd->command = OSDP_CMDB_KEYSET;
+
+      value = json_object_get (root, "psk-hex");
+      if (json_is_string (value))
+      {
+        strcpy (vstr, json_string_value (value));
+        memcpy (cmd->details, vstr, OSDP_KEY_OCTETS*2);
+      };
+    };
+  };
+
   // command "local_status" - request local status
 
   if (status EQUALS ST_OK)

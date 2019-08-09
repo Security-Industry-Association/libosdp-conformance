@@ -193,6 +193,7 @@
 #define OSDP_CMDB_BIOREADER      (1039)
 #define OSDP_CMDB_ACURXSIZE      (1040)
 #define OSDP_CMDB_FACTORY_DEFAULT (1041)
+#define OSDP_CMDB_KEYSET          (1042)
 
 #define OSDP_CMD_NOOP         (0)
 #define OSDP_CMD_CP_DIAG      (1)
