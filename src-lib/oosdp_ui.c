@@ -273,6 +273,10 @@ multipart fragsize msb is total_size >> 8
         status = osdp_string_to_buffer(context,
           details, key_buffer, &keybuflth);
         current_length = 0;
+        if (context->verbosity > 3)
+        {
+          dump_buffer_log(context, "KEYSET key:", key_buffer, keybuflth);
+        };
         status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
           &current_length, keybuflth, key_buffer,
           OSDP_SEC_SCS_17, 0, NULL);

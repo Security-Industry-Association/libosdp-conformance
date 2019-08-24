@@ -258,6 +258,7 @@ int
   int status;
 
 
+fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
   status = ST_OK;
   keyset_payload = (unsigned char *)(msg->data_payload);
   // new key type is ignored
@@ -266,13 +267,15 @@ int
   if (new_key_length != OSDP_KEY_OCTETS)
   {
     fprintf(ctx->log,
-"Bad key (%d.) sent, using %d instead.\n", new_key_length, OSDP_KEY_OCTETS);
+      "Bad key length (%d.) sent, using %d instead.\n",
+      new_key_length, OSDP_KEY_OCTETS);
   };
 
   memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
   fprintf(ctx->log, "NEW KEY SET\n");
   (void)oo_save_pd_parameters(ctx, OSDP_PD_PARAMETERS);
 
+fprintf(ctx->log, "DEBUG: action_osdp_KEYSET bottom\n");
   return (status);
 
 } /* action_osdp_KEYSET */

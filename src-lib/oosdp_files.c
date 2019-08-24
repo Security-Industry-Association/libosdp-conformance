@@ -207,7 +207,7 @@ int
       fprintf(pf, "%02x", ctx->current_scbk [i]);
     };
 
-    fprintf(pf, "\"-\" : \"-\"\n");
+    fprintf(pf, ",\n  \"_#\" : \"-\"\n");
     fprintf(pf, "}\n");
     fclose(pf);
   };

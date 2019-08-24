@@ -316,6 +316,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       break;
 
     case OSDP_KEYSET:
+fprintf(ctx->log, "DEBUG: detected osdp_KEYSET\n");
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
       osdp_conformance.cmd_keyset.test_status = OCONFORM_EXERCISED;
@@ -1267,11 +1268,11 @@ status = ST_OK; // tolerate checksum error and continue
         {
           status = oo_hash_check(context, m->ptr, sec_block_type,
             m->crc_check-4, hashable_length);
-// DEBUG
-if (status != ST_OK)
-  fprintf(stderr, "oo_hash_check failed, status %d\n", status);
           if (status EQUALS ST_OK)
             status = osdp_decrypt_payload(context, m);
+          if (status != ST_OK)
+            fprintf(context->log,
+              "Payload decryption failed, status %d.\n", status);
         };
         if (status != ST_OK)
         {
@@ -1410,6 +1411,7 @@ int
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
     case OSDP_KEYSET:
+fprintf(context->log, "DEBUG: logging osdp_KEYSET\n");
       status = oosdp_make_message (OOSDP_MSG_KEYSET, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
@@ -1817,6 +1819,7 @@ int
       break;
 
     case OSDP_KEYSET:
+fprintf(context->log, "DEBUG: calling action_osdp_KEYSET\n");
       status = action_osdp_KEYSET (context, msg);
       break;
 

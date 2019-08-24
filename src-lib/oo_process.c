@@ -68,7 +68,10 @@ int
     int send_response;
 
     send_response = 0;
-    if (context.role != OSDP_ROLE_MONITOR)
+
+    // if we're the PD then NAK it.
+
+    if (context.role EQUALS OSDP_ROLE_PD)
     {
       current_length = 0;
       osdp_nak_response [0] = 0xff;

@@ -68,7 +68,7 @@ int
       };
     };
     if (i > 0)
-      fprintf(stderr, "enqueue cmd to entry %2d\n", i);
+      fprintf(ctx->log, "enqueue cmd to entry %2d\n", i);
     memcpy(&(ctx->q [i].cmd), cmd, sizeof(ctx->q [0].cmd));
     ctx->q [i].status = 1;
   };
@@ -113,6 +113,8 @@ int
 
 
   status = ST_OK;
+  if (ctx->verbosity > 9)
+    fprintf(ctx->log, "process_command_from_queue: top\n");
   if (ctx->q [0].status != 0) // meaning there's at least one command in the queue
   {
     memcpy(&extracted, &(ctx->q [0].cmd), sizeof(extracted));
@@ -124,7 +126,10 @@ int
     // noop out the last queue entry
     ctx->q [OSDP_COMMAND_QUEUE_SIZE-1].status = 0;
 
-    status = process_command(cmd->command, ctx, cmd->details_length, cmd->details_param_1, (char *)(cmd->details));
+    if (ctx->verbosity > 9)
+      fprintf(ctx->log, "process_command_from_queue: processing command\n");
+    status = process_command(cmd->command, ctx,
+      cmd->details_length, cmd->details_param_1, (char *)(cmd->details));
   };
 
   return(status);

@@ -937,7 +937,7 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_SECURE_NOT_ENABLED   (75)
 #define ST_OSDP_SC_BAD_HASH          (76)
 #define ST_CMD_UNDERFLOW             (77)
-#define ST_OSDP_SC_DECRYPT_LTH_1     (78)
+#define ST_OSDP_SC_DECRYPT_NOT_PADDED (78)
 #define ST_OSDP_SC_DECRYPT_LTH_2     (79)
 #define ST_OSDP_SC_ENCRYPT_LTH_1     (80)
 #define ST_OSDP_SC_ENCRYPT_LTH_2     (81)

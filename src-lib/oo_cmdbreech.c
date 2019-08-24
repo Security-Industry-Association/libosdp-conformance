@@ -583,6 +583,12 @@ cmd->command = OSDP_CMD_NOOP;
         strcpy (vstr, json_string_value (value));
         memcpy (cmd->details, vstr, OSDP_KEY_OCTETS*2);
       };
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+      if (ctx->verbosity > 3)
+      {
+        fprintf(ctx->log, "Enqueue: keyset key %s\n", cmd->details);
+      };
     };
   };
 
