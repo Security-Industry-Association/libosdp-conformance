@@ -266,12 +266,16 @@ multipart fragsize msb is total_size >> 8
 
     case OSDP_CMDB_KEYSET:
       {
-        unsigned char key_buffer [OSDP_KEY_OCTETS];
+        unsigned char key_buffer [2+OSDP_KEY_OCTETS];
         unsigned short int keybuflth;
 
-        keybuflth = sizeof(key_buffer);
+        keybuflth = sizeof(key_buffer) - 2;
         status = osdp_string_to_buffer(context,
-          details, key_buffer, &keybuflth);
+          details, key_buffer+2, &keybuflth);
+        key_buffer [0] = 1; // SCBK
+        key_buffer [1] = OSDP_KEY_OCTETS;
+
+        keybuflth = sizeof(key_buffer);
         current_length = 0;
         if (context->verbosity > 3)
         {

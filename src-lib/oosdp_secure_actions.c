@@ -253,6 +253,7 @@ int
 
 { /* action_osdp_KEYSET */
 
+  int current_length;
   unsigned char *keyset_payload;
   int new_key_length;
   int status;
@@ -274,6 +275,11 @@ fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
   memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
   fprintf(ctx->log, "NEW KEY SET\n");
   (void)oo_save_pd_parameters(ctx, OSDP_PD_PARAMETERS);
+
+  current_length = 0;
+  status = send_message_ex
+    (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
+    OSDP_SEC_SCS_16, 0, NULL);
 
 fprintf(ctx->log, "DEBUG: action_osdp_KEYSET bottom\n");
   return (status);

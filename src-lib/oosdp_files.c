@@ -173,7 +173,21 @@ int
 
 { /* oo_load_pd_parameters */
 
+  char new_key [1024];
+  json_t *saved_parameters_root;
+  json_error_t status_json;
+  json_t *value;
+
+
   fprintf(ctx->log, "STUB: loading PD parameters...\n");
+  saved_parameters_root = json_load_file(filename, 0, &status_json);
+
+  value = json_object_get(saved_parameters_root, "key");
+  if (json_is_string (value))
+  {
+    strcpy(new_key, json_string_value(value));
+fprintf(ctx->log, "restoring key %s\n", new_key);
+  };
   return(ST_OK);
 
 } /* oo_load_pd_parameters */

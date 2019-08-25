@@ -2002,7 +2002,7 @@ fprintf(stderr, "lstat 1684\n");
 
       if (msg->security_block_type >= OSDP_SEC_SCS_11)
       {
-        if (context->verbosity > 3)
+        if (context->verbosity > 9)
           fprintf(stderr, "Received SCS %02x on osdp_ACK\n", msg->security_block_type);
       };
       break;

@@ -421,7 +421,8 @@ int osdp_string_to_buffer
   unsigned char *buffer,
   unsigned short int *buffer_length_returned)
 
-{
+{ /* osdp_string_to_buffer */
+
   int bidx;
   int i;
   int idx;
@@ -437,15 +438,16 @@ int osdp_string_to_buffer
     memcpy(tmps, (idx)+(instring), 2);
     sscanf(tmps, "%x", &i);
     *(buffer+bidx) = i;
-    if (ctx->verbosity > 3)
-      fprintf(stderr, "mfg data %d. s %s hex value 0x%x\n",
+    if (ctx->verbosity > 9)
+      fprintf(stderr, "osdp_string_to_buffer %d. s %s hex value 0x%x\n",
         idx, tmps, i);
     bidx ++;
     returned_length ++;
   };
   *buffer_length_returned = returned_length;
   return (0);
-}
+
+} /* osdp_string_to_buffer */
 
 
 // osdp_timer_start - start a timer.  uses preset values

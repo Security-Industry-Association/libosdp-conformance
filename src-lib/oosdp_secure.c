@@ -69,7 +69,7 @@ int
 
 
   status = ST_OK;
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
     dump_buffer_log(ctx, "whole msg for msg-auth:", msg_to_send, msg_lth);
   memset(hashbuffer, 0, sizeof(hashbuffer));
   memset(padded_block, 0, sizeof(padded_block));
@@ -87,7 +87,7 @@ int
   if (status EQUALS ST_OK)
   {
     memcpy(last_iv, ctx->last_calculated_in_mac, sizeof(last_iv));
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
     {
       dump_buffer_log(ctx, "S-MAC1 at osdp_calculate_secure_channel_mac:",
         ctx->s_mac1, OSDP_KEY_OCTETS);
@@ -133,7 +133,7 @@ int
     AES_ctx_set_iv (&aes_context_mac2, last_iv);
     memcpy (hashbuffer, padded_block, OSDP_KEY_OCTETS);
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, OSDP_KEY_OCTETS);
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
       dump_buffer_log(ctx, "last block encrypted for MAC:", hashbuffer, OSDP_KEY_OCTETS);
 
     // this MAC is saved as the last sent MAC
@@ -403,7 +403,7 @@ fprintf(stderr, "DECRYPT:osdp_decrypt_payload: top\n");
       msg->data_length);
   if (msg->security_block_type > OSDP_SEC_SCS_16)
   {
-    if (ctx->verbosity > 9)
+    if (ctx->verbosity > 3)
     {
       dump_buffer_log(ctx,
         "payload to decrypt:", msg->data_payload, msg->data_length);
@@ -500,7 +500,6 @@ if (ctx->verbosity > 3)
     if (msg->data_length)
       dump_buffer_log(ctx, "decrypted payload:",
         msg->data_payload, msg->data_length);
-fprintf(stderr, "DEBUG:osdp_decrypt_payload: top\n");
 
   return(status);
 
@@ -650,6 +649,11 @@ int
 
 
   status = ST_OK;
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "osdp_encrypt_payload: top\n");
+    dump_buffer_log(ctx, "Payload to be encrypted:", data, data_length);
+  };
   if (*padded_length <= data_length)
     status = ST_OSDP_SC_ENCRYPT_LTH_1;
   if (status EQUALS ST_OK)
@@ -670,7 +674,9 @@ int
 
     // if it's an even number of blocks just encrypt it.
 
-    if (0 != (data_length % (2^OSDP_KEY_OCTETS)))
+fprintf(ctx->log, "DEBUG: pl before %d. data_length %d.\n",
+  *padded_length, data_length);
+    if (0 != (data_length % (2*OSDP_KEY_OCTETS)))
     {
       // needs padding.  calc padding, add the padding marker.  buffer was zeroes already.
 
@@ -678,6 +684,8 @@ int
         ((data_length+(OSDP_KEY_OCTETS-1))/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
       enc_buf [data_length] = 0x80;
       *padding = *padded_length - data_length;
+fprintf(ctx->log, "DEBUG: padding %d. pl after %d.\n",
+  *padding, *padded_length);
     };
   };
   if (ctx->verbosity > 3)
@@ -697,10 +705,14 @@ int
   AES_init_ctx (&aes_context_encrypt, ctx->s_enc);
   AES_ctx_set_iv (&aes_context_encrypt, encrypt_iv);
   AES_CBC_encrypt_buffer(&aes_context_encrypt, enc_buf, *padded_length);
-// DEBUG
-dump_buffer_log(ctx, "payload ciphertext:",
-  enc_buf, *padded_length);
 
+  if (ctx->verbosity > 3)
+  {
+    dump_buffer_log(ctx, "payload ciphertext:",
+      enc_buf, *padded_length);
+    if (status != ST_OK)
+      fprintf(ctx->log, "osdp_encrypt_payload: returning status %d.\n", status);
+  };
   return(status);
 
 } /* osdp_encrypt_payload */
