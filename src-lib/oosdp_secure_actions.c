@@ -195,12 +195,14 @@ int
       fprintf(ctx->log, "SCBK Set-up error %d.\n", status);
       nak = 1;
       osdp_reset_secure_channel (ctx);
+
+      // NAK, "encryption required" (close...), no details (length=1)
+
+      osdp_nak_response_data [0] = OO_NAK_ENCRYPTION_REQUIRED;
       current_length = 0;
-      osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
-      osdp_nak_response_data [1] = status;
       status = send_message (ctx,
         OSDP_NAK, p_card.addr, &current_length,
-        sizeof(osdp_nak_response_data), osdp_nak_response_data);
+        1, osdp_nak_response_data);
       ctx->sent_naks ++;
       osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
       if (ctx->verbosity > 2)
@@ -281,7 +283,7 @@ fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
 
   memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
   fprintf(ctx->log, "NEW KEY SET\n");
-  (void)oo_save_pd_parameters(ctx, OSDP_PD_PARAMETERS);
+  (void)oo_save_pd_parameters(ctx, OSDP_SAVED_PARAMETERS);
 
   current_length = 0;
   status = send_message_ex

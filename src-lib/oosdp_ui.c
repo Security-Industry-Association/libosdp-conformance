@@ -663,6 +663,10 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
       {
         unsigned char sec_blk_1 [1];
 
+        if (context->verbosity > 3)
+        {
+          fprintf(context->log, "Initiating secure channel.\n");
+        };
         status = ST_OK;
         current_length = 0;
         context->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
@@ -707,6 +711,11 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
               OSDP_SEC_SCS_11, sizeof (sec_blk_1), sec_blk_1);
           };
         };
+      };
+      if (context->verbosity > 3)
+      {
+        fprintf(context->log, "Initiation of secure channel complete (status=%d.)\n",
+          status);
       };
       break;
 

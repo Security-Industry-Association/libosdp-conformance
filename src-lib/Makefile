@@ -57,8 +57,7 @@ oo_cmdbreech.o:	oo_cmdbreech.c ../include/open-osdp.h
 	  oo_cmdbreech.c
 
 oo_initialize.o:	oo_initialize.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oo_initialize.c
+	${CC} ${CFLAGS} oo_initialize.c
 
 oo_process.o:	oo_process.c
 	${CC} ${CFLAGS} oo_process.c

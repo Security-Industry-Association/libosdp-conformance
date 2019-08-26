@@ -789,6 +789,7 @@ void
   if (ctx->enable_secure_channel > 0)
   {
     fprintf(ctx->log, "  Enabling Secure Channel\n");
+    dump_buffer_log(ctx, "Current SCBK:", ctx->current_scbk, sizeof(ctx->current_scbk));
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
   };
 

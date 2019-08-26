@@ -167,11 +167,11 @@ void
 
 
 int
-  oo_load_pd_parameters
+  oo_load_parameters
     (OSDP_CONTEXT *ctx,
     char *filename)
 
-{ /* oo_load_pd_parameters */
+{ /* oo_load_parameters */
 
   char new_key [1024];
   unsigned short new_key_length;
@@ -181,7 +181,8 @@ int
   json_t *value;
 
 
-  fprintf(ctx->log, "STUB: loading PD parameters...\n");
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "Loading parameters from %s\n", filename);
   saved_parameters_root = json_load_file(filename, 0, &status_json);
 
   value = json_object_get(saved_parameters_root, "key");
@@ -201,7 +202,7 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
   };
   return(ST_OK);
 
-} /* oo_load_pd_parameters */
+} /* oo_load_parameters */
 
 
 /*

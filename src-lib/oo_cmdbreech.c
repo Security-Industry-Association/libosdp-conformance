@@ -103,7 +103,7 @@ int
 
   case OSDP_CMDB_FACTORY_DEFAULT:
     fprintf(ctx->log, "***RESET TO FACTORY DEFAULT***\n");
-    sprintf(command, "rm -f %s", OSDP_PD_PARAMETERS);
+    sprintf(command, "rm -f %s", OSDP_SAVED_PARAMETERS);
     system(command);
     status = ST_OK;
     break;

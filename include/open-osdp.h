@@ -33,7 +33,7 @@
 #define OSDP_VERSION_BUILD ( 3)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
-#define OSDP_PD_PARAMETERS    "osdp-saved-pd-parameters.json"
+#define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
 #define OSDP_TRACE_FILE       "osdp_trace.capture"
 
 // default configuration
@@ -989,7 +989,7 @@ int next_sequence (OSDP_CONTEXT *ctx);
 int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
-int oo_load_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
+int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
