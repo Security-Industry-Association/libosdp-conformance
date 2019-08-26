@@ -114,12 +114,42 @@ int
     status = ST_OK;
     break;
 
-// experimental "polling" toggles polling enabled
+  // "polling" toggles polling enabled and sets sequence to 0
+  // polling action=reset always sends seq 0
+  // polling action=resume resumes sequence numbers after next message goes out the door
+
   case OSDP_CMDB_POLLING:
-    ctx->enable_poll = 1 ^ ctx->enable_poll;
-    ctx->next_sequence = 0;
-    fprintf(ctx->log, "enable_polling now %x, sequence reset to 0\n", ctx->enable_poll);
-    cmd->command = OSDP_CMD_NOOP;
+    {
+      parameter = json_object_get(root, "action");
+      if (json_is_string(parameter))
+      {
+        if (0 EQUALS strcmp("reset", json_string_value(parameter)))
+        {
+          fprintf(ctx->log, "Polling: resetting sequence number to 0\n");
+          ctx->next_sequence = 0;
+          ctx->enable_poll = OO_POLL_ENABLED;
+        };
+        if (0 EQUALS strcmp("resume", json_string_value(parameter)))
+        {
+          fprintf(ctx->log, "Polling: resuming sequence numbering\n");
+          ctx->enable_poll = OO_POLL_RESUME;
+        };
+      }
+      else
+      {
+        // toggle it (used to be just 1 and 0)
+
+        if (ctx->enable_poll EQUALS OO_POLL_ENABLED)
+          ctx->enable_poll = OO_POLL_NEVER;
+        else
+          ctx->enable_poll = OO_POLL_ENABLED;
+
+        ctx->next_sequence = 0;
+        fprintf(ctx->log, "enable_polling now %x, sequence reset to 0\n", ctx->enable_poll);
+      };
+
+      cmd->command = OSDP_CMD_NOOP;
+    };
     break;
 
   // command reset - reset "link" i.e. sequence number

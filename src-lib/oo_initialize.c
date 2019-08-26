@@ -211,7 +211,7 @@ int
   context->verbosity = 3;
 
   context->q = osdp_command_queue;
-  context->enable_poll = 1;
+  context->enable_poll = OO_POLL_ENABLED;
 
   context->current_key_slot = -1;
 

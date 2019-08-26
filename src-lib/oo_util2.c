@@ -94,7 +94,12 @@ int
     {
       send_poll = 0;
     };
-    if (!(context->enable_poll))
+
+    // if polling is not enabled do not send one
+    // (resume is used to start at a given command)
+
+    if ((OO_POLL_NEVER EQUALS (context->enable_poll)) ||
+      (OO_POLL_RESUME EQUALS (context->enable_poll)))
       send_poll = 0;
   if (send_poll)
   {
@@ -275,9 +280,16 @@ int
     ctx->next_sequence++;
     if (ctx->next_sequence > 3)
       ctx->next_sequence = 1;
-// if they disabled polling don't increment the sequence number
-if (!(ctx->enable_poll))
-  ctx->next_sequence = 0;
+
+    // if polling is to resume enable it now
+    if (OO_POLL_RESUME EQUALS (ctx->enable_poll))
+      ctx->enable_poll = OO_POLL_ENABLED;
+    if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
+      ctx->next_sequence = 0;
+
+    // if they disabled polling don't increment the sequence number
+    if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
+      ctx->next_sequence = 0;
   }
   else
   {

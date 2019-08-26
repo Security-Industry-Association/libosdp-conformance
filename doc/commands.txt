@@ -4,3 +4,6 @@ message.
 factory-default - resets parameters to factory default, which
 at the moment means delete the saved parameter file.
 
+polling - toggles whether or not polling is performed.
+  [action=reset] - resets sequence number to 0 (continues polling)
+

@@ -413,6 +413,11 @@ typedef struct osdp_command_queue
   OSDP_COMMAND cmd;
 } OSDP_COMMAND_QUEUE;
 
+// poll enable values (see context->enable_poll)
+
+#define OO_POLL_ENABLED (1) // normal polling
+#define OO_POLL_NEVER   (0) // never poll, sequence stays at 0
+#define OO_POLL_RESUME  (2) // go to normal polling after this message is sent
 
 typedef struct osdp_context
 {

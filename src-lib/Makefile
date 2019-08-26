@@ -53,8 +53,7 @@ libosdp.a:	oo_initialize.o oo_process.o oo_util.o oo_util2.o \
 	  osdp-api.o
 
 oo_cmdbreech.o:	oo_cmdbreech.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oo_cmdbreech.c
+	${CC} ${CFLAGS} oo_cmdbreech.c
 
 oo_initialize.o:	oo_initialize.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo_initialize.c
@@ -81,12 +80,11 @@ oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oo-xwrite.c
 
 oosdp_actions.o:	oosdp_actions.c ../include/open-osdp.h
-	${CC} ${CFLAGS} -c -g -I../include -Wall -Werror \
-	  oosdp_actions.c
+	${CC} ${CFLAGS} oosdp_actions.c
 
+# different as it uses source here by inclusion
 oosdp_conformance.o:	oosdp_conformance.c osdp-SKIP.c
-	${CC} ${CFLAGS} -c -g -I../include -I. -Wall -Werror \
-	  oosdp_conformance.c
+	${CC} ${CFLAGS} -I. oosdp_conformance.c
 
 oosdp_crc.o:	oosdp_crc.c
 	${CC} ${CFLAGS} oosdp_crc.c
