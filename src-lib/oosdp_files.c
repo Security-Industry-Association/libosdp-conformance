@@ -174,7 +174,9 @@ int
 { /* oo_load_pd_parameters */
 
   char new_key [1024];
+  unsigned short new_key_length;
   json_t *saved_parameters_root;
+  int status;
   json_error_t status_json;
   json_t *value;
 
@@ -187,6 +189,15 @@ int
   {
     strcpy(new_key, json_string_value(value));
 fprintf(ctx->log, "restoring key %s\n", new_key);
+    new_key_length = sizeof(ctx->current_scbk);
+    status = osdp_string_to_buffer(ctx,
+      new_key, ctx->current_scbk, &new_key_length);
+    if (status EQUALS ST_OK)
+      ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
+    else
+    {
+      fprintf(ctx->log, "failed to load key from saved parameters\n");
+    };
   };
   return(ST_OK);
 

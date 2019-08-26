@@ -527,9 +527,17 @@ cmd->command = OSDP_CMD_NOOP;
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_INIT_SECURE;
+      cmd->details_param_1 = 0;
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
+
+      parameter = json_object_get(root, "key-slot");
+      if (json_is_string (parameter))
+      {
+        if (0 EQUALS strcmp("1", json_string_value(parameter)))
+          cmd->details_param_1 = 1;
+      };
     };
   }; 
 

@@ -1183,11 +1183,28 @@ fprintf(stderr, "lstat 1000\n");
       // if it's an SCS with a MAC suffix move the CRC pointer
 
       if (msg_scb)
-        if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
-          (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
-          (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
-          (sec_block_type EQUALS OSDP_SEC_SCS_18))
-          m->crc_check = 4 + m->cmd_payload + 1 + msg_data_length;
+      {
+
+        // if we're the CP and we get an SCS but we're not in Secure Channel then
+        // ditch the link session
+
+        if ((sec_block_type EQUALS OSDP_SEC_SCS_15) || (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
+          (sec_block_type EQUALS OSDP_SEC_SCS_17) || (sec_block_type EQUALS OSDP_SEC_SCS_18))
+        {
+          if ((context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL) &&
+            (context->role EQUALS OSDP_ROLE_CP))
+          {
+            fprintf(context->log, "sec_block_type was %x but not in secure channel, resetting\n",
+              sec_block_type);
+            status = ST_SCS_FROM_PD_UNEXPECTED;
+            context->next_sequence = 0;
+          }
+          else
+          {
+            m->crc_check = 4 + m->cmd_payload + 1 + msg_data_length;
+          };
+        };
+      };
 
       parsed_crc = fCrcBlk (m->ptr, msg_lth - 2);
 
@@ -1598,6 +1615,7 @@ int
       fprintf (context->log,
         "  CP sent sequence 0 - resetting sequence numbers\n");
       context->next_sequence = 0;
+      osdp_reset_secure_channel(context);
     };
 
     // if they asked for a NAK mangle the command so we hit the default case of the switch

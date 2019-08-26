@@ -189,11 +189,21 @@ int
   {
     status_io = flock(context->process_lock, LOCK_EX | LOCK_NB);
     if (status_io EQUALS -1)
-    status = -2;
+      status = ST_OSDP_EXCLUSIVITY_FAILED;
   };
   if (status EQUALS ST_OK)
   {
+    FILE *tf;
+    tf=fopen(OSDP_TRACE_FILE, "w");
+    if (tf)
+    {
+      fprintf(tf, "{\n  \"trace-data\" : {\n");
+      fclose(tf);
+    };
+  };
 
+  if (status EQUALS ST_OK)
+  {
   osdp_conformance.last_unknown_command = OSDP_POLL;
   context->mmsgbuf = multipart_message_buffer_1;
   memset (&p_card, 0, sizeof (p_card));
@@ -261,6 +271,7 @@ int
   context->log = fopen (context->log_path, "w");
   if (context->log EQUALS NULL)
     status = ST_LOG_OPEN_ERR;
+  }; // status ok after lock 
 
   if (status EQUALS ST_OK)
   {
@@ -316,12 +327,12 @@ int
       asctime (localtime (&tmp_time)), tmp_time);
     fprintf (context->log,
       "%s (Rcvd Frame %6d)", logmsg, context->packets_received);
+
+    fprintf (context->log, "Verbosity %d. Device %s Address %2d Speed %s\n",
+      context->verbosity, p_card.filename, p_card.addr, "?");
   };
 
-  fprintf (context->log, "Verbosity %d. Device %s Address %2d Speed %s\n",
-    context->verbosity, p_card.filename, p_card.addr, "?");
-
-  if (context->role != OSDP_ROLE_MONITOR)
+  if ((status EQUALS ST_OK) && (context->role != OSDP_ROLE_MONITOR))
   {
     int idx;
     char logmsg [2*1024]; // 'cause filename could be that long...
@@ -351,62 +362,61 @@ int
     fprintf (stderr, "%s\n", logmsg);
     fprintf (context->log, "%s\n", logmsg);
 
-  
-  memset (&osdp_buf, 0, sizeof (osdp_buf));
-  context->current_menu = OSDP_MENU_TOP;
+    memset (&osdp_buf, 0, sizeof (osdp_buf));
+    context->current_menu = OSDP_MENU_TOP;
 
-  if (status EQUALS ST_OK)
-  {
-    char
-      creds_filename_a [1024];
-
-    creds_buffer_a_next = 0;
-    creds_buffer_a_remaining = 0;
-    strcpy (creds_filename_a, "open-osdp-creds-a.dat");
-    fprintf (context->log, "Credentials File A: %s\n", creds_filename_a);
-
-    // initialize credentials buffer(s)
-
-    creds_f = open (creds_filename_a, O_RDONLY);
-    if (creds_f != -1)
+    if (status EQUALS ST_OK)
     {
-      status_io = read (creds_f, creds_buffer_a, sizeof (creds_buffer_a));
-      if (status_io < 10000)
+      char creds_filename_a [1024];
+
+      creds_buffer_a_next = 0;
+      creds_buffer_a_remaining = 0;
+      strcpy (creds_filename_a, "open-osdp-creds-a.dat");
+      fprintf (context->log, "Credentials File A: %s\n", creds_filename_a);
+
+      // initialize credentials buffer(s)
+
+      creds_f = open (creds_filename_a, O_RDONLY);
+      if (creds_f != -1)
       {
-        creds_buffer_a_lth = status_io;
-        fprintf (context->log, "%d. bytes read from credentials file A\n", creds_buffer_a_lth);
-        status = ST_OK;
+        status_io = read (creds_f, creds_buffer_a, sizeof (creds_buffer_a));
+        if (status_io < 10000)
+        {
+          creds_buffer_a_lth = status_io;
+          fprintf (context->log, "%d. bytes read from credentials file A\n", creds_buffer_a_lth);
+          status = ST_OK;
+        }
+        else
+          status = ST_ERR_INIT_CREDS;
       }
       else
-        status = ST_ERR_INIT_CREDS;
-    }
-    else
-    {
-      // ignore error
-      creds_buffer_a_lth = 0;
-      status = ST_OK;
+      {
+        // ignore error
+        creds_buffer_a_lth = 0;
+        status = ST_OK;
+      };
     };
-  };
 
     status = oo_load_pd_parameters(context, "./osdp-saved-pd-parameters.json");
-    if (status != 0)
+    if (status != ST_OK)
     {
       fprintf(context->log, "Problem loading saved parameters (%d)\n", status);
       status = 0;
     }
+    else
     {
       fprintf(context->log, "Saved parameters loaded.\n");
     };
   }; // NOT monitor mode
 
-
   // we are ready to party.  "last was processed"
-  context->last_was_processed = 1;
-
-  }; // end lock file not found
+  if (status EQUALS ST_OK)
+    context->last_was_processed = 1;
 
   if (status EQUALS ST_OK)
     status = oo_write_status (context);
+  if (status != ST_OK)
+    fprintf(stderr, "OSDP initialization failed (%d.)\n", status);
   return (status);
 
 } /* initialize_osdp */

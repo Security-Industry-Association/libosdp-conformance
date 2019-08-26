@@ -354,6 +354,13 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
 
     case OSDP_CMDB_STOP:
       fprintf (context->log, "STOP command received.  Terminating now.\n");
+      {
+        FILE *tf;
+        tf=fopen(OSDP_TRACE_FILE, "a+");
+        if (tf)
+          fprintf(tf, "  },  \"_#\"\n}\n");
+        fclose(tf);
+      };
       exit (0);
       break;
 
@@ -659,6 +666,11 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         status = ST_OK;
         current_length = 0;
         context->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
+
+        // if they specified key slot 1 use the specified key otherwise use
+        // the default key.
+        if (details_param_1 EQUALS 1)
+          context->enable_secure_channel = 1;
 
         // if default enabled use SCBK-D
         // if not default if key pre-loaded use that else error

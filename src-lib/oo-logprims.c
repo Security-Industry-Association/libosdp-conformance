@@ -323,6 +323,20 @@ void
 
 { /* osdp_trace_dump */
 
+  FILE *tf;
+
+  tf = fopen(OSDP_TRACE_FILE, "a+");
+  if (tf)
+  {
+    if (strlen(trace_out_buffer) > 0)
+      fprintf(tf, "  { \"time\" : \"?\", \"io\" : \"out\", \"data\" : \"%s\" },\n",
+        trace_out_buffer);
+    if (strlen(trace_in_buffer) > 0)
+      fprintf(tf, "  { \"time\" : \"?\", \"io\" : \"in\", \"data\" : \"%s\" },\n",
+        trace_in_buffer);
+    fclose(tf);
+  };
+
   if (strlen(trace_out_buffer) > 0)
   {
     fprintf(ctx->log,

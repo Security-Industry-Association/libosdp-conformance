@@ -528,15 +528,18 @@ int
   };
   if (found_field)
   {
-    char vstr [1024];
+    const char *vstring;
 
     ctx->enable_secure_channel = 1;
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
 
-    strcpy (vstr, json_string_value (value));
-    if (0 EQUALS strcmp (vstr, "DEFAULT"))
+    vstring = json_string_value(value);
+    if (vstring)
     {
-      ctx->enable_secure_channel = 2;
+      if (0 EQUALS strcmp (vstring, "DEFAULT"))
+      {
+        ctx->enable_secure_channel = 2;
+      };
     };
   }; 
 
@@ -600,6 +603,8 @@ int
         sscanf (octetstring, "%x", &byte);
         ctx->current_scbk [i] = byte;
       };
+      fprintf(ctx->log, "Key configured: %s\n", key_value);
+      ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
     };
   };
 

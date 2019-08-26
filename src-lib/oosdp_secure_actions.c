@@ -153,10 +153,17 @@ int
   status = ST_OK;
   nak = 0;
 
+  if (OO_SCS_OPERATIONAL EQUALS ctx->secure_channel_use[OO_SCU_ENAB])
+    osdp_reset_secure_channel(ctx); // ditch the current secure channel session.
+
   // make sure this PD was enabled for secure channel (see enable-secure-channel command)
 
   if (OO_SCS_USE_ENABLED != ctx->secure_channel_use[OO_SCU_ENAB])
+  {
+    fprintf(ctx->log, "osdp_CHLNG received but secure_channel_use is 0x%x\n",
+      ctx->secure_channel_use[OO_SCU_ENAB]);
     nak = 1;
+  };
   if (nak)
   {
     /*

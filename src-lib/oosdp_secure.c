@@ -366,7 +366,7 @@ int
   };
 
   *updated_length = new_length;
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
     dump_buffer_log(ctx, "buffer after build-secure:", (unsigned char *)p, *updated_length);
   return (status);
 
@@ -774,6 +774,8 @@ void
   // secure channel processing is being reset.  set things
   // back to the beginning.
 
+  fprintf (ctx->log, "  Resetting Secure Channel\n");
+
   // refresh rnd.a
   memcpy (ctx->rnd_a, "12345678", 8);
 
@@ -785,8 +787,10 @@ void
   memset (ctx->last_calculated_out_mac, 0, sizeof (ctx->last_calculated_out_mac));
   ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_DISABLED;
   if (ctx->enable_secure_channel > 0)
+  {
+    fprintf(ctx->log, "  Enabling Secure Channel\n");
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
-  fprintf (ctx->log, "  Resetting Secure Channel\n");
+  };
 
 } /* osdp_reset_secure_channel */
 
@@ -892,6 +896,14 @@ int
     ctx->hash_bad ++;
     if (ctx->verbosity > 3)
       fprintf(ctx->log, "  ..SC MAC calculation mis-match\n");
+    fprintf(ctx->log, "  resetting secure channel due to MAC error\n");
+    fflush(ctx->log);
+
+    // if we are the CP and we got a bad HASH then reset the link too.
+    if (ctx->role EQUALS OSDP_ROLE_CP)
+      ctx->next_sequence = 0;
+
+    osdp_reset_secure_channel(ctx);
   };
   fflush(ctx->log);
   return(status);
@@ -998,12 +1010,15 @@ char *osdp_sec_block_dump
 } /* osdp_sec_block_dump */
 
 
+/*
+  osdp_setup_scbk - set up SCBK for secure channel
+
+  if msg is NULL we're setting up the CP to do the challenge
+*/
 int
   osdp_setup_scbk
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* osdp_setup_scbk */
 
