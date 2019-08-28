@@ -72,6 +72,7 @@ int
     if (ctx->enable_secure_channel EQUALS 1)
       if (secure_message->sec_blk_data != OSDP_KEY_SCBK)
         status = ST_OSDP_UNKNOWN_KEY;
+// ctx->secure_channel_use [OO_SCU_KEYED] EQUALS OO_SECPOL_KEYLOADED
 
     if (status EQUALS ST_OK)
     {
@@ -147,10 +148,12 @@ int
   int current_length;
   int nak;
   unsigned char osdp_nak_response_data [2];
+  OSDP_SECURE_MESSAGE *s_msg;
   int status;
 
 
   status = ST_OK;
+  s_msg = (OSDP_SECURE_MESSAGE *)(msg->ptr);
   nak = 0;
 
   if (OO_SCS_OPERATIONAL EQUALS ctx->secure_channel_use[OO_SCU_ENAB])
@@ -215,8 +218,9 @@ int
       osdp_create_keys (ctx);
 
       // build up an SCS_12 response
+      // mimic the sec_blk value in the CHLNG
 
-      if (ctx->enable_secure_channel EQUALS 2)
+      if (s_msg->sec_blk_data EQUALS OSDP_KEY_SCBK_D)
         sec_blk [0] = OSDP_KEY_SCBK_D;
       else
         sec_blk [0] = OSDP_KEY_SCBK;
@@ -283,7 +287,7 @@ fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
 
   memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
   fprintf(ctx->log, "NEW KEY SET\n");
-  (void)oo_save_pd_parameters(ctx, OSDP_SAVED_PARAMETERS);
+  (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS);
 
   current_length = 0;
   status = send_message_ex

@@ -90,7 +90,7 @@ int
     if (ctx->verbosity > 2)
       fprintf(ctx->log, "OSDP_COMSET received, setting addr to %02x speed to %s.\n",
         p_card.addr, ctx->serial_speed);
-    (void)oo_save_pd_parameters(ctx, "./osdp-saved-pd-parameters.json");
+    (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS);
     status = init_serial (ctx, p_card.filename);
   };
   return (status);

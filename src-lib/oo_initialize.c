@@ -397,7 +397,7 @@ int
       };
     };
 
-    status = oo_load_parameters(context, "./osdp-saved-parameters.json");
+    status = oo_load_parameters(context, OSDP_SAVED_PARAMETERS);
     if (status != ST_OK)
     {
       fprintf(context->log, "Problem loading saved parameters (%d)\n", status);
