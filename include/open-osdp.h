@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (50)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_BUILD ( 3)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -997,7 +997,7 @@ int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
 int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
-int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename);
+int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);

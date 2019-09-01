@@ -290,7 +290,7 @@ multipart fragsize msb is total_size >> 8
         // load it to prepare for use, and save it.
         memcpy(context->current_scbk, key_buffer+2,
           sizeof(context->current_scbk));
-        oo_save_parameters(context, OSDP_SAVED_PARAMETERS);
+        oo_save_parameters(context, OSDP_SAVED_PARAMETERS, NULL);
       };
       break;
 

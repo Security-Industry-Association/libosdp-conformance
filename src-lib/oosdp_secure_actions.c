@@ -287,7 +287,8 @@ fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
 
   memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
   fprintf(ctx->log, "NEW KEY SET\n");
-  (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS);
+  (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS,
+    (unsigned char *)(keyset_payload+2)); // key material starts at +2 of the payload
 
   current_length = 0;
   status = send_message_ex

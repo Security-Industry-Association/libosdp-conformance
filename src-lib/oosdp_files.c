@@ -207,21 +207,29 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
 
 /*
   oo_save_parameters -- saves parameters from PD's view
+
+  saves current_scbk unless scbk is specified
 */
 
 int
   oo_save_parameters
     (OSDP_CONTEXT *ctx,
-    char *filename)
+    char *filename,
+    unsigned char *scbk)
 
 { /* oo_save_parameters */
 
   int i;
   FILE *pf;
+  unsigned char scbk_to_save [OSDP_KEY_OCTETS];
 
 
-  dump_buffer_log(ctx, (char *)"Current OSDP (Set) Key:",
-   ctx->current_scbk, OSDP_KEY_OCTETS);
+  if (scbk)
+    memcpy(scbk_to_save, scbk, sizeof(scbk_to_save));
+  else
+    memcpy(scbk_to_save, ctx->current_scbk, sizeof(scbk_to_save));
+  dump_buffer_log(ctx, (char *)"SCBK to be saved:",
+   scbk_to_save, OSDP_KEY_OCTETS);
   pf = fopen(filename, "w");
   if (pf != NULL)
   {
@@ -230,7 +238,7 @@ int
     fprintf(pf, "  \"key\" : \"");
     for (i=0; i<OSDP_KEY_OCTETS; i++)
     {
-      fprintf(pf, "%02x", ctx->current_scbk [i]);
+      fprintf(pf, "%02x", scbk_to_save [i]);
     };
 
     fprintf(pf, "\",\n  \"serial-speed\" : \"%s\",\n",
