@@ -558,15 +558,19 @@ cmd->command = OSDP_CMD_NOOP;
     {
       cmd->command = OSDP_CMDB_INIT_SECURE;
       cmd->details_param_1 = 0;
-      if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
 
       parameter = json_object_get(root, "key-slot");
       if (json_is_string (parameter))
       {
         if (0 EQUALS strcmp("1", json_string_value(parameter)))
           cmd->details_param_1 = 1;
+      };
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+      if (ctx->verbosity > 3)
+      {
+        fprintf(ctx->log, "Enqueue: %s %d\n", test_command, cmd->details_param_1);
       };
     };
   }; 
