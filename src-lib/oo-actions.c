@@ -346,6 +346,7 @@ fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
     osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
     memcpy(osdp_nak_response_data, mfg->vendor_code, 3);
     nak_length = 3;
+fprintf(ctx->log, "DEBUG: 5 NAK: %d.\n", osdp_nak_response_data [0]);
     status = send_message (ctx, OSDP_NAK, p_card.addr, &current_length, nak_length,
       osdp_nak_response_data); ctx->sent_naks ++;
   };
@@ -814,12 +815,14 @@ int
 
   int bits;
   char cmd [2*1024];
-  int processed;
+  int display;
+  char hstr [1024]; // hex string of raw card data payload
   unsigned char *raw_data;
   int status;
 
 
   status = ST_OK;
+  display = 0; // assume encrypted and can't see it.
   if (ctx->role EQUALS OSDP_ROLE_CP)
   {
     (void)oosdp_make_message (OOSDP_MSG_RAW, tlogmsg, msg);
@@ -827,14 +830,20 @@ int
 
     osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
     osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
-    processed = 0;
     raw_data = msg->data_payload + 4;
     dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, msg->data_length);
     if (msg->security_block_length > 0)
     {
-      fprintf (ctx->log, "(RAW card data contents encrypted)\n");
+      fprintf(ctx->log, "  RAW card data contents encrypted.\n");
+    };
+    if (msg->payload_decrypted)
+    {
+      fprintf(ctx->log, "  Contents was decrypted.\n");
+      display = 1;
     };
     if (msg->security_block_length EQUALS 0)
+      display = 1;
+    if (display)
     {
       char raw_fmt [1024];
       /*
@@ -847,19 +856,34 @@ int
       if (*(msg->data_payload+1) > 1)
         sprintf(raw_fmt, "unknown(%d)", *(msg->data_payload+1));
 
-      fprintf(ctx->log, "Raw data: Format %s (Reader %d)\n", raw_fmt, *(msg->data_payload+0));
+      fprintf(ctx->log, "Raw data: Format %s (Reader %d) ", raw_fmt, *(msg->data_payload+0));
       bits = *(msg->data_payload+2) + ((*(msg->data_payload+3))<<8);
       ctx->last_raw_read_bits = bits;
 
-  {
-    int octets;
-      octets = (bits+7)/8;
-      if (octets > sizeof (ctx->last_raw_read_data))
-        octets = sizeof (ctx->last_raw_read_data);
-      memcpy (ctx->last_raw_read_data, raw_data, octets);
-  };
+      fprintf(ctx->log, "%d. bits: ", bits);
+      {
+        int i;
+        int octets;
+        char tstr [32];
+
+        octets = (bits+7)/8;
+        if (octets > sizeof (ctx->last_raw_read_data))
+          octets = sizeof (ctx->last_raw_read_data);
+
+        hstr[0] = 0;
+        for (i=0; i<octets; i++)
+        {
+          sprintf (tstr, "%02x", *(raw_data+i));
+          strcat (hstr, tstr);
+        };
+        fprintf(ctx->log, "%s\n", hstr);
+
+        memcpy (ctx->last_raw_read_data, raw_data, octets);
+      };
+
       status = oo_write_status (ctx);
-      if (bits EQUALS 26)
+if (0)
+//(bits EQUALS 26)
       {
 int idx;
 int bits_to_print;
@@ -882,36 +906,14 @@ int bits_to_print;
             bits_to_print = 0;
         };
         fprintf(ctx->log, "\n");
-        processed = 1;
       };
-      if (!processed)
-      {
-unsigned d;
-int i;
-char hstr [1024];
-int octet_count;
-char tstr [32];
 
-        hstr [0] = 0;
-        octet_count = (bits+7)/8;
-        for (i=0; i<octet_count; i++)
-        {
-          d = *(unsigned char *)(msg->data_payload+4+i);
-          sprintf (tstr, "%02x", d);
-          strcat (hstr, tstr);
-        };
-        fprintf (ctx->log,
-          "Unknown RAW CARD DATA (%d. bits)\n %s\n",
-          bits, hstr);
+      // run the action routine with the bytes,bit count,format
 
-        // run the action routine with the bytesr,bit count,format
-
-        sprintf(cmd,
-          "/opt/osdp-conformance/run/ACU-actions/osdp_RAW %s %d %d",
-          hstr, bits, *(msg->data_payload+1));
-        system(cmd);
-        processed = 1;
-      };
+      sprintf(cmd,
+        "/opt/osdp-conformance/run/ACU-actions/osdp_RAW %s %d %d",
+        hstr, bits, *(msg->data_payload+1));
+      system(cmd);
     }; // not encrypted
   };
 

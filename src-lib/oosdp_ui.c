@@ -359,13 +359,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
 
     case OSDP_CMDB_STOP:
       fprintf (context->log, "STOP command received.  Terminating now.\n");
-      {
-        FILE *tf;
-        tf=fopen(OSDP_TRACE_FILE, "a+");
-        if (tf)
-          fprintf(tf, "  },  \"_#\"\n}\n");
-        fclose(tf);
-      };
+      fflush(context->log);
       exit (0);
       break;
 

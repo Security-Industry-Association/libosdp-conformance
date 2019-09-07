@@ -191,16 +191,6 @@ int
     if (status_io EQUALS -1)
       status = ST_OSDP_EXCLUSIVITY_FAILED;
   };
-  if (status EQUALS ST_OK)
-  {
-    FILE *tf;
-    tf=fopen(OSDP_TRACE_FILE, "w");
-    if (tf)
-    {
-      fprintf(tf, "{\n  \"trace-data\" : {\n");
-      fclose(tf);
-    };
-  };
 
   if (status EQUALS ST_OK)
   {

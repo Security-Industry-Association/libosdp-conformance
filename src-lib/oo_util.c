@@ -1669,6 +1669,7 @@ int
         current_length = 0;
         osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
         osdp_nak_response_data [1] = 0xff;
+fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
         context->sent_naks ++;
@@ -1962,6 +1963,7 @@ fprintf(stderr, "lstat 1684\n");
     case OSDP_ILLICIT:
       {
         osdp_nak_response_data [0] = 0xe0;
+fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message_ex(context, OSDP_NAK, p_card.addr,
           &current_length, 1, osdp_nak_response_data, OSDP_SEC_SCS_18, 0, NULL);
         context->sent_naks ++;
@@ -1989,6 +1991,7 @@ fprintf(stderr, "lstat 1684\n");
           nak_length = 2;
         };
 
+fprintf(context->log, "DEBUG: 4 NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
@@ -2338,6 +2341,15 @@ printf ("MMSG DONE\n");
         context->fw_version [0] = *(9+msg->data_payload);
         context->fw_version [1] = *(10+msg->data_payload);
         context->fw_version [2] = *(11+msg->data_payload);
+
+        sprintf(cmd, "/opt/osdp-conformance/ACU-actions/osdp_PDID OUI %02x%02x%02x M-V %d-%d SN %02x%02x%02x%02x FW %d.%d.%d",
+          context->vendor_code [0], context->vendor_code [1], context->vendor_code [2],
+          context->model, context->version,
+          context->serial_number [0], context->serial_number [1],
+          context->serial_number [2], context->serial_number [3],
+          context->fw_version [0], context->fw_version [1], context->fw_version [2]);
+        system(cmd);
+
         SET_PASS ((context), "4-3-2");
       };
 

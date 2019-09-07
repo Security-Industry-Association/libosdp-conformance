@@ -323,17 +323,21 @@ void
 
 { /* osdp_trace_dump */
 
+  struct timespec current_time_fine;
   FILE *tf;
 
+  clock_gettime (CLOCK_REALTIME, &current_time_fine);
   tf = fopen(OSDP_TRACE_FILE, "a+");
   if (tf)
   {
     if (strlen(trace_out_buffer) > 0)
-      fprintf(tf, "  { \"time\" : \"?\", \"io\" : \"out\", \"data\" : \"%s\" },\n",
-        trace_out_buffer);
+      fprintf(tf, "{ \"time\" : \"%ld.%ld\", \"io\" : \"out\", \"data\" : \"%s\" }\n",
+        current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_out_buffer);
+    fflush(tf);
     if (strlen(trace_in_buffer) > 0)
-      fprintf(tf, "  { \"time\" : \"?\", \"io\" : \"in\", \"data\" : \"%s\" },\n",
-        trace_in_buffer);
+      fprintf(tf, "{ \"time\" : \"%ld.%ld\", \"io\" : \"in\", \"data\" : \"%s\" }\n",
+        current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_in_buffer);
+    fflush(tf);
     fclose(tf);
   };
 

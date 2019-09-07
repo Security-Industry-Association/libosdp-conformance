@@ -93,6 +93,7 @@ int
 
       if (send_response)
       {
+fprintf(context.log, "DEBUG: NAK: %d.\n", osdp_nak_response [0]);
         (void)send_message_ex(&context,
           OSDP_NAK, p_card.addr, &current_length,
           1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);

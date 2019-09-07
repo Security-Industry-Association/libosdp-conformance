@@ -1,0 +1,4 @@
+#!/bin/bash
+#  /opt/osdp-conformance/ACU-actions/osdp_PDID OUI $2 M-V $4 SN $6 FW $8
+wall osdp_PDID received. OUI $2 Model-Version $4 Serial Number $6 Firmware Version $8
+
