@@ -1173,12 +1173,16 @@ fprintf(stderr, "lstat 1000\n");
 
 ///    m->data_length = msg_data_length;
 
+    // crc_check is a pointer, used even if it's a checksum
+
+    m->crc_check = m->cmd_payload + 1 + msg_data_length;
+
     if (m->check_size EQUALS 2)
     {
       hashable_length = hashable_length - 2;
 
       // figure out where crc or checksum starts
-      m->crc_check = m->cmd_payload + 1 + msg_data_length;
+//...
 
       // if it's an SCS with a MAC suffix move the CRC pointer
 

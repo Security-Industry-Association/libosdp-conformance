@@ -62,7 +62,7 @@ int
   // "Chk/CRC" is either 1 byte or 2 depending on Checksum or CRC used.
 
   wire_crc = *(1+msg->crc_check) << 8 | *(msg->crc_check);
-  wire_cksum = *(msg->crc_check);
+  wire_cksum = *(1+msg->crc_check);
 
   sprintf(tmpstr2, " CRC=%04x", wire_crc);
   if (msg->check_size != 2)
