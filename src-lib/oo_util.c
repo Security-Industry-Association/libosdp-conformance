@@ -1635,9 +1635,9 @@ int
       };
     };
 
-
     // update count of whole messages
     context->pdus_received ++;
+//TODO pdus_received v.s packets_received
 
     (void)monitor_osdp_message (context, msg);
 
@@ -1811,6 +1811,9 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           fprintf (context->log, "%s\n", logmsg);
         };
       }
+      sprintf(cmd,
+        "/opt/osdp-conformance/run/ACU-actions/osdp_ID");
+      system(cmd);
     break;
 
     case OSDP_ISTAT:
@@ -2111,16 +2114,17 @@ fprintf(context->log, "DEBUG: 4 NAK: %d.\n", osdp_nak_response_data [0]);
         switch(*(0+msg->data_payload))
         {
         case 1:
-          fprintf(context->log, "  NAK: Bad CRC/Checksum\n");
+          fprintf(context->log, "  NAK: (1)Bad CRC/Checksum\n");
           break;
         case 3:
-          fprintf(context->log, "  NAK: Command not implemented by PD\n");
+          fprintf(context->log, "  NAK: (3)Command not implemented by PD\n");
           break;
         case 4:
-          fprintf(context->log, "  NAK: Unexpected sequence number\n");
+          fprintf(context->log, "  NAK: (4)Unexpected sequence number\n");
+          context->seq_bad ++; // hopefully not double counted, works in monitor mode
           break;
         case 5:
-          fprintf(context->log, "  NAK: Security block not accepted\n");
+          fprintf(context->log, "  NAK: (5)Security block not accepted\n");
           break;
         };
       };

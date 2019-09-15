@@ -192,6 +192,16 @@ int
       status = ST_OSDP_EXCLUSIVITY_FAILED;
   };
 
+  // initialize the trace file to empty
+
+  {
+    FILE *tf;
+    tf = fopen(OSDP_TRACE_FILE, "w");
+    if (tf)
+      fclose(tf);
+  };
+
+
   if (status EQUALS ST_OK)
   {
   osdp_conformance.last_unknown_command = OSDP_POLL;

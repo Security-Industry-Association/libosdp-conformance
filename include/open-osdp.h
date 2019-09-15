@@ -34,7 +34,7 @@
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
-#define OSDP_TRACE_FILE       "osdp_trace.capture"
+#define OSDP_TRACE_FILE       "current.osdpcap"
 
 // default configuration
 
@@ -510,6 +510,7 @@ typedef struct osdp_context
   int checksum_errs;
   int hash_ok;
   int hash_bad;
+  int seq_bad;
   int pdus_received;
   int pdus_sent;
   char init_command [1024];

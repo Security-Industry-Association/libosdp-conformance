@@ -331,11 +331,11 @@ void
   if (tf)
   {
     if (strlen(trace_out_buffer) > 0)
-      fprintf(tf, "{ \"time\" : \"%ld.%ld\", \"io\" : \"out\", \"data\" : \"%s\" }\n",
+      fprintf(tf, "{ \"time\" : \"%010ld.%09ld\", \"io\" : \"out\", \"data\" : \"%s\" }\n",
         current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_out_buffer);
     fflush(tf);
     if (strlen(trace_in_buffer) > 0)
-      fprintf(tf, "{ \"time\" : \"%ld.%ld\", \"io\" : \"in\", \"data\" : \"%s\" }\n",
+      fprintf(tf, "{ \"time\" : \"%010ld.%09ld\", \"io\" : \"in\", \"data\" : \"%s\" }\n",
         current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_in_buffer);
     fflush(tf);
     fclose(tf);

@@ -328,6 +328,8 @@ int
       ctx->pdus_received, ctx->pdus_sent);
     fprintf(sf,
 "\"sent_naks\" : \"%d\",", ctx->sent_naks);
+    fprintf(sf,
+"\"seq-bad\" : \"%d\",", ctx->seq_bad);
     fprintf (sf,
 "\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
     fprintf (sf,
@@ -359,13 +361,12 @@ int
       ctx->verbosity);
     fprintf (sf, "              \"crc-mode\" : \"%d\",\n",
       m_check);
-    fprintf (sf, "          \"timeout\" : \"%ld\",\n",
-      ctx->timer[0].i_sec);
-    fprintf (sf, "             \"poll\" : \"%d\",\n",
-      p_card.poll);
     fprintf (sf,
-"  \"checksum_errors\" : \"%d\",\n",
-      ctx->checksum_errs);
+"  \"timeout\" : \"%ld\", ",
+      ctx->timer[0].i_sec);
+    fprintf (sf,
+" \"poll\" : \"%d\",\n",
+      p_card.poll);
 
     // copy in the keyboard "buffer"
 
