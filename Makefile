@@ -21,10 +21,14 @@
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
 
-all:
+all:	lib
 	(cd src-lib; make all; cd ..)
 	(cd src-485; make all; cd ..)
 	(cd src-ui; make all; cd ..)
+	(cd src-tools; make all; cd ..)
+
+lib:
+	(cd src-lib; make all; cd ..)
 
 osdp-tls:	release
 	(cd src-tls; make all; cd ..)
@@ -38,6 +42,7 @@ clean:
 	(cd src-485; make clean; cd ..)
 	(cd src-tls; make clean; cd ..)
 	(cd src-ui; make clean; cd ..)
+	(cd src-tools; make clean; cd ..)
 	rm -f release-osdp-conformance.tgz
 	rm -rf opt
 
@@ -50,11 +55,12 @@ build:	all
 	(cd src-lib; make build; cd ..)
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)
-	cp doc/config-samples/open-osdp-params-CP.json \
+	(cd src-tools; make build; cd ..)
+	cp doc/examples/config-samples/open-osdp-params-CP.json \
 	  opt/osdp-conformance/run/CP/
-	cp doc/config-samples/open-osdp-params-MON.json \
+	cp doc/examples/config-samples/open-osdp-params-MON.json \
 	  opt/osdp-conformance/run/MON/
-	cp doc/config-samples/open-osdp-params-PD.json \
+	cp doc/examples/config-samples/open-osdp-params-PD.json \
 	  opt/osdp-conformance/run/PD/
 	(cd test; make build-test; cd ..)
 
