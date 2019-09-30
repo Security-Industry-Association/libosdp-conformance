@@ -316,6 +316,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       break;
 
     case OSDP_KEYSET:
+fprintf(ctx->log, "DEBUG: detected osdp_KEYSET\n");
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
       osdp_conformance.cmd_keyset.test_status = OCONFORM_EXERCISED;
@@ -1172,21 +1173,42 @@ fprintf(stderr, "lstat 1000\n");
 
 ///    m->data_length = msg_data_length;
 
+    // crc_check is a pointer, used even if it's a checksum
+
+    m->crc_check = m->cmd_payload + 1 + msg_data_length;
+
     if (m->check_size EQUALS 2)
     {
       hashable_length = hashable_length - 2;
 
       // figure out where crc or checksum starts
-      m->crc_check = m->cmd_payload + 1 + msg_data_length;
+//...
 
       // if it's an SCS with a MAC suffix move the CRC pointer
 
       if (msg_scb)
-        if ((sec_block_type EQUALS OSDP_SEC_SCS_15) ||
-          (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
-          (sec_block_type EQUALS OSDP_SEC_SCS_17) ||
-          (sec_block_type EQUALS OSDP_SEC_SCS_18))
-          m->crc_check = 4 + m->cmd_payload + 1 + msg_data_length;
+      {
+
+        // if we're the CP and we get an SCS but we're not in Secure Channel then
+        // ditch the link session
+
+        if ((sec_block_type EQUALS OSDP_SEC_SCS_15) || (sec_block_type EQUALS OSDP_SEC_SCS_16) ||
+          (sec_block_type EQUALS OSDP_SEC_SCS_17) || (sec_block_type EQUALS OSDP_SEC_SCS_18))
+        {
+          if ((context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL) &&
+            (context->role EQUALS OSDP_ROLE_CP))
+          {
+            fprintf(context->log, "sec_block_type was %x but not in secure channel, resetting\n",
+              sec_block_type);
+            status = ST_SCS_FROM_PD_UNEXPECTED;
+            context->next_sequence = 0;
+          }
+          else
+          {
+            m->crc_check = 4 + m->cmd_payload + 1 + msg_data_length;
+          };
+        };
+      };
 
       parsed_crc = fCrcBlk (m->ptr, msg_lth - 2);
 
@@ -1267,11 +1289,11 @@ status = ST_OK; // tolerate checksum error and continue
         {
           status = oo_hash_check(context, m->ptr, sec_block_type,
             m->crc_check-4, hashable_length);
-// DEBUG
-if (status != ST_OK)
-  fprintf(stderr, "oo_hash_check failed, status %d\n", status);
           if (status EQUALS ST_OK)
             status = osdp_decrypt_payload(context, m);
+          if (status != ST_OK)
+            fprintf(context->log,
+              "Payload decryption failed, status %d.\n", status);
         };
         if (status != ST_OK)
         {
@@ -1410,6 +1432,7 @@ int
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
     case OSDP_KEYSET:
+fprintf(context->log, "DEBUG: logging osdp_KEYSET\n");
       status = oosdp_make_message (OOSDP_MSG_KEYSET, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
@@ -1596,6 +1619,7 @@ int
       fprintf (context->log,
         "  CP sent sequence 0 - resetting sequence numbers\n");
       context->next_sequence = 0;
+      osdp_reset_secure_channel(context);
     };
 
     // if they asked for a NAK mangle the command so we hit the default case of the switch
@@ -1611,9 +1635,9 @@ int
       };
     };
 
-
     // update count of whole messages
     context->pdus_received ++;
+//TODO pdus_received v.s packets_received
 
     (void)monitor_osdp_message (context, msg);
 
@@ -1649,6 +1673,7 @@ int
         current_length = 0;
         osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
         osdp_nak_response_data [1] = 0xff;
+fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
         context->sent_naks ++;
@@ -1786,6 +1811,9 @@ int
           fprintf (context->log, "%s\n", logmsg);
         };
       }
+      sprintf(cmd,
+        "/opt/osdp-conformance/run/ACU-actions/osdp_ID");
+      system(cmd);
     break;
 
     case OSDP_ISTAT:
@@ -1817,6 +1845,7 @@ int
       break;
 
     case OSDP_KEYSET:
+fprintf(context->log, "DEBUG: calling action_osdp_KEYSET\n");
       status = action_osdp_KEYSET (context, msg);
       break;
 
@@ -1941,6 +1970,7 @@ fprintf(stderr, "lstat 1684\n");
     case OSDP_ILLICIT:
       {
         osdp_nak_response_data [0] = 0xe0;
+fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message_ex(context, OSDP_NAK, p_card.addr,
           &current_length, 1, osdp_nak_response_data, OSDP_SEC_SCS_18, 0, NULL);
         context->sent_naks ++;
@@ -1968,6 +1998,7 @@ fprintf(stderr, "lstat 1684\n");
           nak_length = 2;
         };
 
+fprintf(context->log, "DEBUG: 4 NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
@@ -1999,7 +2030,7 @@ fprintf(stderr, "lstat 1684\n");
 
       if (msg->security_block_type >= OSDP_SEC_SCS_11)
       {
-        if (context->verbosity > 3)
+        if (context->verbosity > 9)
           fprintf(stderr, "Received SCS %02x on osdp_ACK\n", msg->security_block_type);
       };
       break;
@@ -2083,16 +2114,17 @@ fprintf(stderr, "lstat 1684\n");
         switch(*(0+msg->data_payload))
         {
         case 1:
-          fprintf(context->log, "  NAK: Bad CRC/Checksum\n");
+          fprintf(context->log, "  NAK: (1)Bad CRC/Checksum\n");
           break;
         case 3:
-          fprintf(context->log, "  NAK: Command not implemented by PD\n");
+          fprintf(context->log, "  NAK: (3)Command not implemented by PD\n");
           break;
         case 4:
-          fprintf(context->log, "  NAK: Unexpected sequence number\n");
+          fprintf(context->log, "  NAK: (4)Unexpected sequence number\n");
+          context->seq_bad ++; // hopefully not double counted, works in monitor mode
           break;
         case 5:
-          fprintf(context->log, "  NAK: Security block not accepted\n");
+          fprintf(context->log, "  NAK: (5)Security block not accepted\n");
           break;
         };
       };
@@ -2317,6 +2349,15 @@ printf ("MMSG DONE\n");
         context->fw_version [0] = *(9+msg->data_payload);
         context->fw_version [1] = *(10+msg->data_payload);
         context->fw_version [2] = *(11+msg->data_payload);
+
+        sprintf(cmd, "/opt/osdp-conformance/ACU-actions/osdp_PDID OUI %02x%02x%02x M-V %d-%d SN %02x%02x%02x%02x FW %d.%d.%d",
+          context->vendor_code [0], context->vendor_code [1], context->vendor_code [2],
+          context->model, context->version,
+          context->serial_number [0], context->serial_number [1],
+          context->serial_number [2], context->serial_number [3],
+          context->fw_version [0], context->fw_version [1], context->fw_version [2]);
+        system(cmd);
+
         SET_PASS ((context), "4-3-2");
       };
 

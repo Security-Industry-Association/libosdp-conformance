@@ -29,11 +29,12 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (45)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_MINOR (50)
+#define OSDP_VERSION_BUILD ( 5)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
-#define OSDP_PD_PARAMETERS    "osdp-saved-pd-parameters.json"
+#define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
+#define OSDP_TRACE_FILE       "current.osdpcap"
 
 // default configuration
 
@@ -412,6 +413,11 @@ typedef struct osdp_command_queue
   OSDP_COMMAND cmd;
 } OSDP_COMMAND_QUEUE;
 
+// poll enable values (see context->enable_poll)
+
+#define OO_POLL_ENABLED (1) // normal polling
+#define OO_POLL_NEVER   (0) // never poll, sequence stays at 0
+#define OO_POLL_RESUME  (2) // go to normal polling after this message is sent
 
 typedef struct osdp_context
 {
@@ -504,6 +510,7 @@ typedef struct osdp_context
   int checksum_errs;
   int hash_ok;
   int hash_bad;
+  int seq_bad;
   int pdus_received;
   int pdus_sent;
   char init_command [1024];
@@ -560,6 +567,10 @@ typedef struct osdp_context
 #define OO_SCU_ENAB  (0)
 	// values below 11 are disabled, enabled, operational
 	// 128+x is an SCS_xx state e.g. 128+SCS_11 is SCS_11
+#define OO_SCS_USE_DISABLED (0)
+#define OO_SCS_USE_ENABLED  (1)
+#define OO_SCS_OPERATIONAL  (2)
+// remember 128+SCSstate also goes here
 
 #define OO_SCU_INST  (1)
 	// OO_SECURE_INSTALL for install mode, normal mode if OO_SECURE_NORMAL
@@ -567,10 +578,6 @@ typedef struct osdp_context
 #define OO_SCU_POL   (2)
 #define OO_SCU_KEYED (3)
 
-#define OO_SCS_USE_DISABLED (0)
-#define OO_SCS_USE_ENABLED  (1)
-#define OO_SCS_OPERATIONAL  (2)
-// remember 128+SCSstate also goes here
 
 #define OO_SECURE_NORMAL    (0)
 #define OO_SECURE_INSTALL   (1)
@@ -937,12 +944,14 @@ typedef struct osdp_multi_hdr
 #define ST_OSDP_SECURE_NOT_ENABLED   (75)
 #define ST_OSDP_SC_BAD_HASH          (76)
 #define ST_CMD_UNDERFLOW             (77)
-#define ST_OSDP_SC_DECRYPT_LTH_1     (78)
-#define ST_OSDP_SC_DECRYPT_LTH_2     (79)
-#define ST_OSDP_SC_ENCRYPT_LTH_1     (80)
-#define ST_OSDP_SC_ENCRYPT_LTH_2     (81)
-#define ST_OSDP_SC_ENCRYPT_LTH_3     (82)
-#define ST_OSDP_EXCEEDS_SC_MAX       (83)
+#define ST_OSDP_SC_DECRYPT_NOT_PADDED ( 78)
+#define ST_OSDP_SC_DECRYPT_LTH_2      ( 79)
+#define ST_OSDP_SC_ENCRYPT_LTH_1      ( 80)
+#define ST_OSDP_SC_ENCRYPT_LTH_2      ( 81)
+#define ST_OSDP_SC_ENCRYPT_LTH_3      ( 82)
+#define ST_OSDP_EXCEEDS_SC_MAX        ( 83)
+#define ST_SCS_FROM_PD_UNEXPECTED     ( 84)
+#define ST_OSDP_EXCLUSIVITY_FAILED    ( 85)
 
 int
   m_version_minor;
@@ -986,10 +995,10 @@ int next_sequence (OSDP_CONTEXT *ctx);
 int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
-int oo_load_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
+int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
-int oo_save_pd_parameters(OSDP_CONTEXT *ctx, char *filename);
+int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);

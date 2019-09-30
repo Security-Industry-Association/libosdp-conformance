@@ -1,14 +1,42 @@
 /*
-  osdp-sc-calc - calculate secure channel values
+  osdp-sc-calc - calculate secure channel values using SCBK-D
 
   Usage:
 
-    osdp-sc-calc chlng ccrypt cc dd
+    osdp-sc-calc chlng client-cryptogram server-cryptogram
 
   Where:
     chlng is the osdp_CHLNG payload
     ccrypt is the osdp_CCRYPT client cryptogram
+
+Example shell script:
+#!/bin/bash
+
+CHLNG_PAYLOAD="45 46 35 30 32 45 37 37"
+CLIENT_CRYPTOGRAM="b0 90 44 a2 fb 7f f3 34 83 73 35 db da 5c 9a 4a"
+SERVER_CRYPTOGRAM="7a fc 6c d5 40 24 42 b0 11 e3 2c a5 2b f8 0b c8"
+
+./osdp-sc-calc "${CHLNG_PAYLOAD}" "${CLIENT_CRYPTOGRAM}" "${SERVER_CRYPTOGRAM}"
+
+  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+
+  Support provided by the Security Industry Association
+  http://www.securityindustry.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
+
 
 #include <string.h>
 #include <stdio.h>

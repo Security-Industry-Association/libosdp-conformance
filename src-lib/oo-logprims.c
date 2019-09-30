@@ -62,7 +62,7 @@ int
   // "Chk/CRC" is either 1 byte or 2 depending on Checksum or CRC used.
 
   wire_crc = *(1+msg->crc_check) << 8 | *(msg->crc_check);
-  wire_cksum = *(msg->crc_check);
+  wire_cksum = *(1+msg->crc_check);
 
   sprintf(tmpstr2, " CRC=%04x", wire_crc);
   if (msg->check_size != 2)
@@ -322,6 +322,24 @@ void
     (OSDP_CONTEXT *ctx)
 
 { /* osdp_trace_dump */
+
+  struct timespec current_time_fine;
+  FILE *tf;
+
+  clock_gettime (CLOCK_REALTIME, &current_time_fine);
+  tf = fopen(OSDP_TRACE_FILE, "a+");
+  if (tf)
+  {
+    if (strlen(trace_out_buffer) > 0)
+      fprintf(tf, "{ \"time\" : \"%010ld.%09ld\", \"io\" : \"out\", \"data\" : \"%s\" }\n",
+        current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_out_buffer);
+    fflush(tf);
+    if (strlen(trace_in_buffer) > 0)
+      fprintf(tf, "{ \"time\" : \"%010ld.%09ld\", \"io\" : \"in\", \"data\" : \"%s\" }\n",
+        current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_in_buffer);
+    fflush(tf);
+    fclose(tf);
+  };
 
   if (strlen(trace_out_buffer) > 0)
   {

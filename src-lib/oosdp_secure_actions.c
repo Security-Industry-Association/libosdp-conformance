@@ -72,6 +72,7 @@ int
     if (ctx->enable_secure_channel EQUALS 1)
       if (secure_message->sec_blk_data != OSDP_KEY_SCBK)
         status = ST_OSDP_UNKNOWN_KEY;
+// ctx->secure_channel_use [OO_SCU_KEYED] EQUALS OO_SECPOL_KEYLOADED
 
     if (status EQUALS ST_OK)
     {
@@ -147,16 +148,25 @@ int
   int current_length;
   int nak;
   unsigned char osdp_nak_response_data [2];
+  OSDP_SECURE_MESSAGE *s_msg;
   int status;
 
 
   status = ST_OK;
+  s_msg = (OSDP_SECURE_MESSAGE *)(msg->ptr);
   nak = 0;
+
+  if (OO_SCS_OPERATIONAL EQUALS ctx->secure_channel_use[OO_SCU_ENAB])
+    osdp_reset_secure_channel(ctx); // ditch the current secure channel session.
 
   // make sure this PD was enabled for secure channel (see enable-secure-channel command)
 
   if (OO_SCS_USE_ENABLED != ctx->secure_channel_use[OO_SCU_ENAB])
+  {
+    fprintf(ctx->log, "osdp_CHLNG received but secure_channel_use is 0x%x\n",
+      ctx->secure_channel_use[OO_SCU_ENAB]);
     nak = 1;
+  };
   if (nak)
   {
     /*
@@ -188,12 +198,14 @@ int
       fprintf(ctx->log, "SCBK Set-up error %d.\n", status);
       nak = 1;
       osdp_reset_secure_channel (ctx);
+
+      // NAK, "encryption required" (close...), no details (length=1)
+
+      osdp_nak_response_data [0] = OO_NAK_ENCRYPTION_REQUIRED;
       current_length = 0;
-      osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
-      osdp_nak_response_data [1] = status;
       status = send_message (ctx,
         OSDP_NAK, p_card.addr, &current_length,
-        sizeof(osdp_nak_response_data), osdp_nak_response_data);
+        1, osdp_nak_response_data);
       ctx->sent_naks ++;
       osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
       if (ctx->verbosity > 2)
@@ -206,8 +218,9 @@ int
       osdp_create_keys (ctx);
 
       // build up an SCS_12 response
+      // mimic the sec_blk value in the CHLNG
 
-      if (ctx->enable_secure_channel EQUALS 2)
+      if (s_msg->sec_blk_data EQUALS OSDP_KEY_SCBK_D)
         sec_blk [0] = OSDP_KEY_SCBK_D;
       else
         sec_blk [0] = OSDP_KEY_SCBK;
@@ -253,11 +266,13 @@ int
 
 { /* action_osdp_KEYSET */
 
+  int current_length;
   unsigned char *keyset_payload;
   int new_key_length;
   int status;
 
 
+fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
   status = ST_OK;
   keyset_payload = (unsigned char *)(msg->data_payload);
   // new key type is ignored
@@ -266,13 +281,21 @@ int
   if (new_key_length != OSDP_KEY_OCTETS)
   {
     fprintf(ctx->log,
-"Bad key (%d.) sent, using %d instead.\n", new_key_length, OSDP_KEY_OCTETS);
+      "Bad key length (%d.) sent, using %d instead.\n",
+      new_key_length, OSDP_KEY_OCTETS);
   };
 
   memcpy(ctx->current_scbk, keyset_payload+2, OSDP_KEY_OCTETS);
   fprintf(ctx->log, "NEW KEY SET\n");
-  (void)oo_save_pd_parameters(ctx, OSDP_PD_PARAMETERS);
+  (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS,
+    (unsigned char *)(keyset_payload+2)); // key material starts at +2 of the payload
 
+  current_length = 0;
+  status = send_message_ex
+    (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
+    OSDP_SEC_SCS_16, 0, NULL);
+
+fprintf(ctx->log, "DEBUG: action_osdp_KEYSET bottom\n");
   return (status);
 
 } /* action_osdp_KEYSET */

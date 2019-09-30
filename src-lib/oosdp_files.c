@@ -167,53 +167,90 @@ void
 
 
 int
-  oo_load_pd_parameters
+  oo_load_parameters
     (OSDP_CONTEXT *ctx,
     char *filename)
 
-{ /* oo_load_pd_parameters */
+{ /* oo_load_parameters */
 
-  fprintf(ctx->log, "STUB: loading PD parameters...\n");
+  char new_key [1024];
+  unsigned short new_key_length;
+  json_t *saved_parameters_root;
+  int status;
+  json_error_t status_json;
+  json_t *value;
+
+
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "Loading parameters from %s\n", filename);
+  saved_parameters_root = json_load_file(filename, 0, &status_json);
+
+  value = json_object_get(saved_parameters_root, "key");
+  if (json_is_string (value))
+  {
+    strcpy(new_key, json_string_value(value));
+fprintf(ctx->log, "restoring key %s\n", new_key);
+    new_key_length = sizeof(ctx->current_scbk);
+    status = osdp_string_to_buffer(ctx,
+      new_key, ctx->current_scbk, &new_key_length);
+    if (status EQUALS ST_OK)
+      ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
+    else
+    {
+      fprintf(ctx->log, "failed to load key from saved parameters\n");
+    };
+  };
   return(ST_OK);
 
-} /* oo_load_pd_parameters */
+} /* oo_load_parameters */
 
 
 /*
-  oo_save_pd_parameters -- saves parameters from PD's view
+  oo_save_parameters -- saves parameters from PD's view
+
+  saves current_scbk unless scbk is specified
 */
 
 int
-  oo_save_pd_parameters
+  oo_save_parameters
     (OSDP_CONTEXT *ctx,
-    char *filename)
+    char *filename,
+    unsigned char *scbk)
 
-{ /* oo_save_pd_parameters */
+{ /* oo_save_parameters */
 
   int i;
   FILE *pf;
+  unsigned char scbk_to_save [OSDP_KEY_OCTETS];
 
 
-  dump_buffer_log(ctx, (char *)"Current OSDP (Set) Key:",
-   ctx->current_scbk, OSDP_KEY_OCTETS);
+  if (scbk)
+    memcpy(scbk_to_save, scbk, sizeof(scbk_to_save));
+  else
+    memcpy(scbk_to_save, ctx->current_scbk, sizeof(scbk_to_save));
+  dump_buffer_log(ctx, (char *)"SCBK to be saved:",
+   scbk_to_save, OSDP_KEY_OCTETS);
   pf = fopen(filename, "w");
   if (pf != NULL)
   {
-    fprintf(pf, "{\n  \"#\" : \"saved OSDP parameters\"\n");
+    fprintf(pf, "{\n  \"#\" : \"saved OSDP parameters\",\n");
 
     fprintf(pf, "  \"key\" : \"");
     for (i=0; i<OSDP_KEY_OCTETS; i++)
     {
-      fprintf(pf, "%02x", ctx->current_scbk [i]);
+      fprintf(pf, "%02x", scbk_to_save [i]);
     };
 
-    fprintf(pf, "\"-\" : \"-\"\n");
+    fprintf(pf, "\",\n  \"serial-speed\" : \"%s\",\n",
+      ctx->serial_speed);
+
+    fprintf(pf, "\n  \"_#\" : \"-\"\n");
     fprintf(pf, "}\n");
     fclose(pf);
   };
   return(ST_OK);
 
-} /* oo_save_pd_parameters */
+} /* oo_save_parameters */
 
 
 int
@@ -291,6 +328,8 @@ int
       ctx->pdus_received, ctx->pdus_sent);
     fprintf(sf,
 "\"sent_naks\" : \"%d\",", ctx->sent_naks);
+    fprintf(sf,
+"\"seq-bad\" : \"%d\",", ctx->seq_bad);
     fprintf (sf,
 "\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
     fprintf (sf,
@@ -322,13 +361,12 @@ int
       ctx->verbosity);
     fprintf (sf, "              \"crc-mode\" : \"%d\",\n",
       m_check);
-    fprintf (sf, "          \"timeout\" : \"%ld\",\n",
-      ctx->timer[0].i_sec);
-    fprintf (sf, "             \"poll\" : \"%d\",\n",
-      p_card.poll);
     fprintf (sf,
-"  \"checksum_errors\" : \"%d\",\n",
-      ctx->checksum_errs);
+"  \"timeout\" : \"%ld\", ",
+      ctx->timer[0].i_sec);
+    fprintf (sf,
+" \"poll\" : \"%d\",\n",
+      p_card.poll);
 
     // copy in the keyboard "buffer"
 

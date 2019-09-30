@@ -2,9 +2,10 @@
 
 PROGS=osdp-dump osdp-sc-calc
 CGI_PROGS=osdp-decode osdp-packet-decode
+OSDPINCLUDE=../include
+OSDPBUILD=../opt/osdp-conformance
+OSDPLIB=${OSDPBUILD}/lib
 CC=clang
-OSDPLIB=../../opt/osdp-conformance/lib
-OSDPINCLUDE=../../include
 CFLAGS=-c -g -I${OSDPINCLUDE} -I/opt/osdp-conformance/include -Wall -Werror
 LINK=clang
 LDFLAGS=-g /opt/osdp-conformance/lib/aes.o -L ${OSDPLIB} -l osdp -ljansson
@@ -15,8 +16,10 @@ clean:
 	rm -rf ${PROGS} ${CGI_PROGS} *.o core
 
 build:	all
-	mkdir -p ../../opt/osdp-conformance/cgi-bin
-	cp ${CGI_PROGS} ../../opt/osdp-conformance/cgi-bin
+	mkdir -p ${OSDPBUILD}/bin
+	cp ${PROGS} ${OSDPBUILD}/bin
+	mkdir -p ${OSDPBUILD}/cgi-bin
+	cp ${CGI_PROGS} ${OSDPBUILD}/cgi-bin
 
 osdp-decode:	osdp-decode.o Makefile 
 	${LINK} -o osdp-decode osdp-decode.c ${LDFLAGS}
@@ -44,4 +47,7 @@ osdp-sc-calc:	osdp-sc-calc.o osdp-dump-util.o Makefile
 
 osdp-sc-calc.o:	osdp-sc-calc.c
 	${CC} ${CFLAGS} osdp-sc-calc.c
+
+${OSDPLIB}/libosdp.a:
+	(cd ../src-lib; make build; cd ../src-tools)
 

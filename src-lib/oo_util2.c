@@ -94,7 +94,12 @@ int
     {
       send_poll = 0;
     };
-    if (!(context->enable_poll))
+
+    // if polling is not enabled do not send one
+    // (resume is used to start at a given command)
+
+    if ((OO_POLL_NEVER EQUALS (context->enable_poll)) ||
+      (OO_POLL_RESUME EQUALS (context->enable_poll)))
       send_poll = 0;
   if (send_poll)
   {
@@ -275,9 +280,16 @@ int
     ctx->next_sequence++;
     if (ctx->next_sequence > 3)
       ctx->next_sequence = 1;
-// if they disabled polling don't increment the sequence number
-if (!(ctx->enable_poll))
-  ctx->next_sequence = 0;
+
+    // if polling is to resume enable it now
+    if (OO_POLL_RESUME EQUALS (ctx->enable_poll))
+      ctx->enable_poll = OO_POLL_ENABLED;
+    if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
+      ctx->next_sequence = 0;
+
+    // if they disabled polling don't increment the sequence number
+    if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
+      ctx->next_sequence = 0;
   }
   else
   {
@@ -528,15 +540,18 @@ int
   };
   if (found_field)
   {
-    char vstr [1024];
+    const char *vstring;
 
     ctx->enable_secure_channel = 1;
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
 
-    strcpy (vstr, json_string_value (value));
-    if (0 EQUALS strcmp (vstr, "DEFAULT"))
+    vstring = json_string_value(value);
+    if (vstring)
     {
-      ctx->enable_secure_channel = 2;
+      if (0 EQUALS strcmp (vstring, "DEFAULT"))
+      {
+        ctx->enable_secure_channel = 2;
+      };
     };
   }; 
 
@@ -600,6 +615,8 @@ int
         sscanf (octetstring, "%x", &byte);
         ctx->current_scbk [i] = byte;
       };
+      fprintf(ctx->log, "Key configured: %s\n", key_value);
+      ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
     };
   };
 

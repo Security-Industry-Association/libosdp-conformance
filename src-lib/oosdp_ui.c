@@ -266,18 +266,31 @@ multipart fragsize msb is total_size >> 8
 
     case OSDP_CMDB_KEYSET:
       {
-        unsigned char key_buffer [OSDP_KEY_OCTETS];
+        unsigned char key_buffer [2+OSDP_KEY_OCTETS];
         unsigned short int keybuflth;
 
-        keybuflth = sizeof(key_buffer);
+        keybuflth = sizeof(key_buffer) - 2;
         status = osdp_string_to_buffer(context,
-          details, key_buffer, &keybuflth);
+          details, key_buffer+2, &keybuflth);
+        key_buffer [0] = 1; // SCBK
+        key_buffer [1] = OSDP_KEY_OCTETS;
+
+        keybuflth = sizeof(key_buffer);
         current_length = 0;
+        if (context->verbosity > 3)
+        {
+          dump_buffer_log(context, "KEYSET key:", key_buffer, keybuflth);
+        };
         status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
           &current_length, keybuflth, key_buffer,
           OSDP_SEC_SCS_17, 0, NULL);
         osdp_conformance.cmd_keyset.test_status =
           OCONFORM_EXERCISED;
+
+        // load it to prepare for use, and save it.
+        memcpy(context->current_scbk, key_buffer+2,
+          sizeof(context->current_scbk));
+        oo_save_parameters(context, OSDP_SAVED_PARAMETERS, NULL);
       };
       break;
 
@@ -346,6 +359,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
 
     case OSDP_CMDB_STOP:
       fprintf (context->log, "STOP command received.  Terminating now.\n");
+      fflush(context->log);
       exit (0);
       break;
 
@@ -648,9 +662,18 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
       {
         unsigned char sec_blk_1 [1];
 
+        if (context->verbosity > 3)
+        {
+          fprintf(context->log, "Initiating secure channel.\n");
+        };
         status = ST_OK;
         current_length = 0;
         context->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
+
+        // if they specified key slot 1 use the specified key otherwise use
+        // the default key.
+        if (details_param_1 EQUALS 1)
+          context->enable_secure_channel = 1;
 
         // if default enabled use SCBK-D
         // if not default if key pre-loaded use that else error
@@ -687,6 +710,11 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
               OSDP_SEC_SCS_11, sizeof (sec_blk_1), sec_blk_1);
           };
         };
+      };
+      if (context->verbosity > 3)
+      {
+        fprintf(context->log, "Initiation of secure channel complete (status=%d.)\n",
+          status);
       };
       break;
 
