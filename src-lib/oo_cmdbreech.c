@@ -138,7 +138,11 @@ int
   value = json_object_get (root, "command");
   if (!json_is_string (value)) status = ST_CMD_INVALID;
   if (status EQUALS ST_OK)
+  {
     strcpy (current_command, json_string_value (value));
+
+    fprintf(ctx->log, "Command %s received.\n", current_command);
+  };
 
   // command acurxsize.  Sends the proper value (as the ACU)
 

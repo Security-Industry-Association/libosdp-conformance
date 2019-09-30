@@ -319,7 +319,7 @@ int
   };
 
   fprintf (context->log, "Verbosity %d. Device %s Address %2d Speed %s\n",
-    context->verbosity, p_card.filename, p_card.addr, "?");
+    context->verbosity, p_card.filename, p_card.addr, context->serial_speed);
 
   if (context->role != OSDP_ROLE_MONITOR)
   {
