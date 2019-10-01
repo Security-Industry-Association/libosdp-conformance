@@ -903,15 +903,18 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
     switch (returned_hdr->command)
     {
     default:
-      //status = ST_PARSE_UNKNOWN_CMD;
-      m->data_payload = m->cmd_payload + 1;
-      msg_data_length = 0;
-      if (context->verbosity > 2)
-        strcpy (tlogmsg2, "\?\?\?");
+      if ((context->role EQUALS OSDP_ROLE_PD) && !(0x80 & p->addr))
+      {
+        // it's not for another PD
+        m->data_payload = m->cmd_payload + 1;
+        msg_data_length = 0;
+        if (context->verbosity > 2)
+          strcpy (tlogmsg2, "\?\?\?");
 
-      // if we don't recognize the command/reply code it fails 2-15-1
-      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
-      SET_FAIL ((context), "2-15-1");
+        // if we don't recognize the command/reply code it fails 2-15-1
+        osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
+        SET_FAIL ((context), "2-15-1");
+      };
       break;
 
     case OSDP_ACURXSIZE:
@@ -1375,7 +1378,8 @@ status = ST_OK; // tolerate checksum error and continue
 
   // if there was an error dump the log buffer
 
-  if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT))
+  if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT) &&
+    (status != ST_NOT_MY_ADDR))
   {
     // if parse failed report the status code
     if ((context->verbosity > 3) && (status != ST_MONITOR_ONLY))
