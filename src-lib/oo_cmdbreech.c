@@ -1024,6 +1024,10 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         ctx->verbosity = i;
+        if (ctx->verbosity > 3)
+          ctx->trace = 1; // turn on tracing (should be stricter about low-order bit.)
+        else
+          ctx->trace = 0; // turn off tracing (should be stricter about low-order bit.)
       };
     };
   }; 

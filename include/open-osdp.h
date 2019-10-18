@@ -32,6 +32,8 @@
 #define OSDP_VERSION_MINOR (51)
 #define OSDP_VERSION_BUILD ( 1)
 
+#define OSDP_TRACE_VERSION_0 (0)
+
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
 #define OSDP_TRACE_FILE       "current.osdpcap"
