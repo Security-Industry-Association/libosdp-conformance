@@ -342,9 +342,8 @@ int
         }
         else
         {
-          if (context.verbosity > 8)
+          if (context.trace & 1)
           {
-//            fprintf(context.log, "RAW SERIAL: %02x\n", buffer [0]);
             sprintf(octet, " %02x", buffer [0]);
             strcat(trace_in_buffer, octet);
           };
@@ -428,7 +427,7 @@ int
     };
     fprintf (stderr, "\n");
   };
-  if (context->verbosity > 3)
+  if (context->trace & 1)
   {
     char octet [4];
     int i;

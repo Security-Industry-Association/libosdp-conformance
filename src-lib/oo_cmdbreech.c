@@ -159,6 +159,10 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
+  case OSDP_CMDB_TRACE:
+    ctx->trace = 1 ^ ctx->trace; // toggle low order bit
+    break;
+
   default:
     if (ctx->verbosity > 3)
       fprintf(stderr, "command not processed in switch (%d.)\n", cmd->command);

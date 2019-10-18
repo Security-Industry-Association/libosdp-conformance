@@ -182,6 +182,8 @@ int
       ret_cmd = OSDP_CMDB_POLLING;
     if (0 EQUALS strcmp(command, "reset"))
       ret_cmd = OSDP_CMDB_RESET;
+    if (0 EQUALS strcmp(command, "trace"))
+      ret_cmd = OSDP_CMDB_TRACE;
     if (ret_cmd != -1)
       status = ST_OK;
   };

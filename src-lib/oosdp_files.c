@@ -355,11 +355,12 @@ int
         j, ctx->out [j].current);
     };
     fprintf(sf, "\n");
-    fprintf (sf, "     \"power_report\" : \"%d\",\n",
+    fprintf (sf, "     \"power_report\" : \"%d\", ",
       ctx->power_report);
-    fprintf (sf, "        \"verbosity\" : \"%d\",\n",
-      ctx->verbosity);
-    fprintf (sf, "              \"crc-mode\" : \"%d\",\n",
+    fprintf (sf,
+"        \"verbosity\" : \"%d\", \"trace\" : \"%d\",  ",
+      ctx->verbosity, ctx->trace);
+    fprintf (sf, "              \"crc-mode\" : \"%d\", ",
       m_check);
     fprintf (sf,
 "  \"timeout\" : \"%ld\", ",
