@@ -330,6 +330,11 @@ void
   tf = fopen(OSDP_TRACE_FILE, "a+");
   if (tf)
   {
+    char *tag;
+    tag = "in";
+    if (ctx->role EQUALS OSDP_ROLE_MONITOR)
+      tag = "trace";
+
     if (strlen(trace_out_buffer) > 0)
       fprintf(tf,
 "{ \"time\" : \"%010ld.%09ld\", \"io\" : \"out\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
@@ -338,8 +343,8 @@ void
     fflush(tf);
     if (strlen(trace_in_buffer) > 0)
       fprintf(tf,
-"{ \"time\" : \"%010ld.%09ld\", \"io\" : \"in\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
-        current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_in_buffer,
+"{ \"time\" : \"%010ld.%09ld\", \"io\" : \"%s\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
+        current_time_fine.tv_sec, current_time_fine.tv_nsec, tag, trace_in_buffer,
         OSDP_TRACE_VERSION_0, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
     fflush(tf);
     fclose(tf);
