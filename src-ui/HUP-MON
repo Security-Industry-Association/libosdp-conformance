@@ -1,0 +1,4 @@
+#!/bin/bash
+echo "00" >/tmp/1.in
+/opt/osdp-conformance/bin/open-osdp-kick MON </tmp/1.in
+
