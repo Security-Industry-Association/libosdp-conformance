@@ -242,6 +242,10 @@ int
 if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conformance.conforming_messages); \
         osdp_conformance.conforming_messages ++;};
 
+    case OSDP_ACURXSIZE:
+      OSDP_CHECK_CMDREP ("osdp_ACURXSIZE", cmd_max_rec, 1);
+      break;
+
     case OSDP_BUZ:
 #ifndef NOSQUISH
       OSDP_CHECK_CMDREP ("osdp_BUZZ", cmd_buz, 1);
