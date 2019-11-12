@@ -218,13 +218,13 @@ status = -1;
 #if 1
 //0
       fprintf (stderr,
-"Role: %d (0=CP,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
+"Role: %d (0=ACU,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
          context->role, m_check);
       fprintf (stderr,
 "  Timeout %02d(%d.) Dump %d Debug %d.\n",
          m_idle_timeout, p_card.poll, m_dump, context->verbosity);
       fprintf (stderr,
-" PwrRpt %d Special-1 %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
+" PwrRpt %d Special-1 %d\nACU Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report, context->special_1,
          context->cp_polls, context->pd_acks, context->sent_naks,
          context->checksum_errs);
@@ -439,13 +439,13 @@ status = -1;
       break;
     case OSDP_CMD_DUMP_STATUS:
       fprintf (stderr,
-"Role: %d (0=CP,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
+"Role: %d (0=ACU,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
          context->role, m_check);
       fprintf (stderr,
 "  Timeout %02d(%d.) Dump %d Debug %d.\n",
          m_idle_timeout, p_card.poll, m_dump, context->verbosity);
       fprintf (stderr,
-" PwrRpt %d Special-1 %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
+" PwrRpt %d Special-1 %d\nACU Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report, context->special_1,
          context->cp_polls, context->pd_acks, context->sent_naks,
          context->checksum_errs);
@@ -496,7 +496,7 @@ int
   status = -3;
   printf ("Usage:\n");
   printf ("--checksum - use checksum\n");
-  printf ("--cp       - configure as CP\n");
+  printf ("--cp       - configure as ACU\n");
   printf ("--crc      - use CRC\n");
   printf ("--debug    - generate debug messages\n");
   printf ("--device=/dev/ttyUSB0 - specify device\n");
