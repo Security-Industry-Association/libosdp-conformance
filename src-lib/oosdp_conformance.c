@@ -310,7 +310,7 @@ void
   oconf->skipped = 0;
 
   if (ctx->role EQUALS OSDP_ROLE_PD)
-    role_tag = "CP";
+    role_tag = "ACU";
   else
     role_tag = "PD";
   profile_tag = "Basic"; // really should constrain tests to use etc.
@@ -392,7 +392,7 @@ void
 "2-6-2  Packet size from PD                %s",
     conformance_status (oconf->packet_size_from_pd.test_status)));
   LOG_REPORT ((log_string,
-"2-6-3  Packet size stress CP              %s",
+"2-6-3  Packet size stress ACU             %s",
     conformance_status (oconf->packet_size_stress_cp.test_status)));
   LOG_REPORT ((log_string,
 "2-6-4  Stress PD to ACU                   %s",
@@ -745,7 +745,7 @@ OSDP_SCORE_COUNTERS
   if (strcmp (role_tag, "PD"))  // if I'm the PD I'm testing the CP...
   {
    LOG_REPORT ((log_string, 
-"TEST RESULTS for CP Conformance %s\n",
+"TEST RESULTS for ACU Conformance %s\n",
   asctime (localtime (&current_time)) ));
   }
   else

@@ -131,8 +131,8 @@ fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
     // set things up depending on role.
 
     strcpy (tag, "PD");
-    if (context.role EQUALS OSDP_ROLE_CP)
-      strcpy (tag, "CP");
+    if (context.role EQUALS OSDP_ROLE_ACU)
+      strcpy (tag, "ACU");
     if (context.role EQUALS OSDP_ROLE_MONITOR)
       strcpy (tag, "MON");
     sprintf (context.command_path,
@@ -150,8 +150,8 @@ fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
   };
   if (status EQUALS ST_OK)
   {
-    if (context.role EQUALS OSDP_ROLE_CP)
-      fprintf (stderr, "Role: CP\n");
+    if (context.role EQUALS OSDP_ROLE_ACU)
+      fprintf (stderr, "Role: ACU\n");
     if (context.role EQUALS OSDP_ROLE_PD)
       fprintf (stderr, "Role: PD\n");
   };

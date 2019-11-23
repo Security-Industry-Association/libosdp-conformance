@@ -68,7 +68,7 @@ int
   // if we're not enabled for secure channel
   // yeah, poll
 
-  if (context->role EQUALS OSDP_ROLE_CP)
+  if (context->role EQUALS OSDP_ROLE_ACU)
     if (context->xferctx.total_length EQUALS 0)
       if (context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
         if (!(context->secure_channel_use [OO_SCU_ENAB] & 0x80))
@@ -76,7 +76,7 @@ int
 
   // if we're in secure channel and the other conditions, do a secure poll
 
-  if (context->role EQUALS OSDP_ROLE_CP)
+  if (context->role EQUALS OSDP_ROLE_ACU)
   {
     if (context->xferctx.total_length EQUALS 0)
     {
@@ -811,11 +811,11 @@ fprintf (stderr, "processing value %s\n",
   {
     was_valid = 0;
     strcpy (this_command, json_string_value (value));
-    test_command = "CP";
+    test_command = "ACU";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       was_valid = 1;
-      context.role = OSDP_ROLE_CP;
+      context.role = OSDP_ROLE_ACU;
     };
     test_command = "MON";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
@@ -1112,8 +1112,8 @@ int
       m.lth = *current_length;
 
       // parse the message for display.  role to parse is the OTHER guy
-      parse_role = OSDP_ROLE_CP;
-      if (context->role EQUALS OSDP_ROLE_CP)
+      parse_role = OSDP_ROLE_ACU;
+      if (context->role EQUALS OSDP_ROLE_ACU)
         parse_role = OSDP_ROLE_PD;
       status_monitor = osdp_parse_message (context, parse_role,
         &m, &returned_hdr);
@@ -1211,14 +1211,14 @@ int
       };
       if (data_length > 0)
       {
-        if (ctx->role EQUALS OSDP_ROLE_CP)
+        if (ctx->role EQUALS OSDP_ROLE_ACU)
           current_sec_block_type = OSDP_SEC_SCS_17;
         else
           current_sec_block_type = OSDP_SEC_SCS_18;
       };
       if (data_length EQUALS 0)
       {
-        if (ctx->role EQUALS OSDP_ROLE_CP)
+        if (ctx->role EQUALS OSDP_ROLE_ACU)
           current_sec_block_type = OSDP_SEC_SCS_15;
         else
           current_sec_block_type = OSDP_SEC_SCS_16;

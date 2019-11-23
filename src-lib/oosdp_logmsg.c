@@ -831,7 +831,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     break;
 
   case OOSDP_MSG_PKT_STATS:
-    sprintf (tlogmsg, " CP-Polls %6d PD-Acks %6d PD-NAKs %6d CkSumErr %6d\n",
+    sprintf (tlogmsg, " ACU-Polls %6d PD-Acks %6d PD-NAKs %6d CkSumErr %6d\n",
       context.cp_polls, context.pd_acks, context.sent_naks,
       context.checksum_errs);
     break;
@@ -908,7 +908,7 @@ int
   strcpy (timestamp, "");
   if (logtype EQUALS OSDP_LOG_STRING_CP)
   {
-    role_tag = "CP";
+    role_tag = "ACU";
     llogtype = OSDP_LOG_STRING;
   };
   if (logtype EQUALS OSDP_LOG_STRING_PD)
@@ -925,7 +925,7 @@ int
     clock_gettime (CLOCK_REALTIME, &current_time_fine);
     (void) time (&current_raw_time);
     current_cooked_time = localtime (&current_raw_time);
-if (strcmp ("CP", role_tag)==0)
+if (strcmp ("ACU", role_tag)==0)
   sprintf (address_suffix, " DestAddr=%02x(hex)", context->this_message_addr);
 else
   sprintf (address_suffix, " A=%02x(hex)", context->this_message_addr);

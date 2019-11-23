@@ -280,8 +280,8 @@ int
 
   if (ctx->role EQUALS OSDP_ROLE_PD)
     strcpy (tag, "PD");
-  if (ctx->role EQUALS OSDP_ROLE_CP)
-    strcpy (tag, "CP");
+  if (ctx->role EQUALS OSDP_ROLE_ACU)
+    strcpy (tag, "ACU");
   if (ctx->role EQUALS OSDP_ROLE_MONITOR)
     strcpy (tag, "MON");
   sprintf (statfile, "/opt/osdp-conformance/run/%s/osdp-status.json",

@@ -452,7 +452,7 @@ fprintf(ctx->log, "DEBUG: detected osdp_KEYSET\n");
   // if we're in monitor mode look at it (if it's not been already seen)
 
   if ((status != ST_OSDP_CMDREP_FOUND) && 
-    ((role EQUALS OSDP_ROLE_CP) || (role EQUALS OSDP_ROLE_MONITOR)))
+    ((role EQUALS OSDP_ROLE_ACU) || (role EQUALS OSDP_ROLE_MONITOR)))
   {
     switch (command)
     {
@@ -871,8 +871,8 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
         if (*(p1+1) & 0x80)
           strcpy (dirtag, "PD");
         else
-          strcpy (dirtag, "CP");
-        if (0 EQUALS strcmp (dirtag, "CP"))
+          strcpy (dirtag, "ACU");
+        if (0 EQUALS strcmp (dirtag, "ACU"))
           status = oosdp_log (context, OSDP_LOG_STRING_CP, 1, tlogmsg);
         else
           status = oosdp_log (context, OSDP_LOG_STRING_PD, 1, tlogmsg);
@@ -1203,7 +1203,7 @@ fprintf(stderr, "lstat 1000\n");
           (sec_block_type EQUALS OSDP_SEC_SCS_17) || (sec_block_type EQUALS OSDP_SEC_SCS_18))
         {
           if ((context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL) &&
-            (context->role EQUALS OSDP_ROLE_CP))
+            (context->role EQUALS OSDP_ROLE_ACU))
           {
             fprintf(context->log, "sec_block_type was %x but not in secure channel, resetting\n",
               sec_block_type);
@@ -1625,7 +1625,7 @@ int
     if ((oh->ctrl & 0x03) EQUALS 0)
     {
       fprintf (context->log,
-        "  CP sent sequence 0 - resetting sequence numbers\n");
+        "  ACU sent sequence 0 - resetting sequence numbers\n");
       context->next_sequence = 0;
       osdp_reset_secure_channel(context);
     };
@@ -2019,7 +2019,7 @@ fprintf(context->log, "DEBUG: 4 NAK: %d.\n", osdp_nak_response_data [0]);
       break;
     };
   } /* role PD */
-  if (context -> role EQUALS OSDP_ROLE_CP)
+  if (context -> role EQUALS OSDP_ROLE_ACU)
   {
     // if we're here we think it's a whole sane response so we can say the last was processed.
     context->last_was_processed = 1;
@@ -2386,7 +2386,7 @@ printf ("MMSG DONE\n");
     default:
       if (context->verbosity > 2)
       {
-        fprintf (stderr, "CMD %02x Unknown to CP\n", msg->msg_cmd);
+        fprintf (stderr, "CMD %02x Unknown to ACU\n", msg->msg_cmd);
       };
     break;
 

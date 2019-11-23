@@ -592,7 +592,8 @@ typedef struct osdp_context
 #define OO_SECPOL_ZEROIZED  (0)
 #define OO_SECPOL_KEYLOADED (1)
 
-#define OSDP_ROLE_CP      (0)
+#define OSDP_ROLE_ACU     (0)
+#define OSDP_ROLE_CP      (OSDP_ROLE_ACU)
 #define OSDP_ROLE_PD      (1)
 #define OSDP_ROLE_MONITOR (2)
 
