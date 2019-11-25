@@ -66,7 +66,7 @@ build:	all
 	mkdir -p ../opt/osdp-conformance/bin
 	mkdir -p ../opt/osdp-conformance/cgi-bin
 	mkdir -p ../opt/osdp-conformance/www
-	mkdir -p ../opt/osdp-conformance/run/CP
+	mkdir -p ../opt/osdp-conformance/run/ACU
 	mkdir -p ../opt/osdp-conformance/run/MON
 	mkdir -p ../opt/osdp-conformance/run/PD
 	cp ${PAGES} ../opt/osdp-conformance/www

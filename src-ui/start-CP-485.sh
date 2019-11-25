@@ -17,21 +17,21 @@
 
 OSDPDIR=/opt/osdp-conformance
 sudo rm -f ${OSDPDIR}/tmp/current_role
-cd /opt/osdp-conformance/run/CP
+cd /opt/osdp-conformance/run/ACU
 sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-CP485
 sudo -n chmod 777 /opt/osdp-conformance/tmp
 sudo -n mkdir -p /opt/osdp-conformance/etc
-sudo -n echo "CP" >/opt/osdp-conformance/tmp/current_role
+sudo -n echo "ACU" >/opt/osdp-conformance/tmp/current_role
 sudo -n cp /opt/osdp-conformance/tmp/current_role /opt/osdp-conformance/etc
 echo "Content-type: text/html"
 echo ""
 
-echo "<HTML><HEAD><TITLE>start CP RS-485 Server</TITLE>"
+echo "<HTML><HEAD><TITLE>start ACU RS-485 Server</TITLE>"
 echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"2;URL=/osdp-conformance-CP.html\">"
 echo "</HEAD>"
 echo "<BODY><PRE>"
-echo "open-osdp started in CP run directory"
+echo "open-osdp started in ACU run directory"
 echo "</BODY></HTML>"
 
 

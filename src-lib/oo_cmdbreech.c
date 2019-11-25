@@ -161,6 +161,7 @@ int
 
   case OSDP_CMDB_TRACE:
     ctx->trace = 1 ^ ctx->trace; // toggle low order bit
+    cmd->command = OSDP_CMD_NOOP;
     break;
 
   default:

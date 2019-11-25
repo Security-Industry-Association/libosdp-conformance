@@ -1,5 +1,5 @@
 #!/bin/bash
-ROLE=CP
+ROLE=ACU
 DEST_ADDR=10.2.0.219
 DEST_FQDN=east
 echo >open-osdp-parms_new.json \

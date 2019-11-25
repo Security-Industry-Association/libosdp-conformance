@@ -337,13 +337,13 @@ void
 
     if (strlen(trace_out_buffer) > 0)
       fprintf(tf,
-"{ \"time\" : \"%010ld.%09ld\", \"io\" : \"out\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
+"{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"out\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
         current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_out_buffer,
         OSDP_TRACE_VERSION_0, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
     fflush(tf);
     if (strlen(trace_in_buffer) > 0)
       fprintf(tf,
-"{ \"time\" : \"%010ld.%09ld\", \"io\" : \"%s\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
+"{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"%s\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
         current_time_fine.tv_sec, current_time_fine.tv_nsec, tag, trace_in_buffer,
         OSDP_TRACE_VERSION_0, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
     fflush(tf);

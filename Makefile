@@ -47,7 +47,8 @@ clean:
 	rm -rf opt
 
 build:	all
-	mkdir -p opt/osdp-conformance/run/CP
+	mkdir -p opt/osdp-conformance/run/ACU
+	(cd opt/osdp-conformance/run; ln -s ACU CP)
 	mkdir -p opt/osdp-conformance/run/MON
 	mkdir -p opt/osdp-conformance/run/PD
 	mkdir -p opt/osdp-conformance/tmp
@@ -57,7 +58,7 @@ build:	all
 	(cd src-ui; make build; cd ..)
 	(cd src-tools; make build; cd ..)
 	cp doc/examples/config-samples/open-osdp-params-CP.json \
-	  opt/osdp-conformance/run/CP/
+	  opt/osdp-conformance/run/ACU/
 	cp doc/examples/config-samples/open-osdp-params-MON.json \
 	  opt/osdp-conformance/run/MON/
 	cp doc/examples/config-samples/open-osdp-params-PD.json \
