@@ -161,6 +161,7 @@ int
 
   case OSDP_CMDB_TRACE:
     ctx->trace = 1 ^ ctx->trace; // toggle low order bit
+    fprintf(ctx->log, "Tracing set to %d\n", ctx->trace);
     cmd->command = OSDP_CMD_NOOP;
     break;
 

@@ -1040,7 +1040,7 @@ int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int osdp_string_to_buffer (OSDP_CONTEXT *ctx, char *instring, unsigned char *buffer, unsigned short int *buffer_length_returned);
 int osdp_timer_start (OSDP_CONTEXT *ctx, int timer_index);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
-void osdp_trace_dump (OSDP_CONTEXT *ctx);
+void osdp_trace_dump (OSDP_CONTEXT *ctx, int enable);
 int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds, unsigned char *errdeets, int *elth);
 void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);

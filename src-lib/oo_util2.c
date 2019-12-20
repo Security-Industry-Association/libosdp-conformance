@@ -1141,7 +1141,7 @@ int
 
     if (context->verbosity > 4)
     {
-      osdp_trace_dump(context);
+      osdp_trace_dump(context, 1);
     };
   };
   if (status EQUALS ST_OK)

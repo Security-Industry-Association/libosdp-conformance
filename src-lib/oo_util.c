@@ -815,9 +815,6 @@ int
     m->direction = 0x80 & p->addr;
     m->data_payload = m->cmd_payload + 1;
 
-    // dump the trace buffer even if it's poll/ack...
-    osdp_trace_dump(context);
-
     // if it wasn't a poll or an ack report the secure header if there is one
     if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
       fprintf (context->log, "%s", tlogmsg);
@@ -859,6 +856,9 @@ fprintf(stderr, "d 1 at 811\n");
     };
 if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
   display = 1;
+
+    osdp_trace_dump(context, display);
+
     if (display)
     {
       char dirtag [1024];

@@ -901,7 +901,7 @@ int
   status = ST_OK;
 
   // dump the trace buffer before creating the log message
-  osdp_trace_dump(context);
+  osdp_trace_dump(context, 1);
 
   llogtype = logtype;
   role_tag = "";

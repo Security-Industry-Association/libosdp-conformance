@@ -319,7 +319,8 @@ int
 
 void
   osdp_trace_dump
-    (OSDP_CONTEXT *ctx)
+    (OSDP_CONTEXT *ctx,
+    int print_enable)
 
 { /* osdp_trace_dump */
 
@@ -358,7 +359,8 @@ void
   };
   if (strlen(trace_in_buffer) > 0)
   {
-    fprintf(ctx->log,
+    if (print_enable)
+      fprintf(ctx->log,
 "\n INPUT Trace: %s\n", trace_in_buffer);
     trace_in_buffer [0] = 0;
   };
