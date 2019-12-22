@@ -48,7 +48,8 @@ PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
   index-conformance.html
 TLS_PAGES = 
 
-SCRIPTS = clean-run do-CP-command exec-CP485 exec-PD485 HUP-CP HUP-PD \
+SCRIPTS = clean-run do-CP-command exec-CP485 exec-PD485 \
+  HUP-CP HUP-MON HUP-PD \
   STOP-CP STOP-MON STOP-PD \
   set-pid \
   write-osdp-CP-command write-osdp-PD-command \
