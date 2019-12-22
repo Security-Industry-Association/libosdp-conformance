@@ -1722,7 +1722,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
     case OSDP_CAP:
       {
         unsigned char
-          osdp_cap_response_data [3*(14-1)] = {
+          osdp_cap_response_data [3*(16-2)] = {
             1,2,OOSDP_CFG_INPUTS, // 8 inputs, on/of/nc/no
             2,2,8, // 8 outputs, on/off/drive
             3,1,0, // 1024 bits max
@@ -1737,7 +1737,9 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
             11,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // largest msg
             12,0,0, // no smartcard
             13,0,0, // no keypad
-            14,0,0  // no biometric
+            14,0,0, // no biometric
+            //15,0,0 // ???
+            16,1,0  // IEC version
             };
 
          // for any kind of secure channel enablement set the PDCAP values
