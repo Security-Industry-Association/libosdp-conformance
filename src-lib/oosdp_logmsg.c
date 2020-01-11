@@ -332,12 +332,13 @@ int
       while (count > 0)
       {
         if (*p)
-          sprintf(tmpstr, " IN-%d Active", i);
+          sprintf(tmpstr, " IN-%d Active(%02x)", i, *p);
         else
-          sprintf(tmpstr, " IN-%d Inactive", i);
+          sprintf(tmpstr, " IN-%d Inactive(%02x)", i, *p);
         strcat(tlogmsg, tmpstr);
-        count --;
-        i++;
+        count --; // decrement SDU octet count
+        i++; // increment input number (index into data)
+        p++; // increment pointer into data
       };
       strcat(tlogmsg, "\n");
     };
