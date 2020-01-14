@@ -320,7 +320,6 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       break;
 
     case OSDP_KEYSET:
-fprintf(ctx->log, "DEBUG: detected osdp_KEYSET\n");
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
       osdp_conformance.cmd_keyset.test_status = OCONFORM_EXERCISED;
@@ -1010,7 +1009,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       break;
 
    case OSDP_ISTATR:
-fprintf(stderr, "second istatr switch\n");
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
@@ -1440,7 +1438,6 @@ int
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
     case OSDP_KEYSET:
-fprintf(context->log, "DEBUG: logging osdp_KEYSET\n");
       status = oosdp_make_message (OOSDP_MSG_KEYSET, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
@@ -1855,7 +1852,6 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
       break;
 
     case OSDP_KEYSET:
-fprintf(context->log, "DEBUG: calling action_osdp_KEYSET\n");
       status = action_osdp_KEYSET (context, msg);
       break;
 
@@ -2008,7 +2004,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           nak_length = 2;
         };
 
-fprintf(context->log, "DEBUG: 4 NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
@@ -2062,8 +2057,7 @@ fprintf(context->log, "DEBUG: 4 NAK: %d.\n", osdp_nak_response_data [0]);
       status = ST_OK;
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - 8;
-      sprintf(tlog2, "\n  Count: %d Data:", count);
-      strcat(tlogmsg, tlog2);
+      sprintf(tlogmsg, "\n  Count: %d Data:", count);
       for (i=0; i<count; i++)
       {
         sprintf(tlog2, " %02x", *(i+msg->data_payload));

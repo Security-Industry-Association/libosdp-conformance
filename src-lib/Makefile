@@ -39,14 +39,14 @@ clean:
 	rm -f core *.o ${OUTLIB}
 
 libosdp.a:	oo-actions.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
-	  oo_cmdbreech.o \
+	  oo-cmdbreech.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_crc.o oosdp_conformance.o \
 	  oosdp_files.o oosdp_logmsg.o oo-prims.o \
 	  oosdp_secure.o oosdp_secure_actions.o oosdp_ui.o osdp-api.o
 	ar r libosdp.a \
 	  oo-actions.o \
-	  oo_cmdbreech.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
+	  oo-cmdbreech.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_conformance.o oosdp_crc.o oosdp_files.o \
 	  oosdp_logmsg.o oo-prims.o oosdp_secure.o \
@@ -56,8 +56,8 @@ libosdp.a:	oo-actions.o oo_initialize.o oo_process.o oo_util.o oo_util2.o \
 oo-actions.o:	oo-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-actions.c
 
-oo_cmdbreech.o:	oo_cmdbreech.c ../include/open-osdp.h
-	${CC} ${CFLAGS} oo_cmdbreech.c
+oo-cmdbreech.o:	oo-cmdbreech.c ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-cmdbreech.c
 
 oo_initialize.o:	oo_initialize.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo_initialize.c
