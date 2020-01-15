@@ -327,7 +327,7 @@ int
     fprintf(sf, " \"pdus-received\" : \"%d\", \"pdus-sent\" : \"%d\",\n",
       ctx->pdus_received, ctx->pdus_sent);
     fprintf(sf,
-"\"sent_naks\" : \"%d\",", ctx->sent_naks);
+"\"pd-naks\" : \"%d\",", ctx->sent_naks);
     fprintf(sf,
 "\"seq-bad\" : \"%d\",", ctx->seq_bad);
     fprintf (sf,
@@ -355,15 +355,15 @@ int
         j, ctx->out [j].current);
     };
     fprintf(sf, "\n");
-    fprintf (sf, "     \"power_report\" : \"%d\", ",
-      ctx->power_report);
     fprintf (sf,
-"        \"verbosity\" : \"%d\", \"trace\" : \"%d\",  ",
+"\"verbosity\" : \"%d\", \"trace\" : \"%d\",  ",
       ctx->verbosity, ctx->trace);
-    fprintf (sf, "              \"crc-mode\" : \"%d\", ",
+    fprintf (sf, "\"power-report\" : \"%d\", ",
+      ctx->power_report);
+    fprintf (sf, "\"crc-mode\" : \"%d\", ",
       m_check);
     fprintf (sf,
-"  \"timeout\" : \"%ld\", ",
+"\"timeout\" : \"%ld\", ",
       ctx->timer[0].i_sec);
     fprintf (sf,
 " \"poll\" : \"%d\",\n",
@@ -391,17 +391,17 @@ int
       val);
 
     fprintf(sf,
-"       \"current_offset\" : \"%d\",\n",
+" \"current_offset\" : \"%d\", ",
       ctx->xferctx.current_offset);
     fprintf(sf,
-"         \"total_length\" : \"%d\",\n",
+"\"total_length\" : \"%d\", ",
       ctx->xferctx.total_length);
     fprintf(sf,
-"  \"current_send_length\" : \"%d\",\n",
+"\"current_send_length\" : \"%d\", ",
       ctx->xferctx.current_send_length);
 
     fprintf(sf,
-"    \"last_update_timeT\" : \"%ld\",\n", current_time);
+"\"last_update_timeT\" : \"%ld\", ", current_time);
 
     fprintf(sf, "\"_#\" : \"_end\" ");
     fprintf (sf, "}\n");
