@@ -635,27 +635,26 @@ int
 
       if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
       {
-      msg = (OSDP_MSG *) aux;
-      nak_code = *(0+msg->data_payload);
-      // it's 1 if just a nak code and more if there is nak 'data'
-      strcpy(nak_detail_text, oo_lookup_nak_text(nak_code));
+        msg = (OSDP_MSG *) aux;
+        nak_code = *(0+msg->data_payload);
+        // it's 1 if just a nak code and more if there is nak 'data'
+        strcpy(nak_detail_text, oo_lookup_nak_text(nak_code));
 
-      // for monitoring track nak count
-      if (nak_code EQUALS OO_NAK_SEQUENCE)
-        context.seq_bad++;
+        // for monitoring track nak count
+        if (nak_code EQUALS OO_NAK_SEQUENCE)
+          context.seq_bad++;
 
-      sprintf(tmpmsg2, " (%s)", nak_detail_text);
-      if (msg->data_length > 1)
-      {
-
-        sprintf(tlogmsg, "  NAK: Error Code %02x%s Data %02x\n",
-          *(0+msg->data_payload), tmpmsg2, *(1+msg->data_payload));
-      }
-      else
-      {
-        sprintf (tlogmsg, "NAK: Error Code %02x%s\n",
-          *(0+msg->data_payload), tmpmsg2);
-      };
+        sprintf(tmpmsg2, " (%s)", nak_detail_text);
+        if (msg->data_length > 1)
+        {
+          sprintf(tlogmsg, "  NAK: Error Code %02x%s Data %02x\n",
+            *(0+msg->data_payload), tmpmsg2, *(1+msg->data_payload));
+        }
+        else
+        {
+          sprintf (tlogmsg, "NAK: Error Code %02x%s\n",
+            *(0+msg->data_payload), tmpmsg2);
+        };
       }
       else
       {

@@ -705,6 +705,11 @@ int
       raw_lth = 4+ctx->creds_a_avail;
       memcpy (osdp_raw_data+4, ctx->credentials_data, ctx->creds_a_avail);
       current_length = 0;
+fprintf(stderr, "DEBUG: card %d. bits bytes %d.\n",
+  ctx->card_data_valid, ctx->creds_a_avail);
+
+dump_buffer_log(ctx, "card data", (unsigned char *)(ctx->credentials_data), ctx->creds_a_avail);
+dump_buffer_log(ctx, "card data message(fixed 32)", osdp_raw_data, 32);
       status = send_message_ex (ctx,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data,
         OSDP_SEC_SCS_18, 0, NULL);
