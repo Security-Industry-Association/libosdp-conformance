@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (52)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
@@ -680,20 +680,16 @@ typedef struct osdp_param
   char device [1024];
 } OSDP_PARAM;
 
+#define OSDP_CONTROLBIT_CRC (0x04)
+#define OSDP_CONTROLBIT_SCS (0x08)
 typedef struct osdp_hdr
 {
-  unsigned char
-    som;
-  unsigned char
-    addr;
-  unsigned char
-    len_lsb;
-  unsigned char
-    len_msb;
-  unsigned char
-    ctrl;
-  unsigned char
-    command;
+  unsigned char som;
+  unsigned char addr;
+  unsigned char len_lsb;
+  unsigned char len_msb;
+  unsigned char ctrl;
+  unsigned char command;
 } OSDP_HDR;
 
 

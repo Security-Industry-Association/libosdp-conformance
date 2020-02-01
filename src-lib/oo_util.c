@@ -1,7 +1,7 @@
 /*
   oo_util - open osdp utility routines
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -1719,7 +1719,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
     case OSDP_CAP:
       {
         unsigned char
-          osdp_cap_response_data [3*(16-2)] = {
+          osdp_cap_response_data [3*(16-1)] = {
             1,2,OOSDP_CFG_INPUTS, // 8 inputs, on/of/nc/no
             2,2,8, // 8 outputs, on/off/drive
             3,1,0, // 1024 bits max
@@ -1735,7 +1735,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
             12,0,0, // no smartcard
             13,0,0, // no keypad
             14,0,0, // no biometric
-            //15,0,0 // ???
+            15,0,0, // no SPE support (secure pin entry)
             16,1,0  // IEC version
             };
 
