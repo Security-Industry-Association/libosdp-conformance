@@ -1,7 +1,10 @@
+int pending_response_length;
+unsigned char pending_response_data [1500];
+unsigned char pending_response;
 /*
   oosdp-actions - open osdp action routines
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -621,9 +624,23 @@ int
     poll response can be many things.  we do one and then return, which
     can cause some turn-the-crank artifacts.  may need multiple polls for
     expected behaviors to happen.
-
-    if there was a power report return that.
   */
+  if (!done)
+  {
+    if (pending_response_length > 0)
+    {
+      done = 1;
+      current_length = 0;
+      status = send_message_ex (ctx,
+        pending_response, p_card.addr, &current_length,
+        pending_response_length, pending_response_data,
+        OSDP_SEC_NOT_SCS, 0, NULL);
+      pending_response_length = 0;
+    };
+  };
+
+  // return BUSY if requested
+
   if (!done)
   {
     if (ctx->next_response EQUALS OSDP_BUSY)
@@ -642,6 +659,9 @@ int
       };
     };
   };
+
+  // if there was a power report or tamper return that.
+
   if ((ctx->power_report EQUALS 1) || (ctx->tamper))
   {
     char details [1024];
@@ -681,15 +701,14 @@ int
       fprintf (ctx->log, "%s\n", tlogmsg);
     };
   }
+
+  // if there's card data to return, do that.
+
   if (!done)
   {
     /*
       the presence of card data to return is indicated because either the
       "raw" buffer or the "big" buffer is marked as non-empty when you get here.
-    */
-    /*
-      if there's card data to return, do that.
-      this is for the older "raw data" style.
     */
     if (ctx->card_data_valid > 0)
     {
@@ -784,11 +803,11 @@ dump_buffer_log(ctx, "card data message(fixed 32)", osdp_raw_data, 32);
 #endif
     };
   };
+  /*
+    if all else isn't interesting return a plain ack
+  */
   if (!done)
   {
-    /*
-      if all else isn't interesting return a plain ack
-    */
     current_length = 0;
     status = send_message_ex
       (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,

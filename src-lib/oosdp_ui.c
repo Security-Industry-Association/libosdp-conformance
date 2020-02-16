@@ -1,3 +1,7 @@
+extern int pending_response_length;
+extern unsigned char pending_response_data [1500];
+extern unsigned char pending_response;
+
 unsigned char leftover_command;
 unsigned char leftover_data [4*1024];
 int leftover_length;
@@ -760,8 +764,7 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
 
     case OSDP_CMDB_KEYPAD:
       {
-        char
-          keypad_message [1+1+9+1]; // built for 9 digits
+        char keypad_message [1+1+9+1]; // built for 9 digits
 
         memset (&keypad_message, 0, sizeof (keypad_message));
         /*
@@ -770,10 +773,11 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         keypad_message [0] = 0;
         strcpy (keypad_message+2, details); // made to be 9 or less by input mechanism
         keypad_message [1] = strlen (keypad_message+2);
-        current_length = 0;
-        // buffer size gets -1 'cause there was a null at the end to make the string stuff work.
-        status = send_message (context,
-          OSDP_KEYPAD, p_card.addr, &current_length, sizeof (keypad_message)-1, (unsigned char *)&keypad_message);
+
+        pending_response_length = 2 + strlen(details);
+        memcpy(pending_response_data, keypad_message, pending_response_length);
+        pending_response = OSDP_KEYPAD;
+
         if (context->verbosity > 3)
           fprintf (stderr, "Sending keypad response %s\n",
             keypad_message+2);

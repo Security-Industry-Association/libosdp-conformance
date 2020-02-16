@@ -1,3 +1,4 @@
+extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
@@ -155,6 +156,8 @@ fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
     if (context.role EQUALS OSDP_ROLE_PD)
       fprintf (stderr, "Role: PD\n");
   };
+
+pending_response_length = 0;
 
   return (status);
 
