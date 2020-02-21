@@ -1333,13 +1333,19 @@ status = ST_OK; // tolerate checksum error and continue
 
       {
         char scb_tag[1024];
+        char check_tag [1024];
+
+        if (msg_check_type EQUALS 4)
+          strcpy(check_tag, "Check:CRC");
+        else
+          strcpy(check_tag, "Check:Cksum");
         strcpy(scb_tag, "");
         if (msg_scb)
           strcpy(scb_tag, "Sec block present;");
 
-        sprintf (tlogmsg2, " A:%02x Lth:%d. S:%02x Ck %x %s",
+        sprintf (tlogmsg2, " A:%02x Lth:%d. S:%02x %s %s",
           (0x7F & p->addr), (p->len_msb)*256+(p->len_lsb),
-          msg_sqn, msg_check_type, scb_tag);
+          msg_sqn, check_tag, scb_tag);
 
       };
       strcat (log_line, tlogmsg2);
@@ -1765,8 +1771,6 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           OCONFORM_EXERCISED;
         osdp_conformance.rep_device_capas.test_status =
           OCONFORM_EXERCISED;
-        if (context->verbosity > 2)
-          fprintf (stderr, "Responding with OSDP_PDCAP\n");
       };
       break;
 
