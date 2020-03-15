@@ -798,14 +798,6 @@ cmd->command = OSDP_CMD_NOOP;
       {
         led_ctl->temp_control = OSDP_LED_TEMP_SET;
       };
-fprintf(stderr,
-"led_ctl will be:\n Rdr %02x LED %02x PermC %02x PON %02x POFF %02x\n",
-  led_ctl->reader,
-  led_ctl->led, led_ctl->perm_control,
-  led_ctl->perm_on_time, led_ctl->perm_off_time);
-fprintf(stderr,
-"  POffC %02x POnC %02x\n",
-   led_ctl->perm_off_color, led_ctl->perm_on_color);
     };
   }; 
   if (status EQUALS ST_OK)
