@@ -1,7 +1,7 @@
 /*
   oo-logprims - open osdp logging sub-functions
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -158,10 +158,10 @@ char
     sprintf(value, "?(%02x)", led_color_number);
     break;
   case OSDP_LEDCOLOR_AMBER:
-    sprintf(value, "\'Amber\'(%02x)", led_color_number);
+    sprintf(value, "Amber(%02x)", led_color_number);
     break;
   case OSDP_LEDCOLOR_BLUE:
-    sprintf(value, "\'Blue\'(%02x)", led_color_number);
+    sprintf(value, "Blue(%02x)", led_color_number);
     break;
   case OSDP_LEDCOLOR_BLACK:
     sprintf(value, "Black");

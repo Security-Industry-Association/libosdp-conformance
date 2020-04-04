@@ -401,6 +401,10 @@ int
     if (status != ST_OK)
       done = 1;
   };
+  if (strlen(trace_in_buffer) > 0)
+    fprintf(stderr, "trace data remaining: %s\n", trace_in_buffer);
+  if (strlen(trace_out_buffer) > 0)
+    fprintf(stderr, "trace data remaining: %s\n", trace_out_buffer);
   if (status != ST_OK)
     fprintf (stderr, "open-osdp return status %d\n",
       status);

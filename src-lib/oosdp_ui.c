@@ -8,7 +8,7 @@ int leftover_length;
 /*
   oosdp_ui - UI routines for open-osdp
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -829,10 +829,23 @@ fprintf(stderr,
           error_details, &details_length);
         if (status EQUALS ST_OK)
         {
-          current_length = 0;
-          status = send_message_ex (context, OSDP_LED, p_card.addr,
-            &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message,
-            OSDP_SEC_SCS_17, 0, NULL);
+          if (osdp_awaiting_response(context))
+          {
+            fprintf(stderr, "busy before OSDP_LED, skipping send\n");
+            fflush(stderr); fflush(context->log);
+
+            leftover_command = OSDP_LED;
+            leftover_length = sizeof(led_control_message);
+            memcpy(leftover_data, &led_control_message, leftover_length);
+            context->left_to_send = leftover_length;
+          }
+          else
+          {
+            current_length = 0;
+            status = send_message_ex (context, OSDP_LED, p_card.addr,
+              &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message,
+              OSDP_SEC_SCS_17, 0, NULL);
+          };
         }
         else
         {

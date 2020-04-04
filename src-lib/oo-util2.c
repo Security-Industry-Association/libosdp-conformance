@@ -1,7 +1,7 @@
 /*
   oo_util2 - more open-osdp util routines
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -907,6 +907,20 @@ fprintf (stderr, "processing value %s\n",
       idata ++;
       p_card.value_len ++;
     };
+  }; 
+
+  // parameter "enable-trace"
+  if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
+  {
+    found_field = 1;
+    value = json_object_get (root, "enable-trace");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    fprintf(ctx->log, "enabling protocol tracing\n");
+    ctx->trace = 1;
   }; 
 
   return (status);

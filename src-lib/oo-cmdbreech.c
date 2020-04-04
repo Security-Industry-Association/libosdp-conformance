@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -745,7 +745,7 @@ cmd->command = OSDP_CMD_NOOP;
         if (i > 0)
           set_led_temp = 1;
       };
-      value = json_object_get (root, "temp-off");
+      value = json_object_get (root, "temp-off-time");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -754,7 +754,7 @@ cmd->command = OSDP_CMD_NOOP;
         if (i > 0)
           set_led_temp = 1;
       };
-      value = json_object_get (root, "temp-on");
+      value = json_object_get (root, "temp-on-time");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));

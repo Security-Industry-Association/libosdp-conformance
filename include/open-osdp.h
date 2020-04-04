@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (52)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_BUILD ( 4)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
@@ -1011,6 +1011,7 @@ int osdp_build_secure_message (OSDP_CONTEXT *ctx, unsigned char *buf, int *updat
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int sec_blk_type, int sec_blk_lth,
   unsigned char *sec_blk);
+int osdp_check_command_reply(int role, int command, OSDP_MSG *m, char *tlogmsg2);
 int osdp_command_match (OSDP_CONTEXT *ctx, json_t *root, char *command, int *command_id);
 char *osdp_command_reply_to_string (unsigned char cmdrep, int role);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
