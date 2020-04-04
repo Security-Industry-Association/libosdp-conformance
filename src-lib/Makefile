@@ -38,15 +38,16 @@ build:	all
 clean:
 	rm -f core *.o ${OUTLIB}
 
-libosdp.a:	oo-actions.o oo-initialize.o oo_process.o oo-util.o oo-util2.o oo-util3.o \
-	  oo-cmdbreech.o \
+libosdp.a:	\
+	oo-actions.o osdp-api.o oo-cmdbreech.o oo-initialize.o oo-process.o \
+	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_crc.o oosdp_conformance.o \
 	  oosdp_files.o oosdp_logmsg.o oo-prims.o \
-	  oosdp_secure.o oosdp_secure_actions.o oosdp_ui.o osdp-api.o
+	  oosdp_secure.o oosdp_secure_actions.o oosdp_ui.o
 	ar r libosdp.a \
 	  oo-actions.o \
-	  oo-cmdbreech.o oo-initialize.o oo_process.o oo-util.o oo-util2.o \
+	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_conformance.o oosdp_crc.o oosdp_files.o \
 	  oosdp_logmsg.o oo-prims.o oosdp_secure.o \
@@ -62,8 +63,8 @@ oo-cmdbreech.o:	oo-cmdbreech.c ../include/open-osdp.h
 oo-initialize.o:	oo-initialize.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-initialize.c
 
-oo_process.o:	oo_process.c
-	${CC} ${CFLAGS} oo_process.c
+oo-process.o:	oo-process.c
+	${CC} ${CFLAGS} oo-process.c
 
 oo-util.o:	oo-util.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-util.c
