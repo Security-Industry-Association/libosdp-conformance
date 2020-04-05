@@ -1,8 +1,0 @@
-Release 0.51 Build 5 libosdp-conformance
-=======================================
-
-Changes in 0.51 Build 5
-----------------------
-
-correct more text to refer to ACU not CP
-
