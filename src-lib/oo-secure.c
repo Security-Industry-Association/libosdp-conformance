@@ -3,7 +3,7 @@
 /*
   oosdp-secure - open osdp secure channel routines
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -391,7 +391,6 @@ int
 
 
   status = ST_OK;
-fprintf(stderr, "DECRYPT:osdp_decrypt_payload: top\n");
   memcpy(decrypt_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
   if (ctx->verbosity > 9)
     dump_buffer_log(ctx, "pre-invert payload iv:", decrypt_iv, OSDP_KEY_OCTETS);

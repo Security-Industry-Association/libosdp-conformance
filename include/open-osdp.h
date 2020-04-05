@@ -429,6 +429,7 @@ typedef struct osdp_context
   int disable_certificate_checking;
   int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled
   int enable_poll; // usuall 1 for enable, 0=disable
+  int pdcap_select; // 0 for normal 1 for short
   char fqdn [1024];
   char log_path [1024];
   char serial_speed [1024];

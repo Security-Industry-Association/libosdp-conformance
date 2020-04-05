@@ -923,6 +923,23 @@ fprintf (stderr, "processing value %s\n",
     ctx->trace = 1;
   }; 
 
+  // parameter "pdcap-format"
+  if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
+  {
+    found_field = 1;
+    value = json_object_get (root, "pdcap-format");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    context.pdcap_select = i;
+  }; 
+
   return (status);
 
 } /* oo_parse_config_parameters */

@@ -495,7 +495,8 @@ int
   status = ST_OK;
   if (ctx->verbosity > 3)
   {
-    fprintf(ctx->log, "action_osdp_PDCAP: message data length is %d.\n", msg->data_length);
+    fprintf(ctx->log,
+"action_osdp_PDCAP: message data length is %d.\n", msg->data_length);
     fflush(ctx->log);
   };
   num_entries = msg->data_length / 3;

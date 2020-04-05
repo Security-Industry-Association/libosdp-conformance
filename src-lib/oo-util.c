@@ -922,6 +922,17 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
 
     case OSDP_CAP:
       {
+        unsigned char *response_cap;
+        int response_length;
+        unsigned char
+          osdp_cap_response_short [] = {
+            3,1,0, // 1024 bits max
+            4,1,8, // on/off only, 8 LED's
+            5,1,1, // audible annunciator present, claim on/off only
+            6,1,1, // 1 row of 16 characters
+            8,1,0, // supports CRC-16
+            9,1,1, // security
+            };
         unsigned char
           osdp_cap_response_data [3*(16-1)] = {
             1,2,OOSDP_CFG_INPUTS, // 8 inputs, on/of/nc/no
@@ -943,6 +954,14 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
             16,1,0  // IEC version
             };
 
+         response_cap = osdp_cap_response_data;
+         response_length = sizeof(osdp_cap_response_data);
+         if (context->pdcap_select)
+         {
+           response_cap = osdp_cap_response_short;
+           response_length = sizeof(osdp_cap_response_short);
+         };
+
          // for any kind of secure channel enablement set the PDCAP values
          // "we always support SCBK-D"
 
@@ -963,7 +982,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           current_security = OSDP_SEC_STAND_DOWN;
         status = send_message_ex(context,
           OSDP_PDCAP, p_card.addr, &current_length,
-            sizeof(osdp_cap_response_data), osdp_cap_response_data,
+            response_length, response_cap,
             current_security, 0, NULL);
         osdp_conformance.cmd_pdcap.test_status =
           OCONFORM_EXERCISED;
