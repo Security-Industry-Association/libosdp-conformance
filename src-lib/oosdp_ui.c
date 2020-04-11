@@ -592,7 +592,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 "  Timeout %ld(%d.) Dump %d Debug %d.\n",
          context->timer[0].i_sec, p_card.poll, m_dump, context->verbosity);
       fprintf (stderr,
-" PwrRpt %d\nCP Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
+" PwrRpt %d\nACU Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report,
          context->cp_polls, context->pd_acks, context->sent_naks,
          context->checksum_errs);

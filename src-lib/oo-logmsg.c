@@ -780,7 +780,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
         sprintf(tstr, "PD Capabilities payload encrypted.\n");
       if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
       {
-        sprintf (tstr, "PD Capabilities (%d)\n", (msg->data_length)/3);
+        sprintf (tstr, "PD Capabilities Report (%d. entries)\n", (msg->data_length)/3);
         strcpy (tlogmsg, tstr);
 
         for (i=0; i<msg->data_length; i=i+3)

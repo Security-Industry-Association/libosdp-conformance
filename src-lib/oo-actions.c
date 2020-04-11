@@ -508,17 +508,42 @@ int
     {
     case OSDP_CAP_AUDIBLE_OUT:
       fprintf(ctx->log,
-"Capability not processed in this ACU: Audible Output (%d)\n",
-        entry->function_code);
+"PD: %d. Annunciators, ", entry->number_of);
+      switch(entry->compliance)
+      {
+      case 1:
+        fprintf(ctx->log, "On/Off only.\n");
+        break;
+      case 2:
+        fprintf(ctx->log, "Timed and On/Off.\n");
+        break;
+      default:
+        fprintf(ctx->log, "Not defined (%02x %02x)\n",
+          entry->compliance, entry->number_of);
+        break;
+      };
       break;
     case OSDP_CAP_BIOMETRICS:
       fprintf(ctx->log,
-"Capability not processed in this ACU: Biometrics\n");
+"Capability not processed in this ACU: %s\n", osdp_pdcap_function(entry->function_code));
       break;
     case OSDP_CAP_CARD_FORMAT:
-      fprintf(ctx->log,
-"Capability not processed in this ACU: Card Format (%d)\n",
-        entry->function_code);
+      switch(entry->compliance)
+      {
+      case 1:
+        fprintf(ctx->log, "Card format: Binary.\n");
+        break;
+      case 2:
+        fprintf(ctx->log, "Card format: BCD.\n");
+        break;
+      case 3:
+        fprintf(ctx->log, "Card format: Binary or BCD.\n");
+        break;
+      default:
+        fprintf(ctx->log, "Card format: not defined (%02x %02x)\n",
+          entry->compliance, entry->number_of);
+        break;
+      };
       break;
     case OSDP_CAP_CHECK_CRC:
       if ((entry->compliance EQUALS 0) && (m_check EQUALS OSDP_CRC))
@@ -532,8 +557,9 @@ int
         entry->function_code);
       break;
     case OSDP_CAP_LED_CONTROL:
-      fprintf(ctx->log, "Capability not processed in this ACU: LED Control (%d)\n",
-        entry->function_code);
+      if (ctx->verbosity > 9)
+        fprintf(ctx->log, "Capability not processed in this ACU: LED Control (%d)\n",
+          entry->function_code);
       break;
     case OSDP_CAP_MAX_MULTIPART:
       max_multipart = entry->compliance;
@@ -546,7 +572,7 @@ int
         entry->function_code);
       break;
     case OSDP_CAP_READERS:
-      fprintf(ctx->log, "PD: %d. Readers Compliance %x\n", entry->number_of, entry->compliance);
+      fprintf(ctx->log, "PD: %d. Attached readers (%x)\n", entry->number_of, entry->compliance);
       break;
     case OSDP_CAP_REC_MAX:
       ctx->pd_cap.rec_max = entry->compliance + 256*entry->number_of;
@@ -593,6 +619,8 @@ int
     };
     entry ++;
   };
+  fprintf(ctx->log, "PD Capabilities response processing complete.\n\n");
+
   status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
   fprintf (ctx->log, "%s\n", tlogmsg);
   return(status);
