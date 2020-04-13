@@ -1039,6 +1039,7 @@ int osdp_string_to_buffer (OSDP_CONTEXT *ctx, char *instring, unsigned char *buf
 int osdp_timer_start (OSDP_CONTEXT *ctx, int timer_index);
 int osdp_timeout (OSDP_CONTEXT *ctx, struct timespec * last_time_check_ex);
 void osdp_trace_dump (OSDP_CONTEXT *ctx, int enable);
+int osdp_update_conformance(OSDP_CONTEXT *ctx);
 int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds, unsigned char *errdeets, int *elth);
 void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
@@ -1057,7 +1058,9 @@ int oosdp_print_message_RAW(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg
 int oosdp_print_message_RMAC_I(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_SCRYPT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_TEXT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
-int oosdp_print_message_XRD(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
+int oosdp_print_message_XRD(OSDP_CONTEXT *ctx,
+  OSDP_MSG *osdp_msg, char *tlogmsg);
+int osdp_test_set_status(char *test, int test_status);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context, unsigned int details_length, int details_param_1, char *details);
 int process_command_from_queue(OSDP_CONTEXT *ctx);

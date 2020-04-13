@@ -55,8 +55,11 @@ int
   OSDP_SECURE_MESSAGE *secure_message;
   unsigned char server_cryptogram [16];
   int status;
+  int test_results;
+
 
   status = ST_OK;
+  test_results = OCONFORM_FAIL;
   memset (iv, 0, sizeof (iv));
 
   // check for proper state AND secure channel enabled.
@@ -108,8 +111,8 @@ if (ctx->verbosity > 8)
       memcpy (message+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a));
       AES_ctx_set_iv (&aes_context_s_enc, iv);
       memcpy (server_cryptogram, message, sizeof (server_cryptogram));
-      AES_CBC_encrypt_buffer (&aes_context_s_enc, server_cryptogram, sizeof (server_cryptogram));
-//      AES_CBC_encrypt_buffer (server_cryptogram, message, sizeof (server_cryptogram), ctx->s_enc, iv);
+      AES_CBC_encrypt_buffer(&aes_context_s_enc,
+        server_cryptogram, sizeof (server_cryptogram));
 
       if (ctx->enable_secure_channel EQUALS 1)
         sec_blk [0] = OSDP_KEY_SCBK;
@@ -125,6 +128,8 @@ if (ctx->verbosity > 8)
   else
     status = ST_OSDP_SC_WRONG_STATE;
 
+  if (status EQUALS ST_OK)
+    test_results = OCONFORM_EXERCISED;
   // if there was an error reset the secure channel and let the world continue
   if (status != ST_OK)
   {
@@ -132,6 +137,7 @@ if (ctx->verbosity > 8)
     status = ST_OK;
     osdp_reset_secure_channel (ctx);
   };
+  (void)osdp_test_set_status("070-15-01", test_results);
   return (status);
 
 } /* action_osdp_CCRYPT */

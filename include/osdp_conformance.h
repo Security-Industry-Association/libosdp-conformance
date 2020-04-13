@@ -1,7 +1,7 @@
 /*
   osdp_conformance.h - conformance metrics per profiles
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,7 +48,7 @@ typedef struct osdp_interop_assessment
 
   // 2-x
 
-  OSDP_CONFORM physical_interface;      // 2-1-1
+  OSDP_CONFORM physical_interface;      // 050-01-01
   OSDP_CONFORM signalling;              // 2-2-1
   OSDP_CONFORM alt_speed_2;             // 2-2-2
   OSDP_CONFORM alt_speed_3;             // 2-2-3
@@ -142,7 +142,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_com;                // 4-12-1
   OSDP_CONFORM rep_scan_send;           // 4-13
   OSDP_CONFORM rep_scan_match;          // 4-14
-  OSDP_CONFORM rep_ccrypt;              // 4-??
+  OSDP_CONFORM resp_ccrypt;             // 070-15-01
   OSDP_CONFORM resp_mfg;                // 4-15-1
   OSDP_CONFORM resp_busy;               // 4-16-1
   OSDP_CONFORM resp_ftstat;             // 4-17-1

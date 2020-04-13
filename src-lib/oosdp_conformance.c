@@ -1,7 +1,7 @@
 /*
   oosdp_conformance - conformance reporting routines
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -54,22 +54,14 @@ OSDP_CONTEXT context;
 // test control info
 typedef struct osdp_conformance_test
 {
-  char
-    *name;
-  unsigned char
-    *conformance;
-  int
-    test_for_peripheral;
-  int
-    test_for_basic;
-  int
-    test_for_bio;
-  int
-    test_for_xpm;
-  int
-    test_for_transparent;
-  char
-    *description;
+  char *name;
+  unsigned char *conformance;
+  int test_for_peripheral;
+  int test_for_basic;
+  int test_for_bio;
+  int test_for_xpm;
+  int test_for_transparent;
+  char *description;
 } OSDP_CONFORMANCE_TEST;
 OSDP_CONFORMANCE_TEST
   test_control [] =
@@ -246,6 +238,8 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0, "---" },
     { "4-16-1", &(osdp_conformance.resp_busy.test_status),
       0, 0, 0, 0, 0, "---" },
+    { "070-15-01", &(osdp_conformance.resp_ccrypt.test_status),
+      0, 0, 0, 0, 0, "---" },
     { NULL, NULL, 0, 0, 0, 0, 0, "---" }
   };
 
@@ -321,8 +315,7 @@ void
 
   if (oconf->conforming_messages >= PARAM_MMT)
   {
-    oconf->physical_interface.test_status =
-      OCONFORM_EXERCISED;
+    osdp_test_set_status("050-01-01", OCONFORM_EXERCISED);
     if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
       oconf->signalling.test_status =
         OCONFORM_EXERCISED;
@@ -639,11 +632,13 @@ fprintf (ctx->log, "mmt %d of %d\n",
 
 int
   osdp_conform_confirm
-    (char
-      *test)
-{
-  return (osdp_test_set_status (test, OCONFORM_EXERCISED));
-}
+    (char *test)
+
+{ /* osdp_conform_confirm */
+
+  return(osdp_test_set_status(test, OCONFORM_EXERCISED));
+
+} /* osdp_conform_confirm */
 
 
 int
@@ -789,6 +784,8 @@ int
 
   int done;
   int idx;
+  FILE *rf;
+  char results_filename [1024];
   int status;
 
 
@@ -808,6 +805,19 @@ int
     if (strcmp (test_control [idx].name, test) EQUALS 0)
     {
       *(test_control [idx].conformance) = test_status;
+      sprintf(results_filename, "/opt/osdp-conformance/results/%s-results.json",
+        test);
+      rf = fopen(results_filename, "w");
+      if (rf)
+      {
+        fprintf(rf,
+"{\"test\":\"%s\",\"test-status\":\"%d\"}",
+          test, test_status);
+      }
+      else
+      {
+        fprintf(context.log, "Error writing results for %s\n", test);
+      };
       done = 1;
     };
     if (test_control [idx].name EQUALS NULL)
