@@ -28,13 +28,9 @@
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 
-#define LOG_REPORT(lfargs) {\
-  sprintf lfargs; \
-  fprintf (ctx->log, "%s\n", log_string); fflush (ctx->log); \
-  fprintf (ctx->report, "%s\n", log_string); fflush (ctx->report);\
-}; 
-static char
-    *role_tag;
+#define LOG_REPORT(lfargs) \
+  { sprintf lfargs; fprintf (ctx->report, "%s\n", log_string); fflush (ctx->report); }; 
+static char *role_tag;
 
 
 int
@@ -66,9 +62,9 @@ typedef struct osdp_conformance_test
 OSDP_CONFORMANCE_TEST
   test_control [] =
   {
-    { "2-1-1", &(osdp_conformance.physical_interface.test_status),
+    { "050-01-01", &(osdp_conformance.physical_interface.test_status),
       1, 0, 0, 0, 0, "---"},
-    { "2-2-1", &(osdp_conformance.signalling.test_status),
+    { "050-02-01", &(osdp_conformance.signalling.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-2-2", &(osdp_conformance.alt_speed_2.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
@@ -104,11 +100,11 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-8-1", &(osdp_conformance.message_synchronization.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-9-1", &(osdp_conformance.packet_format.test_status),
+    { "050-09-01", &(osdp_conformance.packet_format.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-10-1", &(osdp_conformance.SOM.test_status),
+    { "050-09-03", &(osdp_conformance.SOM.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-10-2", &(osdp_conformance.SOM_sent.test_status),
+    { "050-09-12", &(osdp_conformance.SOM_sent.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-11-1", &(osdp_conformance.ADDR.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
@@ -116,7 +112,7 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-11-3", &(osdp_conformance.address_config.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-12-1", &(osdp_conformance.LEN.test_status),
+    { "050-09-06", &(osdp_conformance.LEN.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-13-1", &(osdp_conformance.CTRL.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
@@ -149,9 +145,9 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" },
     { "3-1-4", &(osdp_conformance.cmd_poll_response_4.test_status),
       1, 0, 0, 0, 0, "---" },
-    { "3-2-1", &(osdp_conformance.cmd_id.test_status),
+    { "060-02-01", &(osdp_conformance.cmd_id.test_status),
       1, 0, 0, 0, 0, "---" },
-    { "3-3-1", &(osdp_conformance.cmd_pdcap.test_status),
+    { "060-03-01", &(osdp_conformance.cmd_pdcap.test_status),
       1, 0, 0, 0, 0, "---" }, // optional in all cases
     { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
       1, 0, 0, 0, 0, "---" }, // optional in all cases
@@ -194,11 +190,11 @@ OSDP_CONFORMANCE_TEST
       1, 1, 1, 1, 0, "---" },
     { "4-2-1", &(osdp_conformance.rep_nak.test_status),
       1, 1, 1, 1, 0, "---" },
-    { "4-3-1", &(osdp_conformance.rep_device_ident.test_status),
+    { "070-03-01", &(osdp_conformance.rep_device_ident.test_status),
       1, 1, 1, 1, 0, "---" },
-    { "4-3-2", &(osdp_conformance.resp_ident_consistent.test_status),
+    { "070-03-02", &(osdp_conformance.resp_ident_consistent.test_status),
       1, 1, 1, 1, 0, "PDID consistent" },
-    { "4-4-1", &(osdp_conformance.rep_device_capas.test_status),
+    { "070-04-01", &(osdp_conformance.rep_device_capas.test_status),
       1, 1, 1, 1, 0, "---" },
     { "4-4-2", &(osdp_conformance.rep_capas_consistent.test_status),
       1, 1, 1, 1, 0, "---" },
@@ -317,16 +313,12 @@ void
   {
     osdp_test_set_status("050-01-01", OCONFORM_EXERCISED);
     if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
-      oconf->signalling.test_status =
-        OCONFORM_EXERCISED;
-    oconf->packet_format.test_status =
-      OCONFORM_EXERCISED;
-    oconf->SOM.test_status =
-      OCONFORM_EXERCISED;
-    oconf->SOM_sent.test_status =
-      OCONFORM_EXERCISED;
-    oconf->LEN.test_status =
-      OCONFORM_EXERCISED;
+      osdp_test_set_status("050-02-01", OCONFORM_EXERCISED);
+      //oconf->signalling.test_status = OCONFORM_EXERCISED;
+    osdp_test_set_status("050-09-01", OCONFORM_EXERCISED);
+    osdp_test_set_status("050-09-03", OCONFORM_EXERCISED);
+    osdp_test_set_status("050-09-12", OCONFORM_EXERCISED);
+    osdp_test_set_status("050-09-06", OCONFORM_EXERCISED);
     oconf->CTRL.test_status =
       OCONFORM_EXERCISED;
     oconf->CTRL.test_status =
@@ -802,7 +794,9 @@ int
       fprintf(context.log, "osdp_test_set_status: name %s\n", test_control [idx].name);
       fflush(context.log);
     };
-    if (strcmp (test_control [idx].name, test) EQUALS 0)
+    if (test_control [idx].name != NULL)
+    {
+      if (strcmp (test_control [idx].name, test) EQUALS 0)
     {
       *(test_control [idx].conformance) = test_status;
       sprintf(results_filename, "/opt/osdp-conformance/results/%s-results.json",
@@ -811,14 +805,16 @@ int
       if (rf)
       {
         fprintf(rf,
-"{\"test\":\"%s\",\"test-status\":\"%d\"}",
+"{\"test\":\"%s\",\"test-status\":\"%d\"}\n",
           test, test_status);
+        fclose(rf);
       }
       else
       {
         fprintf(context.log, "Error writing results for %s\n", test);
       };
       done = 1;
+    };
     };
     if (test_control [idx].name EQUALS NULL)
     {

@@ -501,8 +501,8 @@ fprintf(stderr, "lstat 1000\n");
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDID");
       if (context->last_command_sent EQUALS OSDP_ID)
-        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
-      osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
+      osdp_test_set_status("060-02-01", OCONFORM_EXERCISED);
       break;
 
     case OSDP_RAW:
@@ -1030,9 +1030,8 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           current_security = OSDP_SEC_STAND_DOWN;
         status = send_message_ex(context, OSDP_PDID, oo_response_address(context, oh->addr),
           &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
-        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
-        osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
-        SET_PASS (context, "4-3-2");
+        osdp_test_set_status("060-02-01", OCONFORM_EXERCISED);
+        osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
           sprintf (logmsg, "Responding with OSDP_PDID");
@@ -1553,12 +1552,13 @@ printf ("MMSG DONE\n");
       // consistency check (test 4-3-2)
       // OUI must not be zero
 
+      osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
       if ((msg->data_payload [0] EQUALS 0) &&
         (msg->data_payload [1] EQUALS 0) &&
         (msg->data_payload [2] EQUALS 0))
       {
         fprintf(context->log, "OUI in PDID is invalid (all 0's)\n");
-        SET_FAIL ((context), "4-3-2");
+        SET_FAIL ((context), "070-03-02");
       }
       else
       {
@@ -1583,7 +1583,7 @@ printf ("MMSG DONE\n");
           context->fw_version [0], context->fw_version [1], context->fw_version [2]);
         system(cmd);
 
-        SET_PASS ((context), "4-3-2");
+        SET_PASS ((context), "070-03-02");
       };
 
       context->last_was_processed = 1;

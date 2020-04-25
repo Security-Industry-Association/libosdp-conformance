@@ -620,6 +620,7 @@ int
     entry ++;
   };
   fprintf(ctx->log, "PD Capabilities response processing complete.\n\n");
+  osdp_test_set_status("070-04-01", OCONFORM_EXERCISED);
 
   status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
   fprintf (ctx->log, "%s\n", tlogmsg);

@@ -42,14 +42,14 @@ libosdp.a:	\
 	oo-actions.o osdp-api.o oo-cmdbreech.o oo-initialize.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
-	  oosdp_crc.o oosdp_conformance.o \
+	  oosdp_crc.o oo-conformance.o \
 	  oosdp_files.o oo-logmsg.o oo-prims.o \
 	  oo-secure.o oo-secure-actions.o oosdp_ui.o osdp-api.o
 	ar r libosdp.a \
 	  oo-actions.o \
 	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
-	  oosdp_conformance.o oosdp_crc.o oosdp_files.o \
+	  oo-conformance.o oosdp_crc.o oosdp_files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
 	  oo-secure-actions.o oosdp_ui.o \
 	  osdp-api.o
@@ -88,8 +88,8 @@ oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oo-xwrite.c
 
 # different as it uses source here by inclusion
-oosdp_conformance.o:	oosdp_conformance.c osdp-SKIP.c
-	${CC} ${CFLAGS} -I. oosdp_conformance.c
+oo-conformance.o:	oo-conformance.c osdp-SKIP.c
+	${CC} ${CFLAGS} -I. oo-conformance.c
 
 oosdp_crc.o:	oosdp_crc.c
 	${CC} ${CFLAGS} oosdp_crc.c
