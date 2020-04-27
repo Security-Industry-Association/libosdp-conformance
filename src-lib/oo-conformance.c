@@ -59,13 +59,18 @@ typedef struct osdp_conformance_test
   int test_for_transparent;
   char *description;
 } OSDP_CONFORMANCE_TEST;
+
 OSDP_CONFORMANCE_TEST
   test_control [] =
   {
-    { "050-01-01", &(osdp_conformance.physical_interface.test_status),
-      1, 0, 0, 0, 0, "---"},
-    { "050-02-01", &(osdp_conformance.signalling.test_status),
-      1, 0, 0, 0, 0, "---"}, // ??
+    {         OOC_SYMBOL_physical_interface,
+      &(osdp_conformance.physical_interface.test_status),
+      1, 0, 0, 0, 0,
+                        "physical interface"},
+    {         OOC_SYMBOL_signalling,
+      &(osdp_conformance.signalling.test_status),
+      1, 0, 0, 0, 0,
+                        "signalling"},
     { "2-2-2", &(osdp_conformance.alt_speed_2.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-2-3", &(osdp_conformance.alt_speed_3.test_status),
@@ -100,20 +105,28 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-8-1", &(osdp_conformance.message_synchronization.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "050-09-01", &(osdp_conformance.packet_format.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
-    { "050-09-03", &(osdp_conformance.SOM.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
-    { "050-09-12", &(osdp_conformance.SOM_sent.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
+    {         OOC_SYMBOL_packet_format,
+      &(osdp_conformance.packet_format.test_status),
+      1, 0, 0, 0, 0,
+                        "packet_format"},
+    {         OOC_SYMBOL_SOM,
+      &(osdp_conformance.SOM.test_status),
+      1, 0, 0, 0, 0,
+                        "SOM" },
+    {         OOC_SYMBOL_SOM_sent,
+      &(osdp_conformance.SOM_sent.test_status),
+      1, 0, 0, 0, 0,
+                        "SOM_sent" },
     { "2-11-1", &(osdp_conformance.ADDR.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-11-2", &(osdp_conformance.address_2.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-11-3", &(osdp_conformance.address_config.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "050-09-06", &(osdp_conformance.LEN.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
+    {         OOC_SYMBOL_LEN,
+      &(osdp_conformance.LEN.test_status),
+      1, 0, 0, 0, 0,
+                        "LEN" },
     { "2-13-1", &(osdp_conformance.CTRL.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-13-2", &(osdp_conformance.control_2.test_status),
@@ -137,16 +150,24 @@ OSDP_CONFORMANCE_TEST
     { "2-17-1", &(osdp_conformance.multipart.test_status),
       0, 0, 0, 0, 0, "---"},
 
-    { "3-1-1", &(osdp_conformance.cmd_poll.test_status),
-      1, 0, 0, 0, 0, "---" },
+    {         OOC_SYMBOL_cmd_poll,
+      &(osdp_conformance.cmd_poll.test_status),
+      1, 0, 0, 0, 0,
+                        "Command: POLL"},
     { "3-1-2", &(osdp_conformance.cmd_poll_raw.test_status),
       1, 0, 0, 0, 0, "---" },
     { "3-1-3", &(osdp_conformance.cmd_poll_lstatr.test_status),
       1, 0, 0, 0, 0, "---" },
     { "3-1-4", &(osdp_conformance.cmd_poll_response_4.test_status),
       1, 0, 0, 0, 0, "---" },
-    { "060-02-01", &(osdp_conformance.cmd_id.test_status),
-      1, 0, 0, 0, 0, "---" },
+    {         OOC_SYMBOL_cmd_id,
+      &(osdp_conformance.cmd_id.test_status),
+      1, 0, 0, 0, 0,
+                        "Command: ID"},
+    {         OOC_SYMBOL_cmd_pdcap,
+      &(osdp_conformance.cmd_pdcap.test_status),
+      1, 0, 0, 0, 0,
+                        "Command: PDCAP"},
     { "060-03-01", &(osdp_conformance.cmd_pdcap.test_status),
       1, 0, 0, 0, 0, "---" }, // optional in all cases
     { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
@@ -186,20 +207,28 @@ OSDP_CONFORMANCE_TEST
     { "3-22-1", &(osdp_conformance.cmd_max_rec.test_status),
       0, 0, 0, 0, 0, "---" },
 
-    { "4-1-1", &(osdp_conformance.rep_ack.test_status),
-      1, 1, 1, 1, 0, "---" },
+    {         OOC_SYMBOL_rep_ack,
+      &(osdp_conformance.rep_ack.test_status),
+      1, 1, 1, 1, 0,
+                        "rep_ack"},
     { "4-2-1", &(osdp_conformance.rep_nak.test_status),
       1, 1, 1, 1, 0, "---" },
-    { "070-03-01", &(osdp_conformance.rep_device_ident.test_status),
-      1, 1, 1, 1, 0, "---" },
+    {         OOC_SYMBOL_rep_device_ident,
+      &(osdp_conformance.rep_device_ident.test_status),
+      1, 1, 1, 1, 0,
+                        "rep_device_ident"},
     { "070-03-02", &(osdp_conformance.resp_ident_consistent.test_status),
       1, 1, 1, 1, 0, "PDID consistent" },
-    { "070-04-01", &(osdp_conformance.rep_device_capas.test_status),
-      1, 1, 1, 1, 0, "---" },
+    {         OOC_SYMBOL_rep_device_capas,
+      &(osdp_conformance.rep_device_capas.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: PDCAP" },
     { "4-4-2", &(osdp_conformance.rep_capas_consistent.test_status),
       1, 1, 1, 1, 0, "---" },
-    { "4-5-1", &(osdp_conformance.resp_lstatr.test_status),
-      1, 1, 1, 1, 0, "---" },
+    {         OOC_SYMBOL_resp_lstatr,
+      &(osdp_conformance.resp_lstatr.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: LSTATR"},
     { "4-5-2", &(osdp_conformance.resp_lstatr_tamper.test_status),
       1, 1, 1, 1, 0, "---" },
     { "4-5-3", &(osdp_conformance.resp_lstatr_power.test_status),
@@ -311,18 +340,15 @@ void
 
   if (oconf->conforming_messages >= PARAM_MMT)
   {
-    osdp_test_set_status("050-01-01", OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_physical_interface, OCONFORM_EXERCISED);
     if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
-      osdp_test_set_status("050-02-01", OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_signalling, OCONFORM_EXERCISED);
       //oconf->signalling.test_status = OCONFORM_EXERCISED;
-    osdp_test_set_status("050-09-01", OCONFORM_EXERCISED);
-    osdp_test_set_status("050-09-03", OCONFORM_EXERCISED);
-    osdp_test_set_status("050-09-12", OCONFORM_EXERCISED);
-    osdp_test_set_status("050-09-06", OCONFORM_EXERCISED);
-    oconf->CTRL.test_status =
-      OCONFORM_EXERCISED;
-    oconf->CTRL.test_status =
-      OCONFORM_EXERCISED;
+    osdp_test_set_status(OOC_SYMBOL_packet_format, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_SOM, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_SOM_sent, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_LEN, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_CTRL, OCONFORM_EXERCISED);
     oconf->CHKSUM_CRC16.test_status =
       OCONFORM_EXERCISED;
   };
@@ -804,9 +830,17 @@ int
       rf = fopen(results_filename, "w");
       if (rf)
       {
-        fprintf(rf,
-"{\"test\":\"%s\",\"test-status\":\"%d\"}\n",
+        time_t current_time;
+        char test_time [1024];
+
+        current_time = time(NULL);
+        strcpy(test_time, asctime(localtime(&current_time)));
+        if (test_time [strlen(test_time)-1] == '\n')
+          test_time [strlen(test_time)-1] = 0;
+        fprintf(rf, "{\"test\":\"%s\",\"test-status\":\"%d\",\n",
           test, test_status);
+        fprintf(rf, " \"test-time\":\"%s\",\"test-description\":\"%s\"}\n",
+          test_time, test_control [idx].description);
         fclose(rf);
       }
       else

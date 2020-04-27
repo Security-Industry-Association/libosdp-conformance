@@ -648,7 +648,7 @@ int
   done = 0;
 
   // i.e. we GOT a poll
-  osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
 
   /*
     poll response can be many things.  we do one and then return, which

@@ -31,25 +31,36 @@ typedef struct osdp_conform
     test_status;
 } OSDP_CONFORM;
 
+#define OOC_SYMBOL_physical_interface "050-01-01"
+#define OOC_SYMBOL_signalling         "050-02-01"
+#define OOC_SYMBOL_packet_format      "050-09-01"
+#define OOC_SYMBOL_SOM                "050-09-03"
+#define OOC_SYMBOL_LEN                "050-09-06"
+#define OOC_SYMBOL_CTRL               "050-09-07"
+#define OOC_SYMBOL_SOM_sent           "050-09-12"
+#define OOC_SYMBOL_cmd_poll           "060-01-01"
+#define OOC_SYMBOL_cmd_id             "060-02-01"
+#define OOC_SYMBOL_cmd_pdcap          "060-03-01"
+#define OOC_SYMBOL_cmd_lstat          "060-04-01"
+#define OOC_SYMBOL_rep_ack            "070-01-01"
+#define OOC_SYMBOL_rep_device_ident   "070-03-01"
+#define OOC_SYMBOL_rep_device_capas   "070-04-01"
+#define OOC_SYMBOL_resp_lstatr        "070-05-01"
+#define OOC_SYMBOL_resp_lstatr        "070-05-01"
+
 typedef struct osdp_interop_assessment
 {
-  int
-    pass;
-  int
-    fail;
-  int
-    untested;
-  int
-    skipped;
-  int
-    conforming_messages;
-  int
-    last_unknown_command;
+  int pass;
+  int fail;
+  int untested;
+  int skipped;
+  int conforming_messages;
+  int last_unknown_command;
 
-  // 2-x
+  // section 5
 
-  OSDP_CONFORM physical_interface;      // 050-01-01
-  OSDP_CONFORM signalling;              // 2-2-1
+  OSDP_CONFORM physical_interface;
+  OSDP_CONFORM signalling;
   OSDP_CONFORM alt_speed_2;             // 2-2-2
   OSDP_CONFORM alt_speed_3;             // 2-2-3
   OSDP_CONFORM alt_speed_4;             // 2-2-4
@@ -67,14 +78,14 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM max_delay;               // 2-7-2
   OSDP_CONFORM offline_test;            // 2-7-3
   OSDP_CONFORM message_synchronization; // 2-8-1
-  OSDP_CONFORM packet_format;           // 2-9-1
-  OSDP_CONFORM SOM;                     // 2-10-1
-  OSDP_CONFORM SOM_sent;                // 2-10-2
+  OSDP_CONFORM packet_format;
+  OSDP_CONFORM SOM;
+  OSDP_CONFORM SOM_sent;
   OSDP_CONFORM ADDR;                    // 2-11-1
   OSDP_CONFORM address_2;               // 2-11-2
   OSDP_CONFORM address_config;          // 2-11-3
-  OSDP_CONFORM LEN;                     // 2-12-1
-  OSDP_CONFORM CTRL;                    // 2-13-1
+  OSDP_CONFORM LEN;
+  OSDP_CONFORM CTRL;
   OSDP_CONFORM control_2;               // 2-13-2
   OSDP_CONFORM ctl_seq;                 // 2-13-3
   OSDP_CONFORM security_block;          // 2-14-1
@@ -86,16 +97,16 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM checksum;                // 2-16-2
   OSDP_CONFORM multipart;               // 2.17
 
-  // 3-x
+  // section 6
 
-  OSDP_CONFORM cmd_poll;                // 3-1-1
+  OSDP_CONFORM cmd_poll;
   OSDP_CONFORM cmd_poll_raw;            // 3-1-2
-  OSDP_CONFORM cmd_poll_lstatr;         // 3-1-3
+  OSDP_CONFORM cmd_poll_lstatr; // 3-1-3
   OSDP_CONFORM cmd_poll_response_4;     // 3-1-4
-  OSDP_CONFORM cmd_id;                  // 3-2-1
-  OSDP_CONFORM cmd_pdcap;               // 3-3-1
+  OSDP_CONFORM cmd_id;
+  OSDP_CONFORM cmd_pdcap;
   OSDP_CONFORM cmd_diag;                // 3-4-1
-  OSDP_CONFORM cmd_lstat;               // 3-5-1
+  OSDP_CONFORM cmd_lstat;
   OSDP_CONFORM cmd_istat;               // 3-6-1
   OSDP_CONFORM cmd_ostat;               // 3-7-1
   OSDP_CONFORM cmd_ostat_ack;           // 3-7-2
@@ -119,15 +130,15 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_filetransfer;        // 3-23-1
   OSDP_CONFORM cmd_keepactive;          // 3-24-2
 
-  // 4-x Replies
+  // section 7
 
-  OSDP_CONFORM rep_ack;                 // 4-1-1
+  OSDP_CONFORM rep_ack;
   OSDP_CONFORM rep_nak;                 // 4-2-1
-  OSDP_CONFORM rep_device_ident;        // 4-3-1
+  OSDP_CONFORM rep_device_ident;
   OSDP_CONFORM resp_ident_consistent;   // 4-3-2
-  OSDP_CONFORM rep_device_capas;        // 4-4-1
+  OSDP_CONFORM rep_device_capas;
   OSDP_CONFORM rep_capas_consistent;    // 4-4-2
-  OSDP_CONFORM resp_lstatr;             // 4-5-1
+  OSDP_CONFORM resp_lstatr;
   OSDP_CONFORM resp_lstatr_tamper;      // 4-5-2
   OSDP_CONFORM resp_lstatr_power;       // 4-5-3
   OSDP_CONFORM resp_input_stat;         // 4-6-1
@@ -142,7 +153,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_com;                // 4-12-1
   OSDP_CONFORM rep_scan_send;           // 4-13
   OSDP_CONFORM rep_scan_match;          // 4-14
-  OSDP_CONFORM resp_ccrypt;             // 070-15-01
+  OSDP_CONFORM resp_ccrypt;
   OSDP_CONFORM resp_mfg;                // 4-15-1
   OSDP_CONFORM resp_busy;               // 4-16-1
   OSDP_CONFORM resp_ftstat;             // 4-17-1

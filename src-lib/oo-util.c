@@ -489,8 +489,8 @@ fprintf(stderr, "lstat 1000\n");
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDCAP");
-      osdp_conformance.cmd_pdcap.test_status = OCONFORM_EXERCISED;
-      osdp_conformance.rep_device_capas.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
       break;
 
     case OSDP_PDID:
@@ -1404,8 +1404,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         *(msg->data_payload + 0), *(msg->data_payload + 1));
       osdp_conformance.cmd_poll_lstatr.test_status =
         OCONFORM_EXERCISED; // 3-1-3
-      osdp_conformance.resp_lstatr.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_lstatr, OCONFORM_EXERCISED);
       if (*(msg->data_payload) > 0)
         osdp_conformance.resp_lstatr_tamper.test_status =
           OCONFORM_EXERCISED;
