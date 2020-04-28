@@ -1148,6 +1148,12 @@ int
         parse_role = OSDP_ROLE_PD;
       status_monitor = osdp_parse_message (context, parse_role,
         &m, &returned_hdr);
+      if (status_monitor != ST_OK)
+      {
+        if (context->verbosity > 3)
+          fprintf(stderr, "DEBUG: ignoring osdp_parse_message status %d.\n", status);
+        status_monitor = ST_OK;
+      };
       if (context->verbosity > 8)
         if (status_monitor != ST_OK)
         {

@@ -89,6 +89,10 @@ int
       case ST_OSDP_SC_BAD_HASH:
         osdp_nak_response [0] = OO_NAK_ENCRYPTION_REQUIRED;
         break;
+      case ST_OSDP_BAD_SEQUENCE:
+        osdp_nak_response [0] = OO_NAK_SEQUENCE;
+        context.next_sequence = 0;
+        break;
       };
 
       if (send_response)
@@ -199,6 +203,7 @@ fprintf(context.log, "DEBUG: NAK: %d.\n", osdp_nak_response [0]);
 
   if ((status EQUALS ST_PARSE_UNKNOWN_CMD) || \
     (status EQUALS ST_BAD_CRC) || \
+    (status EQUALS ST_OSDP_BAD_SEQUENCE) || \
     (status EQUALS ST_BAD_CHECKSUM) || \
     (status EQUALS ST_OSDP_SC_BAD_HASH) || \
     (status EQUALS ST_NOT_MY_ADDR) || \

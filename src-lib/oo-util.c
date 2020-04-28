@@ -616,6 +616,16 @@ fprintf(stderr, "lstat 1000\n");
         status = ST_BAD_CRC;
         context->crc_errs ++;
       };
+
+      // if the sequence number didn't line up report
+
+      if (msg_sqn != context->next_sequence) //next_sequence(ctx))
+      {
+        if (context->verbosity > 3)
+          fprintf(stderr, "DEBUG: did not match %d %d\n", msg_sqn, context->next_sequence);
+        status = ST_OSDP_BAD_SEQUENCE;
+        context->seq_bad++;
+      };
     }
     else
     {
