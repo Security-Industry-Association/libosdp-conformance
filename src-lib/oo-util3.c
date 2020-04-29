@@ -475,8 +475,8 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
         strcpy (tlogmsg2, "osdp_ACK");
       ctx->pd_acks ++;
 
-      osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
-      osdp_test_set_status(OOC_SYMBOL_rep_ack, OCONFORM_EXERCISED);
+      osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
+      osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
 
       // if we just got an ack for an OSTAT mark that too.
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
@@ -596,7 +596,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDCAP");
 
-      osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
+      osdp_conformance.rep_device_capas.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
