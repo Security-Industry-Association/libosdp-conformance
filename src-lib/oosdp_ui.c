@@ -179,8 +179,7 @@ int
         status = send_message_ex (context, OSDP_ID, 0x7F,
           &current_length, sizeof (param), param,
           OSDP_SEC_SCS_17, 0, NULL);
-
-        osdp_test_set_status("060-02-01", OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
         status = ST_OK;
       };
       break;
@@ -554,7 +553,6 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         if (context->verbosity > 2)
           fprintf (stderr, "Requesting Capabilities Report\n");
       };
-      osdp_test_set_status("060-03-01", OCONFORM_EXERCISED);
       status = ST_OK;
       break;
 
@@ -657,7 +655,7 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
 
           if (context->verbosity > 3)
             fprintf (stderr, "Requesting PD Ident\n");
-          osdp_test_set_status("060-02-01", OCONFORM_EXERCISED);
+          osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
         };
       };
       status = ST_OK;

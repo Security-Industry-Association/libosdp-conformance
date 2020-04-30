@@ -223,8 +223,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.rep_device_ident.test_status),
       1, 1, 1, 1, 0,
                         "rep_device_ident"},
-    { "070-03-02", &(osdp_conformance.resp_ident_consistent.test_status),
-      1, 1, 1, 1, 0, "PDID consistent" },
+    {         OOC_SYMBOL_rep_pdid_check,
+      &(osdp_conformance.rep_pdid_check.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: PDID (check)"},
     {         OOC_SYMBOL_rep_device_capas,
       &(osdp_conformance.rep_device_capas.test_status),
       1, 1, 1, 1, 0,
@@ -565,7 +567,7 @@ void
     conformance_status (oconf->rep_device_ident.test_status)));
   LOG_REPORT ((log_string,
 "4-3-2  Ident report consistent            %s",
-    conformance_status (oconf->resp_ident_consistent.test_status)));
+    conformance_status (oconf->rep_pdid_check.test_status)));
   LOG_REPORT ((log_string,
 "4-4-1  Device Capabilities Report         %s",
     conformance_status (oconf->rep_device_capas.test_status)));

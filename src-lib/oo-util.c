@@ -501,8 +501,13 @@ fprintf(stderr, "lstat 1000\n");
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDID");
       if (context->last_command_sent EQUALS OSDP_ID)
+<<<<<<< HEAD
+        osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
+=======
         osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
-      osdp_test_set_status("060-02-01", OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
+>>>>>>> e05a7c65a87eadc0d939c72b304202f715b39423
       break;
 
     case OSDP_RAW:
@@ -616,16 +621,6 @@ fprintf(stderr, "lstat 1000\n");
         status = ST_BAD_CRC;
         context->crc_errs ++;
       };
-
-      // if the sequence number didn't line up report
-
-      if (msg_sqn != context->next_sequence) //next_sequence(ctx))
-      {
-        if (context->verbosity > 3)
-          fprintf(stderr, "DEBUG: did not match %d %d\n", msg_sqn, context->next_sequence);
-        status = ST_OSDP_BAD_SEQUENCE;
-        context->seq_bad++;
-      };
     }
     else
     {
@@ -676,6 +671,24 @@ fprintf(stderr, "\n"); fflush(stderr);
         status = ST_BAD_CHECKSUM;
 status = ST_OK; // tolerate checksum error and continue
         context->checksum_errs ++;
+      };
+    };
+
+fprintf(stderr, "DEBUG: checking sequence rcv %d exp %d\n",
+  msg_sqn, context->next_sequence);
+    // if the sequence number didn't line up report
+    {
+      int rcv_seq;
+
+      rcv_seq = msg_sqn;
+      rcv_seq = (rcv_seq + 1) % 4;
+      if (!rcv_seq) rcv_seq = 1;
+
+      if (rcv_seq != context->next_sequence) 
+      {
+        fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
+        status = ST_OSDP_BAD_SEQUENCE;
+        context->seq_bad++;
       };
     };
 
@@ -1040,8 +1053,9 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           current_security = OSDP_SEC_STAND_DOWN;
         status = send_message_ex(context, OSDP_PDID, oo_response_address(context, oh->addr),
           &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
-        osdp_test_set_status("060-02-01", OCONFORM_EXERCISED);
-        osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
+        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
+        osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
           sprintf (logmsg, "Responding with OSDP_PDID");
@@ -1560,13 +1574,13 @@ printf ("MMSG DONE\n");
       // consistency check (test 4-3-2)
       // OUI must not be zero
 
-      osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
       if ((msg->data_payload [0] EQUALS 0) &&
         (msg->data_payload [1] EQUALS 0) &&
         (msg->data_payload [2] EQUALS 0))
       {
         fprintf(context->log, "OUI in PDID is invalid (all 0's)\n");
-        SET_FAIL ((context), "070-03-02");
+        osdp_test_set_status(OOC_SYMBOL_rep_pdid_check, OCONFORM_FAIL);
       }
       else
       {
@@ -1591,7 +1605,7 @@ printf ("MMSG DONE\n");
           context->fw_version [0], context->fw_version [1], context->fw_version [2]);
         system(cmd);
 
-        SET_PASS ((context), "070-03-02");
+        osdp_test_set_status(OOC_SYMBOL_rep_pdid_check, OCONFORM_EXERCISED);
       };
 
       context->last_was_processed = 1;

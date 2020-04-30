@@ -45,9 +45,11 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_rep_ack            "070-01-01"
 #define OOC_SYMBOL_rep_nak            "070-02-01"
 #define OOC_SYMBOL_rep_device_ident   "070-03-01"
+#define OOC_SYMBOL_rep_pdid_check     "070-03-02"
 #define OOC_SYMBOL_rep_device_capas   "070-04-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
+#define OOC_SYMBOL_resp_ccrypt        "070-15-01"
 
 typedef struct osdp_interop_assessment
 {
@@ -136,7 +138,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_ack;
   OSDP_CONFORM rep_nak;
   OSDP_CONFORM rep_device_ident;
-  OSDP_CONFORM resp_ident_consistent;   // 4-3-2
+  OSDP_CONFORM rep_pdid_check;
   OSDP_CONFORM rep_device_capas;
   OSDP_CONFORM rep_capas_consistent;    // 4-4-2
   OSDP_CONFORM resp_lstatr;
