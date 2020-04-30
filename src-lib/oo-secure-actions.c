@@ -186,7 +186,7 @@ int
       OSDP_NAK, p_card.addr, &current_length,
       sizeof(osdp_nak_response_data), osdp_nak_response_data);
     ctx->sent_naks ++;
-    osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
     if (ctx->verbosity > 2)
     {
       fprintf (ctx->log, "NAK(5): osdp_CHLNG but Secure Channel disabled\n");
@@ -213,7 +213,7 @@ int
         OSDP_NAK, p_card.addr, &current_length,
         1, osdp_nak_response_data);
       ctx->sent_naks ++;
-      osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
       if (ctx->verbosity > 2)
       {
         fprintf (ctx->log, "NAK: SCBK not initialized");

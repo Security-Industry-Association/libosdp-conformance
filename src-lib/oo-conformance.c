@@ -127,8 +127,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.LEN.test_status),
       1, 0, 0, 0, 0,
                         "LEN" },
-    { "2-13-1", &(osdp_conformance.CTRL.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
+    {         OOC_SYMBOL_CTRL,
+      &(osdp_conformance.CTRL.test_status),
+      1, 0, 0, 0, 0,
+                        "CTRL" },
     { "2-13-2", &(osdp_conformance.control_2.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-13-3", &(osdp_conformance.ctl_seq.test_status),
@@ -172,8 +174,10 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // optional in all cases
     { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
       1, 0, 0, 0, 0, "---" }, // optional in all cases
-    { "3-5-1", &(osdp_conformance.cmd_lstat.test_status),
-      1, 0, 0, 0, 0, "---" }, // optional in all cases
+    {         OOC_SYMBOL_cmd_lstat,
+      &(osdp_conformance.cmd_lstat.test_status),
+      1, 0, 0, 0, 0,
+                        "Command: LSTAT"},
     { "3-6-1", &(osdp_conformance.cmd_istat.test_status),
       1, 0, 0, 0, 0, "---" },
     { "3-7-1", &(osdp_conformance.cmd_ostat.test_status),
@@ -210,9 +214,11 @@ OSDP_CONFORMANCE_TEST
     {         OOC_SYMBOL_rep_ack,
       &(osdp_conformance.rep_ack.test_status),
       1, 1, 1, 1, 0,
-                        "rep_ack"},
-    { "4-2-1", &(osdp_conformance.rep_nak.test_status),
-      1, 1, 1, 1, 0, "---" },
+                        "Response: ACK" },
+    {         OOC_SYMBOL_rep_nak,
+      &(osdp_conformance.rep_nak.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: NAK" },
     {         OOC_SYMBOL_rep_device_ident,
       &(osdp_conformance.rep_device_ident.test_status),
       1, 1, 1, 1, 0,
@@ -344,8 +350,8 @@ void
     if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
       osdp_test_set_status(OOC_SYMBOL_signalling, OCONFORM_EXERCISED);
       //oconf->signalling.test_status = OCONFORM_EXERCISED;
-    osdp_test_set_status(OOC_SYMBOL_packet_format, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_SOM, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_packet_format, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_SOM_sent, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_LEN, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_CTRL, OCONFORM_EXERCISED);

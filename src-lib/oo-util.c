@@ -896,7 +896,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
         context->sent_naks ++;
-        osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
           fprintf (context->log, "Responding with OSDP NAK\n");
@@ -1169,8 +1169,7 @@ fprintf(stderr, "lstat 1684\n");
       unsigned char
         osdp_lstat_response_data [2];
 
-      osdp_conformance.cmd_lstat.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_EXERCISED);
       osdp_lstat_response_data [ 0] = context->tamper;
       osdp_lstat_response_data [ 1] = context->power_report; // report power failure
       current_length = 0;
@@ -1237,7 +1236,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
-        osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
           fprintf (stderr, "CMD %02x Unknown\n", msg->msg_cmd);
@@ -1362,7 +1361,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           break;
         };
       };
-      osdp_conformance.rep_nak.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
 
       // if the PD NAK'd an ID fail the test.
       if (context->last_command_sent EQUALS OSDP_ID)
@@ -1379,7 +1378,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       // if the PD NAK'd an LSTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_LSTAT)
       {
-        osdp_conformance.cmd_lstat.test_status = OCONFORM_FAIL;
+        osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_FAIL);
         SET_FAIL ((context), "3-5-1");
       };
       // if the PD NAK'd a CAP fail the test.

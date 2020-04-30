@@ -89,6 +89,7 @@ int
 
 
   status = read_command (&context, &cmd);
+fprintf(stderr, "DEBUG: (near) top of process_current_command read status was %d\n", status);
   if (status EQUALS ST_OK)
   {
     status = process_command(cmd.command, &context, cmd.details_length, cmd.details_param_1, (char *)cmd.details);
