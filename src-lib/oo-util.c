@@ -501,8 +501,13 @@ fprintf(stderr, "lstat 1000\n");
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDID");
       if (context->last_command_sent EQUALS OSDP_ID)
+<<<<<<< HEAD
         osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
+=======
+        osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
+>>>>>>> e05a7c65a87eadc0d939c72b304202f715b39423
       break;
 
     case OSDP_RAW:
