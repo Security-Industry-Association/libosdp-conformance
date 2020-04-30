@@ -137,7 +137,7 @@ if (ctx->verbosity > 8)
     status = ST_OK;
     osdp_reset_secure_channel (ctx);
   };
-  (void)osdp_test_set_status("070-15-01", test_results);
+  (void)osdp_test_set_status(OOC_SYMBOL_resp_ccrypt, test_results);
   return (status);
 
 } /* action_osdp_CCRYPT */

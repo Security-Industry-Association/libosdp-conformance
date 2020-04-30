@@ -48,6 +48,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_rep_device_capas   "070-04-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
+#define OOC_SYMBOL_resp_ccrypt        "070-15-01"
 
 typedef struct osdp_interop_assessment
 {
