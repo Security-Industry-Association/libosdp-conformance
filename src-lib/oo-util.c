@@ -502,7 +502,7 @@ fprintf(stderr, "lstat 1000\n");
         strcpy (tlogmsg2, "osdp_PDID");
       if (context->last_command_sent EQUALS OSDP_ID)
         osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
-      osdp_test_set_status("060-02-01", OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
       break;
 
     case OSDP_RAW:
