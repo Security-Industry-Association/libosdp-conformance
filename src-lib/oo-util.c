@@ -500,14 +500,12 @@ fprintf(stderr, "lstat 1000\n");
 // ASSUMES NO SECURITY
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDID");
+
+      // if we had sent an osdp_ID then that worked.
       if (context->last_command_sent EQUALS OSDP_ID)
-<<<<<<< HEAD
         osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
+
       osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
-=======
-        osdp_test_set_status("070-03-01", OCONFORM_EXERCISED);
-      osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
->>>>>>> e05a7c65a87eadc0d939c72b304202f715b39423
       break;
 
     case OSDP_RAW:
@@ -686,9 +684,12 @@ fprintf(stderr, "DEBUG: checking sequence rcv %d exp %d\n",
 
       if (rcv_seq != context->next_sequence) 
       {
-        fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
-        status = ST_OSDP_BAD_SEQUENCE;
-        context->seq_bad++;
+        if (role != OSDP_ROLE_MONITOR)
+        {
+          fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
+          status = ST_OSDP_BAD_SEQUENCE;
+          context->seq_bad++;
+        };
       };
     };
 
