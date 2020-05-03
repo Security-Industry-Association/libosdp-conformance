@@ -1006,10 +1006,8 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           OSDP_PDCAP, p_card.addr, &current_length,
             response_length, response_cap,
             current_security, 0, NULL);
-        osdp_conformance.cmd_pdcap.test_status =
-          OCONFORM_EXERCISED;
-        osdp_conformance.rep_device_capas.test_status =
-          OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
       };
       break;
 

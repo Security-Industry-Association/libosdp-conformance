@@ -1,6 +1,6 @@
 # Make file for osdp-ui
 
-#  (C)Copyright 2017-2018 Smithee Solutions LLC
+#  (C)Copyright 2017-2020 Smithee Solutions LLC
 #  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 #  Support provided by the Security Industry Association
@@ -45,7 +45,8 @@ TLS_PROGS =
 
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
   open-osdp-MON.html osdp-conformance-CP.html osdp-conformance-PD.html \
-  index-conformance.html
+  index-conformance.html \
+  Test-ACU.html
 TLS_PAGES = 
 
 SCRIPTS = clean-run do-CP-command exec-CP485 exec-PD485 \
