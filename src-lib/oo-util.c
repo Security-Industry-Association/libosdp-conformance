@@ -672,8 +672,6 @@ status = ST_OK; // tolerate checksum error and continue
       };
     };
 
-fprintf(stderr, "DEBUG: checking sequence rcv %d exp %d\n",
-  msg_sqn, context->next_sequence);
     // if the sequence number didn't line up report
     {
       int rcv_seq;
