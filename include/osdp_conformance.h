@@ -42,6 +42,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_id             "060-02-01"
 #define OOC_SYMBOL_cmd_pdcap          "060-03-01"
 #define OOC_SYMBOL_cmd_lstat          "060-04-01"
+#define OOC_SYMBOL_cmd_led_red        "060-09-01"
 #define OOC_SYMBOL_rep_ack            "070-01-01"
 #define OOC_SYMBOL_rep_nak            "070-02-01"
 #define OOC_SYMBOL_rep_device_ident   "070-03-01"
@@ -115,7 +116,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_ostat_ack;           // 3-7-2
   OSDP_CONFORM cmd_rstat;               // 3-8-1
   OSDP_CONFORM cmd_out;                 // 3-9-1
-  OSDP_CONFORM cmd_led_red;             // 3-10-1
+  OSDP_CONFORM cmd_led_red;
   OSDP_CONFORM cmd_led_green;           // 3-10-2
   OSDP_CONFORM cmd_buz;                 // 3-11-1
   OSDP_CONFORM cmd_text;                // 3-12-1

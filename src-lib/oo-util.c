@@ -1140,8 +1140,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
               // for conformance tests 3-10-1/3-10-2 we specifically look for LED 0 Color 1 (Red) or Color 2 (Green)
 
               if (led_ctl->perm_on_color EQUALS 1)
-                osdp_conformance.cmd_led_red.test_status =
-                  OCONFORM_EXERCISED;
+                osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
               if (led_ctl->perm_on_color EQUALS 2)
                 osdp_conformance.cmd_led_green.test_status =
                   OCONFORM_EXERCISED;

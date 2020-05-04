@@ -620,6 +620,8 @@ int
     entry ++;
   };
   fprintf(ctx->log, "PD Capabilities response processing complete.\n\n");
+  if (ctx->last_command_sent EQUALS OSDP_CAP)
+    osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
   osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
 
   status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
@@ -842,8 +844,8 @@ dump_buffer_log(ctx, "card data message(fixed 32)", osdp_raw_data, 32);
     status = send_message_ex
       (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
       OSDP_SEC_SCS_16, 0, NULL);
-    osdp_conformance.cmd_poll.test_status = OCONFORM_EXERCISED;
-    osdp_conformance.rep_ack.test_status = OCONFORM_EXERCISED;
+    osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_rep_ack, OCONFORM_EXERCISED);
     if (ctx->verbosity > 9)
     {
       sprintf (tlogmsg, "Responding with OSDP_ACK");
