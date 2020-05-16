@@ -364,7 +364,7 @@ void
       OCONFORM_EXERCISED;
   };
 
-  ctx->report = fopen ("/opt/osdp-conformance/log/report.log", "w");
+  ctx->report = fopen ("/opt/osdp-conformance/results/report.log", "w");
 
   LOG_REPORT ((log_string, "Conformance Report:"));
   LOG_REPORT ((log_string,

@@ -1,0 +1,72 @@
+<HTML>
+<HEAD>
+<TITLE>Test PD: check ACU</TITLE>
+</HEAD>
+<BODY>
+<H3>Test PD: check ACU conformance (0.60 Build 2)</H3>
+
+<P ALIGN=CENTER><FONT SIZE=+3>Coming soon: ACU testing</FONT></P>
+PD stuff...
+Generate
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
+Display
+<A HREF="/cgi-bin/conformance-report">report</A> ::
+Display ACU
+<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
+Recent ACU
+<A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A>
+(<A HREF="/cgi-bin/tail-CP-stderr" target="_blank">error</A> log) ::
+<A HREF="/cgi-bin/do-verb-cp?3">Moderate</A>/
+<A HREF="/cgi-bin/do-verb-cp?9">Verbose</A> logging<BR>
+<A HREF="/cgi-bin/start-CP-485">Start</A> ACU ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> ACU<BR>
+(<EM>more commands at bottom of
+<A HREF="#control_bottom">page</A></EM>)
+<BR>
+
+<TABLE><CAPTION><B>Test Group 5 (Protocol)</B></CAPTION>
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
+  <TR><TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH></TR>
+  <TR><TD ALIGN="CENTER">050-01-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Physical Interface</TD></TR>
+  <TR><TD ALIGN="CENTER">050-02-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
+      <EM>Test</EM></a></TD>
+    <TD ALIGN="CENTER">Signalling (9600)</TD></TR>
+  <TR><TD ALIGN="CENTER">050-09-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Packet Format</TD></TR>
+  <TR><TD ALIGN="CENTER">050-09-03</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD></TR>
+  <TR><TD ALIGN="CENTER">050-09-12</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM Sent</TD></TR>
+  <TR><TD ALIGN="CENTER">050-09-06</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Length</TD></TR>
+  <TR><TD ALIGN="CENTER">050-09-07</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD></TR>
+  <TR><TD ALIGN="CENTER">zzz</TD>
+    <TD ALIGN="CENTER"><A HREF=blah>zzz</A></TD> <TD ALIGN="CENTER">zzz</TD></TR>
+</TABLE>
+<TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
+  <TR>
+    <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">070-01-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Response: osdp_ACK</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">070-04-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
+      <EM>Test</EM></A></TD>
+    <TD>Response: osdp_PDCAP</TD>
+  </TR>
+</TABLE>
+
+<P>
+Main menu.
+</P>
+</BODY>
+</HTML>
+

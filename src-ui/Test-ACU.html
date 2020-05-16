@@ -25,14 +25,38 @@ Recent ACU
 
 <TABLE><CAPTION><B>Test Group 5 (Protocol)</B></CAPTION>
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
   <TR>
-    <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
-  </TR>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+</TR>
   <TR>
     <TD ALIGN="CENTER">050-01-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Physical Interface</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Physical Interface</TD>
+
+    <TD ALIGN="CENTER">050-02-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
+      <EM>Test</EM></a></TD>
+    <TD ALIGN="CENTER">Signalling (9600)</TD>
   </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Packet Format</TD>
+
+    <TD ALIGN="CENTER">050-09-03</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD>
+
+    <TD ALIGN="CENTER">050-09-12</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM Sent</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-06</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Length</TD>
+
+    <TD ALIGN="CENTER">050-09-07</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD></TR>
 </TABLE>
 <TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
@@ -46,7 +70,8 @@ Recent ACU
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-04-01</TD>
-    <TD ALIGN="CENTER"><A HREF="/blah"><EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
+      <EM>Test</EM></A></TD>
     <TD>Response: osdp_PDCAP</TD>
   </TR>
 </TABLE>
@@ -63,10 +88,8 @@ Recent ACU
 <TR> <TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH>
 <TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH> </TR>
 <TR>
-  <TD>~</TD><TD>2-1-1 deprecated</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
-  2-2-1</TD>
-  <TD>Signalling (9600) [4]</TD>
+  <TD> </TD><TD> </TD>
+  <TD> </TD><TD> </TD>
 <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_2">
   2-2-2</TD>
   <TD>Signalling (19200) [4]</TD>
@@ -123,11 +146,11 @@ Recent ACU
   <TD><SPAN STYLE="background-color: #C0C0C0">
   synchronization</SPAN></TD>
 <TD ALIGN="CENTER">2-9-1</TD><TD>Packet format [4]</TD>
-<TD ALIGN="CENTER">2-10-1</TD><TD>SOM [4]</TD>
-<TD ALIGN="CENTER">-</TD><TD>-</TD>
+<TD> </TD><TD> </TD>
+<TD> </TD><TD> </TD>
 </TR>
 <TR>
-<TD ALIGN="CENTER">2-10-2</TD><TD>SOM sent [4]</TD>
+<TD> </TD><TD> </TD>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-11-1</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">Address</SPAN></TD>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-11-2</SPAN></TD>
@@ -138,8 +161,7 @@ Recent ACU
 </TR>
 <TR>
 <TD ALIGN="CENTER"> 2-12-1</TD><TD>Length [4]</TD>
-<TD ALIGN="CENTER">2-13-1</TD>
-  <TD>Control field [4]</TD>
+<TD> </TD> <TD> </TD>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-13-2</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">SCS header</SPAN></TD>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-13-3</SPAN></TD>
@@ -203,10 +225,7 @@ Recent ACU
     3-2-1</A></TD>
     <TD>
     ID Report Request</SPAN></TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
-    3-3-1</A></TD>
-    <TD>
-    PD Capabilities Request</SPAN></TD>
+  <TD> </TD> <TD> </TD>
   <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-4-1</SPAN></TD>
     <TD><SPAN STYLE="background-color: #C0C0C0">
     Diagnostic Function</SPAN></TD>
