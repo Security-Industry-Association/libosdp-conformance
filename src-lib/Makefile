@@ -39,23 +39,25 @@ clean:
 	rm -f core *.o ${OUTLIB}
 
 libosdp.a:	\
-	oo-actions.o osdp-api.o oo-cmdbreech.o oo-initialize.o oo-process.o \
+	oo-actions.o oo-api.o oo-cmdbreech.o oo-initialize.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_crc.o oo-conformance.o \
 	  oosdp_files.o oo-logmsg.o oo-prims.o \
-	  oo-secure.o oo-secure-actions.o oosdp_ui.o osdp-api.o
+	  oo-secure.o oo-secure-actions.o oosdp_ui.o
 	ar r libosdp.a \
-	  oo-actions.o \
+	  oo-actions.o oo-api.o \
 	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oosdp_crc.o oosdp_files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
-	  oo-secure-actions.o oosdp_ui.o \
-	  osdp-api.o
+	  oo-secure-actions.o oosdp_ui.o
 
 oo-actions.o:	oo-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-actions.c
+
+oo-api.o:	oo-api.c ../include/osdp-tls.h ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-api.c
 
 oo-cmdbreech.o:	oo-cmdbreech.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-cmdbreech.c
@@ -88,7 +90,7 @@ oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oo-xwrite.c
 
 # different as it uses source here by inclusion
-oo-conformance.o:	oo-conformance.c osdp-SKIP.c
+oo-conformance.o:	oo-conformance.c oo-SKIP.c
 	${CC} ${CFLAGS} -I. oo-conformance.c
 
 oosdp_crc.o:	oosdp_crc.c
@@ -111,9 +113,6 @@ oo-secure-actions.o:	oo-secure-actions.c ../include/open-osdp.h
 
 oosdp_ui.o:	oosdp_ui.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oosdp_ui.c
-
-osdp-api.o:	osdp-api.c ../include/osdp-tls.h ../include/open-osdp.h
-	${CC} ${CFLAGS} osdp-api.c
 
 /opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
 	cp ../include/open-osdp.h /opt/osdp-conformance/include

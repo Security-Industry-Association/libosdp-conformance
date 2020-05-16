@@ -1101,7 +1101,7 @@ int
     current_length, // returned message length in bytes
     command,
     true_dest,
-    next_sequence (ctx),
+    next_sequence(ctx),
     data_length, // data length to use
     data,
     sec_block_type, sec_block_length, sec_blk); // security values

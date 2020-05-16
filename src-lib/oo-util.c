@@ -675,18 +675,30 @@ status = ST_OK; // tolerate checksum error and continue
     // if the sequence number didn't line up report
     {
       int rcv_seq;
+      int wire_sequence;
 
+      wire_sequence = msg_sqn;
       rcv_seq = msg_sqn;
       rcv_seq = (rcv_seq + 1) % 4;
-      if (!rcv_seq) rcv_seq = 1;
+//      if (!rcv_seq) rcv_seq = 1;
 
-      if (rcv_seq != context->next_sequence) 
+fprintf(stderr, "DEBUG: w %d r %d n %d\n",
+  wire_sequence, rcv_seq, context->next_sequence);
+if (wire_sequence != 0)
+  fprintf(stderr, "w=%d\n", wire_sequence);
+
+      if (wire_sequence != context->next_sequence) 
       {
-        if (role != OSDP_ROLE_MONITOR)
+        // if we're not just displaying it...
+        if ((role != OSDP_ROLE_MONITOR) &&
+          (role EQUALS context->role))
         {
-          fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
-          status = ST_OSDP_BAD_SEQUENCE;
-          context->seq_bad++;
+          if (wire_sequence != 0)
+          {
+            fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
+            status = ST_OSDP_BAD_SEQUENCE;
+            context->seq_bad++;
+          };
         };
       };
     };
@@ -1362,9 +1374,11 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         case 3:
           fprintf(context->log, "  NAK: (3)Command not implemented by PD\n");
           break;
-        case 4:
+        case OO_NAK_SEQUENCE:
           fprintf(context->log, "  NAK: (4)Unexpected sequence number\n");
-          context->seq_bad ++; // hopefully not double counted, works in monitor mode
+          context->seq_bad ++;
+            // hopefully not double counted, works in monitor mode
+          context->next_sequence = 0; // reset sequence due to NAK
           break;
         case 5:
           fprintf(context->log, "  NAK: (5)Security block not accepted\n");

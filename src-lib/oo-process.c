@@ -91,17 +91,25 @@ int
         break;
       case ST_OSDP_BAD_SEQUENCE:
         osdp_nak_response [0] = OO_NAK_SEQUENCE;
+
+        // reset the current sequence number to zero (for the NAK)
         context.next_sequence = 0;
         break;
       };
 
       if (send_response)
       {
-fprintf(context.log, "DEBUG: NAK: %d.\n", osdp_nak_response [0]);
+        if (context.verbosity > 3)
+          fprintf(context.log, "DEBUG: NAK: %d.\n", osdp_nak_response [0]);
         (void)send_message_ex(&context,
           OSDP_NAK, p_card.addr, &current_length,
           1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
         context.sent_naks ++;
+
+        // if we just sent a bad-sequence NAK then reset the sequence number.
+        // (for subsequent packets)
+        if (osdp_nak_response [0] EQUALS OO_NAK_SEQUENCE)
+          context.next_sequence = 0;
       };
     };
   };

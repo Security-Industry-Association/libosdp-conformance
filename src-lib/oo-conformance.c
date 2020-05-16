@@ -280,7 +280,7 @@ OSDP_CONFORMANCE_TEST
   };
 
 // code to configure tests to skip
-#include <osdp-SKIP.c>
+#include <oo-SKIP.c>
 
 
 char

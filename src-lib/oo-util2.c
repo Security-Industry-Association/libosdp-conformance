@@ -47,7 +47,7 @@ void start_element (void *data, const char *element, const char **attribute);
 
 int
   background
-    (OSDP_CONTEXT *context)
+    (OSDP_CONTEXT *ctx)
 
 { /* background */
 
@@ -68,19 +68,19 @@ int
   // if we're not enabled for secure channel
   // yeah, poll
 
-  if (context->role EQUALS OSDP_ROLE_ACU)
-    if (context->xferctx.total_length EQUALS 0)
-      if (context->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
-        if (!(context->secure_channel_use [OO_SCU_ENAB] & 0x80))
+  if (ctx->role EQUALS OSDP_ROLE_ACU)
+    if (ctx->xferctx.total_length EQUALS 0)
+      if (ctx->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
+        if (!(ctx->secure_channel_use [OO_SCU_ENAB] & 0x80))
           send_poll = 1;
 
   // if we're in secure channel and the other conditions, do a secure poll
 
-  if (context->role EQUALS OSDP_ROLE_ACU)
+  if (ctx->role EQUALS OSDP_ROLE_ACU)
   {
-    if (context->xferctx.total_length EQUALS 0)
+    if (ctx->xferctx.total_length EQUALS 0)
     {
-      if (context->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+      if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
       {
         send_secure_poll = 1;
       };
@@ -90,7 +90,7 @@ int
   // if waiting for response to last message then do NOT poll
 
   if (send_poll)
-    if (osdp_awaiting_response(context))
+    if (osdp_awaiting_response(ctx))
     {
       send_poll = 0;
     };
@@ -98,18 +98,18 @@ int
     // if polling is not enabled do not send one
     // (resume is used to start at a given command)
 
-    if ((OO_POLL_NEVER EQUALS (context->enable_poll)) ||
-      (OO_POLL_RESUME EQUALS (context->enable_poll)))
+    if ((OO_POLL_NEVER EQUALS (ctx->enable_poll)) ||
+      (OO_POLL_RESUME EQUALS (ctx->enable_poll)))
       send_poll = 0;
   if (send_poll)
   {
     current_length = 0;
-    status = send_message (context,
-      OSDP_POLL, p_card.addr, &current_length, 0, NULL); 
+    status = send_message_ex(ctx, OSDP_POLL, p_card.addr, &current_length,
+      0, NULL, OSDP_SEC_SCS_17, 0, NULL);
   };
   if (send_secure_poll)
   {
-    status = send_secure_message(context, OSDP_POLL, p_card.addr,
+    status = send_secure_message(ctx, OSDP_POLL, p_card.addr,
       &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, sec_blk);
   };
 
@@ -251,6 +251,8 @@ int
     do_increment;
 
 
+fprintf(stderr, "DEBUG: next_sequence - top - next %d\n",
+  ctx->next_sequence);
   do_increment = 1;
   if (ctx->last_response_received != OSDP_NAK)
     do_increment = 1;
@@ -273,6 +275,7 @@ int
   {
     // the current value is returned. might be 0 (if this is the first message)
 
+fprintf(stderr, "DEBUG: next_sequence: ctx->next_sequence was %d\n", ctx->next_sequence);
     current_sequence = ctx->next_sequence;
 
     // increment sequence, skipping 1 (per spec)
@@ -284,8 +287,6 @@ int
     // if polling is to resume enable it now
     if (OO_POLL_RESUME EQUALS (ctx->enable_poll))
       ctx->enable_poll = OO_POLL_ENABLED;
-    if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
-      ctx->next_sequence = 0;
 
     // if they disabled polling don't increment the sequence number
     if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
@@ -297,6 +298,7 @@ int
       fprintf (ctx->log, "Last in was NAK (E=%d) Seq now %d\n",
         ctx->last_nak_error, ctx->next_sequence);
   };
+fprintf(stderr, "DEBUG: next_sequence: ctx->next_sequence %d\n", ctx->next_sequence);
   return (current_sequence);
 
 } /* next_sequence */
@@ -1086,7 +1088,7 @@ int
 
 int
   send_message
-    (OSDP_CONTEXT *context,
+    (OSDP_CONTEXT *ctx,
     int command,
     int dest_addr,
     int *current_length,
@@ -1101,34 +1103,37 @@ int
   int true_dest;
 
 
-  context->last_was_processed = 0; //starting fresh on the processing
+  ctx->last_was_processed = 0; //starting fresh on the processing
 
-  if (context->verbosity > 9)
+  if (ctx->verbosity > 9)
   {
-    fprintf (context->log, "Top of send_message cmd=%02x:\n", command);
-    fflush (context->log);
+    fprintf (ctx->log, "Top of send_message cmd=%02x:\n", command);
+    fflush (ctx->log);
   };
   status = ST_OK;
   true_dest = dest_addr;
   *current_length = 0;
 
-  if (context->verbosity > 3)
+  if (ctx->verbosity > 3)
   {
-    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
     if (command EQUALS OSDP_NAK)
+    {
+      osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
       fprintf (stderr, "NAK being sent...%02x\n", *data);
+    };
   };
   status = osdp_build_message
     (test_blk, // message itself
     current_length, // returned message length in bytes
     command,
     true_dest,
-    next_sequence (context),
+    ctx->next_sequence,
     data_length, // data length to use
     data,
     0); // no security
   if (status EQUALS ST_OK)
   {
+    next_sequence(ctx);
 
     // if (context->verbosity > 3)
     {
@@ -1144,48 +1149,48 @@ int
 
       // parse the message for display.  role to parse is the OTHER guy
       parse_role = OSDP_ROLE_ACU;
-      if (context->role EQUALS OSDP_ROLE_ACU)
+      if (ctx->role EQUALS OSDP_ROLE_ACU)
         parse_role = OSDP_ROLE_PD;
-      status_monitor = osdp_parse_message (context, parse_role,
+      status_monitor = osdp_parse_message (ctx, parse_role,
         &m, &returned_hdr);
       if (status_monitor != ST_OK)
       {
-        if (context->verbosity > 3)
+        if (ctx->verbosity > 3)
           fprintf(stderr, "DEBUG: ignoring osdp_parse_message status %d.\n", status);
         status_monitor = ST_OK;
       };
-      if (context->verbosity > 8)
+      if (ctx->verbosity > 8)
         if (status_monitor != ST_OK)
         {
           sprintf (tlogmsg,"parse_message for monitoring returned %d.\n",
             status_monitor);
-          status = oosdp_log (context, OSDP_LOG_STRING_CP, 1, tlogmsg);
+          status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
         };
-      (void)monitor_osdp_message (context, &m);
+      (void)monitor_osdp_message (ctx, &m);
     };
 
     buf [0] = 0xff;
     // send start-of-message marker (0xff)
-    status = send_osdp_data (context, buf, 1);
+    status = send_osdp_data (ctx, buf, 1);
 
     if (status EQUALS ST_OK)
     {
-      status = send_osdp_data (context, test_blk, *current_length);
+      status = send_osdp_data (ctx, test_blk, *current_length);
 
       // and after we sent the whole PDU bump the counter
-      context->pdus_sent++;
+      ctx->pdus_sent++;
     };
 
-    if (context->verbosity > 4)
+    if (ctx->verbosity > 4)
     {
-      osdp_trace_dump(context, 1);
+      osdp_trace_dump(ctx, 1);
     };
   };
   if (status EQUALS ST_OK)
   {
-    context->timer [OSDP_TIMER_RESPONSE].current_nanoseconds = context->timer [OSDP_TIMER_RESPONSE].i_nsec;
-    context->timer [OSDP_TIMER_RESPONSE].status = OSDP_TIMER_RUNNING;
-    context->last_command_sent = command;
+    ctx->timer [OSDP_TIMER_RESPONSE].current_nanoseconds = ctx->timer [OSDP_TIMER_RESPONSE].i_nsec;
+    ctx->timer [OSDP_TIMER_RESPONSE].status = OSDP_TIMER_RUNNING;
+    ctx->last_command_sent = command;
   };
 
   return (status);
