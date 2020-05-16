@@ -251,8 +251,6 @@ int
     do_increment;
 
 
-fprintf(stderr, "DEBUG: next_sequence - top - next %d\n",
-  ctx->next_sequence);
   do_increment = 1;
   if (ctx->last_response_received != OSDP_NAK)
     do_increment = 1;
@@ -275,7 +273,6 @@ fprintf(stderr, "DEBUG: next_sequence - top - next %d\n",
   {
     // the current value is returned. might be 0 (if this is the first message)
 
-fprintf(stderr, "DEBUG: next_sequence: ctx->next_sequence was %d\n", ctx->next_sequence);
     current_sequence = ctx->next_sequence;
 
     // increment sequence, skipping 1 (per spec)
@@ -298,7 +295,6 @@ fprintf(stderr, "DEBUG: next_sequence: ctx->next_sequence was %d\n", ctx->next_s
       fprintf (ctx->log, "Last in was NAK (E=%d) Seq now %d\n",
         ctx->last_nak_error, ctx->next_sequence);
   };
-fprintf(stderr, "DEBUG: next_sequence: ctx->next_sequence %d\n", ctx->next_sequence);
   return (current_sequence);
 
 } /* next_sequence */

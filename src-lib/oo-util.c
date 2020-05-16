@@ -674,20 +674,28 @@ status = ST_OK; // tolerate checksum error and continue
 
     // if the sequence number didn't line up report
     {
+      int bad;
       int rcv_seq;
       int wire_sequence;
 
       wire_sequence = msg_sqn;
       rcv_seq = msg_sqn;
+
+      //increment by 1, loops around at 3, never goes back to zero
       rcv_seq = (rcv_seq + 1) % 4;
-//      if (!rcv_seq) rcv_seq = 1;
+      if (!rcv_seq)
+        rcv_seq = 1;
 
-fprintf(stderr, "DEBUG: w %d r %d n %d\n",
-  wire_sequence, rcv_seq, context->next_sequence);
-if (wire_sequence != 0)
-  fprintf(stderr, "w=%d\n", wire_sequence);
+      bad = 0;
+      // if we're the ACU the received sequence number should match "next_sequence"
+      if ((role EQUALS OSDP_ROLE_ACU) && (rcv_seq != context->next_sequence))
+        bad = 1;
 
-      if (wire_sequence != context->next_sequence) 
+      // if we're the PD the received sequence number should match the sequence number on the wire
+      if ((role EQUALS OSDP_ROLE_PD) && (wire_sequence != context->next_sequence))
+        bad = 1;
+
+      if (bad)
       {
         // if we're not just displaying it...
         if ((role != OSDP_ROLE_MONITOR) &&
