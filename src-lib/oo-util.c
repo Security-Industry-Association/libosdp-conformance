@@ -1426,7 +1426,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 
     case OSDP_COM:
       status = ST_OK;
-      osdp_conformance.resp_com.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
       if (context->verbosity > 2)
       {
         fprintf (stderr, "osdp_COM: Addr %02x Baud (m->l) %02x %02x %02x %02x\n",

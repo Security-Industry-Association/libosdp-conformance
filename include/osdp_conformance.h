@@ -45,6 +45,8 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_led_red        "060-09-01"
 #define OOC_SYMBOL_cmd_led_green      "060-09-02"
 #define OOC_SYMBOL_cmd_buz            "060-10-01"
+#define OOC_SYMBOL_cmd_comset         "060-12-01"
+#define OOC_SYMBOL_cmd_mfg            "060-18-01"
 #define OOC_SYMBOL_rep_ack            "070-01-01"
 #define OOC_SYMBOL_rep_nak            "070-02-01"
 #define OOC_SYMBOL_rep_device_ident   "070-03-01"
@@ -52,6 +54,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_rep_device_capas   "070-04-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
+#define OOC_SYMBOL_resp_com           "070-12-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-15-01"
 
 typedef struct osdp_interop_assessment
@@ -122,7 +125,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_led_green;
   OSDP_CONFORM cmd_buz;
   OSDP_CONFORM cmd_text;                // 3-12-1
-  OSDP_CONFORM cmd_comset;              // 3-13-1
+  OSDP_CONFORM cmd_comset;
   OSDP_CONFORM cmd_prompt;              // 3-16-1
   OSDP_CONFORM cmd_bioread;             // 3-17-1
   OSDP_CONFORM cmd_biomatch;            // 3-18-1
@@ -156,7 +159,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_raw;                 // 4-9
   OSDP_CONFORM rep_formatted;           // 4-10-1
   OSDP_CONFORM resp_keypad;             // 4-11-1
-  OSDP_CONFORM resp_com;                // 4-12-1
+  OSDP_CONFORM resp_com;
   OSDP_CONFORM rep_scan_send;           // 4-13
   OSDP_CONFORM rep_scan_match;          // 4-14
   OSDP_CONFORM resp_ccrypt;

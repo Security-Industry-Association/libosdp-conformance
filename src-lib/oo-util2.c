@@ -1060,7 +1060,7 @@ int
   param [3] =   (new_speed & 0xff0000) >> 16;
   param [4] = (new_speed & 0xff000000) >> 24;
   current_length = 0;
-  osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_cmd_comset, OCONFORM_EXERCISED);
   status = send_message_ex(ctx, OSDP_COMSET, pd_address, &current_length,
     sizeof(param), param, OSDP_SEC_SCS_17, 0, NULL);
 

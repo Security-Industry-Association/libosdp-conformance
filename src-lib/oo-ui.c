@@ -566,7 +566,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         memcpy (&new_speed, details+4, 4);
         sprintf (context->serial_speed, "%d", new_speed);
         context->new_address = details [0];
-        osdp_conformance.cmd_comset.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_cmd_comset, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
           fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
             context->new_address, context->serial_speed);

@@ -3,7 +3,7 @@
 <TITLE>Test ACU: check PD</TITLE>
 </HEAD>
 <BODY>
-<H3>Test ACU: check PD conformance (0.60 Build 2)</H3>
+<H3>Test ACU: check PD conformance (0.60 Build 3)</H3>
 
 <P ALIGN="RIGHT">
 Generate
@@ -97,13 +97,29 @@ Recent ACU
     <TD ALIGN="CENTER">060-09-02</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?2">
       <EM>Test</EM></A></TD>
-    <TD>LED Test (Green) [<A HREF="/cgi-bin/do-confirm?3-10-2">OK</A>]</TD>
+    <TD ALIGN="CENTER"> <SPAN>
+        LED Test (Green) [<A HREF="/cgi-bin/do-confirm?3-10-2">OK</A>]
+      </SPAN></TD>
 
     <TD ALIGN="CENTER">060-10-01</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
       <EM>Test</EM></A></TD>
     <TD>Command: osdp_BUZ [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]</TD>
   </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-12-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-comset?2+115200">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER"><SPAN>COMSET (115200/A=2)</SPAN></TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-18-01</TD>
+      <TD ALIGN="CENTER">
+        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_3_20_1">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER"><SPAN>Command: osdp_MFG</SPAN></TD>
+  </TR>
+
 </TABLE>
 <BR>
 <TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
@@ -145,6 +161,11 @@ Recent ACU
     <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
       <EM>Test</EM></A></TD>
     <TD>Response: osdp_LSTATR</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">070-12-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Response: osdp_COM</TD>
   </TR>
 </TABLE>
 
@@ -320,9 +341,7 @@ Recent ACU
     <TD>Text output
     [<A HREF="/cgi-bin/do-confirm?3-12-1">OK</A>]
     </TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-comset?2+115200">
-    3-14-1</TD>
-    <TD>COMSET</TD>
+  <TD> </TD> <TD> </TD>
   <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-16-1</SPAN></TD>
     <TD><SPAN STYLE="background-color: #C0C0C0">
     Reader prompt</SPAN></TD>
@@ -338,8 +357,7 @@ Recent ACU
   <TD ALIGN="center">
     3-19-1</TD>
     <TD>Mpart Msg Cont.</TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_3_20_1">
-    3-20-1</TD> <TD>MFG Message</TD>
+  <TD> </TD> <TD> </TD>
   <TD ALIGN="center">
     3-21-1</TD>
     <TD>Stop Multi-Part Message</TD>
@@ -409,9 +427,7 @@ Recent ACU
     4-11-1</TD>
     <TD>
     Keypad [4]</TD>
-  <TD ALIGN="CENTER"><SPAN>4-12-1</SPAN></TD>
-    <TD><SPAN>
-    COM Report</SPAN></TD>
+  <TD> </TD><TD> </TD>
   <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-13-1</SPAN></TD>
     <TD><SPAN STYLE="background-color: #C0C0C0">
     Biometrics Read</SPAN></TD>

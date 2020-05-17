@@ -44,14 +44,14 @@ libosdp.a:	\
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_crc.o oo-conformance.o \
 	  oosdp_files.o oo-logmsg.o oo-prims.o \
-	  oo-secure.o oo-secure-actions.o oosdp_ui.o
+	  oo-secure.o oo-secure-actions.o oo-ui.o
 	ar r libosdp.a \
 	  oo-actions.o oo-api.o \
 	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oosdp_crc.o oosdp_files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
-	  oo-secure-actions.o oosdp_ui.o
+	  oo-secure-actions.o oo-ui.o
 
 oo-actions.o:	oo-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-actions.c
@@ -111,8 +111,8 @@ oo-secure.o:	oo-secure.c ../include/open-osdp.h
 oo-secure-actions.o:	oo-secure-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-secure-actions.c
 
-oosdp_ui.o:	oosdp_ui.c ../include/open-osdp.h ../include/iec-xwrite.h
-	${CC} ${CFLAGS} oosdp_ui.c
+oo-ui.o:	oo-ui.c ../include/open-osdp.h ../include/iec-xwrite.h
+	${CC} ${CFLAGS} oo-ui.c
 
 /opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
 	cp ../include/open-osdp.h /opt/osdp-conformance/include
