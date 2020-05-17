@@ -24,9 +24,9 @@ Recent ACU
 </P>
 
 <TABLE><CAPTION><B>Test Group 5 (Protocol)</B></CAPTION>
-    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
-    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
-    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
   <TR>
 <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
 <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
@@ -38,7 +38,7 @@ Recent ACU
 
     <TD ALIGN="CENTER">050-02-01</TD>
     <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
-      <EM>Test</EM></a></TD>
+      <EM>Test</EM></A></TD>
     <TD ALIGN="CENTER">Signalling (9600)</TD>
   </TR>
   <TR>
@@ -58,21 +58,93 @@ Recent ACU
     <TD ALIGN="CENTER">050-09-07</TD>
     <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD></TR>
 </TABLE>
-<TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
-    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
+<BR>
+<TABLE><CAPTION><B>Test Group 6 (Commands)</B></CAPTION>
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
   <TR>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+</TR>
+  <TR>
+    <TD ALIGN="CENTER">060-01-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Command: osdp_POLL</TD></TR>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-02-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Command: osdp_ID</TD>
+
+    <TD ALIGN="CENTER">060-03-01</TD>
+       <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Command: osdp_CAP</TD>
+
+    <TD ALIGN="CENTER">060-04-01</TD>
+      <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
+      <EM>Test</EM></A></TD>
+    <TD>Command: osdp_LSTAT</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-09-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?1">
+      <EM>Test</EM></A></TD>
+    <TD>LED Test (Red) [<A HREF="/cgi-bin/do-confirm?3-10-1">OK</A>]</TD>
+
+    <TD ALIGN="CENTER">060-09-02</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?2">
+      <EM>Test</EM></A></TD>
+    <TD>LED Test (Green) [<A HREF="/cgi-bin/do-confirm?3-10-2">OK</A>]</TD>
+
+    <TD ALIGN="CENTER">060-10-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
+      <EM>Test</EM></A></TD>
+    <TD>Command: osdp_BUZ [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]</TD>
+  </TR>
+</TABLE>
+<BR>
+<TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+  <TR>
+    <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+    <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
     <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-01-01</TD>
     <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Response: osdp_ACK</TD>
+    <TD ALIGN="CENTER">Response: osdp_ACK</TD>
+
+    <TD ALIGN="CENTER">070-02-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-induce-NAK">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Response: osdp_NAK</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">070-03-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Response: osdp_PDID</TD>
+
+    <TD ALIGN="CENTER">070-03-02</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">PDID valid</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-04-01</TD>
     <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
       <EM>Test</EM></A></TD>
     <TD>Response: osdp_PDCAP</TD>
+
+    <TD ALIGN="CENTER">070-05-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
+      <EM>Test</EM></A></TD>
+    <TD>Response: osdp_LSTATR</TD>
   </TR>
 </TABLE>
 
@@ -207,9 +279,7 @@ Recent ACU
 <TH>ID</TH> <TH>Description</TH>
 </TR>
 <TR>
-  <TD ALIGN="CENTER">3-1-1</TD>
-    <TD>
-    Poll [4]</SPAN></TD>
+  <TD> </TD> <TD> </TD>
   <TD ALIGN="CENTER">3-1-2</TD>
     <TD>
     Raw response to poll [4]</SPAN></TD>
@@ -219,19 +289,6 @@ Recent ACU
   <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-1-4</SPAN></TD>
     <TD><SPAN STYLE="background-color: #C0C0C0">
     tbd Poll response 4</SPAN></TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER"> <A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">
-    3-2-1</A></TD>
-    <TD>
-    ID Report Request</SPAN></TD>
-  <TD> </TD> <TD> </TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-4-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Diagnostic Function</SPAN></TD>
-  <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
-    3-5-1</A></TD>
-    <TD>osdp_LSTAT</TD>
 </TR>
 <TR>
   <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-input_status">
@@ -248,16 +305,8 @@ Recent ACU
 <TR>
   <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-output">
     3-9-1</A></TD><TD>osdp_OUT</TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?1">
-    3-10-1</TD>
-    <TD>LED Test (Red)
-    [<A HREF="/cgi-bin/do-confirm?3-10-1">OK</A>]
-    </TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?2">
-    3-10-2</TD>
-    <TD>LED Test (Green)
-    [<A HREF="/cgi-bin/do-confirm?3-10-2">OK</A>]
-    </TD>
+  <TD> </TD> <TD> </TD>
+  <TD> </TD> <TD> </TD>
   <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
     3-11-1</A></TD>
     <TD>Buzzer control
@@ -324,21 +373,11 @@ Recent ACU
 <TH>ID</TH> <TH>Description</TH>
 </TR>
 <TR>
-  <TD>~</TD><TD>4-1-1 deprecated</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-induce-NAK">
-  4-2-1</A></TD><TD>osdp_NAK</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">
-  4-3-1</A></TD><TD>osdp_PDID</TD>
-  <TD ALIGN="CENTER">4-3-2</TD>
-    <TD>
-    PDID sanity check [4]</TD>
-</TR>
-<TR>
-  <TD>~</TD><TD>4-4-1 deprecated</TD>
+  <TD> </TD><TD> </TD>
   <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-4-2</SPAN></TD>
     <TD><SPAN STYLE="background-color: #C0C0C0">
     PDCAP sanity check</SPAN></TD>
-<TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">4-5-1</A></TD><TD>osdp_LSTATR</TD>
+  <TD> </TD><TD> </TD>
 <TD ALIGN="center">4-5-2</TD><TD>LSTATR Tamper [4]</TD>
 </TR>
 

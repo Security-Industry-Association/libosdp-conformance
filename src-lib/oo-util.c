@@ -953,8 +953,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
         fprintf (stderr, "%s", logmsg);
         logmsg[0]=0;
       };
-      osdp_conformance.cmd_buz.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);
       current_length = 0;
       current_security = OSDP_SEC_SCS_15;
       status = send_message_ex(context, OSDP_ACK, p_card.addr,
@@ -1162,8 +1161,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
               if (led_ctl->perm_on_color EQUALS 1)
                 osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
               if (led_ctl->perm_on_color EQUALS 2)
-                osdp_conformance.cmd_led_green.test_status =
-                  OCONFORM_EXERCISED;
+                osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_EXERCISED);
             };
           led_ctl = led_ctl + sizeof(OSDP_RDR_LED_CTL);
         };
