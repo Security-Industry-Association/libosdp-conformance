@@ -207,7 +207,7 @@ int
 
       // NAK, "encryption required" (close...), no details (length=1)
 
-      osdp_nak_response_data [0] = OO_NAK_ENCRYPTION_REQUIRED;
+      osdp_nak_response_data [0] = OO_NAK_ENC_REQ;
       current_length = 0;
       status = send_message (ctx,
         OSDP_NAK, p_card.addr, &current_length,

@@ -1101,16 +1101,19 @@ int
     current_length, // returned message length in bytes
     command,
     true_dest,
-    next_sequence(ctx),
+    ctx->next_sequence,
     data_length, // data length to use
     data,
     sec_block_type, sec_block_length, sec_blk); // security values
+
   if (status EQUALS ST_OK)
   {
     OSDP_MSG m;
 //    int parse_role;
     OSDP_HDR returned_hdr;
     int status_monitor;
+
+    next_sequence(ctx);
 
     memset (&m, 0, sizeof (m));
     m.ptr = test_blk; // marshalled outbound message

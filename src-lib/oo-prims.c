@@ -52,7 +52,7 @@ char *
   case OO_NAK_CMD_UNABLE:
     nak_text = "Unable to process command";
     break;
-  case OO_NAK_ENCRYPTION_REQUIRED:
+  case OO_NAK_ENC_REQ:
     nak_text = "Encrypted communications required";
     break;
   case OO_NAK_SEQUENCE:

@@ -87,7 +87,8 @@ int
         send_response = 0; // not for me, don't answer.
         break;
       case ST_OSDP_SC_BAD_HASH:
-        osdp_nak_response [0] = OO_NAK_ENCRYPTION_REQUIRED;
+        osdp_nak_response [0] = OO_NAK_ENC_REQ;
+        fprintf(context.log, "  NAK: Bad hash, sending NAK %d\n", OO_NAK_ENC_REQ);
         break;
       case ST_OSDP_BAD_SEQUENCE:
         osdp_nak_response [0] = OO_NAK_SEQUENCE;

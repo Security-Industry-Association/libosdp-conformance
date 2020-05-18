@@ -686,6 +686,8 @@ status = ST_OK; // tolerate checksum error and continue
       if (!rcv_seq)
         rcv_seq = 1;
 
+fprintf(stderr, "DEBUG: wire seq %d. rcv seq %d. next seq %d.\n",
+  wire_sequence, rcv_seq, context->next_sequence);
       bad = 0;
       // if we're the ACU the received sequence number should match "next_sequence"
       if ((role EQUALS OSDP_ROLE_ACU) && (rcv_seq != context->next_sequence))
@@ -1358,12 +1360,11 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         {
           nak_data = *(1+msg->data_payload);
           sprintf (tlogmsg, "osdp_NAK: Error Code %02x Data %02x",
-            *(0+msg->data_payload), *(1+msg->data_payload));
+            nak_code, *(1+msg->data_payload));
         }
         else
         {
-          sprintf (tlogmsg, "osdp_NAK: Error Code %02x",
-            *(0+msg->data_payload));
+          sprintf (tlogmsg, "osdp_NAK: Error Code %02x", nak_code);
         };
 
         sprintf(cmd,
@@ -1374,10 +1375,11 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         fprintf (context->log, "%s\n", tlogmsg);
         switch(*(0+msg->data_payload))
         {
-        case 1:
+//not yet displayed: OO_NAK_COMMAND_LENGTH OO_NAK_BIO_TYPE_UNSUPPORTED OO_NAK_BIO_FMT_UNSUPPORTED OO_NAK_CMD_UNABLE
+        case OO_NAK_CHECK_CRC:
           fprintf(context->log, "  NAK: (1)Bad CRC/Checksum\n");
           break;
-        case 3:
+        case OO_NAK_UNK_CMD:
           fprintf(context->log, "  NAK: (3)Command not implemented by PD\n");
           break;
         case OO_NAK_SEQUENCE:
@@ -1386,9 +1388,13 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
             // hopefully not double counted, works in monitor mode
           context->next_sequence = 0; // reset sequence due to NAK
           break;
-        case 5:
+        case OO_NAK_UNSUP_SECBLK:
           fprintf(context->log, "  NAK: (5)Security block not accepted\n");
           break;
+        case OO_NAK_ENC_REQ:
+          fprintf(context->log, "  NAK: (%d)Security block not accepted\n", nak_code);
+          break;
+
         };
       };
       osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);

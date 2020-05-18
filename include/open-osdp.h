@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (60)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_BUILD ( 4)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
@@ -141,11 +141,14 @@
 
 // NAK error codes
 #define OO_NAK_CHECK_CRC           (1)
+#define OO_NAK_COMMAND_LENGTH      (2)
 #define OO_NAK_UNK_CMD             (3)
 #define OO_NAK_SEQUENCE            (4)
 #define OO_NAK_UNSUP_SECBLK        (5)
-#define OO_NAK_ENCRYPTION_REQUIRED (6)
-#define OO_NAK_CMD_UNABLE          (9)
+#define OO_NAK_ENC_REQ              (6)
+#define OO_NAK_BIO_TYPE_UNSUPPORTED (7)
+#define OO_NAK_BIO_FMT_UNSUPPORTED  (8)
+#define OO_NAK_CMD_UNABLE           (9)
 
 #define OSDP_MENU_TOP     (0x0000)
 #define OSDP_MENU_CP_DIAG (0x0100)
