@@ -673,8 +673,6 @@ int
 
     // if it's an even number of blocks just encrypt it.
 
-fprintf(ctx->log, "DEBUG: pl before %d. data_length %d.\n",
-  *padded_length, data_length);
     if (0 != (data_length % (2*OSDP_KEY_OCTETS)))
     {
       // needs padding.  calc padding, add the padding marker.  buffer was zeroes already.
@@ -683,8 +681,6 @@ fprintf(ctx->log, "DEBUG: pl before %d. data_length %d.\n",
         ((data_length+(OSDP_KEY_OCTETS-1))/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
       enc_buf [data_length] = 0x80;
       *padding = *padded_length - data_length;
-fprintf(ctx->log, "DEBUG: padding %d. pl after %d.\n",
-  *padding, *padded_length);
     };
   };
   if (ctx->verbosity > 3)

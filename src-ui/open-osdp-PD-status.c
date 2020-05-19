@@ -1,7 +1,7 @@
 /*
   open-osdp-PD-status - display PD status as refreshing HTML page
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -144,7 +144,7 @@ void
     sscanf (vstr, "%d", &i);
     stat_crc_errs = i; };
   if (status EQUALS ST_OK) {
-    found_field = 1; value = json_object_get (root, "sent_naks");
+    found_field = 1; value = json_object_get (root, "pd-naks");
     if (!json_is_string (value)) found_field = 0; };
   if (found_field) { char vstr [1024]; int i;
     strcpy (vstr, json_string_value (value));

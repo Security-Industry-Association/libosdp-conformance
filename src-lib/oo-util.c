@@ -1344,6 +1344,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         OCONFORM_EXERCISED;
       break;
 
+    // action for NAK
+
     case OSDP_NAK:
       status = ST_OK;
       context->sent_naks ++;
@@ -1392,7 +1394,11 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           fprintf(context->log, "  NAK: (5)Security block not accepted\n");
           break;
         case OO_NAK_ENC_REQ:
+          // drop out of secure channel and in fact reset the sequence number
+
           fprintf(context->log, "  NAK: (%d)Security block not accepted\n", nak_code);
+          osdp_reset_secure_channel(context);
+          context->next_sequence = 0; 
           break;
 
         };

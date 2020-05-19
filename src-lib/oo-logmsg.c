@@ -671,8 +671,13 @@ int
     // dump as named in the IEC spec
     msg = (OSDP_MSG *) aux;
     osdp_wire_message = (OSDP_HDR *)(msg->ptr); // actual message off the wire
-    sprintf(tmpstr2, "SOM ADDR=%02x LEN_LSB=%02x LEN_MSB=%02x\n",
-      osdp_wire_message->addr, osdp_wire_message->len_lsb,
+    if (osdp_wire_message->ctrl & 0x08)
+      sprintf(tmpstr2, "Msg: [SECURE] ");
+    else
+      sprintf(tmpstr2, "Msg: [Clear]  ");
+    strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
+    sprintf(tmpstr2, "C/R=%02x A=%02x LSB=%02x MSB=%02x\n",
+      osdp_wire_message->command, osdp_wire_message->addr, osdp_wire_message->len_lsb,
       osdp_wire_message->len_msb);
     strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
     sprintf(tlogmsg, "  CTRL=%02x (", osdp_wire_message->ctrl);
