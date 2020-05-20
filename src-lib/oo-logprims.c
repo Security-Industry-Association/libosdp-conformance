@@ -255,6 +255,9 @@ char
   case 14:
     strcpy (funcname, "Biometrics");
     break;
+  case 15:
+    strcpy(funcname, "Secure PIN Entry");
+    break;
   case OSDP_CAP_VERSION:
     strcpy(funcname, "OSDP Protocol Version");
     break;

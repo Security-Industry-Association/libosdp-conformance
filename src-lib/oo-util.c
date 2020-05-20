@@ -686,8 +686,9 @@ status = ST_OK; // tolerate checksum error and continue
       if (!rcv_seq)
         rcv_seq = 1;
 
-fprintf(stderr, "DEBUG: wire seq %d. rcv seq %d. next seq %d.\n",
-  wire_sequence, rcv_seq, context->next_sequence);
+      if (context->verbosity > 9)
+        fprintf(stderr, "DEBUG: wire seq %d. rcv seq %d. next seq %d.\n",
+          wire_sequence, rcv_seq, context->next_sequence);
       bad = 0;
       // if we're the ACU the received sequence number should match "next_sequence"
       if ((role EQUALS OSDP_ROLE_ACU) && (rcv_seq != context->next_sequence))
