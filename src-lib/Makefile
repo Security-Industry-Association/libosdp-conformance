@@ -43,13 +43,13 @@ libosdp.a:	\
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oosdp_crc.o oo-conformance.o \
-	  oosdp_files.o oo-logmsg.o oo-prims.o \
+	  oo-files.o oo-logmsg.o oo-prims.o \
 	  oo-secure.o oo-secure-actions.o oo-ui.o
 	ar r libosdp.a \
 	  oo-actions.o oo-api.o \
 	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
-	  oo-conformance.o oosdp_crc.o oosdp_files.o \
+	  oo-conformance.o oosdp_crc.o oo-files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
 	  oo-secure-actions.o oo-ui.o
 
@@ -96,8 +96,8 @@ oo-conformance.o:	oo-conformance.c oo-SKIP.c
 oosdp_crc.o:	oosdp_crc.c
 	${CC} ${CFLAGS} oosdp_crc.c
 
-oosdp_files.o:	oosdp_files.c ../include/open-osdp.h
-	${CC} ${CFLAGS} oosdp_files.c
+oo-files.o:	oo-files.c ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-files.c
 
 oo-logmsg.o:	oo-logmsg.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-logmsg.c

@@ -3,7 +3,7 @@
 <TITLE>Test ACU: check PD</TITLE>
 </HEAD>
 <BODY>
-<H3>Test ACU: check PD conformance (0.60 Build 4)</H3>
+<H3>Test ACU: Check PD conformance (0.60 Build 4)</H3>
 
 <P ALIGN="RIGHT">
 Generate
@@ -35,11 +35,38 @@ Recent ACU
   <TR>
     <TD ALIGN="CENTER">050-01-01</TD>
     <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Physical Interface</TD>
-
+  </TR>
+  <TR>
     <TD ALIGN="CENTER">050-02-01</TD>
-    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
       <EM>Test</EM></A></TD>
     <TD ALIGN="CENTER">Signalling (9600)</TD>
+
+    <TD ALIGN="CENTER">050-02-02</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_2">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Signalling (19,200)</TD>
+
+    <TD ALIGN="CENTER">050-02-03</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_3">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Signalling (38,400)</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-02-04</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_4">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Signalling (115,200)</TD>
+
+    <TD ALIGN="CENTER">050-03-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Encoding</TD>
+
+    <TD ALIGN="CENTER">050-04-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Channel Access</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">050-09-01</TD>
@@ -183,21 +210,7 @@ Recent ACU
 <TR>
   <TD> </TD><TD> </TD>
   <TD> </TD><TD> </TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_2">
-  2-2-2</TD>
-  <TD>Signalling (19200) [4]</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_3">
-  2-2-3</TD>
-  <TD>Signalling (38400) [4]</TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_4">
-  2-2-4</TD>
-  <TD>Signalling (115200) [4]</TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-3-1</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">Encoding</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-1</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">Channel Access</SPAN></TD>
+  <TD> </TD><TD> </TD>
 <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-2</SPAN></TD>
   <TD><SPAN STYLE="background-color: #C0C0C0">resend on timeout</SPAN></TD>
 </TR>
