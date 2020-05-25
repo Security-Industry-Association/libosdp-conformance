@@ -1,72 +1,514 @@
 <HTML>
 <HEAD>
-<TITLE>Test PD: check ACU</TITLE>
+<TITLE>Test ACU CONFORMANCE 0.60 Build 4</TITLE>
 </HEAD>
 <BODY>
-<H3>Test PD: check ACU conformance (0.60 Build 4)</H3>
+<H3>Test ACU Conformance (0.60 Build 4)</H3>
 
-<P ALIGN=CENTER><FONT SIZE=+3>Coming soon: ACU testing</FONT></P>
-PD stuff...
+<P>
 Generate
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-dump_status">report</A> ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-dump_status">report</A> ::
+Display
+<A HREF="/cgi-bin/conformance-report">report</A> ::
+Display PD
+<A HREF="/cgi-bin/open-osdp-PD-status" target="_blank">status</A> ::
+Recent PD
+<A HREF="/cgi-bin/tail-PD-log" target="_blank">log</A> ::
+<A HREF="/cgi-bin/do-verb-pd?3">Moderate</A>/
+<A HREF="/cgi-bin/do-verb-pd?9">Verbose</A> logging ::
+<A HREF="/cgi-bin/start-PD-485">Start</A> PD ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-stop">Stop</A> PD ::
+<A HREF="/open-osdp-PD.html">Control</A>
+<BR>
+(<EM>more commands at bottom of
+<A HREF="#control_bottom">page</A></EM>)
+</P>
+
+<TABLE><CAPTION><B>Test Group 5 (Protocol)</B></CAPTION>
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+  <TR>
+    <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+      <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+      <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-01-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Physical Interface</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-02-01</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Signalling (9600)</TD>
+
+    <TD ALIGN="CENTER">050-02-02</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_2">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Signalling (19,200)</TD>
+
+    <TD ALIGN="CENTER">050-02-03</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_3">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Signalling (38,400)</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-02-04</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_4">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Signalling (115,200)</TD>
+
+    <TD ALIGN="CENTER">050-03-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Encoding</TD>
+
+    <TD ALIGN="CENTER">050-04-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Channel Access</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-04-02</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform_050_04_02">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Resend (timeout)</TD>
+
+    <TD ALIGN="CENTER">050-04-03</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform_050_04_03">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Resend (busy)</TD>
+
+    <TD ALIGN="CENTER">050-04-04</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform_050_04_04">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">New after busy</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-05-01</TD>
+      <TD ALIGN="CENTER">(auto)</TD>
+      <TD ALIGN="CENTER">Multi-byte encoding</TD>
+
+    <TD ALIGN="CENTER">050-06-01</TD>
+      <TD ALIGN="CENTER">
+        <SPAN STYLE="background-color: #C0C0C0">t.b.d.</SPAN></TD>
+      <TD ALIGN="CENTER">Packet size (ACU to PD)</TD>
+
+    <TD ALIGN="CENTER">050-06-02</TD>
+      <TD ALIGN="CENTER">
+        <SPAN STYLE="background-color: #C0C0C0">t.b.d.</SPAN></TD>
+      <TD ALIGN="CENTER">Packet size (PD to ACU)</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-07-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Timing</TD>
+
+    <TD ALIGN="CENTER">050-08-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Synchronization</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Packet Format</TD>
+
+    <TD ALIGN="CENTER">050-09-03</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD>
+
+    <TD ALIGN="CENTER">050-09-12</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM Sent</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-04</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Address</TD>
+
+    <TD ALIGN="CENTER">050-09-13</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Configuration Address</TD>
+
+    <TD ALIGN="CENTER">050-09-06</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Length</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-07</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD>
+
+    <TD ALIGN="CENTER">050-09-08</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Security Control Block</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-11</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Checksum</TD>
+
+    <TD ALIGN="CENTER">050-09-14</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">CRC</TD>
+  </TR>
+</TABLE>
+<BR>
+<TABLE><CAPTION><B>Test Group 6 (Commands)</B></CAPTION>
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
+  <TR>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+<TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
+</TR>
+  <TR>
+    <TD ALIGN="CENTER">060-01-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Command: osdp_POLL</TD></TR>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-02-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Command: osdp_ID</TD>
+
+    <TD ALIGN="CENTER">060-03-01</TD>
+       <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Command: osdp_CAP</TD>
+
+    <TD ALIGN="CENTER">060-04-01</TD>
+      <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
+      <EM>Test</EM></A></TD>
+    <TD>Command: osdp_LSTAT</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-09-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?1">
+      <EM>Test</EM></A></TD>
+    <TD>LED Test (Red) [<A HREF="/cgi-bin/do-confirm?3-10-1">OK</A>]</TD>
+
+    <TD ALIGN="CENTER">060-09-02</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?2">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER"> <SPAN>
+        LED Test (Green) [<A HREF="/cgi-bin/do-confirm?3-10-2">OK</A>]
+      </SPAN></TD>
+
+    <TD ALIGN="CENTER">060-10-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
+      <EM>Test</EM></A></TD>
+    <TD>Command: osdp_BUZ [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-12-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-comset?2+115200">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER"><SPAN>COMSET (115200/A=2)</SPAN></TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-18-01</TD>
+      <TD ALIGN="CENTER">
+        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_3_20_1">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER"><SPAN>Command: osdp_MFG</SPAN></TD>
+  </TR>
+
+</TABLE>
+
+<TABLE>
+<CAPTION><B>Test Group 3 Commands [2]</B></CAPTION>
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<TR>
+<TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    3-1-1</TD>
+    <TD>
+    Poll [4]</SPAN>
+    </TD>
+  <TD ALIGN="CENTER">3-1-2</TD>
+    <TD>
+    Raw response to poll [4]</SPAN>
+    </TD>
+  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=PD-reset_power">
+    3-1-3</A></TD>
+    <TD>
+    Lstatr response to poll
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-1-4</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    tbd Poll response 4</SPAN></TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    3-2-1</TD>
+    <TD>
+    ID Report Request [4]</TD>
+  <TD ALIGN="CENTER">
+    3-3-1</TD>
+    <TD>
+    PD Capabilities Request [4]</TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-4-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Diagnostic Function</SPAN>
+    </TD>
+  <TD ALIGN="center">
+    3-5-1</TD>
+    <TD>
+    Local Status Request [4]</TD>
+</TR>
+<TR>
+  <TD ALIGN="center">
+    3-6-1</TD>
+    <TD>Request Input Status [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    3-7-1</TD>
+    <TD>Request Output Status [4]
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-7-2</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Output Status Ack-only</SPAN>
+    </TD>
+  <TD ALIGN="CENTER">
+    3-8-1</TD>
+    <TD>Req Aux Rdr Stat [4]
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    3-9-1</TD>
+    <TD>Output test [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    3-10-1</TD>
+    <TD>LED Test (Red) [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    3-10-2</TD>
+    <TD>LED Test (Green) [4]
+    </TD>
+  <TD ALIGN="center">
+    3-11-1</TD>
+    <TD>Buzzer Control [4]
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    3-12-1</TD>
+    <TD>Text output [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    3-14-1</TD>
+    <TD>COMSET
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-16-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Reader prompt</SPAN>
+    </TD>
+  <TD ALIGN="CENTER">
+    3-17-1</TD>
+    <TD>
+    Request biometrics read [4]
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-18-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Req bio match
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    3-19-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Mpart Msg Cont.</SPAN>
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-20-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    MFG Message</SPAN>
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-21-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Stop Multi-Part Message</SPAN>
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-22-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Max msg ACU accepts</SPAN>
+    </TD>
+</TR>
+</TABLE>
+<TABLE>
+<CAPTION><B>Test Group 4 Responses [2]</B></CAPTION>
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<COL WIDTH="75"> <COL WIDTH="200">
+<TR>
+<TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH>
+<TH>ID</TH> <TH>Description</TH>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    4-1-1</TD>
+    <TD>
+    osdp_ACK [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    4-2-1</TD>
+    <TD>
+    osdp_NAK [4]
+    </TD>
+  <TD ALIGN="CENTER">
+    4-3-1</TD>
+    <TD>
+    osdp_PDID [4]
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-3-2</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    PDID sanity check</SPAN>
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER">
+    4-4-1</TD>
+    <TD>
+    Capabilities Report [4]
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-4-2</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    PDCAP sanity check</SPAN>
+    </TD>
+  <TD ALIGN="center">
+    4-5-1</TD>
+    <TD>
+    osdp_LSTATR [4]
+    </TD>
+  <TD ALIGN="center">
+    4-5-2</TD>
+    <TD>
+    LSTATR Tamper [4]
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=PD-reset_power">
+    4-5-3</A></TD>
+    <TD>
+    LSTATR Power
+    </TD>
+  <TD ALIGN="center">
+    4-6-1</TD>
+    <TD>
+    osdp_ISTATR [4]
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-6-2</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    ISTATR sanity check</SPAN>
+    </TD>
+  <TD ALIGN="center">
+    4-7-1</TD>
+    <TD>
+    osdp_OSTATR [4]
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="center">
+    4-7-2</TD>
+    <TD>
+    OSTATR POLL [3]
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-7-3</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Output status consistency</SPAN>
+    </TD>
+  <TD ALIGN="center">
+    4-8-1</TD>
+    <TD>
+    osdp_RSTATR [1]
+    </TD>
+  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=PD-present_card">
+    4-9-1</A></TD>
+    <TD>
+    RAW Read
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-10-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Formatted Read</SPAN>
+    </TD>
+  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-keypad?1234">
+    4-11-1</A></TD>
+    <TD>
+    Keypad
+    </TD>
+  <TD ALIGN="CENTER"><SPAN>
+    4-12-1</SPAN></TD>
+    <TD><SPAN>
+    COM Report [4]</SPAN>
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-13-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Biometrics Read</SPAN>
+    </TD>
+</TR>
+<TR>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-14-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Biometrics Match</SPAN>
+    </TD>
+  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">
+    4-15-1</SPAN></TD>
+    <TD><SPAN STYLE="background-color: #C0C0C0">
+    Manufacturer Response</SPAN>
+    </TD>
+  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=PD-busy">
+    4-16-1</A></TD>
+    <TD>
+    Busy
+    </TD>
+</TR>
+</TABLE>
+<HR>
+<HR>
+<P>
+<EM>Notes</EM>
+<OL>
+<LI>(4-8-1) Power cycle or induce tamper to test</LI>
+<LI>Test groups numbered to match Peripheral Profile</LI>
+<LI>(4-7-2) Induce digital output to test</LI>
+<LI>Runs automatically upon receipt of message</LI>
+<LI>Click OK to confirm that test worked</LI>
+</OL>
+
+<P>
+<A name="control_bottom"></A>
+Generate
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-dump_status">report</A> ::
 Display
 <A HREF="/cgi-bin/conformance-report">report</A> ::
 Display ACU
-<A HREF="/cgi-bin/open-osdp-CP-status" target="_blank">status</A> ::
+<A HREF="/cgi-bin/open-osdp-PD-status" target="_blank">status</A> ::
 Recent ACU
-<A HREF="/cgi-bin/tail-CP-log" target="_blank">log</A>
-(<A HREF="/cgi-bin/tail-CP-stderr" target="_blank">error</A> log) ::
-<A HREF="/cgi-bin/do-verb-cp?3">Moderate</A>/
-<A HREF="/cgi-bin/do-verb-cp?9">Verbose</A> logging<BR>
-<A HREF="/cgi-bin/start-CP-485">Start</A> ACU ::
-<A HREF="/cgi-bin/send-osdp-command?cmd=CP-stop">Stop</A> ACU<BR>
-(<EM>more commands at bottom of
-<A HREF="#control_bottom">page</A></EM>)
-<BR>
-
-<TABLE><CAPTION><B>Test Group 5 (Protocol)</B></CAPTION>
-    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
-  <TR><TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH></TR>
-  <TR><TD ALIGN="CENTER">050-01-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Physical Interface</TD></TR>
-  <TR><TD ALIGN="CENTER">050-02-01</TD>
-    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_1">
-      <EM>Test</EM></a></TD>
-    <TD ALIGN="CENTER">Signalling (9600)</TD></TR>
-  <TR><TD ALIGN="CENTER">050-09-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Packet Format</TD></TR>
-  <TR><TD ALIGN="CENTER">050-09-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD></TR>
-  <TR><TD ALIGN="CENTER">050-09-12</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM Sent</TD></TR>
-  <TR><TD ALIGN="CENTER">050-09-06</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Length</TD></TR>
-  <TR><TD ALIGN="CENTER">050-09-07</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD></TR>
-  <TR><TD ALIGN="CENTER">zzz</TD>
-    <TD ALIGN="CENTER"><A HREF=blah>zzz</A></TD> <TD ALIGN="CENTER">zzz</TD></TR>
-</TABLE>
-<TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
-    <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="200">
-  <TR>
-    <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-01-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Response: osdp_ACK</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-04-01</TD>
-    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
-      <EM>Test</EM></A></TD>
-    <TD>Response: osdp_PDCAP</TD>
-  </TR>
-</TABLE>
-
-<P>
-Main menu.
+<A HREF="/cgi-bin/tail-PD-log" target="_blank">log</A> ::
+<A HREF="/cgi-bin/do-verbosity?3">Moderate</A>/
+<A HREF="/cgi-bin/do-verbosity?9">Verbose</A> logging<BR> ::
+<A HREF="/cgi-bin/start-PD-485">Start</A> PD ::
+<A HREF="/cgi-bin/send-osdp-command?cmd=PD-stop">Stop</A> PD<BR>
 </P>
+<BR>
+<A HREF="/cgi-bin/shutdown-osdp">Stop</A> Server
 </BODY>
 </HTML>
 
