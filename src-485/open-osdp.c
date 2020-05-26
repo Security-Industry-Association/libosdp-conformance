@@ -125,7 +125,7 @@ int
     fprintf(stderr, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
 fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
 
-    system("rm -vf /opt/osdp-conformance/results/*.json");
+    system("rm -vf /opt/osdp-conformance/results/*");
     status = initialize_osdp (&context);
   };
 

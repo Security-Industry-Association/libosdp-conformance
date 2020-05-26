@@ -303,8 +303,7 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
           strcpy (tlogmsg2, "\?\?\?");
 
         // if we don't recognize the command/reply code it fails 2-15-1
-        osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), "2-15-1");
+        osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_FAIL);
       };
       break;
 

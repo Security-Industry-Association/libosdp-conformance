@@ -141,8 +141,10 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-14-3", &(osdp_conformance.rogue_secure_poll.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-15-1", &(osdp_conformance.CMND_REPLY.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
+    {         OOC_SYMBOL_CMND_REPLY,
+      &(osdp_conformance.CMND_REPLY.test_status),
+      1, 0, 0, 0, 0,
+                        "Command/Reply"},
     { "2-15-2", &(osdp_conformance.invalid_command.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-16-1", &(osdp_conformance.CHKSUM_CRC16.test_status),

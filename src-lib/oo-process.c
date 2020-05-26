@@ -54,7 +54,7 @@ int
 
 
   // assume all incoming commands are ok until we see a bad one.
-  osdp_conformance.CMND_REPLY.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
 
   memset (&msg, 0, sizeof (msg));
 

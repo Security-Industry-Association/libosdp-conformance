@@ -463,9 +463,11 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "\?\?\?");
 
-      // if we don't recognize the command/reply code it fails 2-15-1
-      osdp_conformance.CMND_REPLY.test_status = OCONFORM_FAIL;
-      SET_FAIL (ctx, "2-15-1");
+      if (role EQUALS OSDP_ROLE_ACU)
+      {
+        // if we don't recognize the command/reply code it fails 2-15-1
+        osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_FAIL);
+      };
       break;
 
     case OSDP_ACK:

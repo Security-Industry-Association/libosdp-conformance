@@ -3,7 +3,7 @@
 <TITLE>Test ACU: check PD</TITLE>
 </HEAD>
 <BODY>
-<H3>Test ACU: Check PD conformance (0.60 Build 4)</H3>
+<H3>Test ACU: Check PD conformance (0.60 Build 5)</H3>
 
 <P ALIGN="RIGHT">
 Generate
@@ -23,6 +23,7 @@ Recent ACU
 <A HREF="#control_bottom">page</A></EM>)
 </P>
 
+
 <TABLE><CAPTION><B>Test Group 5 (Protocol)</B></CAPTION>
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
@@ -35,6 +36,109 @@ Recent ACU
   <TR>
     <TD ALIGN="CENTER">050-01-01</TD>
     <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Physical Interface</TD>
+  </TR>
+  <TR>
+
+  </TR>
+  <TR>
+
+    <TD ALIGN="CENTER">050-03-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Encoding</TD>
+
+    <TD ALIGN="CENTER">050-04-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Channel Access</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-04-02</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform_050_04_02">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Resend (timeout)</TD>
+
+    <TD ALIGN="CENTER">050-04-03</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform_050_04_03">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Resend (busy)</TD>
+
+    <TD ALIGN="CENTER">050-04-04</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform_050_04_04">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">New after busy</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-05-01</TD>
+      <TD ALIGN="CENTER">(auto)</TD>
+      <TD ALIGN="CENTER">Multi-byte encoding</TD>
+
+    <TD ALIGN="CENTER">050-06-01</TD>
+      <TD ALIGN="CENTER">
+        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_6_1">
+        <EM>Test</EM></A>
+      </TD>
+      <TD ALIGN="CENTER">Packet size (ACU to PD)
+    </TD>
+
+    <TD ALIGN="CENTER">050-06-02</TD>
+      <TD ALIGN="CENTER">
+        <SPAN STYLE="background-color: #C0C0C0">t.b.d.</SPAN></TD>
+      <TD ALIGN="CENTER">Packet size (PD to ACU)</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-07-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Timing</TD>
+
+    <TD ALIGN="CENTER">050-08-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Synchronization</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Packet Format</TD>
+
+    <TD ALIGN="CENTER">050-09-03</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD>
+
+    <TD ALIGN="CENTER">050-09-12</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM Sent</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-04</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Address</TD>
+
+    <TD ALIGN="CENTER">050-09-13</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_11_3">
+        <EM>Test</EM></A>
+    </TD>
+    <TD ALIGN="CENTER">Configuration Address</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">050-09-06</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Length</TD>
+
+    <TD ALIGN="CENTER">050-09-07</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD>
+
+    <TD ALIGN="CENTER">050-09-08</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-init-secure">
+      <EM>Test</EM></A>
+    </TD>
+    <TD ALIGN="CENTER">Security Control Block</TD>
+  <TR>
+    <TD ALIGN="CENTER">050-09-11</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Checksum</TD>
+
+    <TD ALIGN="CENTER">050-09-14</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_14_3">
+      <EM>Test</EM></TD>
+    <TD ALIGN="CENTER">Rogue Secure Poll</TD>
+
+    <TD ALIGN="CENTER">050-09-15</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">CRC</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">050-02-01</TD>
@@ -61,29 +165,7 @@ Recent ACU
       <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_2_4">
       <EM>Test</EM></A></TD>
     <TD ALIGN="CENTER">Signalling (115,200)</TD>
-
-    <TD ALIGN="CENTER">050-03-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Encoding</TD>
-
-    <TD ALIGN="CENTER">050-04-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Channel Access</TD>
   </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Packet Format</TD>
-
-    <TD ALIGN="CENTER">050-09-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD>
-
-    <TD ALIGN="CENTER">050-09-12</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM Sent</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-06</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Length</TD>
-
-    <TD ALIGN="CENTER">050-09-07</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD></TR>
 </TABLE>
 <BR>
 <TABLE><CAPTION><B>Test Group 6 (Commands)</B></CAPTION>
@@ -196,106 +278,6 @@ Recent ACU
   </TR>
 </TABLE>
 
-<TABLE><CAPTION><B>Test Group 2 Protocol [2]</B></CAPTION>
-<COL WIDTH="75">
-  <COL WIDTH="200">
-    <COL WIDTH="75">
-      <COL WIDTH="200">
-        <COL WIDTH="75">
-          <COL WIDTH="200">
-            <COL WIDTH="75">
-              <COL WIDTH="200">
-<TR> <TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH> </TR>
-<TR>
-  <TD> </TD><TD> </TD>
-  <TD> </TD><TD> </TD>
-  <TD> </TD><TD> </TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-2</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">resend on timeout</SPAN></TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-3</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">resend on busy</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-4-4</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">send new on busy</SPAN></TD>
-<TD ALIGN="CENTER">2-5-1</TD>
-  <TD>Multi-byte encoding [4]</TD>
-<TD ALIGN="CENTER">-</TD><TD>-</TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_6_1">
-  2-6-1</A></TD>
-  <TD>Stress ACU to PD</TD>
-<TD ALIGN="CENTER">2-6-2</TD> <TD>Pkt size PD to ACU [4]</TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-3</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  Stress PD to ACU</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-6-4</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  Stress PD to ACU</SPAN></TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-1</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  timing</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-2</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  max delay</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-7-3</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  offline test</SPAN></TD>
-<TD ALIGN="CENTER">-</TD><TD>-</TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-8-1</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  synchronization</SPAN></TD>
-<TD ALIGN="CENTER">2-9-1</TD><TD>Packet format [4]</TD>
-<TD> </TD><TD> </TD>
-<TD> </TD><TD> </TD>
-</TR>
-<TR>
-<TD> </TD><TD> </TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-11-1</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">Address</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-11-2</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">Address 2</SPAN></TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_11_3">
-  2-11-3</A></TD>
-  <TD>7F ID</TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER"> 2-12-1</TD><TD>Length [4]</TD>
-<TD> </TD> <TD> </TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-13-2</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">SCS header</SPAN></TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-13-3</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">Sequence numbers</SPAN></TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/do-init-secure">2-14-1</A></TD>
-  <TD>Secure control block</TD>
-<TD ALIGN="CENTER">2-14-2</TD>
-  <TD>SCB absent [4]</TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_14_3">
-  2-14-3</TD>
-  <TD>Rogue Secure Poll</TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER">2-15-1</TD>
-  <TD>Valid command [4]</TD>
-<TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">2-15-2</SPAN></TD>
-  <TD><SPAN STYLE="background-color: #C0C0C0">
-  invalid command</SPAN></TD>
-</TR>
-<TR>
-<TD ALIGN="CENTER">2-16-1</TD>
-  <TD>CRC [4]</TD>
-<TD ALIGN="CENTER">2-16-2</TD>
-  <TD>checksum [4]</TD>
-</TR>
-</TABLE>
 <TABLE>
 <CAPTION><B>Test Group 3 Commands [2]</B></CAPTION>
 <COL WIDTH="75">
