@@ -280,15 +280,13 @@ multipart fragsize msb is total_size >> 8
 
         keybuflth = sizeof(key_buffer);
         current_length = 0;
-        if (context->verbosity > 3)
+if(1)//        if (context->verbosity > 3)
         {
           dump_buffer_log(context, "KEYSET key:", key_buffer, keybuflth);
         };
         status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
           &current_length, keybuflth, key_buffer,
           OSDP_SEC_SCS_17, 0, NULL);
-        osdp_conformance.cmd_keyset.test_status =
-          OCONFORM_EXERCISED;
 
         // load it to prepare for use, and save it.
         memcpy(context->current_scbk, key_buffer+2,

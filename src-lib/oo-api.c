@@ -45,6 +45,10 @@ int
 
 
   status = ST_OK;
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "DEBUG: enqueue_command: top, cmd->command %02x\n",
+      cmd->command);
+
   // if the last entry is active it's full
 
   if (ctx->q [OSDP_COMMAND_QUEUE_SIZE-1].status != 0)
@@ -89,7 +93,6 @@ int
 
 
   status = read_command (&context, &cmd);
-fprintf(stderr, "DEBUG: (near) top of process_current_command read status was %d\n", status);
   if (status EQUALS ST_OK)
   {
     status = process_command(cmd.command, &context, cmd.details_length, cmd.details_param_1, (char *)cmd.details);
@@ -127,8 +130,8 @@ int
     // noop out the last queue entry
     ctx->q [OSDP_COMMAND_QUEUE_SIZE-1].status = 0;
 
-    if (ctx->verbosity > 9)
-      fprintf(ctx->log, "process_command_from_queue: processing command\n");
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "process_command_from_queue: processing command %d.\n", cmd->command);
     status = process_command(cmd->command, ctx,
       cmd->details_length, cmd->details_param_1, (char *)(cmd->details));
   };

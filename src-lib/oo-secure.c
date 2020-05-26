@@ -1138,6 +1138,9 @@ int
       ctx->secure_channel_use [0] = 128 + OSDP_SEC_SCS_11;
 
     send_osdp_data (ctx, test_blk, *current_length);
+
+    // keep track of the last command sent (for "secure" messages)
+    ctx->last_command_sent = command;
   };
   return (status);
 

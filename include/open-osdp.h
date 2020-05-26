@@ -29,8 +29,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (60)
-#define OSDP_VERSION_BUILD ( 5)
+#define OSDP_VERSION_MINOR (61)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_TRACE_VERSION_0 (0)
 

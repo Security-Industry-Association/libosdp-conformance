@@ -764,7 +764,7 @@ dump_buffer_log(ctx, "card data message(fixed 32)", osdp_raw_data, 32);
       status = send_message_ex (ctx,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data,
         OSDP_SEC_SCS_18, 0, NULL);
-      osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED);
       if (ctx->verbosity > 2)
       {
         sprintf (tlogmsg, "Responding with cardholder data (%d bits)",
@@ -884,7 +884,7 @@ int
     (void)oosdp_make_message (OOSDP_MSG_RAW, tlogmsg, msg);
     fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log); tlogmsg [0] = 0;
 
-    osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
+    osdp_test_set_status(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED);
     osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
     raw_data = msg->data_payload + 4;
     dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, msg->data_length);

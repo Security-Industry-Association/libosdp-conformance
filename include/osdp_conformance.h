@@ -43,10 +43,14 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_id             "060-02-01"
 #define OOC_SYMBOL_cmd_pdcap          "060-03-01"
 #define OOC_SYMBOL_cmd_lstat          "060-04-01"
+#define OOC_SYMBOL_cmd_istat          "060-05-01"
 #define OOC_SYMBOL_cmd_led_red        "060-09-01"
 #define OOC_SYMBOL_cmd_led_green      "060-09-02"
 #define OOC_SYMBOL_cmd_buz            "060-10-01"
 #define OOC_SYMBOL_cmd_comset         "060-12-01"
+#define OOC_SYMBOL_cmd_keyset         "060-15-01"
+#define OOC_SYMBOL_cmd_chlng          "060-16-01"
+#define OOC_SYMBOL_cmd_scrypt         "060-17-01"
 #define OOC_SYMBOL_cmd_mfg            "060-18-01"
 #define OOC_SYMBOL_rep_ack            "070-01-01"
 #define OOC_SYMBOL_rep_nak            "070-02-01"
@@ -55,8 +59,10 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_rep_device_capas   "070-04-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
+#define OOC_SYMBOL_rep_raw            "070-09-01"
 #define OOC_SYMBOL_resp_com           "070-12-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-15-01"
+#define OOC_SYMBOL_resp_rmac_i        "070-16-01"
 
 typedef struct osdp_interop_assessment
 {
@@ -110,14 +116,14 @@ typedef struct osdp_interop_assessment
   // section 6
 
   OSDP_CONFORM cmd_poll;
-  OSDP_CONFORM cmd_poll_raw;            // 3-1-2
+  OSDP_CONFORM cmd_poll_raw;
   OSDP_CONFORM cmd_poll_lstatr; // 3-1-3
   OSDP_CONFORM cmd_poll_response_4;     // 3-1-4
   OSDP_CONFORM cmd_id;
   OSDP_CONFORM cmd_pdcap;
   OSDP_CONFORM cmd_diag;                // 3-4-1
   OSDP_CONFORM cmd_lstat;
-  OSDP_CONFORM cmd_istat;               // 3-6-1
+  OSDP_CONFORM cmd_istat;
   OSDP_CONFORM cmd_ostat;               // 3-7-1
   OSDP_CONFORM cmd_ostat_ack;           // 3-7-2
   OSDP_CONFORM cmd_rstat;               // 3-8-1
@@ -130,9 +136,9 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_prompt;              // 3-16-1
   OSDP_CONFORM cmd_bioread;             // 3-17-1
   OSDP_CONFORM cmd_biomatch;            // 3-18-1
-  OSDP_CONFORM cmd_keyset;              // 3-??-1
-  OSDP_CONFORM cmd_chlng;               // 3-??-1
-  OSDP_CONFORM cmd_scrypt;              // 3-??-1
+  OSDP_CONFORM cmd_keyset;
+  OSDP_CONFORM cmd_chlng;
+  OSDP_CONFORM cmd_scrypt;
   //OSDP_CONFORM cmd_cont;                // 3-19-1
   OSDP_CONFORM cmd_mfg;                 // 3-20-1
   OSDP_CONFORM cmd_stop_multi;          // 3-21-1
@@ -164,6 +170,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_scan_send;           // 4-13
   OSDP_CONFORM rep_scan_match;          // 4-14
   OSDP_CONFORM resp_ccrypt;
+  OSDP_CONFORM resp_rmac_i;
   OSDP_CONFORM resp_mfg;                // 4-15-1
   OSDP_CONFORM resp_busy;               // 4-16-1
   OSDP_CONFORM resp_ftstat;             // 4-17-1

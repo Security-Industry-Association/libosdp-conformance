@@ -137,6 +137,7 @@ if (ctx->verbosity > 8)
     status = ST_OK;
     osdp_reset_secure_channel (ctx);
   };
+  (void)osdp_test_set_status(OOC_SYMBOL_cmd_chlng, test_results);
   (void)osdp_test_set_status(OOC_SYMBOL_resp_ccrypt, test_results);
   return (status);
 
@@ -301,6 +302,7 @@ fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
     (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
     OSDP_SEC_SCS_16, 0, NULL);
 
+  osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
 fprintf(ctx->log, "DEBUG: action_osdp_KEYSET bottom\n");
   return (status);
 
@@ -331,6 +333,8 @@ int
     memcpy(ctx->last_calculated_in_mac, ctx->rmac_i, sizeof(ctx->last_calculated_in_mac));
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_OPERATIONAL;
     fprintf (ctx->log, "*** SECURE CHANNEL OPERATIONAL***\n");
+    (void)osdp_test_set_status(OOC_SYMBOL_cmd_scrypt, OCONFORM_EXERCISED);
+    (void)osdp_test_set_status(OOC_SYMBOL_resp_rmac_i, OCONFORM_EXERCISED);
   }
   else
   {

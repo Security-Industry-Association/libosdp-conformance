@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2018 Smithee Solutions LLC
+# (C)Copyright 2017-2020 Smithee Solutions LLC
 # (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +28,7 @@ echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>start ACU RS-485 Server</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"2;URL=/osdp-conformance-CP.html\">"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"2;URL=/Test-ACU.html\">"
 echo "</HEAD>"
 echo "<BODY><PRE>"
 echo "open-osdp started in ACU run directory"

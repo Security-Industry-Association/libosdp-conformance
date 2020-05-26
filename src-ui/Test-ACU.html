@@ -3,7 +3,7 @@
 <TITLE>Test ACU: check PD</TITLE>
 </HEAD>
 <BODY>
-<H3>Test ACU: Check PD conformance (0.60 Build 5)</H3>
+<H3>Test ACU: Check PD conformance (0.61 Build 1)</H3>
 
 <P ALIGN="RIGHT">
 Generate
@@ -198,10 +198,36 @@ Recent ACU
     <TD>Command: osdp_LSTAT</TD>
   </TR>
   <TR>
+    <TD ALIGN="CENTER">060-05-01</TD>
+      <TD ALIGN="CENTER">
+        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-input_status">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Command: ISTAT</TD>
+
+    <TD ALIGN="CENTER">060-06-01</TD>
+      <TD ALIGN="CENTER">
+        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-output_status">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Command: osdp_OSTAT</TD>
+
+    <TD ALIGN="CENTER">060-07-01</TD>
+      <TD ALIGN="CENTER">
+        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-reader_status">
+        <EM>Test</EM></A></TD>
+      <TD ALIGN="CENTER">osdp_RSTAT</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-08-01</TD>
+        <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-output">
+        <EM>Test</EM></A></TD>
+      <TD ALIGN="CENTER">Command: osdp_OUT</TD>
+  </TR>
+  <TR>
     <TD ALIGN="CENTER">060-09-01</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?1">
       <EM>Test</EM></A></TD>
-    <TD>LED Test (Red) [<A HREF="/cgi-bin/do-confirm?3-10-1">OK</A>]</TD>
+    <TD ALIGN="CENTER">
+      LED Test (Red) [<A HREF="/cgi-bin/do-confirm?3-10-1">OK</A>]</TD>
 
     <TD ALIGN="CENTER">060-09-02</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?2">
@@ -216,12 +242,26 @@ Recent ACU
     <TD>Command: osdp_BUZ [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]</TD>
   </TR>
   <TR>
+    <TD ALIGN="CENTER">060-11-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-text?Test_3-12-1">
+      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">
+      Command: osdp_TEXT [<A HREF="/cgi-bin/do-confirm?3-12-1">OK</A>]</TD>
+
     <TD ALIGN="CENTER">060-12-01</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-comset?2+115200">
       <EM>Test</EM></A></TD>
     <TD ALIGN="CENTER"><SPAN>COMSET (115200/A=2)</SPAN></TD>
   </TR>
   <TR>
+    <TD ALIGN="CENTER">060-16-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Command: osdp_CHLNG</TD>
+
+    <TD ALIGN="CENTER">060-17-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Command: osdp_SCRYPT</TD>
+
     <TD ALIGN="CENTER">060-18-01</TD>
       <TD ALIGN="CENTER">
         <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_3_20_1">
@@ -272,9 +312,22 @@ Recent ACU
     <TD>Response: osdp_LSTATR</TD>
   </TR>
   <TR>
+    <TD ALIGN="CENTER">070-09-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Response: osdp_RAW</TD>
+
     <TD ALIGN="CENTER">070-12-01</TD>
     <TD ALIGN="CENTER">(auto)</TD>
     <TD ALIGN="CENTER">Response: osdp_COM</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">070-15-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Response: osdp_CCRYPT</TD>
+
+    <TD ALIGN="CENTER">070-16-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD ALIGN="CENTER">Response: osdp_RMAC_I</TD>
   </TR>
 </TABLE>
 
@@ -295,47 +348,6 @@ Recent ACU
 <TH>ID</TH> <TH>Description</TH>
 </TR>
 <TR>
-  <TD> </TD> <TD> </TD>
-  <TD ALIGN="CENTER">3-1-2</TD>
-    <TD>
-    Raw response to poll [4]</SPAN></TD>
-  <TD ALIGN="CENTER">3-1-3</TD>
-    <TD>
-    Lstatr response to poll [4]</TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-1-4</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    tbd Poll response 4</SPAN></TD>
-</TR>
-<TR>
-  <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-input_status">
-    3-6-1</A></TD>
-    <TD>Request Input Status</TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-output_status">
-    3-7-1</A></TD><TD>osdp_OSTAT</TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-7-2</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Ostat Ack-only</SPAN></TD>
-<TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-reader_status">
-  3-8-1</A></TD><TD>osdp_RSTAT</TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-output">
-    3-9-1</A></TD><TD>osdp_OUT</TD>
-  <TD> </TD> <TD> </TD>
-  <TD> </TD> <TD> </TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
-    3-11-1</A></TD>
-    <TD>Buzzer control
-    [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]
-    </TD>
-</TR>
-
-<TR>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-text?Test_3-12-1">
-    3-12-1</TD>
-    <TD>Text output
-    [<A HREF="/cgi-bin/do-confirm?3-12-1">OK</A>]
-    </TD>
   <TD> </TD> <TD> </TD>
   <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-16-1</SPAN></TD>
     <TD><SPAN STYLE="background-color: #C0C0C0">
@@ -409,10 +421,6 @@ Recent ACU
     <TD><SPAN STYLE="background-color: #C0C0C0">
     Output status consistency</SPAN></TD>
 <TD ALIGN="center">4-8-1</TD><TD>osdp_RSTATR [1]</TD>
-  <TD ALIGN="CENTER">
-    4-9-1</TD>
-    <TD>
-    RAW Read [4]</TD>
 </TR>
 <TR>
   <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-10-1</SPAN></TD>

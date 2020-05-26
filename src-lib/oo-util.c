@@ -1417,6 +1417,11 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         osdp_conformance.cmd_istat.test_status = OCONFORM_FAIL;
         SET_FAIL ((context), "3-6-1");
       };
+      // if the PD NAK'd a KEYSET fail the test.
+      if (context->last_command_sent EQUALS OSDP_KEYSET)
+      {
+        osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_FAIL);
+      };
       // if the PD NAK'd an LSTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_LSTAT)
       {

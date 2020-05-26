@@ -48,7 +48,7 @@ int
     printf ("<HTML><HEAD><TITLE>Control PD Testing (CP Emulator)</TITLE>");
 #ifdef OSDP_CONFORMANCE
     printf
-("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-CP.html\">");
+("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/Test-ACU.html\">");
 #else
     printf
 ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");

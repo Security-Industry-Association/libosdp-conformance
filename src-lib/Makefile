@@ -42,14 +42,14 @@ libosdp.a:	\
 	oo-actions.o oo-api.o oo-cmdbreech.o oo-initialize.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
-	  oosdp_crc.o oo-conformance.o \
+	  oo-crc.o oo-conformance.o \
 	  oo-files.o oo-logmsg.o oo-prims.o \
 	  oo-secure.o oo-secure-actions.o oo-ui.o
 	ar r libosdp.a \
 	  oo-actions.o oo-api.o \
 	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
-	  oo-conformance.o oosdp_crc.o oo-files.o \
+	  oo-conformance.o oo-crc.o oo-files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
 	  oo-secure-actions.o oo-ui.o
 
@@ -93,8 +93,8 @@ oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 oo-conformance.o:	oo-conformance.c oo-SKIP.c
 	${CC} ${CFLAGS} -I. oo-conformance.c
 
-oosdp_crc.o:	oosdp_crc.c
-	${CC} ${CFLAGS} oosdp_crc.c
+oo-crc.o:	oo-crc.c
+	${CC} ${CFLAGS} oo-crc.c
 
 oo-files.o:	oo-files.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-files.c

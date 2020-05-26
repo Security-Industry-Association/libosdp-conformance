@@ -323,7 +323,6 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
     case OSDP_KEYSET:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
-      osdp_conformance.cmd_keyset.test_status = OCONFORM_EXERCISED;
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
       break;
@@ -481,6 +480,10 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_rep_ack, OCONFORM_EXERCISED);
 
+      // if we just got an ack for a KEYSET mark that too.
+      if (ctx->last_command_sent EQUALS OSDP_KEYSET)
+        osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
+
       // if we just got an ack for an OSTAT mark that too.
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
         osdp_conformance.cmd_ostat_ack.test_status = OCONFORM_EXERCISED;
@@ -614,7 +617,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_RAW");
 
-      osdp_conformance.rep_raw.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
