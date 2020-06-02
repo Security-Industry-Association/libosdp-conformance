@@ -37,10 +37,6 @@ int
   osdp_report
     (OSDP_CONTEXT
       *ctx);
-int
-  osdp_test_set_status
-    (char *test,
-    int test_status);
 
 
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
@@ -849,6 +845,8 @@ int
 
 { /* osdp_test_set_status */
 
+// status = osdp_test_set_status_ex(test, test_status, "");
+
   int done;
   int idx;
   FILE *rf;
@@ -890,6 +888,80 @@ int
           test, test_status);
         fprintf(rf, " \"test-time\":\"%s\",\"test-description\":\"%s\"}\n",
           test_time, test_control [idx].description);
+        fclose(rf);
+      }
+      else
+      {
+        fprintf(context.log, "Error writing results for %s\n", test);
+      };
+      done = 1;
+    };
+    };
+    if (test_control [idx].name EQUALS NULL)
+    {
+      fprintf (stderr, "Cannot find test %s, not updated.\n",
+        test);
+      done = 1;
+    };
+    // yes, if we find nothing we'll still return OK
+    idx++;
+  };
+  return (status);
+
+} /* osdp_test_set_status */
+
+
+int
+  osdp_test_set_status_ex
+    (char *test,
+    int test_status,
+    char *aux)
+
+{ /* osdp_test_set-status_ex */
+
+  int done;
+  int idx;
+  char results_filename [1024];
+  FILE *rf;
+  int status;
+
+
+  status = ST_OK;
+  idx = 0;
+  done = 0;
+  while (!done)
+  {
+    if (context.verbosity > 9)
+    {
+      fprintf(context.log, "osdp_test_set_status: checking %d.\n", idx);
+      fflush(context.log);
+      fprintf(context.log, "osdp_test_set_status: name %s\n", test_control [idx].name);
+      fflush(context.log);
+    };
+    if (test_control [idx].name != NULL)
+    {
+      if (strcmp (test_control [idx].name, test) EQUALS 0)
+      {
+        *(test_control [idx].conformance) = test_status;
+        sprintf(results_filename, "/opt/osdp-conformance/results/%s-results.json",
+          test);
+        rf = fopen(results_filename, "w");
+        if (rf)
+        {
+          time_t current_time;
+          char test_time [1024];
+
+        current_time = time(NULL);
+        strcpy(test_time, asctime(localtime(&current_time)));
+        if (test_time [strlen(test_time)-1] == '\n')
+          test_time [strlen(test_time)-1] = 0;
+        fprintf(rf, "{\"test\":\"%s\",\"test-status\":\"%d\",\n",
+          test, test_status);
+        fprintf(rf, " \"test-time\":\"%s\",\"test-description\":\"%s\",\n",
+          test_time, test_control [idx].description);
+        if (strlen(aux) > 0)
+          fprintf(rf, "%s", aux);
+        fprintf(rf, "\"#\":\"#\"#}\n");
         fclose(rf);
       }
       else

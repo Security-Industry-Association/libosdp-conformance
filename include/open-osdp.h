@@ -1065,6 +1065,7 @@ int oosdp_print_message_TEXT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogms
 int oosdp_print_message_XRD(OSDP_CONTEXT *ctx,
   OSDP_MSG *osdp_msg, char *tlogmsg);
 int osdp_test_set_status(char *test, int test_status);
+int osdp_test_set_status_ex(char *test, int test_status, char *aux);
 void preserve_current_command (void);
 int process_command (int command, OSDP_CONTEXT *context, unsigned int details_length, int details_param_1, char *details);
 int process_command_from_queue(OSDP_CONTEXT *ctx);

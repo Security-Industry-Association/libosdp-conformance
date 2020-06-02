@@ -484,15 +484,18 @@ int
 
 { /* action_osdp_PDCAP */
 
+  char aux [4096];
   OSDP_PDCAP_ENTRY *entry;
   int i;
   int max_multipart;
   int num_entries;
   unsigned char *ptr;
   int status;
+  char temp_string [1024];
 
 
   status = ST_OK;
+  strcpy(aux, "\"capabilities\":{");
   if (ctx->verbosity > 3)
   {
     fprintf(ctx->log,
@@ -504,6 +507,16 @@ int
   entry = (OSDP_PDCAP_ENTRY *)ptr;
   for (i=0; i<num_entries; i++)
   {
+    sprintf(temp_string, "{\"function\":\"%02x\",\"compliance\":\"%02x\",\"number-of\":\"%02x\"},",
+      entry->function_code, entry->compliance, entry->number_of);
+    if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "f %02x c %02x n %02x old len %d.\n",
+        entry->function_code, entry->compliance, entry->number_of, (int)strlen(aux));
+      fflush(ctx->log);
+    };
+    strcat(aux, temp_string);
+
     switch (entry->function_code)
     {
     case OSDP_CAP_AUDIBLE_OUT:
@@ -622,7 +635,8 @@ int
   fprintf(ctx->log, "PD Capabilities response processing complete.\n\n");
   if (ctx->last_command_sent EQUALS OSDP_CAP)
     osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
-  osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
+  strcat(aux, "\"#\":\"#\"},\n");
+  osdp_test_set_status_ex(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED, aux);
 
   status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
   fprintf (ctx->log, "%s\n", tlogmsg);
