@@ -174,8 +174,10 @@ int
   {
     ret_cmd = OSDP_CMDB_NOOP;
     status = ST_CMD_UNKNOWN;
-    if (0 EQUALS strcmp(command, "bio_read"))
+    if (0 EQUALS strcmp(command, "bio-read"))
       ret_cmd = OSDP_CMDB_BIOREAD;
+    if (0 EQUALS strcmp(command, "bio-match"))
+      ret_cmd = OSDP_CMDB_BIOMATCH;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
     if (0 EQUALS strcmp(command, "polling"))
@@ -245,6 +247,7 @@ char
     default: sprintf(cmd_rep_s, "???1(%02x)", cmdrep); break;
     case OSDP_ACURXSIZE: strcpy(cmd_rep_s, "osdp_ACURXSIZE"); break;
     case OSDP_BIOREAD:   strcpy(cmd_rep_s, "osdp_BIOREAD"); break;
+    case OSDP_BIOMATCH:  strcpy(cmd_rep_s, "osdp_BIOMATCH"); break;
     case OSDP_BUZ:       strcpy(cmd_rep_s, "osdp_BUZ"); break;
     case OSDP_CAP:       strcpy(cmd_rep_s, "osdp_CAP"); break;
     case OSDP_CHLNG: strcpy(cmd_rep_s, "osdp_CHLNG"); break;

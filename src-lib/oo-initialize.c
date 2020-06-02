@@ -1,7 +1,7 @@
 /*
   oo_initialize - init code for OSDP
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -204,31 +204,31 @@ int
 
   if (status EQUALS ST_OK)
   {
-  osdp_conformance.last_unknown_command = OSDP_POLL;
-  context->mmsgbuf = multipart_message_buffer_1;
-  memset (&p_card, 0, sizeof (p_card));
+    osdp_conformance.last_unknown_command = OSDP_POLL;
+    context->mmsgbuf = multipart_message_buffer_1;
+    memset (&p_card, 0, sizeof (p_card));
 
-  context->verbosity = 3;
+    context->verbosity = 3;
 
-  context->q = osdp_command_queue;
-  context->enable_poll = OO_POLL_ENABLED;
+    context->q = osdp_command_queue;
+    context->enable_poll = OO_POLL_ENABLED;
 
-  context->current_key_slot = -1;
+    context->current_key_slot = -1;
 
-  m_version_minor = OSDP_VERSION_MINOR;
-  m_build = OSDP_VERSION_BUILD;
-  context->model = 2;
-  context->version = 1;
-  context->fw_version [0] = OSDP_VERSION_MAJOR;
-  context->fw_version [1] = m_version_minor;
-  context->fw_version [2] = m_build;
-  context->vendor_code [0] = 0x0A;
-  context->vendor_code [1] = 0x00;
-  context->vendor_code [2] = 0x17;
-  context->serial_number [0] = 0xca;
-  context->serial_number [1] = 0xfe;
-  context->serial_number [2] = 0xde;
-  context->serial_number [3] = 0xad;
+    m_version_minor = OSDP_VERSION_MINOR;
+    m_build = OSDP_VERSION_BUILD;
+    context->model = 2;
+    context->version = 2;
+    context->fw_version [0] = OSDP_VERSION_MAJOR;
+    context->fw_version [1] = m_version_minor;
+    context->fw_version [2] = m_build;
+    context->vendor_code [0] = 0x0A;
+    context->vendor_code [1] = 0x00;
+    context->vendor_code [2] = 0x17; //yellow pig
+    context->serial_number [0] = 0xca;
+    context->serial_number [1] = 0xfe;
+    context->serial_number [2] = 0xde;
+    context->serial_number [3] = 0xed;
 
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;
@@ -294,6 +294,10 @@ int
 
   if (status EQUALS ST_OK)
   {
+    // and... we're powering on so send an LSTATR when we get a chance.
+
+    context->power_report = 1;
+
     sprintf (logmsg, "Open-OSDP - OSDP Tester Version %d.%d Build %d",
       context->fw_version [0], m_version_minor, m_build);
     fprintf (context->log, "%s\n", logmsg);

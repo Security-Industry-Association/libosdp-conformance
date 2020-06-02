@@ -110,6 +110,7 @@
 #define OSDP_DATA     (0x6F)
 #define OSDP_PROMPT   (0x71)
 #define OSDP_BIOREAD  (0x73)
+#define OSDP_BIOMATCH (0x74)
 #define OSDP_KEYSET   (0x75)
 #define OSDP_CHLNG    (0x76)
 #define OSDP_ACURXSIZE    (0x7B)
@@ -151,8 +152,6 @@
 #define OO_NAK_CMD_UNABLE           (9)
 
 #define OSDP_MENU_TOP     (0x0000)
-#define OSDP_MENU_CP_DIAG (0x0100)
-#define OSDP_MENU_PD_DIAG (0x0200)
 #define OSDP_MENU_SETUP   (0x0800)
 
 // commands used through breech-loading interface
@@ -201,10 +200,9 @@
 #define OSDP_CMDB_FACTORY_DEFAULT (1041)
 #define OSDP_CMDB_KEYSET          (1042)
 #define OSDP_CMDB_TRACE           (1043)
+#define OSDP_CMDB_BIOMATCH        (1044)
 
 #define OSDP_CMD_NOOP         (0)
-#define OSDP_CMD_CP_DIAG      (1)
-#define OSDP_CMD_PD_DIAG      (2)
 
 #define OSDP_CMD_IDENT        (2)
 #define OSDP_CMD_CAP          (3)
@@ -225,6 +223,8 @@
 
 #define OSDP_CMD_SET_CP       (81)
 #define OSDP_CMD_SET_PD       (82)
+#define OSDP_CMD_BIOREAD      (83)
+#define OSDP_CMD_BIOMATCH     (84)
 
 #define zzOSDP_CMD_XWRITE       (83)
 
@@ -456,6 +456,7 @@ typedef struct osdp_context
 
   // CP and PD context
   OSDP_LED_STATE led [OSDP_MAX_LED];
+  int pd_address; // the pd to whom we are speaking
   int role;
   char text [1024];
   unsigned char this_message_addr;

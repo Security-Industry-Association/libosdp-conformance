@@ -44,7 +44,7 @@ int leftover_length;
 #include <iec-xwrite.h>
 
 
-extern OSDP_CONTEXT context;
+//extern OSDP_CONTEXT context;
 extern OSDP_OUT_CMD current_output_command [];
 extern OSDP_BUFFER osdp_buf;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
@@ -55,13 +55,14 @@ char tlogmsg [1024];
 int
   process_command
   (int command,
-  OSDP_CONTEXT *context,
+  OSDP_CONTEXT *ctx, //context,
   unsigned int details_length,
   int details_param_1,
   char *details)
 
 { /* process_command */
 
+OSDP_CONTEXT *context; // kludge for old name
   extern unsigned char *creds_buffer_a;
   extern int creds_buffer_a_lth;
   int current_length;
@@ -71,10 +72,11 @@ int
   unsigned char value [4];
 
 
+context=ctx;
   status = ST_CMD_UNKNOWN;
-  if (context->verbosity > 3)
+  if (ctx->verbosity > 3)
   {
-    fprintf (context->log, "process_command: command is %d\n",
+    fprintf (ctx->log, "process_command: command is %d\n",
       command);
   };
   processed = 0;
@@ -105,6 +107,15 @@ int
         osdp_conformance.cmd_max_rec.test_status =
           OCONFORM_EXERCISED;
       };
+      break;
+
+    case OSDP_CMDB_BIOREAD:
+      status = send_bio_read_template (ctx);
+      break;
+
+    case OSDP_CMDB_BIOMATCH:
+status = -1;
+exit(-1);
       break;
 
     case OSDP_CMDB_BUSY:

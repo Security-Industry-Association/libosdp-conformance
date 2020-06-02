@@ -1405,6 +1405,16 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       };
       osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
 
+      // if the PD NAK'd a BIOREAD fail the test.
+      if (context->last_command_sent EQUALS OSDP_BIOREAD)
+      {
+        osdp_test_set_status(OOC_SYMBOL_cmd_bioread, OCONFORM_FAIL);
+      };
+      // if the PD NAK'd a BIOMATCH fail the test.
+      if (context->last_command_sent EQUALS OSDP_BIOMATCH)
+      {
+        osdp_test_set_status(OOC_SYMBOL_cmd_biomatch, OCONFORM_FAIL);
+      };
       // if the PD NAK'd an ID fail the test.
       if (context->last_command_sent EQUALS OSDP_ID)
       {

@@ -97,8 +97,12 @@ int
   // command bio_read send bio read template command
 
   case OSDP_CMDB_BIOREAD:
-    cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
-    status = send_bio_read_template (ctx);
+    cmd->command = OSDP_CMD_BIOREAD;
+    break;
+
+  case OSDP_CMDB_BIOMATCH:
+    cmd->command = OSDP_CMD_BIOMATCH;
+    status = ST_OK;
     break;
 
   case OSDP_CMDB_FACTORY_DEFAULT:

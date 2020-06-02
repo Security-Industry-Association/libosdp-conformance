@@ -125,6 +125,7 @@ int
     fprintf(stderr, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
 fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
 
+    system("mkdir -p /opt/osdp-conformance/results");
     system("rm -vf /opt/osdp-conformance/results/*");
     status = initialize_osdp (&context);
   };
@@ -168,10 +169,8 @@ pending_response_length = 0;
 
 int
   main
-    (int
-      argc,
-    char
-      *argv [])
+    (int argc,
+    char *argv [])
 
 { /* main for open-osdp */
 

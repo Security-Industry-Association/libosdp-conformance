@@ -48,6 +48,8 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_led_green      "060-09-02"
 #define OOC_SYMBOL_cmd_buz            "060-10-01"
 #define OOC_SYMBOL_cmd_comset         "060-12-01"
+#define OOC_SYMBOL_cmd_bioread        "060-13-01"
+#define OOC_SYMBOL_cmd_biomatch       "060-14-01"
 #define OOC_SYMBOL_cmd_keyset         "060-15-01"
 #define OOC_SYMBOL_cmd_chlng          "060-16-01"
 #define OOC_SYMBOL_cmd_scrypt         "060-17-01"
@@ -134,8 +136,8 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_text;                // 3-12-1
   OSDP_CONFORM cmd_comset;
   OSDP_CONFORM cmd_prompt;              // 3-16-1
-  OSDP_CONFORM cmd_bioread;             // 3-17-1
-  OSDP_CONFORM cmd_biomatch;            // 3-18-1
+  OSDP_CONFORM cmd_bioread;
+  OSDP_CONFORM cmd_biomatch;
   OSDP_CONFORM cmd_keyset;
   OSDP_CONFORM cmd_chlng;
   OSDP_CONFORM cmd_scrypt;

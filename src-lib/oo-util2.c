@@ -452,6 +452,7 @@ int
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
     p_card.addr = i;
+    ctx->pd_address = i;
   };
 
   // parameter "bits"
@@ -998,36 +999,6 @@ int
   return (status);
 
 } /* read_config */
-
-
-int
-  send_bio_read_template
-    (OSDP_CONTEXT
-      *ctx)
-
-{ /* send_bio_read_template */
-
-  int
-    current_length;
-  unsigned char
-    param [4];
-  int
-    status;
-
-
-  param [0] = 0; // reader 0
-  param [1] = 0; // default bio type
-  param [2] = 2; // ANSI/INCITS 378 Fingerprint template "49"
-  param [3] = 0xFF;
-
-  current_length = 0;
-  status = send_message (ctx,
-    OSDP_BIOREAD, p_card.addr, &current_length, sizeof (param), param);
-  if (ctx->verbosity > 2)
-    fprintf (stderr, "Request bio read\n");
-  return (status);
-
-} /* send_bio_read_template */
 
 
 int
