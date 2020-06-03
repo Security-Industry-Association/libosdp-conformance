@@ -428,6 +428,7 @@ typedef struct osdp_command_queue
 typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
+  int keep_results; // 0 for normal results flush; nonzero to flush results
   // configuration
   int disable_certificate_checking;
   int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled

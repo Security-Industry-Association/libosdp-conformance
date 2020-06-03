@@ -126,7 +126,6 @@ int
 fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
 
     system("mkdir -p /opt/osdp-conformance/results");
-    system("rm -vf /opt/osdp-conformance/results/*");
     status = initialize_osdp (&context);
   };
 

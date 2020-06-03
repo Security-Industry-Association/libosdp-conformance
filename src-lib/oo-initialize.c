@@ -279,6 +279,9 @@ int
       try to get configuration from configuration file open_osdp.cfg
     */
     status = read_config (context);
+    if (!(context->keep_results))
+      system("rm -vf /opt/osdp-conformance/results/*");
+
     if (context->verbosity > 4)
     {
       m_dump = 1;
