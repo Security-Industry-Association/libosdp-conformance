@@ -29,7 +29,7 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (61)
+#define OSDP_VERSION_MINOR (70)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_TRACE_VERSION_0 (0)
@@ -513,7 +513,7 @@ typedef struct osdp_context
   int bytes_received;
   int bytes_sent;
   int packets_received;
-  int cp_polls;
+  int acu_polls;
   int pd_acks;
   int sent_naks;
   int crc_errs;

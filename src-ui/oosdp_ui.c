@@ -226,7 +226,7 @@ status = -1;
       fprintf (stderr,
 " PwrRpt %d Special-1 %d\nACU Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report, context->special_1,
-         context->cp_polls, context->pd_acks, context->sent_naks,
+         context->acu_polls, context->pd_acks, context->sent_naks,
          context->checksum_errs);
       if (context->role EQUALS OSDP_ROLE_PD)
       {

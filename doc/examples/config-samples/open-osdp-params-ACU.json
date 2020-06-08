@@ -1,0 +1,6 @@
+{
+  "role" : "CP",
+  "address" : "00",
+  "serial_speed" : "9600",
+  "verbosity" : "3"
+}

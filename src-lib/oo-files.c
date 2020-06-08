@@ -322,7 +322,7 @@ int
     fprintf(sf,
 "\"max_pd_send\" : \"%d\",\n",
       ctx->max_message);
-    fprintf(sf, "\"cp-polls\" : \"%d\",", ctx->cp_polls);
+    fprintf(sf, "\"acu-polls\" : \"%d\",", ctx->acu_polls);
     fprintf(sf, " \"pd-acks\" : \"%d\",", ctx->pd_acks);
     fprintf(sf, " \"pdus-received\" : \"%d\", \"pdus-sent\" : \"%d\",\n",
       ctx->pdus_received, ctx->pdus_sent);

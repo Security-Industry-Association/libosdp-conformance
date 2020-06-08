@@ -409,7 +409,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_POLL");
 
-      ctx->cp_polls ++;
+      ctx->acu_polls ++;
       // this is used for parsing so don't score conforming messages here.
       break;
 

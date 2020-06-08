@@ -602,7 +602,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
       fprintf (stderr,
 " PwrRpt %d\nACU Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report,
-         context->cp_polls, context->pd_acks, context->sent_naks,
+         context->acu_polls, context->pd_acks, context->sent_naks,
          context->checksum_errs);
       if (context->role EQUALS OSDP_ROLE_PD)
       {

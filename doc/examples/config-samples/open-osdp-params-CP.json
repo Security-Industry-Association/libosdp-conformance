@@ -1,9 +1,0 @@
-{
-   "role" : "CP"
-  ,"network_address" : "10.2.0.42"
-  ,"fqdn" : "perim-0002.example.com"
-  ,"address" : "00"
-  ,"poll" : "1"
-  ,"timeout" : "3"
-  ,"verbosity" : "3"
-}
