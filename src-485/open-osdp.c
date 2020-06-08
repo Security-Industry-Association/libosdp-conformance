@@ -2,7 +2,7 @@ extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -42,23 +42,16 @@ extern int pending_response_length;
 #include <osdp-local-config.h>
 
 
-int
-  check_for_command;
-OSDP_CONTEXT
-  context;
-struct timespec
-  last_time_check_ex;
-OSDP_BUFFER
-  osdp_buf;
-OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-OSDP_OUT_CMD
-  current_output_command [16];
-OSDP_PARAMETERS
-  p_card;
+int check_for_command;
+OSDP_CONTEXT context;
+struct timespec last_time_check_ex;
+OSDP_BUFFER osdp_buf;
+OSDP_INTEROP_ASSESSMENT osdp_conformance;
+OSDP_OUT_CMD current_output_command [16];
+OSDP_PARAMETERS p_card;
 char tag [1024]; // PD or CP as a string
-char trace_in_buffer [1024];
-char trace_out_buffer [1024];
+char trace_in_buffer [4*OSDP_OFFICIAL_MSG_MAX];
+char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
 
 
 unsigned char
