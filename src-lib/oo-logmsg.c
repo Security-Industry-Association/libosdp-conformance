@@ -837,7 +837,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
 
   case OOSDP_MSG_PKT_STATS:
     sprintf (tlogmsg, " ACU-Polls %6d PD-Acks %6d PD-NAKs %6d CkSumErr %6d\n",
-      context.cp_polls, context.pd_acks, context.sent_naks,
+      context.acu_polls, context.pd_acks, context.sent_naks,
       context.checksum_errs);
     break;
 
