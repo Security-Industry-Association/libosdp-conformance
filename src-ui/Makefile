@@ -28,15 +28,14 @@ LINK=clang
 LDFLAGS=-g -L /opt/tester/lib -ljansson
 
 CGIPROGS = \
-  open-osdp-CP-status open-osdp-PD-status send-osdp-command \
+  ACU-status open-osdp-PD-status send-osdp-command \
   start-CP-485 start-PD-485 start-MON-485 \
   tail-CP-log tail-CP-stderr tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
 CGISCRIPTS = conformance-report \
   do-acurxsize do-buzz do-comset do-confirm do-keep-active\
   do-get-piv-cak-cert do-init-secure do-keypad do-led do-text \
-  do-transfer do-verb-cp do-verb-pd \
-  conformance-CP-comset conformance-testing-CP conformance-testing-PD
+  do-transfer do-verb-cp do-verb-pd
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
 
@@ -92,8 +91,8 @@ osdp-config-print:	osdp-config-print.o Makefile
 osdp-config-print.o:	osdp-config-print.c ${INCLUDES}
 	${CC} ${CFLAGS} osdp-config-print.c
 
-open-osdp-CP-status:	open-osdp-CP-status.o Makefile
-	${LINK} -o open-osdp-CP-status -g open-osdp-CP-status.o -lrt
+ACU-status:	open-osdp-CP-status.o Makefile
+	${LINK} -o ACU-status -g open-osdp-CP-status.o -lrt
 
 open-osdp-PD-status:	open-osdp-PD-status.o Makefile
 	${LINK} ${LDFLAGS} -o open-osdp-PD-status open-osdp-PD-status.o \
