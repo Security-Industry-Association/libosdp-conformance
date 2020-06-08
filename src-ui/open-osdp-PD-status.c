@@ -46,9 +46,9 @@ void
   char *out_status [OSDP_MAX_OUT];
   json_t *root;
   int status;
+  int stat_acu_polls;
   int stat_buffer_overflows;
   int stat_checksum_errs;
-  int stat_cp_polls;
   int stat_crc_errs;
   int stat_hash_bad;
   int stat_hash_ok;
@@ -111,7 +111,7 @@ void
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    value = json_object_get (root, "cp-polls");
+    value = json_object_get (root, "acu-polls");
     if (!json_is_string (value))
       found_field = 0;
   };
@@ -121,7 +121,7 @@ void
     int i;
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
-    stat_cp_polls = i;
+    stat_acu_polls = i;
   };
   if (status EQUALS ST_OK) {
     found_field = 1; value = json_object_get (root, "pdus-received");
@@ -289,8 +289,8 @@ void
 
   // yes I'm sloppy and left the out strings allocated.
 
-  printf("<BR><PRE>Statistics:\n%5d CP Polls %5d PD Acks %5d HASH OK %5d Sent %5d Recd\n",
-    stat_cp_polls, stat_pd_acks, stat_hash_ok, stat_pdus_sent, stat_pdus_received);
+  printf("<BR><PRE>Statistics:\n%5d ACU Polls %5d PD Acks %5d HASH OK %5d Sent %5d Recd\n",
+    stat_acu_polls, stat_pd_acks, stat_hash_ok, stat_pdus_sent, stat_pdus_received);
   printf("%5d HASH Bad %5d NAKS    %5d Seq Errs %5d CRC Errs %5d Checksum Errs %5d Buffer Overflows\n",
     stat_hash_bad, stat_naks, stat_seq_errs, stat_crc_errs, stat_checksum_errs,
     stat_buffer_overflows);

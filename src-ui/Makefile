@@ -23,8 +23,8 @@
 
 CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -Wall -Werror
 #CC=gcc ${CFLAGS}
-CC=clang
-LINK=clang
+CC=gcc
+LINK=gcc
 LDFLAGS=-g -L /opt/tester/lib -ljansson
 
 CGIPROGS = \

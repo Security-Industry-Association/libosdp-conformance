@@ -25,7 +25,6 @@ void
   int byte;
   int done;
   int len;
-  int max_length;
   char *pdest;
   char *psource;
   char ptemp [1024];
@@ -79,7 +78,6 @@ void
       psource = psource + 2;
 
     pdest = bytes;
-    max_length = *bytes_length;
     *bytes_length = 0;
     while (!done && (len > 0))
     {

@@ -112,7 +112,6 @@ void
   int byte;
   int done;
   int len;
-  int max_length;
   char *pdest;
   char *psource;
 
@@ -132,7 +131,6 @@ void
   {
     psource = string;
     pdest = bytes;
-    max_length = *bytes_length;
     *bytes_length = 0;
     while (!done && (len > 0))
     {
