@@ -1,8 +1,0 @@
-{
-   "command" : "output"
-  ,"output_number" : "0"
-  ,"timer" : "50"
-  ,"control_code" : "2"
-  ,"#" : "2=on perm abort"
-}
-

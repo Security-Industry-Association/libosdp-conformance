@@ -57,11 +57,11 @@ build:	all
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)
 	(cd src-tools; make build; cd ..)
-	cp doc/examples/config-samples/open-osdp-params-ACU.json \
+	cp doc/config-examples/open-osdp-params-ACU.json \
 	  opt/osdp-conformance/run/ACU/
-	cp doc/examples/config-samples/open-osdp-params-MON.json \
+	cp doc/config-examples/open-osdp-params-MON.json \
 	  opt/osdp-conformance/run/MON/
-	cp doc/examples/config-samples/open-osdp-params-PD.json \
+	cp doc/config-examples/open-osdp-params-PD.json \
 	  opt/osdp-conformance/run/PD/
 	(cd test; make build-test; cd ..)
 
