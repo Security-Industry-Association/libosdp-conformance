@@ -1,4 +1,4 @@
 README for libosdp-conformance
 
-build instructions in doc/build
+See libosdp-conformance-guide.pdf in the doc directory for build and usage instructions.
 
