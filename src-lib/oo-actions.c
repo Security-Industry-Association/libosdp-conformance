@@ -700,7 +700,7 @@ int
       SET_PASS (ctx, "4-16-1");
       if (ctx->verbosity > 2)
       {
-        sprintf (tlogmsg, "Responding with OSDP_BUSY");
+        sprintf (tlogmsg, "Responding with osdp_BUSY");
         fprintf (ctx->log, "%s\n", tlogmsg);
       };
     };

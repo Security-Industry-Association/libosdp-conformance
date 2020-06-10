@@ -74,7 +74,7 @@ int
   {
     printf ("<HTML><HEAD><TITLE>open-osdp PD console</TITLE>");
     printf
-("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-PD.html\">");
+("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/Test-PD.html\">");
     printf ("</HEAD><BODY>");
 
     strcpy (command, arguments+strlen(tag));

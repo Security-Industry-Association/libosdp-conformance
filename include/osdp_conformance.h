@@ -65,6 +65,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_com           "070-12-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-15-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-16-01"
+#define OOC_SYMBOL_resp_busy          "070-18-01"
 
 typedef struct osdp_interop_assessment
 {
@@ -174,7 +175,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_ccrypt;
   OSDP_CONFORM resp_rmac_i;
   OSDP_CONFORM resp_mfg;                // 4-15-1
-  OSDP_CONFORM resp_busy;               // 4-16-1
+  OSDP_CONFORM resp_busy;
   OSDP_CONFORM resp_ftstat;             // 4-17-1
 } OSDP_INTEROP_ASSESSMENT;
 

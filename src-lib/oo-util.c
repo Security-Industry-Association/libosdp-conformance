@@ -329,7 +329,7 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       msg_data_length = 0;
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BUSY");
-      osdp_conformance.resp_busy.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_busy, OCONFORM_EXERCISED);
       break;
 
     case OSDP_FTSTAT:
