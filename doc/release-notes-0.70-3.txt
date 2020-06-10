@@ -1,11 +1,13 @@
-Release 0.70 Build 4 libosdp-conformance
+Release 0.70 Build 3 libosdp-conformance
 ========================================
 
-Changes in 0.70 Build 1
+Changes in 0.70 Build 3
 -----------------------
 
 0.70 contains a documentation refresh.
 
 clean up web pages
 update documentation
+
+updated instrumentation for osdp_BUSY
 
