@@ -119,7 +119,7 @@ int
   status = ST_OK;
   if (ctx->verbosity > 9)
     fprintf(ctx->log, "process_command_from_queue: top\n");
-  if (ctx->q [0].status != 0) // meaning there's at least one command in the queue
+  if (!(osdp_awaiting_response(ctx)) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
   {
     memcpy(&extracted, &(ctx->q [0].cmd), sizeof(extracted));
     cmd = &extracted;

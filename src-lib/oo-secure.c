@@ -87,7 +87,7 @@ int
   if (status EQUALS ST_OK)
   {
     memcpy(last_iv, ctx->last_calculated_in_mac, sizeof(last_iv));
-    if (ctx->verbosity > 9)
+    if (ctx->verbosity > 8)
     {
       dump_buffer_log(ctx, "S-MAC1 at osdp_calculate_secure_channel_mac:",
         ctx->s_mac1, OSDP_KEY_OCTETS);
@@ -118,7 +118,7 @@ int
     memcpy(padded_block, msg_to_send+part1_block_length,
       msg_lth-part1_block_length);
     osdp_sc_pad(padded_block, current_lth);
-    if (ctx->verbosity > 9)
+    if (ctx->verbosity > 8)
     {
       dump_buffer_log(ctx, (char *)"IV for last block in mac",
         last_iv, sizeof(last_iv));
@@ -133,7 +133,7 @@ int
     AES_ctx_set_iv (&aes_context_mac2, last_iv);
     memcpy (hashbuffer, padded_block, OSDP_KEY_OCTETS);
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, OSDP_KEY_OCTETS);
-    if (ctx->verbosity > 9)
+    if (ctx->verbosity > 8)
       dump_buffer_log(ctx, "last block encrypted for MAC:", hashbuffer, OSDP_KEY_OCTETS);
 
     // this MAC is saved as the last sent MAC
@@ -823,6 +823,9 @@ int
   status = ST_OK;
   if (security_block_type > OSDP_SEC_SCS_14)
   {
+    if (ctx->verbosity > 3)
+      dump_buffer_log(ctx,
+        "msg:", message, message_length);
     status = ST_OSDP_SC_BAD_HASH;
     first_blocks_length = 0;
     message_pointer = message;
@@ -872,8 +875,11 @@ int
     AES_CBC_encrypt_buffer(&aes_context_mac2, hashbuffer, sizeof(hashbuffer));
     memcpy(ctx->last_calculated_in_mac,
       hashbuffer, sizeof(ctx->last_calculated_in_mac));
-    if (ctx->verbosity > 9)
+    if (ctx->verbosity > 3)
+    {
+      dump_buffer_log(ctx, " rcv hash", hash, 4);
       dump_buffer_log(ctx, "calc hash", hashbuffer, sizeof(hashbuffer));
+    };
 
     // the hash we calculated (hashbuffer) should match the hash extracted
     // from the message (hash)

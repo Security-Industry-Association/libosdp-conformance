@@ -42,8 +42,9 @@ extern OSDP_PARAMETERS p_card;
 char tlogmsg [1024];
 
 
-//void start_element (void *data, const char *element, const char **attribute);
-
+/*
+  under idle conditions send a poll (possibly securely)
+*/
 
 int
   background
@@ -59,14 +60,12 @@ int
 
 
   status = ST_OK;
-//  send_poll = 1;  // assume we're supposed to poll
   send_poll = 0;
   send_secure_poll = 0;
 
   // if we're not in a file transfer...
   // if we're not set up with an operational secure channel
   // if we're not enabled for secure channel
-  // yeah, poll
 
   if (ctx->role EQUALS OSDP_ROLE_ACU)
     if (ctx->xferctx.total_length EQUALS 0)
@@ -74,7 +73,7 @@ int
         if (!(ctx->secure_channel_use [OO_SCU_ENAB] & 0x80))
           send_poll = 1;
 
-  // if we're in secure channel and the other conditions, do a secure poll
+  // for an ACU, considering file transfer, if we're in secure channel
 
   if (ctx->role EQUALS OSDP_ROLE_ACU)
   {
@@ -87,20 +86,33 @@ int
     };
   };
 
-  // if waiting for response to last message then do NOT poll
+  // if waiting for response to last cleartext message then do NOT poll
 
   if (send_poll)
+  {
     if (osdp_awaiting_response(ctx))
     {
       send_poll = 0;
     };
+  };
 
-    // if polling is not enabled do not send one
-    // (resume is used to start at a given command)
+  // if waiting for response to last secure message then do NOT poll
 
-    if ((OO_POLL_NEVER EQUALS (ctx->enable_poll)) ||
-      (OO_POLL_RESUME EQUALS (ctx->enable_poll)))
+  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+  {
+    if (osdp_awaiting_response(ctx))
+    {
+      send_secure_poll = 0;
+    };
+  };
+
+  // if polling is not enabled do not send one
+  // (resume is used to start at a given command)
+
+  if ((OO_POLL_NEVER EQUALS (ctx->enable_poll)) ||
+    (OO_POLL_RESUME EQUALS (ctx->enable_poll)))
       send_poll = 0;
+
   if (send_poll)
   {
     current_length = 0;

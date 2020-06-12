@@ -282,7 +282,16 @@ multipart fragsize msb is total_size >> 8
       {
         unsigned char key_buffer [2+OSDP_KEY_OCTETS];
         unsigned short int keybuflth;
+struct timespec pre_command_sleep;
+struct timespec sleep_leftover;
 
+
+memset(&pre_command_sleep, 0, sizeof(pre_command_sleep));
+memset(&sleep_leftover, 0, sizeof(sleep_leftover));
+pre_command_sleep.tv_nsec = 175*1000*1000; // 175 milliseconds
+//status_posix = 
+///nanosleep(&pre_command_sleep, &sleep_leftover);
+       
         keybuflth = sizeof(key_buffer) - 2;
         status = osdp_string_to_buffer(context,
           details, key_buffer+2, &keybuflth);
@@ -303,6 +312,7 @@ if(1)//        if (context->verbosity > 3)
         memcpy(context->current_scbk, key_buffer+2,
           sizeof(context->current_scbk));
         oo_save_parameters(context, OSDP_SAVED_PARAMETERS, NULL);
+///nanosleep(&pre_command_sleep, &sleep_leftover);
       };
       break;
 
