@@ -291,6 +291,16 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
 
+    // if we're the ACU and we are looking at sequence 0 then the DUT passes the seq zero test
+
+    if (context->role EQUALS OSDP_ROLE_ACU)
+    {
+      if (msg_sqn EQUALS 0)
+      {
+        osdp_test_set_status(OOC_SYMBOL_seq_zero, OCONFORM_EXERCISED);
+      };
+    };
+
     switch (returned_hdr->command)
     {
     default:

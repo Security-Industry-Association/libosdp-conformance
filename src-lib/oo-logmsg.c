@@ -720,7 +720,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     };
 
     strcpy(tmpstr, osdp_command_reply_to_string(osdp_command, *(unsigned char *)(1+aux)));
-    sprintf(tmpstr2, "Message: %s\n", tmpstr);
+    sprintf(tmpstr2, " Frm: %04d Msg: %s\n", context.packets_received, tmpstr);
     strcpy(tmpstr, osdp_sec_block_dump(2+aux+sizeof(*hdr)-1));
     strcat(tlogmsg, tmpstr2);
     strcat(tlogmsg, tmpstr);

@@ -34,6 +34,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_physical_interface "050-01-01"
 #define OOC_SYMBOL_signalling         "050-02-01"
 #define OOC_SYMBOL_packet_format      "050-09-01"
+#define OOC_SYMBOL_seq_zero           "050-09-02"
 #define OOC_SYMBOL_SOM                "050-09-03"
 #define OOC_SYMBOL_LEN                "050-09-06"
 #define OOC_SYMBOL_CTRL               "050-09-07"
@@ -98,6 +99,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM offline_test;            // 2-7-3
   OSDP_CONFORM message_synchronization; // 2-8-1
   OSDP_CONFORM packet_format;
+  OSDP_CONFORM seq_zero;
   OSDP_CONFORM SOM;
   OSDP_CONFORM SOM_sent;
   OSDP_CONFORM ADDR;                    // 2-11-1
