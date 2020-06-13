@@ -279,6 +279,19 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
     // go check the command field
     status = osdp_check_command_reply (role, returned_hdr->command, m, tlogmsg2);
     msg_data_length = m->data_length;
+
+    // if we're the ACU and we are looking at sequence 0 then the DUT passes the seq zero test
+
+    if (1) // status is ST_OK or status is ST_OSDP_CMDREP_FOUND ?
+    {
+      if (context->role EQUALS OSDP_ROLE_ACU)
+      {
+        if (msg_sqn EQUALS 0)
+        {
+          osdp_test_set_status(OOC_SYMBOL_seq_zero, OCONFORM_EXERCISED);
+        };
+      };
+    };
     if (status != ST_OSDP_CMDREP_FOUND)
     {
       if (status != ST_OK)
@@ -289,16 +302,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
     if (context->verbosity > 8)
     {
       fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
-    };
-
-    // if we're the ACU and we are looking at sequence 0 then the DUT passes the seq zero test
-
-    if (context->role EQUALS OSDP_ROLE_ACU)
-    {
-      if (msg_sqn EQUALS 0)
-      {
-        osdp_test_set_status(OOC_SYMBOL_seq_zero, OCONFORM_EXERCISED);
-      };
     };
 
     switch (returned_hdr->command)
@@ -771,7 +774,7 @@ status = ST_OK; // tolerate checksum error and continue
         tlogmsg [0] = 0;
       };
 
-      sprintf (log_line, "  Message: %s %s", cmd_rep_tag, tlogmsg);
+      sprintf (log_line, "  Pkt: %04d Message: %s %s", context->packets_received, cmd_rep_tag, tlogmsg);
 
       {
         char scb_tag[1024];
@@ -841,7 +844,7 @@ status = ST_OK; // tolerate checksum error and continue
   };
   return (status);
 
-} /* parse_message */
+} /* osdp_parse_message */
 
 
 int
