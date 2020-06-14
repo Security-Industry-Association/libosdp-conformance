@@ -1481,15 +1481,13 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       fprintf (context->log,
         " Tamper %d Power %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1));
-      osdp_conformance.cmd_poll_lstatr.test_status =
-        OCONFORM_EXERCISED; // 3-1-3
+      if (context->last_command_sent EQUALS OSDP_POLL)
+        osdp_test_set_status(OOC_SYMBOL_poll_lstatr, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_resp_lstatr, OCONFORM_EXERCISED);
       if (*(msg->data_payload) > 0)
-        osdp_conformance.resp_lstatr_tamper.test_status =
-          OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);
       if (*(msg->data_payload + 1) > 0)
-        osdp_conformance.resp_lstatr_power.test_status =
-          OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_resp_lstatr_power, OCONFORM_EXERCISED);
       break;
 
     case OSDP_MFGREP:

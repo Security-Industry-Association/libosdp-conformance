@@ -457,7 +457,9 @@ cmd->command = OSDP_CMD_NOOP;
     {
       strcpy ((char *)cmd->details, json_string_value (parameter));
     };
-
+fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
   };
 
   // command dump_status

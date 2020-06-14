@@ -226,6 +226,8 @@ int
   int status;
 
 
+  osdp_test_set_status(OOC_SYMBOL_cmd_filetransfer, OCONFORM_EXERCISED);
+  osdp_test_set_status(OOC_SYMBOL_resp_ftstat, OCONFORM_EXERCISED);
   ftstat_message = (OSDP_HDR_FTSTAT *)(msg->data_payload);
   status = osdp_ftstat_validate(ctx, ftstat_message);
   (void)oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);

@@ -405,7 +405,8 @@ int
 
 
   status = ST_OK;
-  osdp_conformance.resp_ftstat.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_cmd_filetransfer, OCONFORM_EXERCISED);
+  osdp_test_set_status(OOC_SYMBOL_resp_ftstat, OCONFORM_EXERCISED);
 
   to_send = sizeof(*response);
   current_length = 0;

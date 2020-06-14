@@ -41,6 +41,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_CMND_REPLY         "050-09-09"
 #define OOC_SYMBOL_SOM_sent           "050-09-12"
 #define OOC_SYMBOL_cmd_poll           "060-01-01"
+#define OOC_SYMBOL_poll_lstatr        "060-01-02"
 #define OOC_SYMBOL_cmd_id             "060-02-01"
 #define OOC_SYMBOL_cmd_pdcap          "060-03-01"
 #define OOC_SYMBOL_cmd_lstat          "060-04-01"
@@ -55,18 +56,21 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_chlng          "060-16-01"
 #define OOC_SYMBOL_cmd_scrypt         "060-17-01"
 #define OOC_SYMBOL_cmd_mfg            "060-18-01"
+#define OOC_SYMBOL_cmd_filetransfer   "060-25-01"
 #define OOC_SYMBOL_rep_ack            "070-01-01"
 #define OOC_SYMBOL_rep_nak            "070-02-01"
 #define OOC_SYMBOL_rep_device_ident   "070-03-01"
 #define OOC_SYMBOL_rep_pdid_check     "070-03-02"
 #define OOC_SYMBOL_rep_device_capas   "070-04-01"
 #define OOC_SYMBOL_resp_lstatr        "070-05-01"
-#define OOC_SYMBOL_resp_lstatr        "070-05-01"
+#define OOC_SYMBOL_resp_lstatr_tamper "070-05-02"
+#define OOC_SYMBOL_resp_lstatr_power  "070-05-03"
 #define OOC_SYMBOL_rep_raw            "070-09-01"
 #define OOC_SYMBOL_resp_com           "070-12-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-15-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-16-01"
 #define OOC_SYMBOL_resp_busy          "070-18-01"
+#define OOC_SYMBOL_resp_ftstat        "070-24-01"
 
 typedef struct osdp_interop_assessment
 {
@@ -122,7 +126,7 @@ typedef struct osdp_interop_assessment
 
   OSDP_CONFORM cmd_poll;
   OSDP_CONFORM cmd_poll_raw;
-  OSDP_CONFORM cmd_poll_lstatr; // 3-1-3
+  OSDP_CONFORM cmd_poll_lstatr;
   OSDP_CONFORM cmd_poll_response_4;     // 3-1-4
   OSDP_CONFORM cmd_id;
   OSDP_CONFORM cmd_pdcap;
@@ -160,8 +164,8 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_device_capas;
   OSDP_CONFORM rep_capas_consistent;    // 4-4-2
   OSDP_CONFORM resp_lstatr;
-  OSDP_CONFORM resp_lstatr_tamper;      // 4-5-2
-  OSDP_CONFORM resp_lstatr_power;       // 4-5-3
+  OSDP_CONFORM resp_lstatr_tamper;
+  OSDP_CONFORM resp_lstatr_power;
   OSDP_CONFORM resp_input_stat;         // 4-6-1
   OSDP_CONFORM resp_input_consistent;   // 4-6-2
   OSDP_CONFORM resp_output_stat;        // 4-7-1
@@ -178,7 +182,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_rmac_i;
   OSDP_CONFORM resp_mfg;                // 4-15-1
   OSDP_CONFORM resp_busy;
-  OSDP_CONFORM resp_ftstat;             // 4-17-1
+  OSDP_CONFORM resp_ftstat;
 } OSDP_INTEROP_ASSESSMENT;
 
 #define PARAM_MMT (8) // minimum message thresshold

@@ -1,7 +1,7 @@
 /*
   oosdp_files - osdp file io/
 
-  (C)2017-2019 Smithee Solutions LLC
+  (C)2017-2020 Smithee Solutions LLC
   (C)2016 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
@@ -159,11 +159,16 @@ int
 void
   osdp_wrapup_filetransfer
     (OSDP_CONTEXT *ctx)
-{
+
+{ /* osdp_wrapup_filetransfer */
+
+  fclose(ctx->xferctx.xferf);
+  fprintf(ctx->log, "  File transfer: finished, total length was %d.\n",
+    ctx->xferctx.total_length);
   ctx->xferctx.current_offset = 0;
   ctx->xferctx.total_length = 0;
-  fclose(ctx->xferctx.xferf);
-}
+
+} /* osdp_wrapup_filetransfer */
 
 
 int

@@ -244,6 +244,10 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0, "---" },
     { "3-22-1", &(osdp_conformance.cmd_max_rec.test_status),
       0, 0, 0, 0, 0, "---" },
+    {         OOC_SYMBOL_cmd_filetransfer,
+      &(osdp_conformance.cmd_filetransfer.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: osdp_FILETRANSFER"},
 
     {         OOC_SYMBOL_rep_ack,
       &(osdp_conformance.rep_ack.test_status),
@@ -316,6 +320,10 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0, "Response: osdp_CCRYPT" },
     { "070-16-01", &(osdp_conformance.resp_rmac_i.test_status),
       0, 0, 0, 0, 0, "Response: osdp_RMAC_I" },
+    {         OOC_SYMBOL_resp_ftstat,
+      &(osdp_conformance.resp_ftstat.test_status),
+      0, 0, 0, 0, 0,
+                        "Response: osdp_FTSTAT"},
     { NULL, NULL, 0, 0, 0, 0, 0, "---" }
   };
 

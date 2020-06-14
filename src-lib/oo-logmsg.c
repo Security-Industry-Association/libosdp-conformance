@@ -286,12 +286,11 @@ int
     strcat(tlogmsg, tmpstr);
     osdp_array_to_doubleByte(filetransfer_message->FtFragmentSize, &ustmp);
     sprintf(tmpstr,
-"                  Fragment Size %02x-%02x(%d.)\n  First data: %02x\n",
-      filetransfer_message->FtFragmentSize [0], filetransfer_message->FtFragmentSize [1],
+"  File transfer: Fragment Size 0x%02x Data[0] %02x\n",
       ustmp, filetransfer_message->FtData);
     strcat(tlogmsg, tmpstr);
     sprintf(tmpstr,
-"  Current Offset %8d. Total Length %8d. Current Send Length %d. Handle %lx\n",
+"  File transfer: Cur Off %8d. Tot Lth %8d. Cur Snd %d. Handle %lx",
       context.xferctx.current_offset, context.xferctx.total_length, context.xferctx.current_send_length,
       (unsigned long)(context.xferctx.xferf));
     strcat(tlogmsg, tmpstr);

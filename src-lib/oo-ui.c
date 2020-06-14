@@ -387,7 +387,6 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
 
     case OSDP_CMDB_TRANSFER:
       {
-        char data_filename [1024];
         OSDP_HDR_FILETRANSFER *file_transfer;
         FILE *osdp_data_file;
         int size_to_read;
@@ -400,20 +399,23 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
 
         // find and open file
 
-        strcpy(data_filename, "./osdp_data_file");
+        strcpy(context->xferctx.filename, "./osdp_data_file");
         if (strlen (details) > 0)
-          strcpy(data_filename, details);
-        strcpy(context->xferctx.filename, data_filename);
-        osdp_data_file = fopen (data_filename, "r");
+          strcpy(context->xferctx.filename, details);
+
+        fprintf(context->log, "  File transfer: file %s\n",
+          context->xferctx.filename);
+
+        osdp_data_file = fopen (context->xferctx.filename, "r");
         if (osdp_data_file EQUALS NULL)
         {
-fprintf(stderr, "local open failed, errno %d\n", errno);
-          strcpy(data_filename, "/opt/osdp-conformance/etc/osdp_data_file");
-          osdp_data_file = fopen (data_filename, "r");
+          fprintf(context->log, "  local open failed, errno %d\n", errno);
+          strcpy(context->xferctx.filename, "/opt/osdp-conformance/etc/osdp_data_file");
+          osdp_data_file = fopen (context->xferctx.filename, "r");
           if (osdp_data_file EQUALS NULL)
           {
             fprintf(context->log, "SEND: data file not found (checked %s as last resort)\n",
-              data_filename);
+              context->xferctx.filename);
             status = ST_OSDP_BAD_TRANSFER_FILE;
           }
           else 
@@ -424,9 +426,8 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
         {
           if (context->verbosity > 3)
           {
-            fprintf(stderr, "data file is ./osdp_data_file\n");
-            fprintf(context->log, "SEND: Data file is %s\n",
-              data_filename);
+            fprintf(context->log, "  File transfer: Data file is %s\n",
+              context->xferctx.filename);
           };
         };
 
@@ -435,8 +436,10 @@ fprintf(stderr, "local open failed, errno %d\n", errno);
           struct stat datafile_status;
 
           context->xferctx.xferf = osdp_data_file;
-          stat(data_filename, &datafile_status);
-fprintf(stderr, "data file %s size %d.\n", data_filename, (int)datafile_status.st_size);
+          stat(context->xferctx.filename, &datafile_status);
+          fprintf(context->log,
+            "  FIle transfer: data file %s size %d.\n",
+            context->xferctx.filename, (int)datafile_status.st_size);
           context->xferctx.total_length = datafile_status.st_size;
           context->xferctx.current_offset = 0; // should be set already but just in case.
 
