@@ -1,8 +1,8 @@
 /*
 
-  oosdp_logmsg.c - prints log messages
+  oo-logmsg.c - prints log messages
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
 */
 #define OSDP_CMD_MSC_GETPIV  (0x10)
 #define OSDP_CMD_MSC_KP_ACT  (0x13)
@@ -69,9 +69,9 @@ typedef struct __attribute__((packed)) osdp_msc_status
 } OSDP_MSC_STATUS;
 
 /*
-  oosdp-logmsg - open osdp log message routines
+  oo-logmsg - open osdp log message routines
 
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2014-2020 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -299,6 +299,11 @@ int
   case OOSDP_MSG_FTSTAT:
     msg = (OSDP_MSG *) aux;
     ftstat = (OSDP_HDR_FTSTAT *)(msg->data_payload);
+
+    // dump the FTSTAT response in case it's weird
+    if (context.verbosity > 2)
+      dump_buffer_log(&context, "  FTSTAT: ", (unsigned char *)ftstat, msg->lth);
+
     tlogmsg[0] = 0;
     osdp_array_to_doubleByte(ftstat->FtDelay, &newdelay);
     osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &newmax);

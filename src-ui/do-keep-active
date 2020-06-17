@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2018 Smithee Solutions LLC
+# (C)Copyright 2020 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>Keep Contactless Reader Active</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\"><HEAD>"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/Test-ACU\"><HEAD>"
 echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
