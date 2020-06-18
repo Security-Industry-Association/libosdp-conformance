@@ -392,7 +392,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         int size_to_read;
         int status_io;
         int transfer_send_size;
-        unsigned char xfer_buffer [MAX_BUF];
+        unsigned char xfer_buffer [OSDP_BUF_MAX];
 
 
         status = ST_OK;
@@ -449,8 +449,13 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
           // load data from file starting at msg->FtData
 
           if (context->pd_cap.rec_max > 0)
+          {
             if (context->max_message EQUALS 0)
+            {
               context->max_message = context->pd_cap.rec_max;
+              if (context->max_message >800) context->max_message = 800;
+            };
+          };
           if (context->max_message EQUALS 0)
           {
             context->max_message = 128;

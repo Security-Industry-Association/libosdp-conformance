@@ -160,8 +160,10 @@ OSDP_CONFORMANCE_TEST
                         "Command: POLL"},
     { "3-1-2", &(osdp_conformance.cmd_poll_raw.test_status),
       1, 0, 0, 0, 0, "---" },
-    { "3-1-3", &(osdp_conformance.cmd_poll_lstatr.test_status),
-      1, 0, 0, 0, 0, "---" },
+    {         OOC_SYMBOL_cmd_lstat,
+      &(osdp_conformance.cmd_lstat.test_status),
+      1, 0, 0, 0, 0,
+                        "Command: LSTAT"},
     { "3-1-4", &(osdp_conformance.cmd_poll_response_4.test_status),
       1, 0, 0, 0, 0, "---" },
     {         OOC_SYMBOL_cmd_id,
@@ -276,10 +278,14 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_lstatr.test_status),
       1, 1, 1, 1, 0,
                         "Response: LSTATR"},
-    { "4-5-2", &(osdp_conformance.resp_lstatr_tamper.test_status),
-      1, 1, 1, 1, 0, "---" },
-    { "4-5-3", &(osdp_conformance.resp_lstatr_power.test_status),
-      1, 1, 1, 1, 0, "---" },
+    {         OOC_SYMBOL_resp_lstatr_tamper,
+      &(osdp_conformance.resp_lstatr_tamper.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: LSTATR (tamper)"},
+    {         OOC_SYMBOL_resp_lstatr_power,
+      &(osdp_conformance.resp_lstatr_power.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: LSTATR (power)"},
     { "4-6-1", &(osdp_conformance.resp_input_stat.test_status),
       1, 0, 0, 0, 0, "---" },
     { "4-6-2", &(osdp_conformance.resp_input_consistent.test_status),
@@ -542,7 +548,7 @@ void
     conformance_status (oconf->cmd_poll_raw.test_status)));
   LOG_REPORT ((log_string,
 "3-1-3  Poll lstatr                        %s",
-    conformance_status (oconf->cmd_poll_lstatr.test_status)));
+    conformance_status (oconf->cmd_poll_lstat.test_status)));
   LOG_REPORT ((log_string,
 "3-1-4  Poll response 4                    %s",
     conformance_status (oconf->cmd_poll_response_4.test_status)));
@@ -874,7 +880,7 @@ int
   while (!done)
   {
     //DEBUG
-    if (context.verbosity > 9)
+    if (0) // (context.verbosity > 9)
     {
       fprintf(context.log, "osdp_test_set_status: checking %d.\n", idx);
       fflush(context.log);

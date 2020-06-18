@@ -41,7 +41,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_CMND_REPLY         "050-09-09"
 #define OOC_SYMBOL_SOM_sent           "050-09-12"
 #define OOC_SYMBOL_cmd_poll           "060-01-01"
-#define OOC_SYMBOL_poll_lstatr        "060-01-02"
+#define OOC_SYMBOL_poll_lstat         "060-01-02"
 #define OOC_SYMBOL_cmd_id             "060-02-01"
 #define OOC_SYMBOL_cmd_pdcap          "060-03-01"
 #define OOC_SYMBOL_cmd_lstat          "060-04-01"
@@ -126,7 +126,7 @@ typedef struct osdp_interop_assessment
 
   OSDP_CONFORM cmd_poll;
   OSDP_CONFORM cmd_poll_raw;
-  OSDP_CONFORM cmd_poll_lstatr;
+  OSDP_CONFORM cmd_poll_lstat ;
   OSDP_CONFORM cmd_poll_response_4;     // 3-1-4
   OSDP_CONFORM cmd_id;
   OSDP_CONFORM cmd_pdcap;

@@ -719,14 +719,14 @@ int
     if (ctx->tamper)
     {
       strcat(details, "Tamper");
-      osdp_conformance.resp_lstatr_tamper.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);
     };
     if (ctx->power_report)
     {
       if (strlen(details) > 0)
         strcat(details, " ");
       strcat(details, "Power");
+      osdp_test_set_status(OOC_SYMBOL_resp_lstatr_power, OCONFORM_EXERCISED);
     };
     osdp_lstat_response_data [ 0] = ctx->tamper;
     osdp_lstat_response_data [ 1] = ctx->power_report;
@@ -740,9 +740,6 @@ int
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data,
       OSDP_SEC_NOT_SCS, 0, NULL);
-    SET_PASS (ctx, "3-1-3");
-    SET_PASS (ctx, "4-5-1");
-    SET_PASS (ctx, "4-5-3");
     if (ctx->verbosity > 2)
     {
       sprintf (tlogmsg, "Responding with OSDP_LSTATR (%s)", details);

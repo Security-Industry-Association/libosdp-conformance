@@ -318,7 +318,7 @@ int
   int status;
   int status_io;
   int transfer_send_size;
-  unsigned char xfer_buffer [MAX_BUF];
+  unsigned char xfer_buffer [OSDP_BUF_MAX];
 
 
   status = ST_OK;

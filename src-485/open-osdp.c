@@ -298,7 +298,7 @@ int
 
     if (status_select > 0)
     {
-      if (context.verbosity > 9)
+      if (context.verbosity > 10)
         fprintf (stderr, "%d descriptors from pselect\n",
           status_select);
 
@@ -342,8 +342,12 @@ int
           {
             sprintf(octet, " %02x", buffer [0]);
             strcat(trace_in_buffer, octet);
+if (context.verbosity > 9)
+{
+  fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer);
+};
           };
-          if (context.verbosity > 9)
+          if (context.verbosity > 10)
             fprintf (stderr, "485 read returned %d bytes\n",
               status_io);
 

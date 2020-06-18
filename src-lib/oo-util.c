@@ -864,6 +864,7 @@ int
   char nak_data;
   unsigned char osdp_nak_response_data [2];
   OSDP_HDR *oh;
+  int oo_osdp_max_packet;
   int status;
   unsigned char this_command;
   char tlog2 [1024];
@@ -872,6 +873,7 @@ int
 
 
   status = ST_MSG_UNKNOWN;
+  oo_osdp_max_packet = 768; // less than the 1K in some of the buffer routines
   oh = (OSDP_HDR *)(msg->ptr);
   if (context -> role EQUALS OSDP_ROLE_PD)
   {
@@ -1001,8 +1003,8 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
             8,1,0, // supports CRC-16
 #define CAP_SCHAN_INDEX (7) // where in the array
             9,0,0, //no security
-            10,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // rec buf max
-            11,0xff & OSDP_BUF_MAX, (0xff00&OSDP_BUF_MAX)>>8, // largest msg
+            10,0xff & oo_osdp_max_packet, (0xff00 & oo_osdp_max_packet)>>8, // rec buf max
+            11,0xff & oo_osdp_max_packet, (0xff00 & oo_osdp_max_packet)>>8, // largest msg
             12,0,0, // no smartcard
             13,0,0, // no keypad
             14,0,0, // no biometric
@@ -1481,8 +1483,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       fprintf (context->log,
         " Tamper %d Power %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1));
-      if (context->last_command_sent EQUALS OSDP_POLL)
-        osdp_test_set_status(OOC_SYMBOL_poll_lstatr, OCONFORM_EXERCISED);
+      if (context->last_command_sent EQUALS OSDP_LSTAT)
+        osdp_test_set_status(OOC_SYMBOL_poll_lstat, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_resp_lstatr, OCONFORM_EXERCISED);
       if (*(msg->data_payload) > 0)
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);

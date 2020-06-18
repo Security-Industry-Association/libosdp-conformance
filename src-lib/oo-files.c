@@ -291,10 +291,6 @@ int
     strcpy (tag, "MON");
   sprintf (statfile, "/opt/osdp-conformance/run/%s/osdp-status.json",
     tag);
-  if (ctx->verbosity > 9)
-  {
-    fprintf(stderr, "Writing status to %s\n", statfile);
-  };
   sf = fopen (statfile, "w");
   if (sf != NULL)
   {
