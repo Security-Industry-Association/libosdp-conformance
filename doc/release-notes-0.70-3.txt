@@ -11,3 +11,6 @@ update documentation
 
 updated instrumentation for osdp_BUSY
 
+closed some outstanding issues that have been dealt with.
+fixed some doc issues.
+
