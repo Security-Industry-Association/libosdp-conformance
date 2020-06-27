@@ -22,6 +22,7 @@
 #  http://www.securityindustry.org
 
 all:	lib
+	(cd include; make all; cd ..)
 	(cd src-lib; make all; cd ..)
 	(cd src-485; make all; cd ..)
 	(cd src-ui; make all; cd ..)
@@ -38,6 +39,7 @@ osdp-tls:	release
 	tar czf release-osdp-conformance.tgz opt/*
 
 clean:
+	(cd include; make clean; cd ..)
 	(cd src-lib; make clean; cd ..)
 	(cd src-485; make clean; cd ..)
 	(cd src-tls; make clean; cd ..)
@@ -53,6 +55,7 @@ build:	all
 	mkdir -p opt/osdp-conformance/run/PD
 	mkdir -p opt/osdp-conformance/tmp
 	chmod 777 opt/osdp-conformance/tmp
+	(cd include; make build; cd ..)
 	(cd src-lib; make build; cd ..)
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)

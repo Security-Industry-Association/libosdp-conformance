@@ -1093,3 +1093,5 @@ int send_secure_message (OSDP_CONTEXT *context, int command, int dest_addr,
 void signal_callback_handler (int signum);
 unsigned short int fCrcBlk (unsigned char *pData, unsigned short int nLength);
 
+#include <oo-api.h>
+

@@ -1,29 +1,24 @@
-int
-  param_verbosity = 0;
+int param_verbosity = 0;
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+#include <oo-api.h>
+
 
 int
   main
-    (int
-      argc,
-    char
-      *argv [])
+    (int argc,
+    char *argv [])
 
 { /* main for send-osdp-command */
 
-  char
-    arguments [1024];
-  char
-    command [1024];
-  char
-    shell_command [1024];
-  int
-    status;
-  char
-    tag [1024];
+  char arguments [1024];
+  char command [1024];
+  char shell_command [C_2MSG];
+  int status;
+  char tag [1024];
 
 
   status = -1;

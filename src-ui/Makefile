@@ -131,7 +131,7 @@ open-osdp-PD-status.o:	open-osdp-PD-status.c
 	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
 	  open-osdp-PD-status.c
 
-send-osdp-command.o:	send-osdp-command.c
+send-osdp-command.o:	send-osdp-command.c ../include/oo-api.h
 	${CC} ${CFLAGS} -c -g -I../include -I/tester/current/include -Wall -Werror \
 	  send-osdp-command.c
 

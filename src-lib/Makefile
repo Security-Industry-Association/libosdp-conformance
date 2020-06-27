@@ -122,5 +122,8 @@ oo-ui.o:	oo-ui.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oo-ui.c
 
 /opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
+	mkdir -p /opt/osdp-conformance/include
 	cp ../include/open-osdp.h /opt/osdp-conformance/include
+	echo really should be a makefile in the include directory
+	cp ../include/oo-api.h /opt/osdp-conformance/include
 
