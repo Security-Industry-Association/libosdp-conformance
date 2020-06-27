@@ -176,9 +176,8 @@ int
 
       // per spec it is lsb/msb
 
-      c = msg->data_payload [0];
-      c = 256*c + msg->data_payload [1];
-      sprintf(tlogmsg, "ACU Receive Size: %0x\n", c);
+      c = (msg->data_payload [0]) + 256 * (msg->data_payload [1]);
+      sprintf(tlogmsg, "  ACU Rx Size: %0d.\n", c);
     };
     break;
 
