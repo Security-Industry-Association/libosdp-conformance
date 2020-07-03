@@ -36,7 +36,7 @@ int
   OSDP_MSG *msg,
   char *tlogmsg)
 
-{ /* osdp_message_header_print */
+{ /* oosdp_message_header_print */
 
   OSDP_HDR *osdp_wire_message;
   int scb_present;

@@ -772,6 +772,8 @@ status = ST_OK; // tolerate checksum error and continue
       {
         fprintf (context->log, "%s\n", tlogmsg);
         tlogmsg [0] = 0;
+        if (context->verbosity > 3)
+          dump_buffer_log(context, "  Raw input: ", m->ptr, m->lth);
       };
 
       sprintf (log_line, "  Pkt: %04d Message: %s %s", context->packets_received, cmd_rep_tag, tlogmsg);
@@ -781,7 +783,8 @@ status = ST_OK; // tolerate checksum error and continue
         char check_tag [1024];
 
         if (msg_check_type EQUALS 4)
-          strcpy(check_tag, "Check:CRC");
+          sprintf(check_tag, "Check:CRC(%04x)",
+            *(1+m->crc_check) << 8 | *(m->crc_check));
         else
           strcpy(check_tag, "Check:Cksum");
         strcpy(scb_tag, "");
