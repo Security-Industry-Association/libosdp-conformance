@@ -61,7 +61,8 @@ int
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
-  if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT) && (status != ST_SERIAL_IN))
+  if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT) &&
+    (status != ST_NOT_MY_ADDR) && (status != ST_SERIAL_IN))
   {
     int current_length;
     unsigned char osdp_nak_response [2];

@@ -702,13 +702,20 @@ status = ST_OK; // tolerate checksum error and continue
         fprintf(stderr, "DEBUG: wire seq %d. rcv seq %d. next seq %d.\n",
           wire_sequence, rcv_seq, context->next_sequence);
       bad = 0;
-      // if we're the ACU the received sequence number should match "next_sequence"
-      if ((role EQUALS OSDP_ROLE_ACU) && (rcv_seq != context->next_sequence))
-        bad = 1;
 
-      // if we're the PD the received sequence number should match the sequence number on the wire
-      if ((role EQUALS OSDP_ROLE_PD) && (wire_sequence != context->next_sequence))
-        bad = 1;
+      if (p_card.addr EQUALS (0x7f & p->addr))
+      {
+        /*
+          if we're the ACU and it's from the correct source then the sequence number should 
+          match
+        */
+        if ((role EQUALS OSDP_ROLE_ACU) && (rcv_seq != context->next_sequence))
+          bad = 1;
+
+        // if we're the PD the received sequence number should match the sequence number on the wire
+        if ((role EQUALS OSDP_ROLE_PD) && (wire_sequence != context->next_sequence))
+          bad = 1;
+      };
 
       if (bad)
       {
