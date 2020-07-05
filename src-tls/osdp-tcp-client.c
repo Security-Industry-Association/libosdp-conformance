@@ -1,7 +1,7 @@
 /*
   osdp-tcp-client - TCP-only version of osdp-net-client
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
   (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
@@ -48,41 +48,25 @@ char trace_out_buffer [1024];
 
 int
   read_tcp_stream
-    (OSDP_CONTEXT
-      *ctx,
-    int
-      net_fd,
-    int
-      *poll);
+    (OSDP_CONTEXT *ctx,
+    int net_fd,
+    int *poll);
 int tcp_connect (void);
 
 
-char
-  buffer [MAX_BUF + 1];
-OSDP_TLS_CONFIG
-  config;
-OSDP_CONTEXT
-  context;
-OSDP_OUT_CMD
-  current_output_command [16];
-int
-  current_sd; // current socket for tcp connection
-struct timespec
-  last_time_check_ex;
-OSDP_BUFFER
-  osdp_buf;
-OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-OSDP_PARAMETERS
-  p_card;
-time_t
-  previous_time;
-int
-  request_immediate_poll;
-struct sockaddr_in
-  sa_serv;
-char
-  *tag;
+char buffer [MAX_BUF + 1];
+OSDP_TLS_CONFIG config;
+OSDP_CONTEXT context;
+OSDP_OUT_CMD current_output_command [16];
+int current_sd; // current socket for tcp connection
+struct timespec last_time_check_ex;
+OSDP_BUFFER osdp_buf;
+OSDP_INTEROP_ASSESSMENT osdp_conformance;
+OSDP_PARAMETERS p_card;
+time_t previous_time;
+int request_immediate_poll;
+struct sockaddr_in sa_serv;
+char *tag;
 
 // cardholder number kludge
 
@@ -109,21 +93,15 @@ char
 
 int
   initialize
-    (OSDP_TLS_CONFIG
-      *config,
-    int
-      argc,
-    char
-      *argv [])
+    (OSDP_TLS_CONFIG *config,
+    int argc,
+    char *argv [])
 
 { /* initialize */
 
-  char
-    command [1024];
-  char
-    current_network_address [1024];
-  int
-    status;
+  char command [1024];
+  char current_network_address [1024];
+  int status;
 
 
   status = ST_OK;
@@ -481,10 +459,15 @@ int
             if (context.timer[OSDP_TIMER_STATISTICS].status EQUALS OSDP_TIMER_RESTARTED)
               status = oo_write_status (&context);
 
-            // if "the timer" went off, do the background process
+            /*
+              if "the timer" went off, do the background process
+              note this has imperfect state management so you can't
+              check the state first.
 
-            if (context.timer[OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_RESTARTED)
-              status = background (&context);
+              theoretically monitor context.timer[OSDP_TIMER_RESPONSE].status
+              for when it's value is OSDP_TIMER_RESTARTED)
+            */
+            status = background (&context);
 
             if (context.timer[OSDP_TIMER_SUMMARY].status EQUALS OSDP_TIMER_RESTARTED)
               status = osdp_log_summary(&context);
