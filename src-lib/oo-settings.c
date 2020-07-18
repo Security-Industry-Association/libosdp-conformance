@@ -352,7 +352,8 @@ int
     int i;
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
-    p_card.poll = i;
+fprintf(stderr, "DEBUG: poll deprecated\n");
+//    p_card.poll = i;
   }; 
 
   // results - "keep" or "new", default is "new"

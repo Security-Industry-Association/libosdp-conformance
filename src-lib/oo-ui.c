@@ -615,8 +615,10 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 "Role: %d (0=CP,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
          context->role, m_check);
       fprintf (stderr,
-"  Timeout %ld(%d.) Dump %d Debug %d.\n",
-         context->timer[0].i_sec, p_card.poll, m_dump, context->verbosity);
+"  Dump %d Debug %d.\n",
+         m_dump, context->verbosity);
+//"  Timeout %ld(%d.) Dump %d Debug %d.\n",
+//         context->timer[0].i_sec, p_card.poll, m_dump, context->verbosity);
       fprintf (stderr,
 " PwrRpt %d\nACU Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
          context->power_report,

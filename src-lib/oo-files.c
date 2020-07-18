@@ -366,9 +366,7 @@ int
     fprintf (sf,
 "\"timeout\" : \"%ld\", ",
       ctx->timer[0].i_sec);
-    fprintf (sf,
-" \"poll\" : \"%d\",\n",
-      p_card.poll);
+//    fprintf (sf, " \"poll\" : \"%d\",\n", p_card.poll);
 
     // copy in the keyboard "buffer"
 

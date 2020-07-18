@@ -284,7 +284,8 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
 
     if (1) // status is ST_OK or status is ST_OSDP_CMDREP_FOUND ?
     {
-      if (context->role EQUALS OSDP_ROLE_ACU)
+
+      if ((context->role EQUALS OSDP_ROLE_ACU) && (context->role EQUALS role))
       {
         if (msg_sqn EQUALS 0)
         {

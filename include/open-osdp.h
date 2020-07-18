@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (71)
-#define OSDP_VERSION_BUILD ( 4)
+#define OSDP_VERSION_BUILD ( 5)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
@@ -620,7 +620,7 @@ typedef struct osdp_parameters
   char filename [1024];
 
   // poll delay
-  int poll;
+//DEBUG  int poll;
 } OSDP_PARAMETERS;
 #define PARAMETER_NONE    (0)
 #define PARAMETER_PARAMS  (1)
