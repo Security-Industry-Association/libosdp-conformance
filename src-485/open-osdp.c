@@ -226,6 +226,13 @@ int
     };
     check_serial (&context);
   };
+fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
+  OSDP_TIMER_STATISTICS, context.timer[OSDP_TIMER_STATISTICS].i_sec, context.timer[OSDP_TIMER_STATISTICS].i_nsec);
+fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
+  OSDP_TIMER_RESPONSE, context.timer[OSDP_TIMER_RESPONSE].i_sec, context.timer[OSDP_TIMER_RESPONSE].i_nsec);
+fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
+  OSDP_TIMER_SUMMARY, context.timer[OSDP_TIMER_SUMMARY].i_sec, context.timer[OSDP_TIMER_SUMMARY].i_nsec);
+//OSDP_TIMER_LED_0_TEMP_ON OSDP_TIMER_LED_0_TEMP_OFF OSDP_TIMER_IO
   while (!done)
   {
     fflush (context.log);
