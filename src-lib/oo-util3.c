@@ -762,7 +762,7 @@ int
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
   case OSDP_FILETRANSFER:
-    if (context->verbosity > 3)
+    if ((context->verbosity > 3) || (context->role EQUALS OSDP_ROLE_MONITOR))
     {
       status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
       if (status == ST_OK)
@@ -771,7 +771,7 @@ int
     break;
 
   case OSDP_FTSTAT:
-    if (context->verbosity > 3)
+    if ((context->verbosity > 3) || (context->role EQUALS OSDP_ROLE_MONITOR))
     {
       status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
       if (status == ST_OK)
