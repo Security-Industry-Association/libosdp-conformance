@@ -235,14 +235,18 @@ exit(-1);
     case OSDP_CMDB_CHALLENGE:
       {
         unsigned char challenge_command [1024];
+        OSDP_MULTI_HDR_IEC *challenge_hdr;
+int challenge_size;
+        unsigned char command;
+int total_size;
+challenge_size = 100;
+
 //        int offset;
 //        int total_size;
 
 
 //        total_size = 8; // tbd
 
-        strcpy (context->test_in_progress, "x-challenge");
-        memset (&challenge_command, 0, sizeof (challenge_command));
 
  //       offset = 0;
         // multi-part header
@@ -260,10 +264,29 @@ multipart fragsize msb is total_size >> 8
         if (context->verbosity > 3)
           fprintf (stderr,
 "Requesting GenAuth\n");
-        current_length = 0;
         status = send_message (context,
           OSDP_CRAUTH, p_card.addr, &current_length, sizeof (genauth_commanbuzzer_control), (unsigned char *)&buzzer_control);
 #endif
+fprintf(stderr, "DEBUG: osdp_CRAUTH (Challenge)\n");
+        strcpy (context->test_in_progress, "x-challenge");
+        memset (&challenge_command, 0, sizeof (challenge_command));
+fprintf(stderr, "CHALLENGE STUB\n");
+// challenge?  crauth?
+        total_size = challenge_size + sizeof(challenge_command);
+        challenge_hdr = (OSDP_MULTI_HDR_IEC *)&(challenge_command [0]);
+        challenge_hdr->total_lsb = total_size & 0xff;
+        challenge_hdr->total_msb = (total_size & 0xff00) >> 8;
+        challenge_hdr->offset_lsb = 0;
+        challenge_hdr->offset_msb = 0;
+        challenge_hdr->data_len_lsb = challenge_hdr->total_lsb;
+        challenge_hdr->data_len_msb = challenge_hdr->total_msb;
+        challenge_hdr->algo_payload = 0x00;
+
+        details_length = total_size;
+        command = OSDP_CRAUTH;
+        current_length = 0;
+        status = send_message_ex(context, command, p_card.addr,
+          &current_length, total_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);
       };
       break;
 

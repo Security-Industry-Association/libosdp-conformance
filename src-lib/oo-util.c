@@ -1066,6 +1066,9 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
       status = action_osdp_CHLNG(context, msg);
       break;
 
+    case OSDP_CRAUTH:
+      status = action_osdp_CRAUTH(context, msg);
+
     case OSDP_FILETRANSFER:
       status = action_osdp_FILETRANSFER (context, msg);
       break;

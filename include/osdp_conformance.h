@@ -154,6 +154,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_max_rec;             // 3-22-1 //ACURXSIZE
   OSDP_CONFORM cmd_filetransfer;        // 3-23-1
   OSDP_CONFORM cmd_keepactive;          // 3-24-2
+  OSDP_CONFORM cmd_crauth;
 
   // section 7
 
@@ -183,6 +184,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_mfg;                // 4-15-1
   OSDP_CONFORM resp_busy;
   OSDP_CONFORM resp_ftstat;
+  OSDP_CONFORM resp_crauthr;
 } OSDP_INTEROP_ASSESSMENT;
 
 #define PARAM_MMT (8) // minimum message thresshold

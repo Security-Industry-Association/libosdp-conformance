@@ -29,8 +29,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (71)
-#define OSDP_VERSION_BUILD ( 5)
+#define OSDP_VERSION_MINOR (80)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
@@ -112,11 +112,12 @@
 #define OSDP_BIOREAD  (0x73)
 #define OSDP_BIOMATCH (0x74)
 #define OSDP_KEYSET   (0x75)
-#define OSDP_CHLNG    (0x76)
+#define OSDP_CHLNG        (0x76)
 #define OSDP_ACURXSIZE    (0x7B)
 #define OSDP_FILETRANSFER (0x7C)
 #define OSDP_MFG          (0x80)
 #define OSDP_XWR          (0xA1)
+#define OSDP_CRAUTH       (0xA5)
 #define OSDP_KEEPACTIVE   (0xA7)
 #define OSDP_BOGUS        (0xFF) // bogus command code to induce NAK
 #define OSDP_ILLICIT      (0x00)
@@ -534,30 +535,21 @@ typedef struct osdp_context
 
 
   // for multipart messages, in or out
-  char
-    *mmsgbuf;
-  unsigned short int
-    total_len;
+  char *mmsgbuf;
+  unsigned short int total_len;
 
   // for assembling multipart message.  assumes one context structure
   // per PD we talk to
-  unsigned short int
-    next_in;
+  unsigned short int next_in;
 
   // for transmitting multi-part
-  unsigned short int
-    next_out;
-  int
-    authenticated;
-  char
-    command_path [1024];
-  int
-    cmd_hist_counter;
-  char
-    init_parameters_path [1024];
+  unsigned short int next_out;
+  int authenticated;
+  char command_path [1024];
+  int cmd_hist_counter;
+  char init_parameters_path [1024];
 
-  OSDP_OUT_STATE
-    out [16];
+  OSDP_OUT_STATE out [16];
 
   int
     last_raw_read_bits;
@@ -643,12 +635,13 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_OUT_STATUS   (5)
 #define OOSDP_MSG_OSDP         (11)
 
-#define OOSDP_MSG_ACURXSIZE    (21)
-#define OOSDP_MSG_BUZ          (18)
-#define OOSDP_MSG_CCRYPT       (6)
-#define OOSDP_MSG_CHLNG        (10)
-#define OOSDP_MSG_COM          (20)
-#define OOSDP_MSG_COMSET       (19)
+#define OOSDP_MSG_ACURXSIZE    (110)
+#define OOSDP_MSG_BUZ          (120)
+#define OOSDP_MSG_CCRYPT       (130)
+#define OOSDP_MSG_CHLNG        (131)
+#define OOSDP_MSG_COM          (132)
+#define OOSDP_MSG_COMSET       (133)
+#define OOSDP_MSG_CRAUTH       (134)
 #define OOSDP_MSG_FILETRANSFER (7)
 #define OOSDP_MSG_FTSTAT       (8)
 #define OOSDP_MSG_ISTATR       (17)
@@ -833,39 +826,16 @@ typedef struct osdp_msg
   int payload_decrypted;
 } OSDP_MSG;
 
-
-typedef struct osdp_multi_getpiv
+typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 {
-  unsigned char
-    oui [3];
-  unsigned short int
-    total;
-  unsigned short int
-    offset;
-  unsigned short int
-    length;
-  unsigned short int
-    cmd;
-  unsigned char
-    container_tag [8];
-  unsigned char
-    data_tag [8];
-} ZZZOSDP_MULTI_GETPIV;
-
-
-typedef struct osdp_multi_hdr
-{
-  unsigned char
-    VendorCode [3];
-  unsigned short int
-    Reply_ID;
-  unsigned short int
-    MpdSizeTotal;
-  unsigned short int
-    MpdOffset;
-  unsigned short int
-    MpdFragmentSize;
-} OSDP_MULTI_HDR;
+  unsigned char total_lsb;
+  unsigned char total_msb;
+  unsigned char offset_lsb;
+  unsigned char offset_msb;
+  unsigned char data_len_lsb;
+  unsigned char data_len_msb;
+  unsigned char algo_payload; // algo/key in first fragment, start of payload in subsequent fragments
+} OSDP_MULTI_HDR_IEC;
 
 // open-osdp Reply_ID values...
 #define MFGREP_OOSDP_CAKCert (0x01)
@@ -973,6 +943,7 @@ int
 int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_CRAUTH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

@@ -276,6 +276,10 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       OSDP_CHECK_CMDREP ("osdp_COMSET", cmd_comset, 1);
       break;
 
+    case OSDP_CRAUTH:
+      OSDP_CHECK_CMDREP("osdp_CRAUTH", cmd_crauth, 1);
+      break;
+
     case OSDP_FILETRANSFER:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -693,6 +697,11 @@ int
       break;
     case OSDP_COMSET:
       status = oosdp_make_message (OOSDP_MSG_COMSET, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_CRAUTH:
+      status = oosdp_make_message (OOSDP_MSG_CRAUTH, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;

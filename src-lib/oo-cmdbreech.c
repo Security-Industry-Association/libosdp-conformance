@@ -545,8 +545,13 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
         status = osdp_string_to_buffer(ctx, (char *)json_string_value(value), cmd->details+2,  &lth);
         cmd->details_length = 2+lth; //algoref, keyref, payload
       };
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   };
+
+  // identify command - send an osdp_ID
 
   if (status EQUALS ST_OK)
   {

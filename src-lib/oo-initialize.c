@@ -47,10 +47,8 @@ OSDP_COMMAND_QUEUE osdp_command_queue [OSDP_COMMAND_QUEUE_SIZE];
 
 int
   init_serial
-    (OSDP_CONTEXT
-      *context,
-    char
-      *device)
+    (OSDP_CONTEXT *context,
+    char *device)
 
 { /* init_serial */
 
