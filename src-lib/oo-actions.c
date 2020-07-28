@@ -102,19 +102,6 @@ int
 
 
 int
-  action_osdp_CRAUTH
-    (OSDP_CONTEXT *ctx,
-    OSDP_MSG *msg)
-
-{ /* action_osdp_COMSET */
-
-fprintf(ctx->log, "DEBUG: osdp_CRAUTH response stub.\n");
-  return(-1);
-
-} /* action_osdp_COMSET */
-
-
-int
   action_osdp_FILETRANSFER
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)

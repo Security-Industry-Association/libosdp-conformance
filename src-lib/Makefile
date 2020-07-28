@@ -24,10 +24,8 @@ OUTLIB=libosdp.a
 # built with gcc.  note it also builds with clang.
 CC=gcc
 #CC=clang
-
 CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -I/opt/osdp-conformance/include \
-  -Wall -Werror
-
+  -Wall -Werror -D OSDP_EXTENDED_PACKET_MODE
 
 all:	${OUTLIB}
 
