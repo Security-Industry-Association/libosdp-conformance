@@ -611,7 +611,7 @@ int
 
 
   status = ST_OK;
-//  if (ctx->verbosity > 8)
+  if (ctx->verbosity > 8)
   {
     int i;
     char octet [1024];

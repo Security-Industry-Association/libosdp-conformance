@@ -1066,9 +1066,6 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
       status = action_osdp_CHLNG(context, msg);
       break;
 
-    case OSDP_CRAUTH:
-      status = action_osdp_CRAUTH(context, msg);
-
     case OSDP_FILETRANSFER:
       status = action_osdp_FILETRANSFER (context, msg);
       break;
@@ -1420,12 +1417,12 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           context->next_sequence = 0; // reset sequence due to NAK
           break;
         case OO_NAK_UNSUP_SECBLK:
-          fprintf(context->log, "  NAK: (5)Security block not accepted\n");
+          fprintf(context->log, "  NAK: (5)Security block not accepted.\n");
           break;
         case OO_NAK_ENC_REQ:
           // drop out of secure channel and in fact reset the sequence number
 
-          fprintf(context->log, "  NAK: (%d)Security block not accepted\n", nak_code);
+          fprintf(context->log, "  NAK: (%d)Encryption required.\n", nak_code);
           osdp_reset_secure_channel(context);
           context->next_sequence = 0; 
           break;

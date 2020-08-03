@@ -19,7 +19,7 @@ echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>COMSET</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/osdp-conformance-CP.html\"><HEAD>"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/Test-ACU.html\"><HEAD>"
 echo "<BODY>"
 echo "<BR>"
 echo "<PRE>"
