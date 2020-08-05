@@ -31,7 +31,7 @@
 #define OO_NAK_ENC_REQ              (6)
 #define OO_NAK_BIO_TYPE_UNSUPPORTED (7)
 #define OO_NAK_BIO_FMT_UNSUPPORTED  (8)
-#define OO_NAK_CMD_UNABLE           (9)
+#define OO_NAK_CMD_UNABLE           (0x09)
 
 // NAK error codes from May 2019 proposed NAK code extension
 
@@ -41,9 +41,9 @@
 #define OO_NAK_XMIT_FAILED          (0x11)
 #define OO_NAK_INTERNAL_ERROR       (0x12)
 
-// 0x0C-0x7F Reserved for future use
+// 0x13-0x7F Reserved for future use
 
-//0x80-0xFE Reserved for use outside the OSPD standard
+// 0x80-0xFE Reserved for manufacturer-specific use
 
 #define OO_NAK_PRIVATE              (0xff)
 
