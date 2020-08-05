@@ -2,7 +2,6 @@
   iec-nak.h - NAK response code definitions for IEC 60839-11-5 (OSDP)
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   OSDP Working Group community.
