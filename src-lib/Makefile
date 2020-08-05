@@ -52,7 +52,7 @@ libosdp.a:	\
 	  oo-logmsg.o oo-prims.o oo-secure.o \
 	  oo-secure-actions.o oo-settings.o oo-ui.o
 
-oo-actions.o:	oo-actions.c ../include/open-osdp.h
+oo-actions.o:	oo-actions.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-actions.c
 
 oo-api.o:	oo-api.c ../include/osdp-tls.h ../include/open-osdp.h
@@ -67,13 +67,13 @@ oo-cmdbreech.o:	oo-cmdbreech.c ../include/open-osdp.h
 oo-initialize.o:	oo-initialize.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-initialize.c
 
-oo-process.o:	oo-process.c
+oo-process.o:	oo-process.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-process.c
 
-oo-util.o:	oo-util.c ../include/open-osdp.h
+oo-util.o:	oo-util.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-util.c
 
-oo-util2.o:	oo-util2.c ../include/open-osdp.h
+oo-util2.o:	oo-util2.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-util2.c
 
 oo-util3.o:	oo-util3.c ../include/open-osdp.h
@@ -101,7 +101,7 @@ oo-crc.o:	oo-crc.c
 oo-files.o:	oo-files.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-files.c
 
-oo-logmsg.o:	oo-logmsg.c ../include/open-osdp.h
+oo-logmsg.o:	oo-logmsg.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-logmsg.c
 
 oo-prims.o:	oo-prims.c /opt/osdp-conformance/include/open-osdp.h
@@ -113,10 +113,10 @@ oo-secure.o:	oo-secure.c ../include/open-osdp.h
 oo-settings.o:	oo-settings.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-settings.c
 
-oo-secure-actions.o:	oo-secure-actions.c ../include/open-osdp.h
+oo-secure-actions.o:	oo-secure-actions.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-secure-actions.c
 
-oo-ui.o:	oo-ui.c ../include/open-osdp.h ../include/iec-xwrite.h
+oo-ui.o:	oo-ui.c ../include/open-osdp.h ../include/iec-xwrite.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-ui.c
 
 /opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
