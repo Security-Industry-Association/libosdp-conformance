@@ -141,16 +141,8 @@
 #define OSDP_MFGREP   (0x90)
 #define OSDP_XRD      (0xB1)
 
-// NAK error codes
-#define OO_NAK_CHECK_CRC           (1)
-#define OO_NAK_COMMAND_LENGTH      (2)
-#define OO_NAK_UNK_CMD             (3)
-#define OO_NAK_SEQUENCE            (4)
-#define OO_NAK_UNSUP_SECBLK        (5)
-#define OO_NAK_ENC_REQ              (6)
-#define OO_NAK_BIO_TYPE_UNSUPPORTED (7)
-#define OO_NAK_BIO_FMT_UNSUPPORTED  (8)
-#define OO_NAK_CMD_UNABLE           (9)
+// NAK error codes moved to iec-nak.h
+#include <iec-nak.h>
 
 #define OSDP_MENU_TOP     (0x0000)
 #define OSDP_MENU_SETUP   (0x0800)
