@@ -337,7 +337,7 @@ int
     // L=0 Off=whole-size Tot=whole-size
     if (ctx->xferctx.state EQUALS OSDP_XFER_STATE_FINISHING)
     {
-      transfer_send_size = 0;
+      transfer_send_size = 1 + sizeof(*ft); // just sending a header
       memset(ft, 0, sizeof(*ft));
       osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
       ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;

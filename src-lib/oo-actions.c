@@ -252,17 +252,15 @@ int
 fprintf(stderr, "t=%d o=%d\n",
   ctx->xferctx.total_length, ctx->xferctx.current_offset);
 
-    if (ctx->xferctx.total_length > ctx->xferctx.current_offset)
+    if ((ctx->xferctx.total_length > 0) && (ctx->xferctx.total_length > ctx->xferctx.current_offset))
     {
       status = osdp_send_filetransfer(ctx);
-    }
-    else
+    };
+
+    if ((ctx->xferctx.total_length EQUALS 0) || (ctx->xferctx.total_length EQUALS ctx->xferctx.current_offset))
     {
-      // if we're done and it's not "finishing" then wrap up
-      if (ctx->xferctx.state != OSDP_XFER_STATE_FINISHING)
-        osdp_wrapup_filetransfer(ctx);
-      else
-        status = osdp_send_filetransfer(ctx); // will send benign msg
+      osdp_wrapup_filetransfer(ctx);
+      status = osdp_send_filetransfer(ctx); // will send benign msg
     };
   };
   };

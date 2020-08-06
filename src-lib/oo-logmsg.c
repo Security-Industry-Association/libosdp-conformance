@@ -3,7 +3,23 @@
   oo-logmsg.c - prints log messages
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
+
+  Support provided by the Security Industry Association
+  OSDP Working Group community.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
+
 #define OSDP_CMD_MSC_GETPIV  (0x10)
 #define OSDP_CMD_MSC_KP_ACT  (0x13)
 #define OSDP_CMD_MSC_CR_AUTH (0x14)
@@ -307,7 +323,7 @@ int
     osdp_array_to_doubleByte(ftstat->FtDelay, &newdelay);
     osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &newmax);
     sprintf(tmpstr,
-"File Transfer STATUS: Detail %02x%02x Action %02x Delay %02x-%02x(%d.) Update-max %02x-%02x(%d.)\n",
+"File Transfer STATUS: Detail %02x%02x Action %02x Delay %02x-%02x(%d. ms) Update-max %02x-%02x(%d.)\n",
       ftstat->FtStatusDetail [0], ftstat->FtStatusDetail [1],
       ftstat->FtAction,
       ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,

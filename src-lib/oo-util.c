@@ -869,6 +869,7 @@ int
   int count;
   int current_length;
   int current_security;
+  char details [1024];
   int i;
   char logmsg [1024];
   char nak_code;
@@ -1641,7 +1642,14 @@ printf ("MMSG DONE\n");
       // consistency check (test 4-3-2)
       // OUI must not be zero
 
-      osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
+      sprintf(details,
+"\"pd-oui\":\"%02x%02x%02x\",\"pd-model\":\"%d\",\"pd-version\":\"%d\",\"pd-serial\":\"%02x%02x%02x%02x\",\"pd-firmware\":\"%d-%d-%d\",",
+        msg->data_payload [0], msg->data_payload [1], msg->data_payload [2],
+        msg->data_payload [3], msg->data_payload [4],
+        msg->data_payload [5], msg->data_payload [6], msg->data_payload [7], msg->data_payload [8],
+        msg->data_payload [9], msg->data_payload [10], msg->data_payload [11]);
+
+      osdp_test_set_status_ex(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED, details);
       if ((msg->data_payload [0] EQUALS 0) &&
         (msg->data_payload [1] EQUALS 0) &&
         (msg->data_payload [2] EQUALS 0))

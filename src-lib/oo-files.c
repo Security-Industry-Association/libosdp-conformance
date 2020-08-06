@@ -115,9 +115,22 @@ int
   switch (filetransfer_status)
   {
   case OSDP_FTSTAT_OK:
-    // continue with transfer
-    status = ST_OK;
-    ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
+    // if there's something there treat it like a transfer in progress
+
+    if (ctx->xferctx.total_length > 0)
+    {
+      // continue with transfer
+      status = ST_OK;
+      ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
+    };
+
+    // if there's nothing there treat it like we're finishing
+
+    if (ctx->xferctx.total_length EQUALS 0)
+    {
+      status = ST_OSDP_FILEXFER_FINISHING;
+      ctx->xferctx.state = OSDP_XFER_STATE_FINISHING;
+    };
     break;
 
   case OSDP_FTSTAT_FINISHING:

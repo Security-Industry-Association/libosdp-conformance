@@ -865,8 +865,6 @@ int
 
 { /* osdp_test_set_status */
 
-// status = osdp_test_set_status_ex(test, test_status, "");
-
   int done;
   int idx;
   FILE *rf;
@@ -981,7 +979,7 @@ int
           test_time, test_control [idx].description);
         if (strlen(aux) > 0)
           fprintf(rf, "%s", aux);
-        fprintf(rf, "\"#\":\"#\"#}\n");
+        fprintf(rf, "\"_\":\"_\"}\n");
         fclose(rf);
       }
       else
