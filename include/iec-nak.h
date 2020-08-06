@@ -43,7 +43,7 @@
 
 // 0x13-0x7F Reserved for future use
 
-// 0x80-0xFE Reserved for manufacturer-specific use
+// 0x80-0xFE Reserved for private use
 
-#define OO_NAK_PRIVATE              (0xff)
+#define OO_NAK_PRIVATE              (0xFF)
 
