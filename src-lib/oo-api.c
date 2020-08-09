@@ -1,8 +1,7 @@
 /*
   osdp-api - bits to implement HUP-based "API"
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
-  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2017-2020 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -117,7 +116,7 @@ int
 
 
   status = ST_OK;
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
     fprintf(ctx->log, "process_command_from_queue: top\n");
   if (!(osdp_awaiting_response(ctx)) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
   {
