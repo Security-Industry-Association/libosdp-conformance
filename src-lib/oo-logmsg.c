@@ -50,6 +50,12 @@ typedef struct __attribute__((packed)) osdp_msc_crauth_response
   unsigned char data;
 } OSDP_MSC_CR_AUTH_RESPONSE;
 
+typedef struct __attribute__((packed)) osdp_getpiv
+{
+  char piv_object [3];
+  char piv_element;
+  char piv_offset [2];
+} OSDP_GETPIV;
 typedef struct __attribute__((packed)) osdp_msc_getpiv
 {
   char vendor_code [3];
@@ -66,6 +72,13 @@ typedef struct __attribute__((packed)) osdp_msc_kp_act
   unsigned short int kp_act_time;
 } OSDP_MSC_KP_ACT;
   
+typedef struct __attribute__((packed)) osdp_piv_data
+{
+  unsigned short int mpd_size_total;
+  unsigned short int mpd_offset;
+  unsigned short int mpd_fragment_size;
+  unsigned char data;
+} OSDP_PIV_DATA;
 typedef struct __attribute__((packed)) osdp_msc_piv_data
 {
   char vendor_code [3];
@@ -84,26 +97,6 @@ typedef struct __attribute__((packed)) osdp_msc_status
   char info [2];
 } OSDP_MSC_STATUS;
 
-/*
-  oo-logmsg - open osdp log message routines
-
-  (C)Copyright 2014-2020 Smithee,Spelvin,Agnew & Plinge, Inc.
-
-  Support provided by the Security Industry Association
-  http://www.securityindustry.org
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
- 
-    http://www.apache.org/licenses/LICENSE-2.0
- 
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
-*/
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
@@ -131,13 +124,13 @@ int
     
 { /* oosdp_make_message */
 
-  OSDP_SC_CCRYPT *ccrypt_payload;
-  int count;
+  OSDP_SC_CCRYPT *ccrypt_payload; int count;
   OSDP_MSC_CR_AUTH *cr_auth;
   OSDP_MSC_CR_AUTH_RESPONSE *cr_auth_response;
   int d;
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
+  OSDP_MULTI_HDR_IEC *genauth_msg;
   OSDP_MSC_GETPIV *get_piv;
   OSDP_HDR *hdr;
   char hstr [1024];
@@ -150,6 +143,8 @@ int
   OSDP_HDR *oh;
   unsigned char osdp_command;
   OSDP_HDR *osdp_wire_message;
+  unsigned char *payload;
+  int payload_size;
   OSDP_MSC_PIV_DATA *piv_data;
   int scb_present;
   char *sec_block;
@@ -275,6 +270,27 @@ int
       sprintf(tlogmsg, "COMSET Will use New Address %02x New Speed %d.\n",
         *(0+msg->data_payload), speed);
     };
+    break;
+
+  case OOSDP_MSG_CRAUTH:
+#if 0
+  unsigned char offset_lsb;
+  unsigned char offset_msb;
+  unsigned char data_len_lsb;
+  unsigned char data_len_msb;
+#endif
+    msg = (OSDP_MSG *) aux;
+    genauth_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
+    payload = &(genauth_msg->algo_payload);
+    payload_size = (genauth_msg->total_msb*256)+genauth_msg->total_lsb;
+    sprintf(tlogmsg, "multi-total %4d multi-offset %4d multi-frag %4d\n",
+      (genauth_msg->total_msb*256)+genauth_msg->total_lsb,
+      0, 0);
+    sprintf(tmpstr, "CRAUTH Algo %02x Key %02x Challenge(l=%4d) %02x%02x%02x...\n",
+      *(payload), *(payload+1), 
+      payload_size - 2,
+      *(payload+2), *(payload+3), *(payload+4));
+    strcat(tlogmsg, tmpstr);
     break;
 
   case OOSDP_MSG_FILETRANSFER:

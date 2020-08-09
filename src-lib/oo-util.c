@@ -1059,12 +1059,16 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
       };
       break;
 
+    case OSDP_CHLNG:
+      status = action_osdp_CHLNG(context, msg);
+      break;
+
     case OSDP_COMSET:
       status = action_osdp_COMSET(context, msg);
       break;
 
-    case OSDP_CHLNG:
-      status = action_osdp_CHLNG(context, msg);
+    case OSDP_CRAUTH:
+      status = action_osdp_CRAUTH(context, msg);
       break;
 
     case OSDP_FILETRANSFER:

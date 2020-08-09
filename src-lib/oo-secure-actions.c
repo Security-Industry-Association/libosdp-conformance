@@ -268,16 +268,16 @@ printf ("fixme: RND.B\n");
 
 #ifdef OSDP_EXTENDED_PACKET_MODE
 int
-  action_osdp_CRAUTH
+  zzzaction_osdp_CRAUTH
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
 
-{ /* action_osdp_COMSET */
+{ /* action_osdp_CRAUTH */
 
 fprintf(ctx->log, "DEBUG: osdp_CRAUTH response stub.\n");
   return(-1);
 
-} /* action_osdp_COMSET */
+} /* action_osdp_CRAUTH */
 #endif // OSDP_EXTENDED_PACKET_MODE
 
 

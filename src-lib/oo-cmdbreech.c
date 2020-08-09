@@ -526,11 +526,11 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
       status = ST_OSDP_BAD_GENAUTH_2;
       if (json_is_string (value))
       {
-        if (0 EQUALS strcmp("9E", json_string_value (value)))
-        {
-          cmd->details [1] = 0x9E;
-          status = ST_OK;
-        };
+        int i;
+
+        sscanf(json_string_value(value), "%x", &i);
+        cmd->details [1] = (unsigned char)i;
+        status = ST_OK;
       };
       // details [2-n] is genauth payload
       // cmd->details_length = 2 + payload length
@@ -546,6 +546,7 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
         cmd->details_length = 2+lth; //algoref, keyref, payload
       };
 
+fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;
     };
