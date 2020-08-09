@@ -239,9 +239,9 @@ exit(-1);
 int challenge_size;
         unsigned char command;
 int total_size;
-challenge_size = 100;
 
 fprintf(stderr, "DEBUG: osdp_CRAUTH (Challenge)\n");
+        challenge_size = details_length;
         strcpy (context->test_in_progress, "x-challenge");
         memset (&challenge_command, 0, sizeof (challenge_command));
 fprintf(stderr, "CHALLENGE STUB\n");
