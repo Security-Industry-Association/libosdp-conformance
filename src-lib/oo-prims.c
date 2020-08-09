@@ -220,6 +220,7 @@ char
     case OSDP_ACK:    strcpy(cmd_rep_s, "osdp_ACK"); break;
     case OSDP_BUSY:   strcpy(cmd_rep_s, "osdp_BUSY"); break;
     case OSDP_CCRYPT: strcpy(cmd_rep_s, "osdp_CCRYPT"); break;
+    case OSDP_CRAUTHR: strcpy(cmd_rep_s, "osdp_CRAUTHR"); break;
     case OSDP_COM:    strcpy(cmd_rep_s, "osdp_COM"); break;
     case OSDP_FTSTAT: strcpy(cmd_rep_s, "osdp_FTSTAT"); break;
     case OSDP_ISTATR: strcpy(cmd_rep_s, "osdp_ISTATR"); break;

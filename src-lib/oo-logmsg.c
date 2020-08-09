@@ -131,6 +131,7 @@ int
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
   OSDP_MULTI_HDR_IEC *genauth_msg;
+  OSDP_MULTI_HDR_IEC *genauthr_msg;
   OSDP_MSC_GETPIV *get_piv;
   OSDP_HDR *hdr;
   char hstr [1024];
@@ -283,7 +284,7 @@ int
     genauth_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
     payload = &(genauth_msg->algo_payload);
     payload_size = (genauth_msg->total_msb*256)+genauth_msg->total_lsb;
-    sprintf(tlogmsg, "multi-total %4d multi-offset %4d multi-frag %4d\n",
+    sprintf(tlogmsg, "CRAUTH multi-total %4d multi-offset %4d multi-frag %4d\n",
       (genauth_msg->total_msb*256)+genauth_msg->total_lsb,
       0, 0);
     sprintf(tmpstr, "CRAUTH Algo %02x Key %02x Challenge(l=%4d) %02x%02x%02x...\n",
@@ -291,6 +292,16 @@ int
       payload_size - 2,
       *(payload+2), *(payload+3), *(payload+4));
     strcat(tlogmsg, tmpstr);
+    break;
+
+  case OOSDP_MSG_CRAUTHR:
+    msg = (OSDP_MSG *) aux;
+    genauthr_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
+    payload = &(genauthr_msg->algo_payload);
+    payload_size = (genauthr_msg->total_msb*256)+genauthr_msg->total_lsb;
+    sprintf(tlogmsg, "CRAUTH multi-total %4d multi-offset %4d multi-frag %4d\n",
+      (genauthr_msg->total_msb*256)+genauthr_msg->total_lsb,
+      0, 0);
     break;
 
   case OOSDP_MSG_FILETRANSFER:

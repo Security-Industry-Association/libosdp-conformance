@@ -2,7 +2,6 @@
   open-osdp.h - definitions for libosdp-conformance
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -272,26 +271,16 @@ typedef struct osdp_pd_capability
 // for secure channel
 typedef struct osdp_secure_message
 {
-  unsigned char
-    som;
-  unsigned char
-    addr;
-  unsigned char
-    len_lsb;
-  unsigned char
-    len_msb;
-  unsigned char
-    ctrl;
-  unsigned char
-    sec_blk_len;
-  unsigned char
-    sec_blk_type;
-  unsigned char
-    sec_blk_data;
-  unsigned char
-    cmd_reply;
-  unsigned char
-    data_start;
+  unsigned char som;
+  unsigned char addr;
+  unsigned char len_lsb;
+  unsigned char len_msb;
+  unsigned char ctrl;
+  unsigned char sec_blk_len;
+  unsigned char sec_blk_type;
+  unsigned char sec_blk_data;
+  unsigned char cmd_reply;
+  unsigned char data_start;
 } OSDP_SECURE_MESSAGE;
 
 typedef struct osdp_sc_chlng
