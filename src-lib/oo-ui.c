@@ -262,6 +262,8 @@ dump_buffer_log(context, "CRAUTH: ", challenge_command, total_size);
         current_length = 0;
         status = send_message_ex(context, command, p_card.addr,
           &current_length, total_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);
+fprintf(context->log, "DEBUG: sleeping after CRAUTH\n");
+fflush(context->log); sleep(5);
       };
       break;
 
