@@ -138,6 +138,9 @@
 #define OSDP_RMAC_I   (0x78)
 #define OSDP_BUSY     (0x79) // yes it's a reply
 #define OSDP_FTSTAT   (0x7A)
+#define OSDP_PIVDATAR (0x80)
+#define OSDP_GENAUTHR (0x81)
+#define OSDP_CRAUTHR  (0x82)
 #define OSDP_MFGREP   (0x90)
 #define OSDP_XRD      (0xB1)
 
@@ -634,6 +637,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_COM          (132)
 #define OOSDP_MSG_COMSET       (133)
 #define OOSDP_MSG_CRAUTH       (134)
+#define OOSDP_MSG_CRAUTHR      (135)
 #define OOSDP_MSG_FILETRANSFER (7)
 #define OOSDP_MSG_FTSTAT       (8)
 #define OOSDP_MSG_ISTATR       (17)
@@ -936,6 +940,7 @@ int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CRAUTH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_CRAUTHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

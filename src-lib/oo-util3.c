@@ -2,7 +2,6 @@
   oo_util3 -more (3)  open osdp utility routines
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -484,13 +483,21 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_rep_ack, OCONFORM_EXERCISED);
 
+      // if we just got an ack for an ACURXSIZE mark that too.
+      if (ctx->last_command_sent EQUALS OSDP_ACURXSIZE)
+        osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
+
+      // if we just got an ack for an KEEPACTIVE mark that too.
+      if (ctx->last_command_sent EQUALS OSDP_KEEPACTIVE)
+        osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
+
       // if we just got an ack for a KEYSET mark that too.
       if (ctx->last_command_sent EQUALS OSDP_KEYSET)
         osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
 
       // if we just got an ack for an OSTAT mark that too.
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
-        osdp_conformance.cmd_ostat_ack.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_resp_ostat_ack, OCONFORM_EXERCISED);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -508,6 +515,10 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
 
     case OSDP_COM:
       OSDP_CHECK_CMDREP ("osdp_COM", cmd_comset, 1);
+      break;
+
+    case OSDP_CRAUTHR:
+      OSDP_CHECK_CMDREP("osdp_CRAUTHR", resp_crauthr, 1);
       break;
 
     case OSDP_FTSTAT:
@@ -741,6 +752,11 @@ int
   {
     switch (msg->msg_cmd)
     {
+    case OSDP_CRAUTHR:
+      status = oosdp_make_message(OOSDP_MSG_CRAUTHR, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_CCRYPT:
       status = oosdp_make_message (OOSDP_MSG_CCRYPT, tlogmsg, msg);
       if (status == ST_OK)

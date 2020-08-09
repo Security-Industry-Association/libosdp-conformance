@@ -2,7 +2,6 @@
   oosdp_secure_actions - open osdp secure channel action routines
 
   (C)Copyright 2017-2019 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -268,7 +267,7 @@ printf ("fixme: RND.B\n");
 
 #ifdef OSDP_EXTENDED_PACKET_MODE
 int
-  zzzaction_osdp_CRAUTH
+  action_osdp_CRAUTH
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
 
@@ -278,6 +277,19 @@ fprintf(ctx->log, "DEBUG: osdp_CRAUTH response stub.\n");
   return(-1);
 
 } /* action_osdp_CRAUTH */
+
+
+int
+  action_osdp_CRAUTHR
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_CRAUTH */
+
+fprintf(ctx->log, "DEBUG: osdp_CRAUTHR response stub.\n");
+  return(-1);
+
+} /* action_osdp_CRAUTHR */
 #endif // OSDP_EXTENDED_PACKET_MODE
 
 

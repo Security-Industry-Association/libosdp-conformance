@@ -56,8 +56,12 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_chlng          "060-16-01"
 #define OOC_SYMBOL_cmd_scrypt         "060-17-01"
 #define OOC_SYMBOL_cmd_mfg            "060-18-01"
+#define OOC_SYMBOL_cmd_acurxsize      "060-19-01"
+#define OOC_SYMBOL_cmd_keepactive     "060-20-01"
+#define OOC_SYMBOL_cmd_crauth         "060-24-01"
 #define OOC_SYMBOL_cmd_filetransfer   "060-25-01"
 #define OOC_SYMBOL_rep_ack            "070-01-01"
+#define OOC_SYMBOL_resp_ostat_ack     "070-01-02"
 #define OOC_SYMBOL_rep_nak            "070-02-01"
 #define OOC_SYMBOL_rep_device_ident   "070-03-01"
 #define OOC_SYMBOL_rep_pdid_check     "070-03-02"
@@ -70,6 +74,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_ccrypt        "070-15-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-16-01"
 #define OOC_SYMBOL_resp_busy          "070-18-01"
+#define OOC_SYMBOL_resp_crauthr       "070-21-01"
 #define OOC_SYMBOL_resp_ftstat        "070-24-01"
 
 typedef struct osdp_interop_assessment
@@ -149,6 +154,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_chlng;
   OSDP_CONFORM cmd_scrypt;
   //OSDP_CONFORM cmd_cont;                // 3-19-1
+  OSDP_CONFORM cmd_acurxsize;
   OSDP_CONFORM cmd_mfg;                 // 3-20-1
   OSDP_CONFORM cmd_stop_multi;          // 3-21-1
   OSDP_CONFORM cmd_max_rec;             // 3-22-1 //ACURXSIZE

@@ -1339,6 +1339,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       status = action_osdp_CCRYPT (context, msg);
       break;
 
+    case OSDP_CRAUTHR:
+      status = action_osdp_CRAUTHR(context, msg);
+      break;
+
     case OSDP_FTSTAT:
       status = action_osdp_FTSTAT(context, msg);
       break;

@@ -2,7 +2,6 @@
   oosdp_conformance - conformance reporting routines
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -250,6 +249,18 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.cmd_filetransfer.test_status),
       0, 0, 0, 0, 0,
                         "Command: osdp_FILETRANSFER"},
+    {         OOC_SYMBOL_cmd_crauth,
+      &(osdp_conformance.cmd_crauth.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: osdp_CRAUTH"},
+    {         OOC_SYMBOL_cmd_acurxsize,
+      &(osdp_conformance.cmd_acurxsize.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: osdp_ACURXSIZE"},
+    {         OOC_SYMBOL_cmd_keepactive,
+      &(osdp_conformance.cmd_keepactive.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: osdp_KEEPACTIVE"},
 
     {         OOC_SYMBOL_rep_ack,
       &(osdp_conformance.rep_ack.test_status),
