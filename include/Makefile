@@ -1,6 +1,6 @@
 # Makefile for libosdp-conformance - include directory
 
-FILES=open-osdp.h oo-api.h
+FILES=open-osdp.h oo-api.h iec-nak.h
 
 all:
 	echo using ${FILES}
