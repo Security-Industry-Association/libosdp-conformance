@@ -366,6 +366,7 @@ int
 
 {
   fprintf(ctx->log, "MFGERRR received\n");
+  osdp_test_set_status(OOC_SYMBOL_resp_mfgerrr, OCONFORM_EXERCISED);
   return(ST_OK);
 }
 

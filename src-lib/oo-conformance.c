@@ -58,14 +58,35 @@ typedef struct osdp_conformance_test
 OSDP_CONFORMANCE_TEST
   test_control [] =
   {
+    // alphabetical with symbol
+
+    {         OOC_SYMBOL_cmd_poll,
+      &(osdp_conformance.cmd_poll.test_status),
+      1, 0, 0, 0, 0,
+                        "Command: POLL"},
     {         OOC_SYMBOL_physical_interface,
       &(osdp_conformance.physical_interface.test_status),
       1, 0, 0, 0, 0,
                         "physical interface"},
+    {         OOC_SYMBOL_rep_ack,
+      &(osdp_conformance.rep_ack.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: ACK" },
+    {         OOC_SYMBOL_resp_lstatr,
+      &(osdp_conformance.resp_lstatr.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: LSTATR"},
+    {         OOC_SYMBOL_resp_mfgerrr,
+      &(osdp_conformance.resp_mfgerrr.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: MFGERRR"},
     {         OOC_SYMBOL_signalling,
       &(osdp_conformance.signalling.test_status),
       1, 0, 0, 0, 0,
                         "signalling"},
+
+    // old tag names
+
     { "2-2-2", &(osdp_conformance.alt_speed_2.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-2-3", &(osdp_conformance.alt_speed_3.test_status),
@@ -153,10 +174,6 @@ OSDP_CONFORMANCE_TEST
     { "2-17-1", &(osdp_conformance.multipart.test_status),
       0, 0, 0, 0, 0, "---"},
 
-    {         OOC_SYMBOL_cmd_poll,
-      &(osdp_conformance.cmd_poll.test_status),
-      1, 0, 0, 0, 0,
-                        "Command: POLL"},
     { "3-1-2", &(osdp_conformance.cmd_poll_raw.test_status),
       1, 0, 0, 0, 0, "---" },
     {         OOC_SYMBOL_cmd_lstat,
@@ -262,10 +279,6 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0,
                         "Command: osdp_KEEPACTIVE"},
 
-    {         OOC_SYMBOL_rep_ack,
-      &(osdp_conformance.rep_ack.test_status),
-      1, 1, 1, 1, 0,
-                        "Response: ACK" },
     {         OOC_SYMBOL_rep_nak,
       &(osdp_conformance.rep_nak.test_status),
       1, 1, 1, 1, 0,
@@ -285,10 +298,6 @@ OSDP_CONFORMANCE_TEST
     { "4-4-2", &(osdp_conformance.rep_capas_consistent.test_status),
       1, 1, 1, 1, 0,
                         "Response: PDCAP (check)" },
-    {         OOC_SYMBOL_resp_lstatr,
-      &(osdp_conformance.resp_lstatr.test_status),
-      1, 1, 1, 1, 0,
-                        "Response: LSTATR"},
     {         OOC_SYMBOL_resp_lstatr_tamper,
       &(osdp_conformance.resp_lstatr_tamper.test_status),
       1, 1, 1, 1, 0,
