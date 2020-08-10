@@ -341,6 +341,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_ftstat.test_status),
       0, 0, 0, 0, 0,
                         "Response: osdp_FTSTAT"},
+    {         OOC_SYMBOL_resp_crauthr,
+      &(osdp_conformance.resp_crauthr.test_status),
+      0, 0, 0, 0, 0,
+                        "Response: osdp_CRAUTHR"},
     { NULL, NULL, 0, 0, 0, 0, 0, "---" }
   };
 

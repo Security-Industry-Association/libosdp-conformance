@@ -914,6 +914,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_EXCEEDS_SC_MAX        ( 83)
 #define ST_SCS_FROM_PD_UNEXPECTED     ( 84)
 #define ST_OSDP_EXCLUSIVITY_FAILED    ( 85)
+#define ST_OSDP_CRAUTHR_HEADER        ( 86)
 
 int
   m_version_minor;
