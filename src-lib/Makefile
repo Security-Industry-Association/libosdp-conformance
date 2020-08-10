@@ -24,7 +24,7 @@ OUTLIB=libosdp.a
 CC=gcc
 #CC=clang
 CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -I/opt/osdp-conformance/include \
-  -Wall -Werror -D OSDP_EXTENDED_PACKET_MODE
+  -Wall -Werror
 
 all:	${OUTLIB}
 
@@ -42,14 +42,14 @@ libosdp.a:	\
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-crc.o oo-conformance.o \
 	  oo-files.o oo-logmsg.o oo-prims.o \
-	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o
+	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
 	ar r libosdp.a \
 	  oo-actions.o oo-api.o oo-bio.o \
 	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oo-crc.o oo-files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
-	  oo-secure-actions.o oo-settings.o oo-ui.o
+	  oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
 
 oo-actions.o:	oo-actions.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-actions.c
@@ -117,6 +117,9 @@ oo-secure-actions.o:	oo-secure-actions.c ../include/open-osdp.h ../include/iec-n
 
 oo-ui.o:	oo-ui.c ../include/open-osdp.h ../include/iec-xwrite.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-ui.c
+
+oo-73.o:	oo-73.c
+	${CC} ${CFLAGS} oo-73.c
 
 /opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
 	mkdir -p /opt/osdp-conformance/include

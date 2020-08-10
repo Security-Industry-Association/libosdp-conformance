@@ -265,34 +265,6 @@ printf ("fixme: RND.B\n");
 } /* action_osdp_CHLNG */
 
 
-#ifdef OSDP_EXTENDED_PACKET_MODE
-int
-  action_osdp_CRAUTH
-    (OSDP_CONTEXT *ctx,
-    OSDP_MSG *msg)
-
-{ /* action_osdp_CRAUTH */
-
-fprintf(ctx->log, "DEBUG: osdp_CRAUTH response stub.\n");
-  return(-1);
-
-} /* action_osdp_CRAUTH */
-
-
-int
-  action_osdp_CRAUTHR
-    (OSDP_CONTEXT *ctx,
-    OSDP_MSG *msg)
-
-{ /* action_osdp_CRAUTH */
-
-fprintf(ctx->log, "DEBUG: osdp_CRAUTHR response stub.\n");
-  return(-1);
-
-} /* action_osdp_CRAUTHR */
-#endif // OSDP_EXTENDED_PACKET_MODE
-
-
 int
   action_osdp_KEYSET
     (OSDP_CONTEXT *ctx,
