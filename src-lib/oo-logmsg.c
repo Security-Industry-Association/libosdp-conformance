@@ -591,7 +591,10 @@ int
     break;
 
   case OOSDP_MSG_MFGERRR:
-    sprintf(tlogmsg, "MFGERRR returned.\n");
+    msg = (OSDP_MSG *) aux;
+    oh = (OSDP_HDR *)(msg->ptr);
+    count = oh->len_lsb + (oh->len_msb << 8);
+    dump_buffer_log(&context, "  MFGERRR Details: ", (unsigned char *)(msg->data_payload), count);
     break;
 
   case OOSDP_MSG_MFGREP:
