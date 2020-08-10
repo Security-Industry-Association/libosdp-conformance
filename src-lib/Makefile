@@ -37,7 +37,7 @@ clean:
 
 libosdp.a:	\
 	oo-actions.o oo-api.o oo-bio.o \
-	  oo-cmdbreech.o oo-initialize.o oo-process.o \
+	  oo-cmdbreech.o oo-io-actions.o oo-initialize.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-crc.o oo-conformance.o \
@@ -45,7 +45,7 @@ libosdp.a:	\
 	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
 	ar r libosdp.a \
 	  oo-actions.o oo-api.o oo-bio.o \
-	  oo-cmdbreech.o oo-initialize.o oo-process.o oo-util.o oo-util2.o \
+	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oo-crc.o oo-files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
@@ -65,6 +65,9 @@ oo-cmdbreech.o:	oo-cmdbreech.c ../include/open-osdp.h
 
 oo-initialize.o:	oo-initialize.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-initialize.c
+
+oo-io-actions.o:	oo-io-actions.c ../include/osdp-tls.h ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-io-actions.c
 
 oo-process.o:	oo-process.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-process.c

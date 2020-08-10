@@ -590,6 +590,10 @@ int
     };
     break;
 
+  case OOSDP_MSG_MFGERRR:
+    sprintf(tlogmsg, "MFGERRR returned.\n");
+    break;
+
   case OOSDP_MSG_MFGREP:
     {
       OSDP_MFG_HEADER *mrep;

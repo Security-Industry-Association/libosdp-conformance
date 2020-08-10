@@ -140,6 +140,7 @@
 #define OSDP_PIVDATAR (0x80)
 #define OSDP_GENAUTHR (0x81)
 #define OSDP_CRAUTHR  (0x82)
+#define OSDP_MFGERRR  (0x84)
 #define OSDP_MFGREP   (0x90)
 #define OSDP_XRD      (0xB1)
 
@@ -635,8 +636,9 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_KEYPAD       (2)
 #define OOSDP_MSG_LED          (9)
 #define OOSDP_MSG_LSTATR       (13)
-#define OOSDP_MSG_MFG          (15)
-#define OOSDP_MSG_MFGREP       (14)
+#define OOSDP_MSG_MFG          (1301)
+#define OOSDP_MSG_MFGERRR      (1302)
+#define OOSDP_MSG_MFGREP       (1303)
 #define OOSDP_MSG_NAK          (12)
 #define OOSDP_MSG_OUT          (16)
 #define OOSDP_MSG_PD_CAPAS     (4)
@@ -936,6 +938,7 @@ int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEYSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_MFGERRR (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OSTAT(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_PDCAP (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

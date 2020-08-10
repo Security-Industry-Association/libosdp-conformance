@@ -226,6 +226,7 @@ char
     case OSDP_ISTATR: strcpy(cmd_rep_s, "osdp_ISTATR"); break;
     case OSDP_KEYPAD: strcpy(cmd_rep_s, "osdp_KEYPAD"); break;
     case OSDP_LSTATR: strcpy(cmd_rep_s, "osdp_LSTATR"); break;
+    case OSDP_MFGERRR: strcpy(cmd_rep_s, "osdp_MFGERRR"); break;
     case OSDP_MFGREP: strcpy(cmd_rep_s, "osdp_MFGREP"); break;
     case OSDP_NAK:    strcpy(cmd_rep_s, "osdp_NAK"); break;
     case OSDP_OSTATR: strcpy(cmd_rep_s, "osdp_OSTATR"); break;

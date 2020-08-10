@@ -575,6 +575,14 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_MFGERRR:
+      status = ST_OSDP_CMDREP_FOUND;
+      m->data_payload = m->cmd_payload + 1;
+      if (ctx->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_MFGERRR");
+      osdp_test_set_status(OOC_SYMBOL_resp_mfgerrr, OCONFORM_EXERCISED);
+      break;
+
     case OSDP_MFGREP:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
@@ -769,6 +777,11 @@ int
       break;
     case OSDP_ISTATR:
       status = oosdp_make_message (OOSDP_MSG_ISTATR, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_MFGERRR:
+      status = oosdp_make_message (OOSDP_MSG_MFGERRR, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;

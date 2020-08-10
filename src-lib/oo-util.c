@@ -465,6 +465,14 @@ fprintf(stderr, "lstat 1000\n");
         strcpy (tlogmsg2, "osdp_MFG");
       break;
 
+    case OSDP_MFGERRR:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_MFGERRR");
+      break;
+
     case OSDP_MFGREP:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
@@ -1510,6 +1518,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);
       if (*(msg->data_payload + 1) > 0)
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_power, OCONFORM_EXERCISED);
+      break;
+
+    case OSDP_MFGERRR:
+      status = action_osdp_MFGERRR(context, msg);
       break;
 
     case OSDP_MFGREP:

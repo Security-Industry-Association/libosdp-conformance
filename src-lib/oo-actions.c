@@ -360,121 +360,15 @@ fprintf(ctx->log, "DEBUG: 5 NAK: %d.\n", osdp_nak_response_data [0]);
 
 
 int
-  action_osdp_OUT
+  action_osdp_MFGERRR
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
 
-{ /* action_osdp_OUT */
+{
+  fprintf(ctx->log, "MFGERRR received\n");
+  return(ST_OK);
+}
 
-  unsigned char buffer [1024];
-  int current_length;
-  int done;
-  OSDP_OUT_MSG *outmsg;
-  int status;
-  int to_send;
-
-
-  status = ST_OK;
-  osdp_conformance.cmd_out.test_status = OCONFORM_EXERCISED;
-fprintf (stderr, "data_length in OSDP_OUT: %d\n",
-  msg->data_length);
-#if 0
-// if too many for me (my MAX) then error and NAK?
-// set 'timer' to msb*256+lsb
-#define OSDP_OUT_OFF_PERM_TIMEOUT (3)
-#define OSDP_OUT_ON_PERM_TIMEOUT  (4)
-#define OSDP_OUT_ON_TEMP_TIMEOUT  (5)
-#define OSDP_OUT_OFF_TEMP_TIMEOUT (6)
-#endif
-  done = 0;
-  if (status != ST_OK)
-    done = 1;
-  while (!done)
-  {
-    outmsg = (OSDP_OUT_MSG *)(msg->data_payload);
-    sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x",
-      outmsg->output_number, outmsg->control_code,
-      outmsg->timer_lsb, outmsg->timer_msb);
-    fprintf (ctx->log, "%s\n", tlogmsg);
-    if ((outmsg->output_number < 0) ||
-      (outmsg->output_number > (OSDP_MAX_OUT-1)))
-      status = ST_OUT_TOO_MANY;
-    if (status EQUALS ST_OK)
-    {
-      switch (outmsg->control_code)
-      {
-      case OSDP_OUT_NOP:
-        break;
-      case OSDP_OUT_OFF_PERM_ABORT:
-        ctx->out [outmsg->output_number].current = 0;
-        ctx->out [outmsg->output_number].timer = 0;
-        break;  
-      case OSDP_OUT_ON_PERM_ABORT:
-        ctx->out [outmsg->output_number].current = 1;
-        ctx->out [outmsg->output_number].timer = 0;
-        break;  
-      default:
-        status = ST_OUT_UNKNOWN;
-        break;
-      };
-    }
-    else
-      done = 1;
-
-done = 1; // just first one for now.
-  };
-
-  // return osdp_OSTATR with now-current output state
-  {
-    int j;
-    unsigned char out_status [OSDP_MAX_OUT];
-
-    for (j=0; j<OSDP_MAX_OUT; j++)
-    {
-      out_status [j] = ctx->out[j].current;
-    };
-
-    to_send = OSDP_MAX_OUT;
-    memcpy (buffer, out_status, OSDP_MAX_OUT);
-    current_length = 0;
-    status = send_message_ex (ctx, OSDP_OSTATR, p_card.addr,
-      &current_length, to_send, buffer, OSDP_SEC_SCS_18, 0, NULL);
-  };
-  status = ST_OK;
-  return (status);
-
-} /* action_osdp_OUT */
-
-int
-  action_osdp_OSTAT
-    (OSDP_CONTEXT *ctx,
-    OSDP_MSG *msg)
-
-{ /* action_osdp_OSTAT */
-
-  unsigned char buffer [1024];
-  int current_length;
-  int j;
-  unsigned char out_status [OSDP_MAX_OUT];
-  int status;
-  int to_send;
-
-
-  status = ST_OK;
-  osdp_conformance.cmd_ostat.test_status = OCONFORM_EXERCISED;
-
-  for (j=0; j<OSDP_MAX_OUT; j++)
-  {
-    out_status [j] = ctx->out[j].current;
-  };
-  to_send = OSDP_MAX_OUT;
-  memcpy (buffer, out_status, OSDP_MAX_OUT);
-  current_length = 0;
-  status = send_message (ctx, OSDP_OSTATR, p_card.addr,
-    &current_length, to_send, buffer);
-  return (status);
-
-} /* action_osdp_OUT */
 
 
 int
