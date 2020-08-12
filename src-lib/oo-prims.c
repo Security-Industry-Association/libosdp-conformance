@@ -1,5 +1,5 @@
 /*
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
 */
 #include <stdio.h>
 #include <string.h>
@@ -223,6 +223,7 @@ char
     case OSDP_CRAUTHR: strcpy(cmd_rep_s, "osdp_CRAUTHR"); break;
     case OSDP_COM:    strcpy(cmd_rep_s, "osdp_COM"); break;
     case OSDP_FTSTAT: strcpy(cmd_rep_s, "osdp_FTSTAT"); break;
+    case OSDP_GENAUTHR: strcpy(cmd_rep_s, "osdp_GENAUTHR"); break;
     case OSDP_ISTATR: strcpy(cmd_rep_s, "osdp_ISTATR"); break;
     case OSDP_KEYPAD: strcpy(cmd_rep_s, "osdp_KEYPAD"); break;
     case OSDP_LSTATR: strcpy(cmd_rep_s, "osdp_LSTATR"); break;
@@ -258,6 +259,7 @@ char
     case OSDP_DATA:         strcpy(cmd_rep_s, "osdp_DATA"); break;
     case OSDP_DIAG:         strcpy(cmd_rep_s, "osdp_DIAG"); break;
     case OSDP_FILETRANSFER: strcpy(cmd_rep_s, "osdp_FILETRANSFER"); break;
+    case OSDP_GENAUTH:      strcpy(cmd_rep_s, "osdp_GENAUTH"); break;
     case OSDP_ID:           strcpy(cmd_rep_s, "osdp_ID"); break;
     case OSDP_ISTAT:        strcpy(cmd_rep_s, "osdp_ISTAT"); break;
     case OSDP_KEEPACTIVE:   strcpy(cmd_rep_s, "osdp_KEEPACTIVE"); break;

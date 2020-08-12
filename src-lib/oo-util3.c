@@ -728,6 +728,11 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+    case OSDP_GENAUTH:
+      status = oosdp_make_message (OOSDP_MSG_GENAUTH, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_KEEPACTIVE:
       status = oosdp_make_message (OOSDP_MSG_KEEPACTIVE, tlogmsg, msg);
       if (status == ST_OK)
@@ -776,6 +781,11 @@ int
       break;
     case OSDP_COM:
       status = oosdp_make_message (OOSDP_MSG_COM, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+    case OSDP_GENAUTHR:
+      status = oosdp_make_message(OOSDP_MSG_GENAUTHR, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
