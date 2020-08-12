@@ -116,6 +116,7 @@
 #define OSDP_FILETRANSFER (0x7C)
 #define OSDP_MFG          (0x80)
 #define OSDP_XWR          (0xA1)
+#define OSDP_GENAUTH      (0xA4)
 #define OSDP_CRAUTH       (0xA5)
 #define OSDP_KEEPACTIVE   (0xA7)
 #define OSDP_BOGUS        (0xFF) // bogus command code to induce NAK
@@ -627,7 +628,9 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_COM          (132)
 #define OOSDP_MSG_COMSET       (133)
 #define OOSDP_MSG_CRAUTH       (134)
-#define OOSDP_MSG_CRAUTHR      (135)
+#define OOSDP_MSG_CRAUTHR      ( 735)
+#define OOSDP_MSG_GENAUTH      ( 736)
+#define OOSDP_MSG_GENAUTHR     ( 737)
 #define OOSDP_MSG_FILETRANSFER (7)
 #define OOSDP_MSG_FTSTAT       (8)
 #define OOSDP_MSG_ISTATR       (17)
@@ -933,6 +936,7 @@ int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CRAUTH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CRAUTHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_GENAUTHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

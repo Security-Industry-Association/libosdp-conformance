@@ -60,6 +60,14 @@ OSDP_CONFORMANCE_TEST
   {
     // alphabetical with symbol
 
+    {         OOC_SYMBOL_cmd_crauth,
+      &(osdp_conformance.cmd_crauth.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: osdp_CRAUTH"},
+    {         OOC_SYMBOL_cmd_genauth,
+      &(osdp_conformance.cmd_genauth.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: osdp_GENAUTH"},
     {         OOC_SYMBOL_cmd_poll,
       &(osdp_conformance.cmd_poll.test_status),
       1, 0, 0, 0, 0,
@@ -72,6 +80,14 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.rep_ack.test_status),
       1, 1, 1, 1, 0,
                         "Response: ACK" },
+    {         OOC_SYMBOL_resp_crauthr,
+      &(osdp_conformance.resp_crauthr.test_status),
+      0, 0, 0, 0, 0,
+                        "Response: osdp_CRAUTHR"},
+    {         OOC_SYMBOL_resp_genauthr,
+      &(osdp_conformance.resp_genauthr.test_status),
+      0, 0, 0, 0, 0,
+                        "Response: osdp_GENAUTHR"},
     {         OOC_SYMBOL_resp_lstatr,
       &(osdp_conformance.resp_lstatr.test_status),
       1, 1, 1, 1, 0,
@@ -266,10 +282,6 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.cmd_filetransfer.test_status),
       0, 0, 0, 0, 0,
                         "Command: osdp_FILETRANSFER"},
-    {         OOC_SYMBOL_cmd_crauth,
-      &(osdp_conformance.cmd_crauth.test_status),
-      0, 0, 0, 0, 0,
-                        "Command: osdp_CRAUTH"},
     {         OOC_SYMBOL_cmd_acurxsize,
       &(osdp_conformance.cmd_acurxsize.test_status),
       0, 0, 0, 0, 0,
@@ -350,10 +362,6 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_ftstat.test_status),
       0, 0, 0, 0, 0,
                         "Response: osdp_FTSTAT"},
-    {         OOC_SYMBOL_resp_crauthr,
-      &(osdp_conformance.resp_crauthr.test_status),
-      0, 0, 0, 0, 0,
-                        "Response: osdp_CRAUTHR"},
     { NULL, NULL, 0, 0, 0, 0, 0, "---" }
   };
 

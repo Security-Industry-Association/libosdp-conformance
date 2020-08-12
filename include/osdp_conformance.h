@@ -58,6 +58,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_mfg            "060-18-01"
 #define OOC_SYMBOL_cmd_acurxsize      "060-19-01"
 #define OOC_SYMBOL_cmd_keepactive     "060-20-01"
+#define OOC_SYMBOL_cmd_genauth        "060-23-01"
 #define OOC_SYMBOL_cmd_crauth         "060-24-01"
 #define OOC_SYMBOL_cmd_filetransfer   "060-25-01"
 #define OOC_SYMBOL_rep_ack            "070-01-01"
@@ -74,7 +75,8 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_ccrypt        "070-15-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-16-01"
 #define OOC_SYMBOL_resp_busy          "070-18-01"
-#define OOC_SYMBOL_resp_crauthr       "070-21-01"
+#define OOC_SYMBOL_resp_genauthr      "070-21-01"
+#define OOC_SYMBOL_resp_crauthr       "070-22-01"
 #define OOC_SYMBOL_resp_mfgerrr       "070-23-01"
 #define OOC_SYMBOL_resp_ftstat        "070-24-01"
 
@@ -162,6 +164,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_filetransfer;        // 3-23-1
   OSDP_CONFORM cmd_keepactive;          // 3-24-2
   OSDP_CONFORM cmd_crauth;
+  OSDP_CONFORM cmd_genauth;
 
   // section 7
 
@@ -192,6 +195,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_mfgerrr;
   OSDP_CONFORM resp_busy;
   OSDP_CONFORM resp_ftstat;
+  OSDP_CONFORM resp_genauthr;
   OSDP_CONFORM resp_crauthr;
 } OSDP_INTEROP_ASSESSMENT;
 

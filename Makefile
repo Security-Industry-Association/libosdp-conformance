@@ -50,7 +50,7 @@ clean:
 
 build:	all
 	mkdir -p opt/osdp-conformance/run/ACU
-	(cd opt/osdp-conformance/run; ln -s ACU CP)
+	(cd opt/osdp-conformance/run; rm -f CP; ln -s ACU CP)
 	mkdir -p opt/osdp-conformance/run/MON
 	mkdir -p opt/osdp-conformance/run/PD
 	mkdir -p opt/osdp-conformance/tmp

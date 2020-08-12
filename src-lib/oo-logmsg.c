@@ -125,6 +125,8 @@ int
 { /* oosdp_make_message */
 
   OSDP_SC_CCRYPT *ccrypt_payload; int count;
+  OSDP_MULTI_HDR_IEC *crauth_msg;
+  OSDP_MULTI_HDR_IEC *crauthr_msg;
   OSDP_MSC_CR_AUTH *cr_auth;
   OSDP_MSC_CR_AUTH_RESPONSE *cr_auth_response;
   int d;
@@ -274,19 +276,14 @@ int
     break;
 
   case OOSDP_MSG_CRAUTH:
-#if 0
-  unsigned char offset_lsb;
-  unsigned char offset_msb;
-  unsigned char data_len_lsb;
-  unsigned char data_len_msb;
-#endif
     msg = (OSDP_MSG *) aux;
-    genauth_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
-    payload = &(genauth_msg->algo_payload);
-    payload_size = (genauth_msg->total_msb*256)+genauth_msg->total_lsb;
+    crauth_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
+    payload = &(crauth_msg->algo_payload);
+    payload_size = (crauth_msg->total_msb*256)+crauth_msg->total_lsb;
     sprintf(tlogmsg, "CRAUTH multi-total %4d multi-offset %4d multi-frag %4d\n",
-      (genauth_msg->total_msb*256)+genauth_msg->total_lsb,
-      0, 0);
+      (crauth_msg->total_msb*256)+crauth_msg->total_lsb,
+      (crauth_msg->offset_msb*256)+crauth_msg->offset_lsb,
+      (crauth_msg->data_len_msb*256)+crauth_msg->data_len_lsb);
     sprintf(tmpstr, "CRAUTH Algo %02x Key %02x Challenge(l=%4d) %02x%02x%02x...\n",
       *(payload), *(payload+1), 
       payload_size - 2,
@@ -296,11 +293,11 @@ int
 
   case OOSDP_MSG_CRAUTHR:
     msg = (OSDP_MSG *) aux;
-    genauthr_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
-    payload = &(genauthr_msg->algo_payload);
-    payload_size = (genauthr_msg->total_msb*256)+genauthr_msg->total_lsb;
+    crauthr_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
+    payload = &(crauthr_msg->algo_payload);
+    payload_size = (crauthr_msg->total_msb*256)+crauthr_msg->total_lsb;
     sprintf(tlogmsg, "CRAUTH multi-total %4d multi-offset %4d multi-frag %4d\n",
-      (genauthr_msg->total_msb*256)+genauthr_msg->total_lsb,
+      (crauthr_msg->total_msb*256)+crauthr_msg->total_lsb,
       0, 0);
     break;
 
@@ -356,6 +353,28 @@ int
       ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,
       ftstat->FtUpdateMsgMax [0], ftstat->FtUpdateMsgMax [1], newmax);
     strcat(tlogmsg, tmpstr);
+    break;
+
+  case OOSDP_MSG_GENAUTH:
+    msg = (OSDP_MSG *) aux;
+    genauth_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
+    payload = &(genauth_msg->algo_payload);
+    payload_size = (genauth_msg->total_msb*256)+genauth_msg->total_lsb;
+    sprintf(tlogmsg, "GENAUTH multi-total %4d multi-offset %4d multi-frag %4d\n",
+      (genauth_msg->total_msb*256)+genauth_msg->total_lsb,
+      (genauth_msg->offset_msb*256)+genauth_msg->offset_lsb,
+      (genauth_msg->data_len_msb*256)+genauth_msg->data_len_lsb);
+    break;
+
+  case OOSDP_MSG_GENAUTHR:
+    msg = (OSDP_MSG *) aux;
+    genauthr_msg = (OSDP_MULTI_HDR_IEC *) msg->data_payload;
+    payload = &(genauthr_msg->algo_payload);
+    payload_size = (genauthr_msg->total_msb*256)+genauthr_msg->total_lsb;
+    sprintf(tlogmsg, "GENAUTHR multi-total %4d multi-offset %4d multi-frag %4d\n",
+      (genauthr_msg->total_msb*256)+genauthr_msg->total_lsb,
+      0,
+      (genauthr_msg->data_len_msb*256)+genauthr_msg->data_len_lsb);
     break;
 
   case OOSDP_MSG_ISTATR:
@@ -594,6 +613,8 @@ int
     msg = (OSDP_MSG *) aux;
     oh = (OSDP_HDR *)(msg->ptr);
     count = oh->len_lsb + (oh->len_msb << 8);
+    sprintf(tlogmsg, "  osdp_MFGERRR (len=%d.) %02x%02x%02x...\n",
+      count, (msg->data_payload) [0], (msg->data_payload) [1], (msg->data_payload) [2]);
     dump_buffer_log(&context, "  MFGERRR Details: ", (unsigned char *)(msg->data_payload), count);
     break;
 

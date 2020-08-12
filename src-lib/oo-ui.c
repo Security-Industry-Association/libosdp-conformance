@@ -233,20 +233,18 @@ exit(-1);
       break;
 
     case OSDP_CMDB_CHALLENGE:
+    case OSDP_CMDB_WITNESS:
       {
         unsigned char challenge_command [1024];
         OSDP_MULTI_HDR_IEC *challenge_hdr;
-int challenge_size;
-        unsigned char command;
-int total_size;
+        int challenge_size;
+        unsigned char osdp_command;
+        int total_size;
 
-fprintf(stderr, "DEBUG: osdp_CRAUTH (Challenge)\n");
         challenge_size = details_length;
         strcpy (context->test_in_progress, "x-challenge");
         memset (&challenge_command, 0, sizeof (challenge_command));
-fprintf(stderr, "CHALLENGE STUB\n");
-// challenge?  crauth?
-        total_size = challenge_size + sizeof(*challenge_hdr);
+        total_size = challenge_size + sizeof(*challenge_hdr) - 1; // hdr has 1 byte of data
         challenge_hdr = (OSDP_MULTI_HDR_IEC *)&(challenge_command [0]);
         challenge_hdr->total_lsb = total_size & 0xff;
         challenge_hdr->total_msb = (total_size & 0xff00) >> 8;
@@ -258,9 +256,11 @@ fprintf(stderr, "CHALLENGE STUB\n");
 
 dump_buffer_log(context, "CRAUTH: ", challenge_command, total_size);
         details_length = total_size;
-        command = OSDP_CRAUTH;
+        osdp_command = OSDP_CRAUTH;
+        if (command EQUALS OSDP_CMDB_CHALLENGE)
+          osdp_command = OSDP_GENAUTH;
         current_length = 0;
-        status = send_message_ex(context, command, p_card.addr,
+        status = send_message_ex(context, osdp_command, p_card.addr,
           &current_length, total_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);
       };
       break;

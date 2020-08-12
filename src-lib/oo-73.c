@@ -120,3 +120,56 @@ fprintf(ctx->log, "  crauthr payload %02x%02x%02x...\n",
 
 } /* action_osdp_CRAUTHR */
 
+
+int
+  action_osdp_GENAUTHR
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_GENAUTHR */
+
+  OSDP_MULTI_HDR_IEC *genauthr_header;
+  char *genauthr_payload;
+  char details [4*2048]; // ...
+  int i;
+  int response_length;
+  char response_payload [2048]; // assumed to be larger than the whole response...
+  int status;
+
+
+fprintf(ctx->log, "DEBUG: osdp_GENAUTHR stub.\n");
+  genauthr_header = (OSDP_MULTI_HDR_IEC *)(msg->data_payload);
+  genauthr_payload = (char *)&(genauthr_header->algo_payload);
+
+  fprintf(ctx->log,
+"  GENAUTHR received: tlsb %02x tmsb %02x offlsb %02x offmsb %02x lenlsb %02x lenmsb %02x\n",
+    genauthr_header->total_lsb, genauthr_header-> total_msb, genauthr_header-> offset_lsb,
+    genauthr_header-> offset_msb, genauthr_header-> data_len_lsb, genauthr_header-> data_len_msb);
+fprintf(ctx->log, "  genauthr payload %02x%02x%02x...\n",
+    *(genauthr_payload), *(genauthr_payload+1), *(genauthr_payload+2));
+
+  response_length = (genauthr_header->total_msb * 256) + genauthr_header->total_lsb;
+  details [0] = 0;
+  status = ST_OK; // assume for now the header has been validated.
+  if (response_length > OSDP_OFFICIAL_MSG_MAX)
+    status = ST_OSDP_CRAUTHR_HEADER;
+
+  if (status EQUALS ST_OK)
+  {
+    memset(response_payload, 0, sizeof(response_payload));
+    for (i=0; i<response_length; i++)
+    {
+      sprintf(response_payload+(2*i), "%02x", (unsigned)*(genauthr_payload+i));
+    };
+    sprintf(details, "\"genauthr-response\":\"%s\",", response_payload);
+    osdp_test_set_status_ex(OOC_SYMBOL_resp_genauthr, OCONFORM_EXERCISED, details);
+  }
+  else
+  {
+    osdp_test_set_status_ex(OOC_SYMBOL_resp_genauthr, OCONFORM_FAIL, details);
+  };
+
+  return(status);
+
+} /* action_osdp_GENAUTHR */
+

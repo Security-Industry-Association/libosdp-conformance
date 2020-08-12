@@ -527,6 +527,10 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       strcpy (tlogmsg2, "osdp_FTSTAT");
       break;
 
+    case OSDP_GENAUTHR:
+      OSDP_CHECK_CMDREP("osdp_GENAUTHR", resp_genauthr, 1);
+      break;
+
     case OSDP_KEYPAD:
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;

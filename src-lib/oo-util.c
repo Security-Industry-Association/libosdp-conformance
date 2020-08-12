@@ -1355,6 +1355,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       status = action_osdp_FTSTAT(context, msg);
       break;
 
+    case OSDP_GENAUTHR:
+      status = action_osdp_GENAUTHR(context, msg);
+      break;
+
     case OSDP_ISTATR:
       status = ST_OK;
       count = oh->len_lsb + (oh->len_msb << 8);

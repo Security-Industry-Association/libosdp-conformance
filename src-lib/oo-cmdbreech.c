@@ -532,6 +532,7 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
         cmd->details [1] = (unsigned char)i;
         status = ST_OK;
       };
+
       // details [2-n] is genauth payload
       // cmd->details_length = 2 + payload length
 
