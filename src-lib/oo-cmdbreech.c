@@ -379,6 +379,8 @@ int
       int i;
       i = 7000;
       cmd->command = OSDP_CMDB_KEEPACTIVE;
+      cmd->details [1] = (i & 0xff); // lsb
+      cmd->details [2] = (i/0x100); // msb
       memcpy(cmd->details+1, &i, sizeof(i)); 
       parameter = json_object_get (root, "milliseconds");
       if (json_is_string (parameter))
