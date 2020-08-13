@@ -775,12 +775,11 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
       break;
 
     case OSDP_CMDB_KEEPACTIVE:
-      // details is the time, as an int; convert to network time (short int)
+      // details is the time, lsb/msb
       {
-        short int keepactive_time;
+        char keepactive_time [2];
 
-        keepactive_time = *(int *)details;
-        keepactive_time = htons(keepactive_time);
+        memcpy(keepactive_time, details, 2);
         status = ST_OK;
         status = send_message (context,
           OSDP_KEEPACTIVE, p_card.addr, &current_length,
