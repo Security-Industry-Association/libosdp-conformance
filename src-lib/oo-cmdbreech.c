@@ -2,7 +2,6 @@
   oo_cmdbreech - breech-loading command processor
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -371,7 +370,6 @@ int
   // command keep-active
   // argument is time in milliseconds "milliseconds".  default is 7000;
 
-
   if (status EQUALS ST_OK)
   {
     if (0 EQUALS strcmp (current_command, "keep-active"))
@@ -379,15 +377,16 @@ int
       int i;
       i = 7000;
       cmd->command = OSDP_CMDB_KEEPACTIVE;
-      cmd->details [1] = (i & 0xff); // lsb
-      cmd->details [2] = (i/0x100); // msb
+      cmd->details [0] = (i & 0xff); // lsb
+      cmd->details [1] = (i/0x100); // msb
       parameter = json_object_get (root, "milliseconds");
       if (json_is_string (parameter))
       {
         strcpy (vstr, json_string_value (parameter));
         sscanf (vstr, "%d", &i);
+        cmd->details [0] = (i & 0xff); // lsb
+        cmd->details [1] = (i/0x100); // msb
       };
-      memcpy(cmd->details+1, &i, sizeof(i)); 
     };
   };
 
