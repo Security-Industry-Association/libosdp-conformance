@@ -173,3 +173,53 @@ fprintf(ctx->log, "  genauthr payload %02x%02x%02x...\n",
 
 } /* action_osdp_GENAUTHR */
 
+
+/*
+  oo_build_genauth - fabricates a genauth/crauth payload
+
+  arguments:
+    current context
+    buffer to build out osdp command payload.  
+    ptr to buffer length (max on input, updated on return.
+    details buffer
+    details length
+*/
+
+int
+  oo_build_genauth
+    (OSDP_CONTEXT *ctx,
+    unsigned char *challenge_payload_buffer,
+    int *payload_length,
+    unsigned char *details,
+    int details_length)
+
+{ /* oo_build_genauth */
+
+  OSDP_MULTI_HDR_IEC *challenge_hdr;
+  int status;
+
+
+  status = ST_OK;
+  if (details_length > OSDP_OFFICIAL_MSG_MAX)
+    status = ST_OSDP_UNSUPPORTED_AUTH_PAYLOAD;
+  if (status EQUALS ST_OK)
+  {
+    challenge_hdr = (OSDP_MULTI_HDR_IEC *)&challenge_payload_buffer;
+    challenge_hdr->total_lsb = details_length & 0xff;
+    challenge_hdr->total_msb = (details_length & 0xff00) >> 8;
+    challenge_hdr->offset_lsb = 0;
+    challenge_hdr->offset_msb = 0;
+    challenge_hdr->data_len_lsb = challenge_hdr->total_lsb;
+    challenge_hdr->data_len_msb = challenge_hdr->total_msb;
+    if (*payload_length > (sizeof(*challenge_hdr)-1+details_length))
+    {
+      memcpy(&(challenge_hdr->algo_payload), details, details_length);
+      dump_buffer_log(ctx, "oo_build_genauth: ", challenge_payload_buffer, *payload_length);
+    }
+    else
+      status = ST_OSDP_PAYLOAD_TOO_SHORT;
+  };
+  return(status);
+
+} /* oo_build_genauth */
+

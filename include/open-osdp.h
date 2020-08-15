@@ -920,6 +920,8 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_SCS_FROM_PD_UNEXPECTED     ( 84)
 #define ST_OSDP_EXCLUSIVITY_FAILED    ( 85)
 #define ST_OSDP_CRAUTHR_HEADER        ( 86)
+#define ST_OSDP_UNSUPPORTED_AUTH_PAYLOAD ( 87)
+#define ST_OSDP_PAYLOAD_TOO_SHORT        ( 88)
 
 int
   m_version_minor;
@@ -965,6 +967,8 @@ int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
 int next_sequence (OSDP_CONTEXT *ctx);
 int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int oo_build_genauth(OSDP_CONTEXT *ctx, unsigned char *challenge_payload_buffer, int *payload_length,
+  unsigned char *details, int details_length);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
 int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);

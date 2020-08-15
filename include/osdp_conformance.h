@@ -59,6 +59,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_acurxsize      "060-19-01"
 #define OOC_SYMBOL_cmd_keepactive     "060-20-01"
 #define OOC_SYMBOL_cmd_genauth        "060-23-01"
+#define OOC_SYMBOL_060_23_02          "060-23-02" // genauth after raw
 #define OOC_SYMBOL_cmd_crauth         "060-24-01"
 #define OOC_SYMBOL_cmd_filetransfer   "060-25-01"
 #define OOC_SYMBOL_rep_ack            "070-01-01"

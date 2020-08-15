@@ -879,6 +879,28 @@ int bits_to_print;
     }; // not encrypted
   };
 
+  if (0 EQUALS strcmp (ctx->test_in_progress, "060-23-02"))
+  {
+    int current_length;
+    unsigned char details [270];
+    int details_length;
+    unsigned char payload [OSDP_OFFICIAL_MSG_MAX];
+    int payload_length;
+
+
+    memset(details, 0, sizeof(details));
+    details_length = sizeof(details);
+    payload_length = sizeof(payload);
+    status = oo_build_genauth(ctx, payload, &payload_length, details, details_length);
+    if (status EQUALS ST_OK)
+    {
+      current_length = 0;
+      status = send_message_ex
+        (ctx, OSDP_GENAUTH, p_card.addr, &current_length, payload_length, payload,
+        OSDP_SEC_SCS_17, 0, NULL);
+    };
+  };
+
   return (status);
 
 } /* action_osdp_RAW */

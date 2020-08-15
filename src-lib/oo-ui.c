@@ -235,16 +235,22 @@ exit(-1);
     case OSDP_CMDB_CHALLENGE:
     case OSDP_CMDB_WITNESS:
       {
-        unsigned char challenge_command [1024];
+        unsigned char challenge_command [OSDP_OFFICIAL_MSG_MAX];
         OSDP_MULTI_HDR_IEC *challenge_hdr;
+        int challenge_payload_size;
         int challenge_size;
         unsigned char osdp_command;
         int total_size;
 
         challenge_size = details_length;
+        challenge_payload_size = sizeof(challenge_command);
         strcpy (context->test_in_progress, "x-challenge");
         memset (&challenge_command, 0, sizeof (challenge_command));
         total_size = challenge_size + sizeof(*challenge_hdr) - 1; // hdr has 1 byte of data
+
+        status= oo_build_genauth(ctx, (unsigned char *)challenge_command, &challenge_payload_size, (unsigned char *)details, details_length);
+
+#if 0
         challenge_hdr = (OSDP_MULTI_HDR_IEC *)&(challenge_command [0]);
         challenge_hdr->total_lsb = total_size & 0xff;
         challenge_hdr->total_msb = (total_size & 0xff00) >> 8;
@@ -253,8 +259,8 @@ exit(-1);
         challenge_hdr->data_len_lsb = challenge_hdr->total_lsb;
         challenge_hdr->data_len_msb = challenge_hdr->total_msb;
         memcpy(&(challenge_hdr->algo_payload), details, details_length);
-
 dump_buffer_log(context, "CRAUTH: ", challenge_command, total_size);
+#endif
         details_length = total_size;
         osdp_command = OSDP_CRAUTH;
         if (command EQUALS OSDP_CMDB_CHALLENGE)
