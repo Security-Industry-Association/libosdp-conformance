@@ -482,13 +482,13 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
 
     example:
       "command" : "genauth"
-      "template" : "witness" or "challenge"
+      "template" : "witness" or "challenge" or "060-23-02" 0r "060-zz-zz"
       "keyref" : "9E" 
         (or "9e" meaning card auth key - SP800-73-4 Part 1 Page 19 Table 4b.)
       "algoref" : "07"
         (07 is RSA; or 11 for ECC P-256 or 14 for ECC curve P-384 per
         SP800-78-4 Table 6-2 page 12)
-      "payload" : "...hex bytes..."
+      "payload" : "(hex bytes)" (which should be a well-formed Dynamic Authentication Template)
   */
   if (status EQUALS ST_OK)
   {
@@ -501,6 +501,10 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
       value = json_object_get (root, "template");
       if (json_is_string (value))
       {
+        if (0 EQUALS strcmp("060-23-02", json_string_value (value)))
+        {
+          cmd->command = OSDP_CMDB_CONFORM_060_23_02;
+        };
         if (0 EQUALS strcmp("challenge", json_string_value (value)))
         {
           cmd->command = OSDP_CMDB_CHALLENGE;

@@ -882,14 +882,23 @@ int bits_to_print;
   if (0 EQUALS strcmp (ctx->test_in_progress, "060-23-02"))
   {
     int current_length;
-    unsigned char details [270];
+    unsigned char details [OSDP_OFFICIAL_MSG_MAX];
     int details_length;
     unsigned char payload [OSDP_OFFICIAL_MSG_MAX];
     int payload_length;
 
 
     memset(details, 0, sizeof(details));
-    details_length = sizeof(details);
+    details_length = 270; // estimated null payload ... //sizeof(details);
+    if (ctx->test_details_length > 0)
+    {
+      if (ctx->test_details_length < OSDP_OFFICIAL_MSG_MAX)
+      {
+        memcpy(details, ctx->test_details, ctx->test_details_length);
+        details_length = ctx->test_details_length;
+        ctx->test_details_length = 0;  // it's been consumed.
+      };
+    };
     payload_length = sizeof(payload);
     status = oo_build_genauth(ctx, payload, &payload_length, details, details_length);
     if (status EQUALS ST_OK)

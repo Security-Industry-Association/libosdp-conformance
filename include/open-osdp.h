@@ -37,6 +37,8 @@
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
 #define OSDP_TRACE_FILE       "current.osdpcap"
 
+#define OSDP_OFFICIAL_MSG_MAX (1440)
+
 // default configuration
 
 #define OOSDP_CFG_INPUTS (8)
@@ -198,6 +200,7 @@
 #define OSDP_CMDB_KEYSET          (1042)
 #define OSDP_CMDB_TRACE           (1043)
 #define OSDP_CMDB_BIOMATCH        (1044)
+#define OSDP_CMDB_CONFORM_060_23_02 (1045)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -476,23 +479,17 @@ typedef struct osdp_context
   int secure_channel_use [4]; // see OO_SCU_... use
   unsigned char rmac_i [OSDP_KEY_OCTETS];
 
-  char
-    new_address;
-  char
-    test_in_progress [32];
-  int
-    profile;
-  int
-    timer_count;
-  OSDP_TIMER
-    timer [OSDP_TIMER_MAX];
-  int
-    last_errno;
-  int
-    tamper;
+  char new_address;
+  char test_in_progress [32];
+  unsigned char test_details [OSDP_OFFICIAL_MSG_MAX];
+  int test_details_length;
+  int profile;
+  int timer_count;
+  OSDP_TIMER timer [OSDP_TIMER_MAX];
+  int last_errno;
+  int tamper;
   int next_nak; // nak the next incoming message from the CP
-  int
-    power_report;
+  int power_report;
   int card_data_valid; // bits
   int card_format; // 0 for raw, 1 for P/Data/P, 2-0xff invalid
   int creds_a_avail; // octets
@@ -655,7 +652,6 @@ typedef struct osdp_parameters
 
 
 #define OSDP_BUF_MAX (8192)
-#define OSDP_OFFICIAL_MSG_MAX (1440)
 
 typedef struct osdp_buffer
 {

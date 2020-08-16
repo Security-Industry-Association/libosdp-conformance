@@ -125,6 +125,14 @@ exit(-1);
       status = ST_OK;
       break;
 
+    case OSDP_CMDB_CONFORM_060_23_02:
+      strcpy (context->test_in_progress, "060_23_02"); // genauth-after-raw
+      memcpy(context->test_details, details, details_length);
+      context->test_details_length = details_length;
+      if (context->verbosity > 2)
+        fprintf (stderr, "Sending osdp_GENAUTH after next osdp_RAW\n");
+      break;
+
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
       osdp_conformance.signalling.test_status = OCONFORM_FAIL;
