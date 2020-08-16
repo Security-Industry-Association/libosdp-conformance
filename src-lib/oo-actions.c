@@ -364,12 +364,24 @@ int
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
 
-{
+{ /* action_osdp_MFGERRR */
+
+  char cmd [2*1024];
+
+
   fprintf(ctx->log, "MFGERRR received\n");
+
+  // run the action routine with the bytes,bit count,format
+
+  sprintf(cmd,
+    "/opt/osdp-conformance/run/ACU-actions/osdp_MFGERRR %d. %02x",
+    msg->data_length, *(msg->data_payload));
+  system(cmd);
+
   osdp_test_set_status(OOC_SYMBOL_resp_mfgerrr, OCONFORM_EXERCISED);
   return(ST_OK);
-}
 
+} /* action_osdp_MFGERRR */
 
 
 int
