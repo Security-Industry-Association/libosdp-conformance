@@ -126,7 +126,8 @@ exit(-1);
       break;
 
     case OSDP_CMDB_CONFORM_060_23_02:
-      strcpy (context->test_in_progress, "060_23_02"); // genauth-after-raw
+      status = ST_OK;
+      strcpy (context->test_in_progress, "060-23-02"); // genauth-after-raw
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)

@@ -204,7 +204,7 @@ int
     status = ST_OSDP_UNSUPPORTED_AUTH_PAYLOAD;
   if (status EQUALS ST_OK)
   {
-    challenge_hdr = (OSDP_MULTI_HDR_IEC *)&challenge_payload_buffer;
+    challenge_hdr = (OSDP_MULTI_HDR_IEC *)challenge_payload_buffer;
     challenge_hdr->total_lsb = details_length & 0xff;
     challenge_hdr->total_msb = (details_length & 0xff00) >> 8;
     challenge_hdr->offset_lsb = 0;
@@ -213,6 +213,7 @@ int
     challenge_hdr->data_len_msb = challenge_hdr->total_msb;
     if (*payload_length > (sizeof(*challenge_hdr)-1+details_length))
     {
+      *payload_length = sizeof(*challenge_hdr) - 1 + details_length;
       memcpy(&(challenge_hdr->algo_payload), details, details_length);
       dump_buffer_log(ctx, "oo_build_genauth: ", challenge_payload_buffer, *payload_length);
     }

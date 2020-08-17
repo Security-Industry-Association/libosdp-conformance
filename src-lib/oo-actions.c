@@ -27,6 +27,7 @@ unsigned char pending_response;
 #include <stdio.h>
 #include <memory.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 
 #include <aes.h>
@@ -919,6 +920,7 @@ int bits_to_print;
       status = send_message_ex
         (ctx, OSDP_GENAUTH, p_card.addr, &current_length, payload_length, payload,
         OSDP_SEC_SCS_17, 0, NULL);
+fprintf(stderr, "DEBUG: give GENAUTH a chance...\n"); sleep(5);
     };
   };
 
