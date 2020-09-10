@@ -93,6 +93,9 @@ int
 
 { /* osdp_ftstat_validate */
 
+  unsigned long delay_nsec;
+  unsigned long delay_sec;
+  struct timespec delay_time;
   unsigned short int filetransfer_delay;
   unsigned short int filetransfer_status;
   unsigned short int new_size;
@@ -100,6 +103,7 @@ int
 
 
   status = ST_OK;
+  filetransfer_delay = 0;
 
   // if FtAction bad set status
 
@@ -115,6 +119,21 @@ int
   switch (filetransfer_status)
   {
   case OSDP_FTSTAT_OK:
+
+    // if it's ok and there's a delay then pause right here.
+
+#define MS_IN_NS (1000*1000)
+    delay_nsec = filetransfer_delay * MS_IN_NS;
+    if (delay_nsec > 999999999)
+    {
+      delay_sec = delay_nsec/1000000000;
+      delay_nsec = delay_nsec - (delay_sec * 1000000000);
+    };
+
+    delay_time.tv_sec = delay_sec;
+    delay_time.tv_nsec = delay_nsec;
+    (void) nanosleep(&delay_time, NULL);
+
     // if there's something there treat it like a transfer in progress
 
     if (ctx->xferctx.total_length > 0)

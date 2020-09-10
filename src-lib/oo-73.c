@@ -79,6 +79,7 @@ int
   char *crauthr_payload;
   char details [4*2048]; // ...
   int i;
+  FILE *pf;
   int response_length;
   char response_payload [2048]; // assumed to be larger than the whole response...
   int status;
@@ -103,6 +104,14 @@ fprintf(ctx->log, "  crauthr payload %02x%02x%02x...\n",
 
   if (status EQUALS ST_OK)
   {
+    // save binary format payload.  per convention it goes in /opt/osdp-conformance/results/osdp_CRAUTHR_payload.bin
+
+    pf = fopen("/opt/osdp-conformance/results/osdp_CRAUTHR_payload.bin", "w");
+    if (pf != NULL)
+    {
+      (void) fwrite(crauthr_payload, sizeof(crauthr_payload[0]), response_length, pf);
+      fclose(pf);
+    };
     memset(response_payload, 0, sizeof(response_payload));
     for (i=0; i<response_length; i++)
     {
