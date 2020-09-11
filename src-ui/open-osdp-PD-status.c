@@ -2,7 +2,6 @@
   open-osdp-PD-status - display PD status as refreshing HTML page
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -29,6 +28,7 @@
 #include <jansson.h>
 #include <open-osdp.h>
 OSDP_CONTEXT osdp_context;
+char parameter_speed [1024];
 
 
 void
@@ -253,17 +253,26 @@ void
     };
   };
 
-  printf ("<H3>libosdp-conformance PD Reader</H3>\n");
-  printf ("<FONT SIZE=+2>Test Time: %08ld.%08ld<BR>\n",
+  printf ("<H2>Reader(PD) Status</H2>\n");
+  printf("<TABLE><TR>\n");
+  printf ("<TD>LED</TD><TD><SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN></TD>\n", led_color);
+  printf ("<TD>Text</TD><TD>%s</TD>\n", ctx->text);
+  printf("</TR></TABLE>\n");
+  printf("<TABLE>\n");
+  printf("<TR>\n");
+  printf("<TD>Address</TD><TD>%2x</TD>\n", pd_address);
+  printf("<TD>Speed</TD><TD>%s</TD>\n", parameter_speed);
+  printf("<TD>Received</TD><TD>%5d</TD>\n", stat_pdus_received);
+  printf("<TD>Sent</TD><TD>%5d</TD>\n", stat_pdus_sent);
+  printf("</TR>\n");
+  printf("</TABLE>\n");
+  printf("<TABLE>\n");
+  printf("<TR><TD>Test Time</TD><TD>%08ld.%08ld</TD></TR>\n",
     (unsigned long int)current_time_fine.tv_sec, current_time_fine.tv_nsec);
-  printf("&nbsp; Local: %s\n&nbsp; Last update: %s<BR>\n", asctime (localtime (&current_time)),
-    last_update);
-  printf("</FONT>\n");
-  printf ("A: %02x<BR>\n", pd_address);
-  printf ("LED: <SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN>\n",
-    led_color);
-  printf ("Message Text: %s<BR>\n",
-    ctx->text);
+  printf("<TR><TD>Local</TD><TD>%s</TD></TR>\n", asctime (localtime (&current_time)));
+printf("<TR><TD>Last update</TD><TD>%s</TD></TR>\n", last_update);
+  printf("</TABLE>\n");
+  printf("<BR>Output<BR>\n");
   message_string [0] = 0;
   for (i=0; i<OSDP_MAX_OUT; i++)
   {
@@ -289,8 +298,8 @@ void
 
   // yes I'm sloppy and left the out strings allocated.
 
-  printf("<BR><PRE>Statistics:\n%5d ACU Polls %5d PD Acks %5d HASH OK %5d Sent %5d Recd\n",
-    stat_acu_polls, stat_pd_acks, stat_hash_ok, stat_pdus_sent, stat_pdus_received);
+  printf("<BR><PRE>Statistics:\n%5d ACU Polls %5d PD Acks %5d HASH OK\n",
+    stat_acu_polls, stat_pd_acks, stat_hash_ok);
   printf("%5d HASH Bad %5d NAKS    %5d Seq Errs %5d CRC Errs %5d Checksum Errs %5d Buffer Overflows\n",
     stat_hash_bad, stat_naks, stat_seq_errs, stat_crc_errs, stat_checksum_errs,
     stat_buffer_overflows);
@@ -310,8 +319,11 @@ int
 { /* main for open-osdp-PD-status */
 
   char buffer [16384];
+  json_t *config_root;
   FILE *sf;
   int status;
+  json_error_t status_json;
+  json_t *value;
 
 
   status = ST_OK;
@@ -327,6 +339,18 @@ int
     (void) fread (buffer, sizeof (buffer [0]), sizeof (buffer), sf);
     fclose (sf);
   };
+
+  config_root = NULL;
+  config_root = json_load_file("/opt/osdp-conformance/run/PD/open-osdp-params.json", 0, &status_json);
+  if (config_root)
+  {
+    value = json_object_get (config_root, "serial_speed");
+    if (json_is_string (value))
+    {
+      strcpy (parameter_speed, json_string_value (value));
+    };
+  };
+
   display_sim_reader (&osdp_context, buffer);
 
   printf ("<PRE>\n");
