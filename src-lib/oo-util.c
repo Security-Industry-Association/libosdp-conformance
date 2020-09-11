@@ -2,7 +2,6 @@
   oo_util - open osdp utility routines
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -75,12 +74,22 @@ int
   unsigned short int wire_crc;
 
 
+  p = (OSDP_HDR *)m->ptr;
+  if (context->verbosity > 9)
+  {
+    char *raw;
+    raw = (char *)p;
+    fprintf(stderr, "DEBUG: opm %02x%02x%02x%02x %02x%02x l=%d.\n",
+      raw [0], raw [1], raw [2], raw [3], raw [4], raw [5], m->lth);
+    if (m->lth > 8)
+      fprintf(stderr, "LENGTH EXCEEDS %d\n", 8);
+  };
+
   status = ST_MSG_TOO_SHORT;
 
   m->data_payload = NULL;
   m->security_block_length = 0; // assume no security block
   msg_data_length = 0;
-  p = (OSDP_HDR *)m->ptr;
 
   msg_check_type = (p->ctrl) & 0x04;
   if (msg_check_type EQUALS 0)
@@ -98,17 +107,25 @@ int
     m_check = OSDP_CRC;
   };
 
-  if (m->lth >= (m->check_size+sizeof (OSDP_HDR)))
+//fprintf(stderr, "DEBUG: 110 l=%d s %d\n", m->lth, status);
+  if (m->lth > OSDP_OFFICIAL_MSG_MAX)
+    status = ST_MSG_TOO_LONG;
+//fprintf(stderr, "DEBUG: 113 l=%d s %d\n", m->lth, status);
+  if ((status EQUALS ST_OK) || (status EQUALS ST_MSG_TOO_SHORT))
   {
-    status = ST_OK;
-    msg_lth = p->len_lsb + (256*p->len_msb);
-    hashable_length = msg_lth;
-    if ((m->lth) > msg_lth)
-      m->remainder = msg_lth - m->lth;
+//fprintf(stderr, "DEBUG: l=%d. cs %d sh %d\n", m->lth, m->check_size, sizeof(OSDP_HDR));
+    if (m->lth >= (m->check_size+sizeof (OSDP_HDR)))
+    {
+      status = ST_OK;
+      msg_lth = p->len_lsb + (256*p->len_msb);
+      hashable_length = msg_lth;
+      if ((m->lth) > msg_lth)
+        m->remainder = msg_lth - m->lth;
 
-    // now that we have a bit of header figure out how much the whole thing is.  need all of it to process it.
-    if (m->lth < msg_lth)
-      status = ST_MSG_TOO_SHORT;
+      // now that we have a bit of header figure out how much the whole thing is.  need all of it to process it.
+      if (m->lth < msg_lth)
+        status = ST_MSG_TOO_SHORT;
+    };
   };
   if (status != ST_OK)
   {

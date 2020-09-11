@@ -255,7 +255,7 @@ void
 
   printf ("<H2>Reader(PD) Status</H2>\n");
   printf("<TABLE><TR>\n");
-  printf ("<TD>LED</TD><TD><SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">LED ZERO</SPAN></TD>\n", led_color);
+  printf ("<TD>LED</TD><TD><SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">_0_</SPAN></TD>\n", led_color);
   printf ("<TD>Text</TD><TD>%s</TD>\n", ctx->text);
   printf("</TR></TABLE>\n");
   printf("<TABLE>\n");
@@ -264,6 +264,7 @@ void
   printf("<TD>Speed</TD><TD>%s</TD>\n", parameter_speed);
   printf("<TD>Received</TD><TD>%5d</TD>\n", stat_pdus_received);
   printf("<TD>Sent</TD><TD>%5d</TD>\n", stat_pdus_sent);
+  printf("<TD>NAK</TD><TD>%5d</TD>\n", stat_naks);
   printf("</TR>\n");
   printf("</TABLE>\n");
   printf("<TABLE>\n");
@@ -300,8 +301,8 @@ printf("<TR><TD>Last update</TD><TD>%s</TD></TR>\n", last_update);
 
   printf("<BR><PRE>Statistics:\n%5d ACU Polls %5d PD Acks %5d HASH OK\n",
     stat_acu_polls, stat_pd_acks, stat_hash_ok);
-  printf("%5d HASH Bad %5d NAKS    %5d Seq Errs %5d CRC Errs %5d Checksum Errs %5d Buffer Overflows\n",
-    stat_hash_bad, stat_naks, stat_seq_errs, stat_crc_errs, stat_checksum_errs,
+  printf("%5d HASH Bad %5d Seq Errs %5d CRC Errs %5d Checksum Errs %5d Buffer Overflows\n",
+    stat_hash_bad, stat_seq_errs, stat_crc_errs, stat_checksum_errs,
     stat_buffer_overflows);
   if (strlen(stat_key) > 0)
   {

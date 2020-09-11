@@ -61,6 +61,16 @@ int
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
+
+  /*
+    if it was too long it's noise so dump the whole thing and let the retry
+    process handle it.
+  */
+  if (status EQUALS ST_MSG_TOO_LONG)
+  {
+    osdp_buf->next = 0;
+    status = ST_MSG_TOO_SHORT;
+  };
   if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT) &&
     (status != ST_NOT_MY_ADDR) && (status != ST_SERIAL_IN))
   {
