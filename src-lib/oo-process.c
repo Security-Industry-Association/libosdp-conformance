@@ -5,8 +5,7 @@ int leftover_length;
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)Copyright 2017-2020 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -63,10 +62,9 @@ int
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
 
   /*
-    if it was too long it's noise so dump the whole thing and let the retry
-    process handle it.
+    if it didn't look right to the parser, dump it and let the retry process handle it.
   */
-  if (status EQUALS ST_MSG_TOO_LONG)
+  if ((status EQUALS ST_MSG_TOO_LONG) || (status EQUALS ST_MSG_BAD_SOM))
   {
     osdp_buf->next = 0;
     status = ST_MSG_TOO_SHORT;

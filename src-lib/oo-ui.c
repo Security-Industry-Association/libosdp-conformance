@@ -9,7 +9,6 @@ int leftover_length;
   oosdp_ui - UI routines for open-osdp
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -825,24 +824,6 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
       };
       break;
 
-
-    case OSDP_CMDB_LSTAT:
-      {
-        current_length = 0;
-        /*
-          osdp_LSTAT requires no arguments.
-        */
-        current_length = 0;
-        status = send_message (context,
-          OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
-        osdp_conformance.cmd_lstat.test_status =
-          OCONFORM_EXERCISED;
-        if (context->verbosity > 3)
-          fprintf (stderr, "Requesting Local Status\n");
-      };
-      status = ST_OK;
-      break;
-
     case OSDP_CMDB_LED:
       {
         int details_length;
@@ -903,6 +884,23 @@ fprintf(stderr,
           context->sent_naks ++;
         };
       };
+      break;
+
+    case OSDP_CMDB_LSTAT:
+      {
+        current_length = 0;
+        /*
+          osdp_LSTAT requires no arguments.
+        */
+        current_length = 0;
+        status = send_message (context,
+          OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
+        osdp_conformance.cmd_lstat.test_status =
+          OCONFORM_EXERCISED;
+        if (context->verbosity > 3)
+          fprintf (stderr, "Requesting Local Status\n");
+      };
+      status = ST_OK;
       break;
 
     case OSDP_CMDB_OSTAT:
