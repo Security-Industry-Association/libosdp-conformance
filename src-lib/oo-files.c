@@ -2,7 +2,6 @@
   oosdp_files - osdp file io/
 
   (C)2017-2020 Smithee Solutions LLC
-  (C)2016 Smithee Spelvin Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -129,10 +128,12 @@ int
       delay_sec = delay_nsec/1000000000;
       delay_nsec = delay_nsec - (delay_sec * 1000000000);
     };
-
-    delay_time.tv_sec = delay_sec;
-    delay_time.tv_nsec = delay_nsec;
-    (void) nanosleep(&delay_time, NULL);
+    if (delay_nsec > 0)
+    {
+      delay_time.tv_sec = delay_sec;
+      delay_time.tv_nsec = delay_nsec;
+      (void) nanosleep(&delay_time, NULL);
+    };
 
     // if there's something there treat it like a transfer in progress
 
@@ -141,6 +142,11 @@ int
       // continue with transfer
       status = ST_OK;
       ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
+    };
+    if (ctx->xferctx.total_sent EQUALS ctx->xferctx.total_length)
+    {
+      ctx->xferctx.state = OSDP_XFER_STATE_FINISHING;
+      status = ST_OSDP_FILEXFER_WRAPUP;
     };
 
     // if there's nothing there treat it like we're finishing
@@ -161,6 +167,12 @@ int
   case OSDP_FTSTAT_PROCESSED:
     fprintf(stderr, "FTSTAT Detail: %02x (\"processed\")\n", filetransfer_status);
     ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
+
+    if (ctx->xferctx.total_sent EQUALS ctx->xferctx.total_length)
+    {
+      ctx->xferctx.state = OSDP_XFER_STATE_FINISHING;
+      status = ST_OSDP_FILEXFER_WRAPUP;
+    };
     break;
 
   default:
@@ -288,6 +300,97 @@ int
   return(ST_OK);
 
 } /* oo_save_parameters */
+
+
+int
+  osdp_send_filetransfer
+    (OSDP_CONTEXT *ctx)
+
+{ /* osdp_send_filetransfer */
+
+  int current_length;
+  OSDP_HDR_FILETRANSFER *ft;
+  int size_to_read;
+  int status;
+  int status_io;
+  int transfer_send_size;
+  unsigned char xfer_buffer [OSDP_BUF_MAX];
+
+
+  status = ST_OK;
+
+  if (ctx->verbosity > 3)
+    fprintf (stderr, "File Transfer Offset %d. Length %d Max %d\n",
+      ctx->xferctx.current_offset, ctx->xferctx.current_send_length,
+      ctx->xferctx.total_length);
+  if (status EQUALS ST_OK)
+  {
+    memset (xfer_buffer, 0, sizeof(xfer_buffer));
+    ft = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
+
+    // if we're finishing up send a benign message
+    // L=0 Off=whole-size Tot=whole-size
+    if (ctx->xferctx.state EQUALS OSDP_XFER_STATE_FINISHING)
+    {
+      transfer_send_size = 1 + sizeof(*ft); // just sending a header
+      memset(ft, 0, sizeof(*ft));
+      osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
+      ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+      osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtOffset);
+      current_length = 0;
+      status = send_message (ctx,
+        OSDP_FILETRANSFER, p_card.addr, &current_length,
+        transfer_send_size, (unsigned char *)ft);
+    }
+    else
+    {
+    // load data from file starting at msg->FtData
+
+    if (ctx->xferctx.current_send_length)
+      size_to_read = ctx->xferctx.current_send_length;
+    else
+      size_to_read = ctx->max_message;
+    size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
+    status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,
+      ctx->xferctx.xferf);
+    if (status_io > 0)
+      size_to_read = status_io;
+    if (status_io <= 0)
+      status = ST_OSDP_FILEXFER_READ;
+
+    if (status EQUALS ST_OK)
+    {
+
+      // update what we've sent
+
+      ctx->xferctx.total_sent = ctx->xferctx.total_sent + size_to_read;
+
+      // load data length into FtSizeTotal (little-endian)
+      osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
+
+      ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+
+      osdp_doubleByte_to_array(size_to_read, ft->FtFragmentSize);
+      osdp_quadByte_to_array(ctx->xferctx.current_offset, ft->FtOffset);
+
+      transfer_send_size = size_to_read;
+      transfer_send_size = transfer_send_size - 1 + sizeof (*ft);
+      current_length = 0;
+      status = send_message_ex(ctx, OSDP_FILETRANSFER, p_card.addr, &current_length,
+        transfer_send_size, (unsigned char *)ft,
+        OSDP_SEC_SCS_17, 0, NULL);
+
+      // after the send update the current offset
+      ctx->xferctx.current_offset = ctx->xferctx.current_offset + size_to_read;
+
+      // we're transferring.  set the state to show that
+      ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
+    };
+    }; // end else real filetransfer
+  };
+  return (status);
+
+} /* osdp_send_filetransfer */
 
 
 int

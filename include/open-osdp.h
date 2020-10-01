@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (80)
-#define OSDP_VERSION_BUILD ( 5)
+#define OSDP_VERSION_MINOR (81)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
@@ -383,6 +383,7 @@ typedef struct osdp_context_filetransfer
 {
   unsigned int current_offset;
   unsigned int total_length;
+  unsigned int total_sent;
   unsigned short int current_send_length;
   char filename [1024];
   FILE *xferf;

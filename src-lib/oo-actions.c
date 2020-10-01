@@ -227,9 +227,11 @@ int
   int status;
 
 
+  status = ST_OK;
   osdp_test_set_status(OOC_SYMBOL_cmd_filetransfer, OCONFORM_EXERCISED);
   osdp_test_set_status(OOC_SYMBOL_resp_ftstat, OCONFORM_EXERCISED);
   ftstat_message = (OSDP_HDR_FTSTAT *)(msg->data_payload);
+
   status = osdp_ftstat_validate(ctx, ftstat_message);
   (void)oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
@@ -239,13 +241,17 @@ int
     // (and this is ok so reset the status)
     status = ST_OK;
   };
+fprintf(stderr, "DEBUG: a status in action_osdp_FTSTAT %d.\n", status);
   if (status EQUALS ST_OSDP_FILEXFER_WRAPUP)
   {
+fprintf(stderr, "DEBUG: b status in action_osdp_FTSTAT %d.\n", status);
     osdp_wrapup_filetransfer(ctx);
+fprintf(stderr, "DEBUG: c status in action_osdp_FTSTAT %d.\n", status);
     status = ST_OK;
   }
   else
   {
+fprintf(stderr, "DEBUG: d status in action_osdp_FTSTAT %d.\n", status);
     if (status EQUALS ST_OK)
   {
     // if more send more
@@ -260,6 +266,7 @@ fprintf(stderr, "t=%d o=%d\n",
 
     if ((ctx->xferctx.total_length EQUALS 0) || (ctx->xferctx.total_length EQUALS ctx->xferctx.current_offset))
     {
+fprintf(stderr, "DEBUG: wrapup\n");fflush(ctx->log);
       osdp_wrapup_filetransfer(ctx);
       status = osdp_send_filetransfer(ctx); // will send benign msg
     };

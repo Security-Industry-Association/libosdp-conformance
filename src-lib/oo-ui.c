@@ -400,7 +400,6 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
     case OSDP_CMDB_TRANSFER:
       {
         OSDP_HDR_FILETRANSFER *file_transfer;
-        FILE *osdp_data_file;
         int size_to_read;
         int status_io;
         int transfer_send_size;
@@ -418,13 +417,13 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         fprintf(context->log, "  File transfer: file %s\n",
           context->xferctx.filename);
 
-        osdp_data_file = fopen (context->xferctx.filename, "r");
-        if (osdp_data_file EQUALS NULL)
+        context->xferctx.xferf = fopen (context->xferctx.filename, "r");
+        if (context->xferctx.xferf EQUALS NULL)
         {
           fprintf(context->log, "  local open failed, errno %d\n", errno);
           strcpy(context->xferctx.filename, "/opt/osdp-conformance/etc/osdp_data_file");
-          osdp_data_file = fopen (context->xferctx.filename, "r");
-          if (osdp_data_file EQUALS NULL)
+          context->xferctx.xferf = fopen (context->xferctx.filename, "r");
+          if (context->xferctx.xferf EQUALS NULL)
           {
             fprintf(context->log, "SEND: data file not found (checked %s as last resort)\n",
               context->xferctx.filename);
@@ -447,7 +446,6 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         {
           struct stat datafile_status;
 
-          context->xferctx.xferf = osdp_data_file;
           stat(context->xferctx.filename, &datafile_status);
           fprintf(context->log,
             "  FIle transfer: data file %s size %d.\n",
@@ -477,7 +475,9 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
           size_to_read = context->max_message;
           size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
 fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
-          status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, osdp_data_file);
+memset(&(file_transfer->FtData), 0, size_to_read);
+status_io = 120;
+//          status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, context->xferctx.xferf);
 
           // if what's left is less than allowed size, adjust
 
@@ -485,6 +485,7 @@ fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
             size_to_read = status_io;
 
           file_transfer->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+          context->xferctx.total_sent = size_to_read;
           osdp_doubleByte_to_array(size_to_read, file_transfer->FtFragmentSize);
           osdp_quadByte_to_array(context->xferctx.total_length, file_transfer->FtSizeTotal);
           osdp_quadByte_to_array(context->xferctx.current_offset, file_transfer->FtOffset); 
@@ -497,9 +498,9 @@ fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
           transfer_send_size = size_to_read;
           transfer_send_size = transfer_send_size - 1 + sizeof (*file_transfer);
 fprintf(stderr, "xfer size %d.\n", transfer_send_size);
-          status = send_message (context,
-            OSDP_FILETRANSFER, p_card.addr, &current_length,
-            transfer_send_size, (unsigned char *)file_transfer);
+          status = send_message_ex(context, OSDP_FILETRANSFER, p_card.addr, &current_length,
+            transfer_send_size, (unsigned char *)file_transfer,
+          OSDP_SEC_SCS_17, 0, NULL);
 
           // after the send update the current offset
           context->xferctx.current_offset = context->xferctx.current_offset + size_to_read;

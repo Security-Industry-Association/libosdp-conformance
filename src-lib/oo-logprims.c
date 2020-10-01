@@ -330,11 +330,15 @@ void
   struct timespec current_time_fine;
   FILE *tf;
 
+
+fprintf(stderr, "DEBUG: osdp_trace_dump top\n");
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   tf = fopen(OSDP_TRACE_FILE, "a+");
   if (tf)
   {
     char *tag;
+
+fprintf(stderr, "DEBUG: osdp_trace_dump tracing\n");
     tag = "in";
     if (ctx->role EQUALS OSDP_ROLE_MONITOR)
       tag = "trace";
@@ -352,10 +356,12 @@ void
         OSDP_TRACE_VERSION_0, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
     fflush(tf);
     fclose(tf);
+fprintf(stderr, "DEBUG: osdp_trace_dump closed\n");
   };
 
   if (strlen(trace_out_buffer) > 0)
   {
+fprintf(stderr, "DEBUG: osdp_trace_dump dumping\n");
     fprintf(ctx->log,
 "\nOUTPUT Trace: %s\n", trace_out_buffer);
     trace_out_buffer [0] = 0;
