@@ -66,6 +66,7 @@ int
   */
   if ((status EQUALS ST_MSG_TOO_LONG) || (status EQUALS ST_MSG_BAD_SOM))
   {
+    context.dropped_octets = context.dropped_octets + osdp_buf->next;
     osdp_buf->next = 0;
     status = ST_MSG_TOO_SHORT;
   };

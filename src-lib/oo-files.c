@@ -465,6 +465,8 @@ int
     fprintf(sf,
 "\"pd-naks\" : \"%d\",", ctx->sent_naks);
     fprintf(sf,
+"\"dropped\" : \"%d\",", ctx->dropped_octets);
+    fprintf(sf,
 "\"seq-bad\" : \"%d\",", ctx->seq_bad);
     fprintf (sf,
 "\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);

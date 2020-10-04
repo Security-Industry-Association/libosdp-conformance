@@ -3,7 +3,6 @@ extern int pending_response_length;
   open-osdp - RS-485 implementation of OSDP protocol
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -372,13 +371,17 @@ if (context.verbosity > 9)
           if (osdp_buf.next EQUALS 1)
           {
             if (!(osdp_buf.buf [0] EQUALS C_SOM))
+            {
+              context.dropped_octets = context.dropped_octets + osdp_buf.next;
               osdp_buf.next = 0;
 // zzz move up one byte
+            };
           };
         }
         else
         {
           fprintf(context.log, "Serial Overflow, resetting input buffer\n");
+          context.dropped_octets = context.dropped_octets + osdp_buf.next;
           osdp_buf.overflow ++;
           osdp_buf.next = 0; 
         };

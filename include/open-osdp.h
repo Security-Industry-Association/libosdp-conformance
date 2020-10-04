@@ -501,6 +501,7 @@ typedef struct osdp_context
   int acu_polls;
   int pd_acks;
   int sent_naks;
+  int dropped_octets;
   int crc_errs;
   int checksum_errs;
   int hash_ok;
