@@ -731,6 +731,7 @@ cmd->command = OSDP_CMD_NOOP;
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         led_ctl->perm_off_time = i;
+fprintf(ctx->log, "DEBUG: perf_off_time %d.\n", led_ctl->perm_off_time);
       };
       value = json_object_get (root, "perm-off-color");
       if (json_is_string (value))

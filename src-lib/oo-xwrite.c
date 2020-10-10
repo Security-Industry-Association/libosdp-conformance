@@ -1,7 +1,7 @@
 /*
   oo-xwrite - extended write and extended reader functions
 
-  (C)Copyright 2019 Smithee Solutions LLC
+  (C)Copyright 2020 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -55,6 +55,7 @@ int
       sprintf(tlogmsg,
 "Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
         *(msg->data_payload + 2), *(msg->data_payload + 3));
+      status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
       system(cmd);
     };
@@ -85,11 +86,6 @@ int
     };
   };
 
-#if 0
-    fprintf (ctx->log, "Unknown RAW CARD DATA (%d. bits) first byte %02x\n %s\n",
-      bits, *(msg->data_payload+4), hstr);
-
-#endif
   return (status);
 
 } /* action_osdp_XRD */
