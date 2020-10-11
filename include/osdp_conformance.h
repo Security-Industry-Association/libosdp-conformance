@@ -2,7 +2,6 @@
   osdp_conformance.h - conformance metrics per profiles
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -62,24 +61,25 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_060_23_02          "060-23-02" // genauth after raw
 #define OOC_SYMBOL_cmd_crauth         "060-24-01"
 #define OOC_SYMBOL_cmd_filetransfer   "060-25-01"
-#define OOC_SYMBOL_rep_ack            "070-01-01"
-#define OOC_SYMBOL_resp_ostat_ack     "070-01-02"
-#define OOC_SYMBOL_rep_nak            "070-02-01"
-#define OOC_SYMBOL_rep_device_ident   "070-03-01"
-#define OOC_SYMBOL_rep_pdid_check     "070-03-02"
-#define OOC_SYMBOL_rep_device_capas   "070-04-01"
-#define OOC_SYMBOL_resp_lstatr        "070-05-01"
-#define OOC_SYMBOL_resp_lstatr_tamper "070-05-02"
-#define OOC_SYMBOL_resp_lstatr_power  "070-05-03"
-#define OOC_SYMBOL_rep_raw            "070-09-01"
-#define OOC_SYMBOL_resp_com           "070-12-01"
-#define OOC_SYMBOL_resp_ccrypt        "070-15-01"
-#define OOC_SYMBOL_resp_rmac_i        "070-16-01"
-#define OOC_SYMBOL_resp_busy          "070-18-01"
+
+#define OOC_SYMBOL_rep_ack            "070-02-01"
+#define OOC_SYMBOL_resp_ostat_ack     "070-02-02"
+#define OOC_SYMBOL_rep_nak            "070-03-01"
+#define OOC_SYMBOL_rep_device_ident   "070-04-01"
+#define OOC_SYMBOL_rep_pdid_check     "070-04-02"
+#define OOC_SYMBOL_rep_device_capas   "070-05-01"
+#define OOC_SYMBOL_resp_lstatr        "070-06-01"
+#define OOC_SYMBOL_resp_lstatr_tamper "070-06-02"
+#define OOC_SYMBOL_resp_lstatr_power  "070-06-03"
+#define OOC_SYMBOL_rep_raw            "070-10-01"
+#define OOC_SYMBOL_resp_com           "070-13-01"
+#define OOC_SYMBOL_resp_ccrypt        "070-16-01"
+#define OOC_SYMBOL_resp_rmac_i        "070-17-01"
+#define OOC_SYMBOL_resp_busy          "070-19-01"
 #define OOC_SYMBOL_resp_genauthr      "070-21-01"
 #define OOC_SYMBOL_resp_crauthr       "070-22-01"
-#define OOC_SYMBOL_resp_mfgerrr       "070-23-01"
-#define OOC_SYMBOL_resp_ftstat        "070-24-01"
+#define OOC_SYMBOL_resp_mfgerrr       "070-24-01"
+#define OOC_SYMBOL_resp_ftstat        "070-25-01"
 
 typedef struct osdp_interop_assessment
 {
@@ -157,7 +157,6 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_keyset;
   OSDP_CONFORM cmd_chlng;
   OSDP_CONFORM cmd_scrypt;
-  //OSDP_CONFORM cmd_cont;                // 3-19-1
   OSDP_CONFORM cmd_acurxsize;
   OSDP_CONFORM cmd_mfg;                 // 3-20-1
   OSDP_CONFORM cmd_stop_multi;          // 3-21-1
