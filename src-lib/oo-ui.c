@@ -2,6 +2,8 @@ extern int pending_response_length;
 extern unsigned char pending_response_data [1500];
 extern unsigned char pending_response;
 
+char file_transfer_buffer [2048];
+
 unsigned char leftover_command;
 unsigned char leftover_data [4*1024];
 int leftover_length;
@@ -403,7 +405,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         int size_to_read;
         int status_io;
         int transfer_send_size;
-        unsigned char xfer_buffer [OSDP_BUF_MAX];
+        static unsigned char xfer_buffer [OSDP_BUF_MAX];
 
 
         status = ST_OK;
@@ -476,8 +478,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
           size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
 fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
 memset(&(file_transfer->FtData), 0, size_to_read);
-status_io = 120;
-//          status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, context->xferctx.xferf);
+          status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, context->xferctx.xferf);
 
           // if what's left is less than allowed size, adjust
 

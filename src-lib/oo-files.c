@@ -121,14 +121,24 @@ int
 
     // if it's ok and there's a delay then pause right here.
 
+    delay_sec = 0;
+
+// DEBUG: fixme: MS_IN_NS blew up.  1000l*1000l maybe?
+
 #define MS_IN_NS (1000*1000)
-    delay_nsec = filetransfer_delay * MS_IN_NS;
+delay_nsec = filetransfer_delay;
+fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
+delay_nsec = delay_nsec * 1000;
+fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
+delay_nsec = delay_nsec * 1000;
+fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
+//    delay_nsec = filetransfer_delay * MS_IN_NS;
     if (delay_nsec > 999999999)
     {
       delay_sec = delay_nsec/1000000000;
       delay_nsec = delay_nsec - (delay_sec * 1000000000);
     };
-    if (delay_nsec > 0)
+    if (filetransfer_delay > 0)
     {
       delay_time.tv_sec = delay_sec;
       delay_time.tv_nsec = delay_nsec;
@@ -206,6 +216,8 @@ void
 
 { /* osdp_wrapup_filetransfer */
 
+fflush(ctx->log);
+fprintf(stderr, "DEBUG: osdp_wrapup_filetransfer xferf %lx\n", (unsigned long)(ctx->xferctx.xferf));
   fclose(ctx->xferctx.xferf);
   fprintf(ctx->log, "  File transfer: finished, total length was %d.\n",
     ctx->xferctx.total_length);

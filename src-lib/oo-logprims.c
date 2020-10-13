@@ -2,7 +2,6 @@
   oo-logprims - open osdp logging sub-functions
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -331,19 +330,24 @@ void
   FILE *tf;
 
 
-fprintf(stderr, "DEBUG: osdp_trace_dump top\n");
+fprintf(stderr, "DEBUG: penab %d olen %ld ilen %ld\n",
+  print_enable, strlen(trace_out_buffer), strlen(trace_in_buffer));
+
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   tf = fopen(OSDP_TRACE_FILE, "a+");
+//tf = NULL;
   if (tf)
   {
     char *tag;
 
-fprintf(stderr, "DEBUG: osdp_trace_dump tracing\n");
     tag = "in";
     if (ctx->role EQUALS OSDP_ROLE_MONITOR)
       tag = "trace";
 
-    if (strlen(trace_out_buffer) > 0)
+    if (strlen(trace_out_buffer) > 0) fprintf(stderr, "DEBUG: tout %ld.\n", strlen(trace_out_buffer));
+    if (strlen(trace_in_buffer) > 0) fprintf(stderr, "DEBUG:  tin %ld.\n", strlen(trace_in_buffer));
+{
+if (strlen(trace_out_buffer) > 0)
       fprintf(tf,
 "{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"out\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
         current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_out_buffer,
@@ -354,14 +358,13 @@ fprintf(stderr, "DEBUG: osdp_trace_dump tracing\n");
 "{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"%s\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
         current_time_fine.tv_sec, current_time_fine.tv_nsec, tag, trace_in_buffer,
         OSDP_TRACE_VERSION_0, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
+};
     fflush(tf);
     fclose(tf);
-fprintf(stderr, "DEBUG: osdp_trace_dump closed\n");
   };
 
   if (strlen(trace_out_buffer) > 0)
   {
-fprintf(stderr, "DEBUG: osdp_trace_dump dumping\n");
     fprintf(ctx->log,
 "\nOUTPUT Trace: %s\n", trace_out_buffer);
     trace_out_buffer [0] = 0;
