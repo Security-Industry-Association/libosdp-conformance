@@ -482,7 +482,7 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
 
     example:
       "command" : "genauth"
-      "template" : "witness" or "challenge" or "060-23-02" 0r "060-zz-zz"
+      "template" : "witness" or "challenge" or "060-24-02" 0r "060-25-02"
       "keyref" : "9E" 
         (or "9e" meaning card auth key - SP800-73-4 Part 1 Page 19 Table 4b.)
       "algoref" : "07"
@@ -501,9 +501,13 @@ fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
       value = json_object_get (root, "template");
       if (json_is_string (value))
       {
-        if (0 EQUALS strcmp("060-23-02", json_string_value (value)))
+        if (0 EQUALS strcmp("060-24-02", json_string_value (value)))
         {
-          cmd->command = OSDP_CMDB_CONFORM_060_23_02;
+          cmd->command = OSDP_CMDB_CONFORM_060_24_02; // challenge-after-raw
+        };
+        if (0 EQUALS strcmp("060-25-02", json_string_value (value)))
+        {
+          cmd->command = OSDP_CMDB_CONFORM_060_25_02; // witness-after-raw
         };
         if (0 EQUALS strcmp("challenge", json_string_value (value)))
         {

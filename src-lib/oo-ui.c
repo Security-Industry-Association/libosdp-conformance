@@ -126,13 +126,22 @@ exit(-1);
       status = ST_OK;
       break;
 
-    case OSDP_CMDB_CONFORM_060_23_02:
+    case OSDP_CMDB_CONFORM_060_24_02:
       status = ST_OK;
-      strcpy (context->test_in_progress, "060-23-02"); // genauth-after-raw
+      strcpy (context->test_in_progress, "060-24-02"); // genauth-after-raw
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)
-        fprintf (stderr, "Sending osdp_GENAUTH after next osdp_RAW\n");
+        fprintf (context->log, "Sending osdp_GENAUTH after next osdp_RAW\n");
+      break;
+
+    case OSDP_CMDB_CONFORM_060_25_02:
+      status = ST_OK;
+      strcpy (context->test_in_progress, "060-25-02"); // crauth-after-raw
+      memcpy(context->test_details, details, details_length);
+      context->test_details_length = details_length;
+      if (context->verbosity > 2)
+        fprintf (context->log, "Sending osdp_CRAUTH after next osdp_RAW\n");
       break;
 
     case OSDP_CMDB_CONFORM_2_2_1:

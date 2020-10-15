@@ -330,8 +330,11 @@ void
   FILE *tf;
 
 
-fprintf(stderr, "DEBUG: penab %d olen %ld ilen %ld\n",
-  print_enable, strlen(trace_out_buffer), strlen(trace_in_buffer));
+if (ctx->verbosity > 9)
+{
+  fprintf(stderr, "DEBUG: penab %d olen %ld ilen %ld\n",
+    print_enable, strlen(trace_out_buffer), strlen(trace_in_buffer));
+}
 
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   tf = fopen(OSDP_TRACE_FILE, "a+");

@@ -5,7 +5,6 @@ unsigned char pending_response;
   oosdp-actions - open osdp action routines
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -909,7 +908,9 @@ int bits_to_print;
     }; // not encrypted
   };
 
-  if (0 EQUALS strcmp (ctx->test_in_progress, "060-23-02"))
+  // if a genauth-after-raw was requested, do it now.
+
+  if (0 EQUALS strcmp (ctx->test_in_progress, "060-24-02"))
   {
     int current_length;
     unsigned char details [OSDP_OFFICIAL_MSG_MAX];
@@ -938,6 +939,44 @@ int bits_to_print;
         (ctx, OSDP_GENAUTH, p_card.addr, &current_length, payload_length, payload,
         OSDP_SEC_SCS_17, 0, NULL);
 fprintf(stderr, "DEBUG: give GENAUTH a chance...\n"); sleep(5);
+    };
+  };
+
+  // if a crnauth-after-raw was requested, do it now.
+
+  if (0 EQUALS strcmp (ctx->test_in_progress, "060-25-02"))
+  {
+    int current_length;
+    unsigned char details [OSDP_OFFICIAL_MSG_MAX];
+    int details_length;
+    unsigned char payload [OSDP_OFFICIAL_MSG_MAX];
+    int payload_length;
+
+
+    memset(details, 0, sizeof(details));
+    details_length = 270; // estimated null payload ... //sizeof(details);
+    if (ctx->test_details_length > 0)
+    {
+      if (ctx->test_details_length < OSDP_OFFICIAL_MSG_MAX)
+      {
+        memcpy(details, ctx->test_details, ctx->test_details_length);
+        details_length = ctx->test_details_length;
+        ctx->test_details_length = 0;  // it's been consumed.
+      };
+    };
+
+    // build up the payload.  The SDU looks the same for genauth and crauth so
+    // we can use the same routine and just send a different command.
+
+    payload_length = sizeof(payload);
+    status = oo_build_genauth(ctx, payload, &payload_length, details, details_length);
+    if (status EQUALS ST_OK)
+    {
+      current_length = 0;
+      status = send_message_ex
+        (ctx, OSDP_CRAUTH, p_card.addr, &current_length, payload_length, payload,
+        OSDP_SEC_SCS_17, 0, NULL);
+fprintf(stderr, "DEBUG: give CRAUTH a chance...\n"); sleep(5);
     };
   };
 
