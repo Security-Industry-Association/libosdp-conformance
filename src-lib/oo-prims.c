@@ -180,6 +180,8 @@ int
       ret_cmd = OSDP_CMDB_BIOMATCH;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
+    if (0 EQUALS strcmp(command, "piv-data-get"))
+      ret_cmd = OSDP_CMDB_PIV_DATA_GET;
     if (0 EQUALS strcmp(command, "polling"))
       ret_cmd = OSDP_CMDB_POLLING;
     if (0 EQUALS strcmp(command, "reset"))

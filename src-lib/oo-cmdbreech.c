@@ -117,6 +117,13 @@ int
     status = ST_OK;
     break;
 
+
+  case OSDP_CMDB_PIV_DATA_GET:
+    cmd->command = OSDP_CMD_PIV_DATA_GET;
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   // "polling" toggles polling enabled and sets sequence to 0
   // polling action=reset always sends seq 0
   // polling action=resume resumes sequence numbers after next message goes out the door

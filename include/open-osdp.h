@@ -118,6 +118,7 @@
 #define OSDP_FILETRANSFER (0x7C)
 #define OSDP_MFG          (0x80)
 #define OSDP_XWR          (0xA1)
+#define OSDP_PIVDATA      (0xA3)
 #define OSDP_GENAUTH      (0xA4)
 #define OSDP_CRAUTH       (0xA5)
 #define OSDP_KEEPACTIVE   (0xA7)
@@ -202,6 +203,7 @@
 #define OSDP_CMDB_BIOMATCH          (1044)
 #define OSDP_CMDB_CONFORM_060_24_02 (1045)
 #define OSDP_CMDB_CONFORM_060_25_02 (1046)
+#define OSDP_CMDB_PIV_DATA_GET      (1047)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -226,7 +228,7 @@
 #define OSDP_CMD_SET_PD       (82)
 #define OSDP_CMD_BIOREAD      (83)
 #define OSDP_CMD_BIOMATCH     (84)
-
+#define OSDP_CMD_PIV_DATA_GET (85)
 #define zzOSDP_CMD_XWRITE       (83)
 
 #define OSDP_OPT_CP (101)
@@ -646,6 +648,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_OUT          (16)
 #define OOSDP_MSG_PD_CAPAS     (4)
 #define OOSDP_MSG_PD_IDENT     (1)
+#define OOSDP_MSG_PIVDATA      (1304)
 #define OOSDP_MSG_RAW          (25)
 #define OOSDP_MSG_RMAC_I       (102)
 #define OOSDP_MSG_SCRYPT       (101)
@@ -1028,6 +1031,7 @@ int oosdp_print_message_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogm
 int oosdp_print_message_KEYSET(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_LED(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_PD_IDENT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
+int oosdp_print_message_PIVDATA(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_RAW(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_RMAC_I(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_SCRYPT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);

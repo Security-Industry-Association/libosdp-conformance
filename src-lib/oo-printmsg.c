@@ -2,7 +2,6 @@
   oo-printmsg - open osdp message printing routines
 
   (C)Copyright 2017-2019 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -240,6 +239,27 @@ int
   return(status);
 
 } /* oosdp_print_message_PD_IDENT */
+
+
+int
+  oosdp_print_message_PIVDATA
+  (OSDP_CONTEXT *ctx,
+  OSDP_MSG *osdp_msg,
+  char *tlogmsg)
+{ /* oosdp_print_message_PIVDATA */
+
+  int status;
+
+
+  status = ST_OK;
+  tlogmsg [0] = 0;
+  sprintf(tlogmsg,
+    "  PIV Data Get: Object ID %02x%02x%02x Element ID %02x Offset %02d.\n",
+    *(osdp_msg->data_payload+0), *(osdp_msg->data_payload+1), *(osdp_msg->data_payload+2),
+    *(osdp_msg->data_payload+3), *(osdp_msg->data_payload+4));
+  return(status);
+
+} /* oosdp_print_message_PIVDATA */
 
 
 int
