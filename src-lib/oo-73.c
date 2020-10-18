@@ -194,7 +194,17 @@ int
   action_osdp_PIVDATAR
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
-{ return(-1); }
+{ /* action_osdp_PIVDATAR */
+
+  int status;
+
+
+  status = ST_OK;
+  fprintf(ctx->log, "DEBUG: osdp_CRAUTHR stub.\n");
+  dump_buffer_log(ctx, "action_osdp_PIVDATAR ", msg->data_payload, msg->data_length);
+  return(status);
+
+} /* action_osdp_PIVDATAR */
 
 
 /*
