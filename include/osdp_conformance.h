@@ -57,10 +57,12 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_mfg            "060-18-01"
 #define OOC_SYMBOL_cmd_acurxsize      "060-19-01"
 #define OOC_SYMBOL_cmd_keepactive     "060-20-01"
-#define OOC_SYMBOL_cmd_genauth        "060-23-01"
-#define OOC_SYMBOL_060_23_02          "060-23-02" // genauth after raw
-#define OOC_SYMBOL_cmd_crauth         "060-24-01"
-#define OOC_SYMBOL_cmd_filetransfer   "060-25-01"
+#define OOC_SYMBOL_cmd_pivdata        "060-23-01"
+#define OOC_SYMBOL_cmd_genauth        "060-24-01"
+#define OOC_SYMBOL_060_24_02          "060-24-02" // genauth after raw
+#define OOC_SYMBOL_cmd_crauth         "060-25-01"
+#define OOC_SYMBOL_060_25_02          "060-25-02" // crauth after raw
+#define OOC_SYMBOL_cmd_filetransfer   "060-26-01"
 
 #define OOC_SYMBOL_rep_ack            "070-02-01"
 #define OOC_SYMBOL_resp_ostat_ack     "070-02-02"
@@ -76,6 +78,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_ccrypt        "070-16-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-17-01"
 #define OOC_SYMBOL_resp_busy          "070-19-01"
+#define OOC_SYMBOL_resp_pivdatar      "070-20-01"
 #define OOC_SYMBOL_resp_genauthr      "070-21-01"
 #define OOC_SYMBOL_resp_crauthr       "070-22-01"
 #define OOC_SYMBOL_resp_mfgerrr       "070-24-01"
@@ -165,6 +168,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_keepactive;          // 3-24-2
   OSDP_CONFORM cmd_crauth;
   OSDP_CONFORM cmd_genauth;
+  OSDP_CONFORM cmd_pivdata;
 
   // section 7
 
@@ -197,6 +201,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_ftstat;
   OSDP_CONFORM resp_genauthr;
   OSDP_CONFORM resp_crauthr;
+  OSDP_CONFORM resp_pivdatar;
 } OSDP_INTEROP_ASSESSMENT;
 
 #define PARAM_MMT (8) // minimum message thresshold

@@ -474,6 +474,7 @@ fprintf(stderr, "lstat 1000\n");
         strcpy (tlogmsg2, "osdp_LSTATR");
       break;
 
+#if 0
     case OSDP_MFG:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
@@ -481,6 +482,7 @@ fprintf(stderr, "lstat 1000\n");
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_MFG");
       break;
+#endif
 
     case OSDP_MFGERRR:
       m->data_payload = m->cmd_payload + 1;
@@ -544,6 +546,24 @@ fprintf(stderr, "lstat 1000\n");
         osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
 
       osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
+      break;
+
+    case OSDP_PIVDATA:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_PIVDATA");
+      osdp_test_set_status(OOC_SYMBOL_cmd_pivdata, OCONFORM_EXERCISED);
+      break;
+
+    case OSDP_PIVDATAR:
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      if (context->verbosity > 2)
+        strcpy (tlogmsg2, "osdp_PIVDATAR");
+      osdp_test_set_status(OOC_SYMBOL_resp_pivdatar, OCONFORM_EXERCISED);
       break;
 
     case OSDP_RAW:
@@ -1727,6 +1747,14 @@ printf ("MMSG DONE\n");
       context->last_was_processed = 1;
 
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+      break;
+
+    case OSDP_PIVDATA:
+      status = action_osdp_PIVDATA(context, msg);
+      break;
+
+    case OSDP_PIVDATAR:
+      status = action_osdp_PIVDATAR(context, msg);
       break;
 
     case OSDP_XRD:

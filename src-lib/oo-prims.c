@@ -180,8 +180,8 @@ int
       ret_cmd = OSDP_CMDB_BIOMATCH;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
-    if (0 EQUALS strcmp(command, "piv-data-get"))
-      ret_cmd = OSDP_CMDB_PIV_DATA_GET;
+    if (0 EQUALS strcmp(command, "pivdata"))
+      ret_cmd = OSDP_CMDB_PIVDATA;
     if (0 EQUALS strcmp(command, "polling"))
       ret_cmd = OSDP_CMDB_POLLING;
     if (0 EQUALS strcmp(command, "reset"))
@@ -235,11 +235,13 @@ char
     case OSDP_OSTATR: strcpy(cmd_rep_s, "osdp_OSTATR"); break;
     case OSDP_PDCAP:  strcpy(cmd_rep_s, "osdp_PDCAP"); break;
     case OSDP_PDID:   strcpy(cmd_rep_s, "osdp_PDID"); break;
-    case OSDP_RAW:    strcpy(cmd_rep_s, "osdp_RAW"); break;
-    case OSDP_RMAC_I: strcpy(cmd_rep_s, "osdp_RMAC_I"); break;
-    case OSDP_RSTATR: strcpy(cmd_rep_s, "osdp_RSTATR"); break;
-    case OSDP_SCRYPT: strcpy(cmd_rep_s, "osdp_SCRYPT"); break;
-    case OSDP_XRD:    strcpy(cmd_rep_s, "osdp_XRD"); break;
+    case OSDP_PIVDATA:  strcpy(cmd_rep_s, "osdp_PIVDATA"); break;
+    case OSDP_PIVDATAR: strcpy(cmd_rep_s, "osdp_PIVDATAR"); break;
+    case OSDP_RAW:      strcpy(cmd_rep_s, "osdp_RAW"); break;
+    case OSDP_RMAC_I:   strcpy(cmd_rep_s, "osdp_RMAC_I"); break;
+    case OSDP_RSTATR:   strcpy(cmd_rep_s, "osdp_RSTATR"); break;
+    case OSDP_SCRYPT:   strcpy(cmd_rep_s, "osdp_SCRYPT"); break;
+    case OSDP_XRD:      strcpy(cmd_rep_s, "osdp_XRD"); break;
     };
   };
 

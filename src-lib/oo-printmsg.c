@@ -263,6 +263,31 @@ int
 
 
 int
+  oosdp_print_message_PIVDATAR
+  (OSDP_CONTEXT *ctx,
+  OSDP_MSG *osdp_msg,
+  char *tlogmsg)
+{ /* oosdp_print_message_PIVDATA */
+
+  int i;
+  int status;
+
+
+  status = ST_OK;
+  strcpy(tlogmsg, "  PIVDATA Response: ");
+  for (i=0; i<100; i++)
+  {
+    char octet [3];
+    sprintf(octet, "%02x", *(unsigned char *)(osdp_msg->data_payload+i));
+    strcat(tlogmsg, octet);
+  };
+  strcat(tlogmsg, "...");
+  return(status);
+
+} /* oosdp_print_message_PIVDATA */
+
+
+int
   oosdp_print_message_RAW
   (OSDP_CONTEXT *ctx,
   OSDP_MSG *osdp_msg,

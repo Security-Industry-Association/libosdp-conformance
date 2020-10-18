@@ -8,7 +8,7 @@ unsigned char leftover_command;
 unsigned char leftover_data [4*1024];
 int leftover_length;
 /*
-  oosdp_ui - UI routines for open-osdp
+  oo-ui - UI routines for open-osdp
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
 
@@ -399,6 +399,19 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             OSDP_MFG, p_card.addr, &current_length, send_length, data);
         };
         status = ST_OK;
+      };
+      break;
+
+    case OSDP_CMDB_PIVDATA:
+      {
+        unsigned char pivdata_buffer [OSDP_OFFICIAL_MSG_MAX];
+
+        memcpy(pivdata_buffer, details, 6);
+        dump_buffer_log(context, "PIVDATA object,element,offset:", pivdata_buffer, 6);
+        current_length = 0;
+        status = send_message_ex(context, OSDP_PIVDATA, p_card.addr,
+          &current_length, 6, pivdata_buffer,
+          OSDP_SEC_SCS_17, 0, NULL);
       };
       break;
 

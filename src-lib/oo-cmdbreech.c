@@ -55,6 +55,8 @@ int
   json_error_t status_json;
   int status;
   int status_io;
+  unsigned char temp_buffer [6];
+  unsigned short int temp_buffer_length;
   char *test_command;
   char this_command [1024];
   json_t *value;
@@ -117,11 +119,44 @@ int
     status = ST_OK;
     break;
 
+  // getpiv object-id=zzzzzz offset=0000 data-element=qq
 
-  case OSDP_CMDB_PIV_DATA_GET:
-    cmd->command = OSDP_CMD_PIV_DATA_GET;
-    status = enqueue_command(ctx, cmd);
-    cmd->command = OSDP_CMD_NOOP;
+  case OSDP_CMDB_PIVDATA:
+    cmd->command = OSDP_CMDB_PIVDATA;
+
+    // details:
+    // first 3 octets are the object id
+    // fourth octet is the data element
+    // fifth element is 2 bytes, offset into data element.
+
+    parameter = json_object_get(root, "object-id");
+    if (json_is_string(parameter))
+    {
+      strcpy(vstr, json_string_value(parameter));
+      temp_buffer_length = sizeof(temp_buffer);
+      status = osdp_string_to_buffer(ctx, vstr, temp_buffer, &temp_buffer_length);
+      memcpy(cmd->details, temp_buffer, 3); // it's the 3-byte oid
+    };
+    parameter = json_object_get(root, "data-element");
+    if (json_is_string(parameter))
+    {
+      strcpy (vstr, json_string_value (parameter));
+      sscanf (vstr, "%x", &i);
+      cmd->details [3] = i;
+    };
+    parameter = json_object_get(root, "offset");
+    if (json_is_string(parameter))
+    {
+      strcpy(vstr, json_string_value(parameter));
+      temp_buffer_length = sizeof(temp_buffer);
+      status = osdp_string_to_buffer(ctx, vstr, temp_buffer, &temp_buffer_length);
+      memcpy((cmd->details)+4, temp_buffer, 2);
+    };
+    if (status EQUALS ST_OK)
+    {
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+    };
     break;
 
   // "polling" toggles polling enabled and sets sequence to 0

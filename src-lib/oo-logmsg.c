@@ -920,6 +920,11 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     status = oosdp_print_message_PIVDATA(&context, msg, tlogmsg);
     break;
 
+  case OOSDP_MSG_PIVDATAR:
+    msg = (OSDP_MSG *)aux;
+    status = oosdp_print_message_PIVDATAR(&context, msg, tlogmsg);
+    break;
+
   case OOSDP_MSG_RAW:
     msg = (OSDP_MSG *) aux;
     status = oosdp_print_message_RAW(&context, msg, tlogmsg);

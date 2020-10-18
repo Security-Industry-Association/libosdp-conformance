@@ -183,6 +183,20 @@ fprintf(ctx->log, "  genauthr payload %02x%02x%02x...\n",
 } /* action_osdp_GENAUTHR */
 
 
+int
+  action_osdp_PIVDATA
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+{ return(-1); }
+
+
+int
+  action_osdp_PIVDATAR
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+{ return(-1); }
+
+
 /*
   oo_build_genauth - fabricates a genauth/crauth payload
 
