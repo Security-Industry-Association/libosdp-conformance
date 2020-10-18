@@ -235,7 +235,6 @@ char
     case OSDP_OSTATR: strcpy(cmd_rep_s, "osdp_OSTATR"); break;
     case OSDP_PDCAP:  strcpy(cmd_rep_s, "osdp_PDCAP"); break;
     case OSDP_PDID:   strcpy(cmd_rep_s, "osdp_PDID"); break;
-    case OSDP_PIVDATA:  strcpy(cmd_rep_s, "osdp_PIVDATA"); break;
     case OSDP_PIVDATAR: strcpy(cmd_rep_s, "osdp_PIVDATAR"); break;
     case OSDP_RAW:      strcpy(cmd_rep_s, "osdp_RAW"); break;
     case OSDP_RMAC_I:   strcpy(cmd_rep_s, "osdp_RMAC_I"); break;
@@ -273,6 +272,7 @@ char
     case OSDP_MFG:          strcpy(cmd_rep_s, "osdp_MFG"); break;
     case OSDP_OSTAT:     strcpy(cmd_rep_s, "osdp_OSTAT"); break;
     case OSDP_OUT:       strcpy(cmd_rep_s, "osdp_OUT"); break;
+    case OSDP_PIVDATA:      strcpy(cmd_rep_s, "osdp_PIVDATA"); break;
     case OSDP_POLL:      strcpy(cmd_rep_s, "osdp_POLL"); break;
     case OSDP_PROMPT:    strcpy(cmd_rep_s, "osdp_PROMPT"); break;
     case OSDP_RSTAT:     strcpy(cmd_rep_s, "osdp_RSTAT"); break;
