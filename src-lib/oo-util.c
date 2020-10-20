@@ -1240,6 +1240,8 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
                 osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
               if (led_ctl->perm_on_color EQUALS 2)
                 osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_EXERCISED);
+              if (led_ctl->perm_on_color EQUALS 3)
+                osdp_test_set_status(OOC_SYMBOL_cmd_led_amber, OCONFORM_EXERCISED);
             };
           led_ctl = led_ctl + sizeof(OSDP_RDR_LED_CTL);
         };

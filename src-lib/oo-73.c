@@ -196,12 +196,14 @@ int
     OSDP_MSG *msg)
 { /* action_osdp_PIVDATAR */
 
+  char details [4*2048]; // ...
   int status;
 
 
   status = ST_OK;
   fprintf(ctx->log, "DEBUG: osdp_CRAUTHR stub.\n");
   dump_buffer_log(ctx, "action_osdp_PIVDATAR ", msg->data_payload, msg->data_length);
+  osdp_test_set_status_ex(OOC_SYMBOL_resp_pivdatar, OCONFORM_EXERCISED, details);
   return(status);
 
 } /* action_osdp_PIVDATAR */

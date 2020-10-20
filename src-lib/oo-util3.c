@@ -336,8 +336,6 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_LED");
 
-//      osdp_conformance.cmd_led.test_status = OCONFORM_EXERCISED;
-
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
       break;
@@ -491,21 +489,28 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_rep_ack, OCONFORM_EXERCISED);
 
-      // if we just got an ack for an ACURXSIZE mark that too.
+      if (ctx->verbosity > 3)
+      {
+        if (ctx->last_command_sent != OSDP_POLL)
+          fprintf(ctx->log, "At ACK last cmd %02x\n", ctx->last_command_sent);
+      };
+
+      // if we just got an ack for (various things) mark them exercised
+
       if (ctx->last_command_sent EQUALS OSDP_ACURXSIZE)
         osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
-
-      // if we just got an ack for an KEEPACTIVE mark that too.
+      if (ctx->last_command_sent EQUALS OSDP_CRAUTH)
+        osdp_test_set_status(OOC_SYMBOL_cmd_crauth, OCONFORM_EXERCISED);
+      if (ctx->last_command_sent EQUALS OSDP_GENAUTH)
+        osdp_test_set_status(OOC_SYMBOL_cmd_genauth, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_KEEPACTIVE)
         osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
-
-      // if we just got an ack for a KEYSET mark that too.
       if (ctx->last_command_sent EQUALS OSDP_KEYSET)
         osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
-
-      // if we just got an ack for an OSTAT mark that too.
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
         osdp_test_set_status(OOC_SYMBOL_resp_ostat_ack, OCONFORM_EXERCISED);
+      if (ctx->last_command_sent EQUALS OSDP_PIVDATA)
+        osdp_test_set_status(OOC_SYMBOL_cmd_pivdata, OCONFORM_EXERCISED);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;

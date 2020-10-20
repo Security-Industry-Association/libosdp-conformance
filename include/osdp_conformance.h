@@ -47,6 +47,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_istat          "060-05-01"
 #define OOC_SYMBOL_cmd_led_red        "060-09-01"
 #define OOC_SYMBOL_cmd_led_green      "060-09-02"
+#define OOC_SYMBOL_cmd_led_amber      "060-09-03"
 #define OOC_SYMBOL_cmd_buz            "060-10-01"
 #define OOC_SYMBOL_cmd_comset         "060-12-01"
 #define OOC_SYMBOL_cmd_bioread        "060-13-01"
@@ -55,14 +56,15 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_chlng          "060-16-01"
 #define OOC_SYMBOL_cmd_scrypt         "060-17-01"
 #define OOC_SYMBOL_cmd_mfg            "060-18-01"
-#define OOC_SYMBOL_cmd_acurxsize      "060-19-01"
-#define OOC_SYMBOL_cmd_keepactive     "060-20-01"
+#define OOC_SYMBOL_cmd_acurxsize      "060-20-01"
+#define OOC_SYMBOL_cmd_keepactive     "060-21-01"
 #define OOC_SYMBOL_cmd_pivdata        "060-23-01"
 #define OOC_SYMBOL_cmd_genauth        "060-24-01"
 #define OOC_SYMBOL_060_24_02          "060-24-02" // genauth after raw
 #define OOC_SYMBOL_cmd_crauth         "060-25-01"
 #define OOC_SYMBOL_060_25_02          "060-25-02" // crauth after raw
 #define OOC_SYMBOL_cmd_filetransfer   "060-26-01"
+#define OOC_SYMBOL_cmd_xwr            "060-27-01"
 
 #define OOC_SYMBOL_rep_ack            "070-02-01"
 #define OOC_SYMBOL_resp_ostat_ack     "070-02-02"
