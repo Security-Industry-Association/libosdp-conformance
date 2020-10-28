@@ -347,8 +347,8 @@ if (ctx->verbosity > 9)
     if (ctx->role EQUALS OSDP_ROLE_MONITOR)
       tag = "trace";
 
-    if (strlen(trace_out_buffer) > 0) fprintf(stderr, "DEBUG: tout %ld.\n", strlen(trace_out_buffer));
-    if (strlen(trace_in_buffer) > 0) fprintf(stderr, "DEBUG:  tin %ld.\n", strlen(trace_in_buffer));
+//    if (strlen(trace_out_buffer) > 0) fprintf(stderr, "DEBUG: tout %ld.\n", strlen(trace_out_buffer));
+//    if (strlen(trace_in_buffer) > 0) fprintf(stderr, "DEBUG:  tin %ld.\n", strlen(trace_in_buffer));
 {
 if (strlen(trace_out_buffer) > 0)
       fprintf(tf,

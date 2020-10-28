@@ -414,7 +414,7 @@ int
       msg = (OSDP_MSG *) aux;
       if (msg->security_block_length > 0)
       {
-        strcat(tlogmsg, "  (KEYPAD message contents encrypted)\n");
+        strcat(tlogmsg, "  (KEEPACTIVE message contents encrypted)\n");
       };
       if (msg->security_block_length EQUALS 0)
       {
@@ -451,10 +451,16 @@ int
         {
           memset(character, 0, sizeof(character));
           character [0] = tmpstr[i];
+
+          // asterisk is DEL (0x7F)
+
           if (tmpstr [i] EQUALS 0x7F)
-            character [0] = '#';
-          if (tmpstr [i] EQUALS 0x0D)
             character [0] = '*';
+
+          // octothorpe is CR (0x0D)
+
+          if (tmpstr [i] EQUALS 0x0D)
+            character [0] = '#';
 
           // if not printable ascii and not already found character
 

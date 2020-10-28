@@ -203,6 +203,8 @@ int
   status = ST_OK;
   fprintf(ctx->log, "DEBUG: osdp_PIVDATAR stub.\n");
   dump_buffer_log(ctx, "action_osdp_PIVDATAR ", msg->data_payload, msg->data_length);
+  sprintf(details, "\"payload-length\":\"%d\",\"payload-first-3\":\"%02x%02x%02x\",",
+    msg->data_length, (msg->data_payload)[0], (msg->data_payload)[1], (msg->data_payload)[2]);
   osdp_test_set_status_ex(OOC_SYMBOL_resp_pivdatar, OCONFORM_EXERCISED, details);
   return(status);
 
