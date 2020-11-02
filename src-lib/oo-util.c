@@ -1522,7 +1522,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       if (context->last_command_sent EQUALS OSDP_LSTAT)
       {
         osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_FAIL);
-        SET_FAIL ((context), "3-5-1");
       };
       // if the PD NAK'd a CAP fail the test.
       if (context->last_command_sent EQUALS OSDP_CAP)

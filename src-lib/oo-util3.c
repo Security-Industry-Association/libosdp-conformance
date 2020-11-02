@@ -499,8 +499,6 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
 
       if (ctx->last_command_sent EQUALS OSDP_ACURXSIZE)
         osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
-      if (ctx->last_command_sent EQUALS OSDP_CRAUTH)
-        osdp_test_set_status(OOC_SYMBOL_cmd_crauth, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_GENAUTH)
         osdp_test_set_status(OOC_SYMBOL_cmd_genauth, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_KEEPACTIVE)
@@ -574,7 +572,8 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_LSTATR");
 
-      //osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_EXERCISED);
+      if (ctx->last_command_sent EQUALS OSDP_LSTAT)
+        osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_EXERCISED);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;

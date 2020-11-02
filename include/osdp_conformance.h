@@ -32,6 +32,7 @@ typedef struct osdp_conform
 
 #define OOC_SYMBOL_physical_interface "050-01-01"
 #define OOC_SYMBOL_signalling         "050-02-01"
+#define OOC_SYMBOL_multibyte_data_encoding "050-05-01"
 #define OOC_SYMBOL_packet_format      "050-09-01"
 #define OOC_SYMBOL_seq_zero           "050-09-02"
 #define OOC_SYMBOL_SOM                "050-09-03"
@@ -107,7 +108,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM timeout_resend;          // 2-4-2
   OSDP_CONFORM busy_resend;             // 2-4-3
   OSDP_CONFORM new_on_busy;             // 2-4-4
-  OSDP_CONFORM multibyte_data_encoding; // 2-5-1
+  OSDP_CONFORM multibyte_data_encoding;
   OSDP_CONFORM packet_size_limits;      // 2-6-1 // stress test ACU to PD
   OSDP_CONFORM packet_size_from_pd;     // 2-6-2
   OSDP_CONFORM packet_size_stress_cp;   // 2-6-3 // stress test PD to ACU

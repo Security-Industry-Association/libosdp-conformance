@@ -137,8 +137,7 @@ int
   if (status EQUALS ST_OK)
   {
     // the message was good.  update conformance status.
-    osdp_conformance.multibyte_data_encoding.test_status =
-      OCONFORM_EXERCISED;
+    osdp_test_set_status(OOC_SYMBOL_multibyte_data_encoding, OCONFORM_EXERCISED);
     if (!(parsed_msg.ctrl & 0x08))
       osdp_conformance.scb_absent.test_status =
         OCONFORM_EXERCISED;
