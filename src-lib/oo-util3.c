@@ -264,7 +264,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       break;
 
     case OSDP_CAP:
-      OSDP_CHECK_CMDREP ("osdp_CAP", cmd_pdcap, 1);
+      OSDP_CHECK_CMDREP ("osdp_CAP", cmd_cap, 1);
       break;
 
     case OSDP_CHLNG:

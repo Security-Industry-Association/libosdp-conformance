@@ -529,7 +529,7 @@ fprintf(stderr, "lstat 1000\n");
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDCAP");
-      osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
       break;
 
@@ -1099,7 +1099,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           OSDP_PDCAP, p_card.addr, &current_length,
             response_length, response_cap,
             current_security, 0, NULL);
-        osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
         osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
       };
       break;
@@ -1526,7 +1526,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       // if the PD NAK'd a CAP fail the test.
       if (context->last_command_sent EQUALS OSDP_CAP)
       {
-        osdp_conformance.cmd_pdcap.test_status = OCONFORM_FAIL;
+        osdp_conformance.cmd_cap.test_status = OCONFORM_FAIL;
         SET_FAIL ((context), "3-3-1");
       };
       // if the PD NAK'd during secure channel set-up then reset out of secure channel

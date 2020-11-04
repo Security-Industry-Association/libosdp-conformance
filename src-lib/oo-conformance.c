@@ -206,12 +206,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.cmd_id.test_status),
       1, 0, 0, 0, 0,
                         "Command: ID"},
-    {         OOC_SYMBOL_cmd_pdcap,
-      &(osdp_conformance.cmd_pdcap.test_status),
+    {         OOC_SYMBOL_cmd_cap,
+      &(osdp_conformance.cmd_cap.test_status),
       1, 0, 0, 0, 0,
                         "Command: PDCAP"},
-    { "060-03-01", &(osdp_conformance.cmd_pdcap.test_status),
-      1, 0, 0, 0, 0, "---" }, // optional in all cases
     { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
       1, 0, 0, 0, 0, "---" }, // optional in all cases
     {         OOC_SYMBOL_cmd_lstat,
@@ -606,7 +604,7 @@ void
     conformance_status (oconf->cmd_id.test_status)));
   LOG_REPORT ((log_string,
 "3-3-1  Peripheral Device Capabilities Req %s",
-    conformance_status (oconf->cmd_pdcap.test_status)));
+    conformance_status (oconf->cmd_cap.test_status)));
   LOG_REPORT ((log_string,
 "3-4-1  Diagnostic Function Request        %s",
     conformance_status (oconf->cmd_diag.test_status)));

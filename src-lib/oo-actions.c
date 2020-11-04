@@ -558,7 +558,7 @@ int
   };
   fprintf(ctx->log, "PD Capabilities response processing complete.\n\n");
   if (ctx->last_command_sent EQUALS OSDP_CAP)
-    osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
   strcat(aux, "\"#\":\"#\"},\n");
   osdp_test_set_status_ex(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED, aux);
 
