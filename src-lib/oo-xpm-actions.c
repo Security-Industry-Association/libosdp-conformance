@@ -46,6 +46,7 @@ int
 { /* action_osdp_KEEPACTIVE */
 
   fprintf(ctx->log, "osdp_KEEPACTIVE called\n");
+  osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
   return(ST_OK);
 
 } /* action_osdp_KEEPACTIVE */

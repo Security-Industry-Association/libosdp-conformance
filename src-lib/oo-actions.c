@@ -642,6 +642,8 @@ int
     {
       strcat(details, "Tamper");
       osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);
+
+      osdp_test_set_status(OOC_SYMBOL_poll_lstatr, OCONFORM_EXERCISED);
     };
     if (ctx->power_report)
     {
@@ -649,6 +651,10 @@ int
         strcat(details, " ");
       strcat(details, "Power");
       osdp_test_set_status(OOC_SYMBOL_resp_lstatr_power, OCONFORM_EXERCISED);
+
+      // and that's an lstatr response to a poll, too.
+
+      osdp_test_set_status(OOC_SYMBOL_poll_lstatr, OCONFORM_EXERCISED);
     };
     osdp_lstat_response_data [ 0] = ctx->tamper;
     osdp_lstat_response_data [ 1] = ctx->power_report;
@@ -987,23 +993,19 @@ fprintf(stderr, "DEBUG: give CRAUTH a chance...\n"); sleep(5);
 
 int
   action_osdp_RSTAT
-    (OSDP_CONTEXT
-      *ctx,
-    OSDP_MSG
-      *msg)
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
 
 { /* action_osdp_RSTAT */
 
-  int
-    current_length;
-  unsigned char
-    osdp_rstat_response_data [1];
-  int
-    status;
+  int current_length;
+  unsigned char osdp_rstat_response_data [1];
+  int status;
 
 
   status = ST_OK;
-  osdp_conformance.cmd_rstat.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
+  osdp_test_set_status(OOC_SYMBOL_resp_rstatr, OCONFORM_EXERCISED);
   osdp_rstat_response_data [ 0] = 1; //hard code to "not connected"
   current_length = 0;
   status = send_message (ctx, OSDP_RSTATR, p_card.addr,
@@ -1034,7 +1036,7 @@ int
 
 
   status = ST_OK;
-  osdp_conformance.cmd_text.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_cmd_text, OCONFORM_EXERCISED);
 
   memset (ctx->text, 0, sizeof (ctx->text));
   text_length = (unsigned char) *(msg->data_payload+5);

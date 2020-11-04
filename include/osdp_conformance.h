@@ -42,20 +42,20 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_SOM_sent           "050-09-12"
 
 #define OOC_SYMBOL_cmd_poll           "060-02-01"
-#define OOC_SYMBOL_poll_lstat         "060-02-02"
+#define OOC_SYMBOL_poll_lstatr        "060-02-02"
 #define OOC_SYMBOL_cmd_id             "060-03-01"
 #define OOC_SYMBOL_cmd_cap            "060-04-01"
 #define OOC_SYMBOL_cmd_lstat          "060-05-01"
 #define OOC_SYMBOL_cmd_istat          "060-06-01"
-// 07 ostat
-// 08 rstat
-// 09 out
+#define OOC_SYMBOL_cmd_ostat          "060-07-01"
+#define OOC_SYMBOL_cmd_rstat          "060-08-01"
+#define OOC_SYMBOL_cmd_out            "060-09-01"
 #define OOC_SYMBOL_cmd_led_red        "060-10-01"
 // 10 02 through 09
 #define OOC_SYMBOL_cmd_led_green      "060-10-04"
 #define OOC_SYMBOL_cmd_led_amber      "060-10-05"
 #define OOC_SYMBOL_cmd_buz            "060-11-01"
-// 12 text
+#define OOC_SYMBOL_cmd_text           "060-12-01"
 #define OOC_SYMBOL_cmd_comset         "060-13-01"
 #define OOC_SYMBOL_cmd_bioread        "060-14-01"
 #define OOC_SYMBOL_cmd_biomatch       "060-15-01"
@@ -82,6 +82,9 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_lstatr        "070-06-01"
 #define OOC_SYMBOL_resp_lstatr_tamper "070-06-02"
 #define OOC_SYMBOL_resp_lstatr_power  "070-06-03"
+#define OOC_SYMBOL_resp_istatr        "070-07-01"
+#define OOC_SYMBOL_resp_ostatr        "070-08-01"
+#define OOC_SYMBOL_resp_rstatr        "070-09-01"
 #define OOC_SYMBOL_rep_raw            "070-10-01"
 #define OOC_SYMBOL_resp_com           "070-13-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-16-01"
@@ -147,7 +150,7 @@ typedef struct osdp_interop_assessment
 
   OSDP_CONFORM cmd_poll;
   OSDP_CONFORM cmd_poll_raw;
-  OSDP_CONFORM cmd_poll_lstat ;
+  OSDP_CONFORM poll_lstatr;
   OSDP_CONFORM cmd_poll_response_4;     // 3-1-4
   OSDP_CONFORM cmd_id;
   OSDP_CONFORM cmd_cap;
@@ -190,9 +193,9 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_lstatr;
   OSDP_CONFORM resp_lstatr_tamper;
   OSDP_CONFORM resp_lstatr_power;
-  OSDP_CONFORM resp_input_stat;         // 4-6-1
+  OSDP_CONFORM resp_istatr;
+  OSDP_CONFORM resp_ostatr;
   OSDP_CONFORM resp_input_consistent;   // 4-6-2
-  OSDP_CONFORM resp_output_stat;        // 4-7-1
   OSDP_CONFORM resp_ostatr_poll;        // 4-7-2
   OSDP_CONFORM resp_ostatr_range;       // 4-7-3
   OSDP_CONFORM resp_rstatr;             // 4-8-1

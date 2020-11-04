@@ -61,7 +61,7 @@ int
 
 
   status = ST_OK;
-  osdp_conformance.cmd_out.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_cmd_out, OCONFORM_EXERCISED);
 fprintf (stderr, "data_length in OSDP_OUT: %d\n",
   msg->data_length);
 #if 0
@@ -147,7 +147,8 @@ int
 
 
   status = ST_OK;
-  osdp_conformance.cmd_ostat.test_status = OCONFORM_EXERCISED;
+  osdp_test_set_status(OOC_SYMBOL_cmd_ostat, OCONFORM_EXERCISED);
+  osdp_test_set_status(OOC_SYMBOL_resp_ostatr, OCONFORM_EXERCISED);
 
   for (j=0; j<OSDP_MAX_OUT; j++)
   {
