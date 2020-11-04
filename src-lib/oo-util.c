@@ -529,7 +529,7 @@ fprintf(stderr, "lstat 1000\n");
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDCAP");
-      osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
       break;
 
@@ -542,7 +542,7 @@ fprintf(stderr, "lstat 1000\n");
         strcpy (tlogmsg2, "osdp_PDID");
 
       // if we had sent an osdp_ID then that worked.
-      if (context->last_command_sent EQUALS OSDP_ID)
+      if ((context->last_command_sent EQUALS OSDP_ID))
         osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
 
       osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
@@ -586,10 +586,10 @@ fprintf(stderr, "lstat 1000\n");
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      osdp_conformance.resp_rstatr.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_rstatr, OCONFORM_EXERCISED);
       // if this is in response to an RSTAT then mark that too.
       if (context->last_command_sent EQUALS OSDP_RSTAT)
-        osdp_conformance.cmd_rstat.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_RSTATR");
       break;
@@ -976,8 +976,7 @@ int
         context->max_acu_receive);
       fprintf (context->log, "%s", logmsg);
       logmsg[0]=0;
-      osdp_conformance.cmd_max_rec.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
       current_length = 0;
       current_security = OSDP_SEC_SCS_15;
       status = send_message_ex(context, OSDP_ACK, p_card.addr,
@@ -1099,7 +1098,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           OSDP_PDCAP, p_card.addr, &current_length,
             response_length, response_cap,
             current_security, 0, NULL);
-        osdp_test_set_status(OOC_SYMBOL_cmd_pdcap, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
         osdp_test_set_status(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED);
       };
       break;
@@ -1147,8 +1146,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
           current_security = OSDP_SEC_STAND_DOWN;
         status = send_message_ex(context, OSDP_PDID, oo_response_address(context, oh->addr),
           &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
-        osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
-        osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
         osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
@@ -1170,10 +1168,8 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
         // hard code to show all inputs in '0' state.
 
         memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
-        osdp_conformance.cmd_istat.test_status =
-          OCONFORM_EXERCISED;
-        osdp_conformance.resp_input_stat.test_status =
-          OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_cmd_istat, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
         current_length = 0;
         status = send_message (context, OSDP_ISTATR, p_card.addr,
           &current_length, sizeof (osdp_istat_response_data), osdp_istat_response_data);
@@ -1278,6 +1274,7 @@ fprintf(stderr, "lstat 1684\n");
         osdp_lstat_response_data [2];
 
       osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_resp_lstatr, OCONFORM_EXERCISED);
       osdp_lstat_response_data [ 0] = context->tamper;
       osdp_lstat_response_data [ 1] = context->power_report; // report power failure
       current_length = 0;
@@ -1289,8 +1286,6 @@ fprintf(stderr, "lstat 1684\n");
         sprintf (logmsg, "Responding with OSDP_LSTATR (Power)");
         fprintf (context->log, "%s\n", logmsg);
       };
-      SET_PASS (context, "3-5-1");
-      SET_PASS (context, "4-5-1");
     };
     break;
 
@@ -1409,7 +1404,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         strcat(tlogmsg, tlog2);
       };
       fprintf (context->log, "Input Status: %s\n", tlogmsg);
-      osdp_conformance.resp_input_stat.test_status =
+      osdp_conformance.resp_istatr.test_status =
         OCONFORM_EXERCISED;
       break;
 
@@ -1526,7 +1521,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       // if the PD NAK'd a CAP fail the test.
       if (context->last_command_sent EQUALS OSDP_CAP)
       {
-        osdp_conformance.cmd_pdcap.test_status = OCONFORM_FAIL;
+        osdp_conformance.cmd_cap.test_status = OCONFORM_FAIL;
         SET_FAIL ((context), "3-3-1");
       };
       // if the PD NAK'd during secure channel set-up then reset out of secure channel
@@ -1553,8 +1548,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       fprintf (context->log,
         " Tamper %d Power %d\n",
         *(msg->data_payload + 0), *(msg->data_payload + 1));
-      if (context->last_command_sent EQUALS OSDP_LSTAT)
-        osdp_test_set_status(OOC_SYMBOL_poll_lstat, OCONFORM_EXERCISED);
       osdp_test_set_status(OOC_SYMBOL_resp_lstatr, OCONFORM_EXERCISED);
       if (*(msg->data_payload) > 0)
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);
@@ -1682,11 +1675,11 @@ printf ("MMSG DONE\n");
       break;
 
     case OSDP_OSTATR:
-      osdp_conformance.resp_output_stat.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_ostatr, OCONFORM_EXERCISED);
 
       // if this is in response to an OSTAT then mark that too.
       if (context->last_command_sent EQUALS OSDP_OSTAT)
-        osdp_conformance.cmd_ostat.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_cmd_ostat, OCONFORM_EXERCISED);
 
       status = oosdp_make_message (OOSDP_MSG_OUT_STATUS, tlogmsg, msg);
       fprintf (context->log, "%s\n", tlogmsg);
@@ -1800,7 +1793,7 @@ printf ("MMSG DONE\n");
         };
         fprintf (context->log, " Ext Rdr %d Tamper Status %s\n",
           0, tstatus);
-        osdp_conformance.resp_rstatr.test_status = OCONFORM_EXERCISED;
+        osdp_test_set_status(OOC_SYMBOL_resp_rstatr, OCONFORM_EXERCISED);
       };
       break;
     };
