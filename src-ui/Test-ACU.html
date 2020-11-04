@@ -186,82 +186,99 @@ Recent ACU
 <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
 </TR>
   <TR>
-    <TD ALIGN="CENTER">060-01-01</TD>
+    <TD ALIGN="CENTER">060-02-01</TD>
     <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Command: osdp_POLL</TD></TR>
+    <TD>Command: osdp_POLL</TD>
+
+    <TD ALIGN="CENTER">060-02-02</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>LSTATR Poll</TD>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">060-02-01</TD>
+    <TD ALIGN="CENTER">060-03-01</TD>
     <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-identify">
       <EM>Test</EM></A></TD>
     <TD>Command: osdp_ID</TD>
 
-    <TD ALIGN="CENTER">060-03-01</TD>
+    <TD ALIGN="CENTER">060-04-01</TD>
        <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
       <EM>Test</EM></A></TD>
     <TD>Command: osdp_CAP</TD>
 
-    <TD ALIGN="CENTER">060-04-01</TD>
+    <TD ALIGN="CENTER">060-05-01</TD>
       <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
       <EM>Test</EM></A></TD>
     <TD>Command: osdp_LSTAT</TD>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">060-05-01</TD>
+    <TD ALIGN="CENTER">060-06-01</TD>
       <TD ALIGN="CENTER">
         <A HREF="/cgi-bin/send-osdp-command?cmd=CP-input_status">
       <EM>Test</EM></A></TD>
     <TD>Command: ISTAT</TD>
 
-    <TD ALIGN="CENTER">060-06-01</TD>
+    <TD ALIGN="CENTER">060-07-01</TD>
       <TD ALIGN="CENTER">
         <A HREF="/cgi-bin/send-osdp-command?cmd=CP-output_status">
       <EM>Test</EM></A></TD>
     <TD>Command: osdp_OSTAT</TD>
 
-    <TD ALIGN="CENTER">060-07-01</TD>
+    <TD ALIGN="CENTER">060-08-01</TD>
       <TD ALIGN="CENTER">
         <A HREF="/cgi-bin/send-osdp-command?cmd=CP-reader_status">
         <EM>Test</EM></A></TD>
       <TD>osdp_RSTAT</TD>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">060-08-01</TD>
+    <TD ALIGN="CENTER">060-09-01</TD>
         <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-output">
         <EM>Test</EM></A></TD>
       <TD>Command: osdp_OUT</TD>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">060-09-01</TD>
+    <TD ALIGN="CENTER">060-10-01</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?1">
       <EM>Test</EM></A></TD>
     <TD>
       LED Test (Red) [<A HREF="/cgi-bin/do-confirm?3-10-1">OK</A>]</TD>
 
-    <TD ALIGN="CENTER">060-09-02</TD>
+    <TD ALIGN="CENTER">060-10-04</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?2">
       <EM>Test</EM></A></TD>
     <TD> <SPAN>
         LED Test (Green) [<A HREF="/cgi-bin/do-confirm?3-10-2">OK</A>]
       </SPAN></TD>
-
-    <TD ALIGN="CENTER">060-10-01</TD>
-      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
-      <EM>Test</EM></A></TD>
-    <TD>Command: osdp_BUZ [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">060-11-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
+      <EM>Test</EM></A></TD>
+    <TD>Command: osdp_BUZ [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]</TD>
+
+    <TD ALIGN="CENTER">060-12-01</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-text?Test_3-12-1">
       <EM>Test</EM></A></TD>
     <TD>
-      Command: osdp_TEXT [<A HREF="/cgi-bin/do-confirm?3-12-1">OK</A>]</TD>
+      Cmd: TEXT [<A HREF="/cgi-bin/do-confirm?3-12-1">OK</A>]</TD>
 
-    <TD ALIGN="CENTER">060-12-01</TD>
+    <TD ALIGN="CENTER">060-13-01</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-comset?2+115200">
       <EM>Test</EM></A></TD>
     <TD><SPAN>COMSET (115200/A=2)</SPAN></TD>
   </TR>
+
+  <TR>
+    <TD ALIGN="CENTER">060-14-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-bioread">
+      <EM>Test</EM></A></TD>
+    <TD>Cmd: BIOREAD</TD>
+
+    <TD ALIGN="CENTER">060-15-01</TD>
+      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-biomatch">
+      <EM>Test</EM></A></TD>
+    <TD>Cmd: BIOMATCH</TD>
+  </TR>
+
   <TR>
     <TD ALIGN="CENTER">060-16-01</TD>
     <TD ALIGN="CENTER">(auto)</TD>
@@ -276,6 +293,16 @@ Recent ACU
         <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_3_20_1">
       <EM>Test</EM></A></TD>
     <TD><SPAN>Command: osdp_MFG</SPAN></TD>
+  </TR>
+
+  <TR>
+    <TD ALIGN="CENTER">060-20-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-acurxsize">3-22-1</TD>
+    <TD>Cmd: ACURXSIZE</TD>
+
+    <TD ALIGN="CENTER">060-21-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-keepactive">3-21-1</TD>
+    <TD>Cmd: KEEPACTIVE</TD>
   </TR>
 
 </TABLE>
@@ -356,37 +383,12 @@ Recent ACU
 <TH>ID</TH> <TH>Description</TH>
 <TH>ID</TH> <TH>Description</TH>
 </TR>
-<TR>
-  <TD> </TD> <TD> </TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-16-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Reader prompt</SPAN></TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-17-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Request biometrics read</TD>
-</TR>
 
 <TR>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-18-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Req bio match</TD>
-  <TD ALIGN="center">
-    3-19-1</TD>
-    <TD>Mpart Msg Cont.</TD>
-  <TD> </TD> <TD> </TD>
-  <TD ALIGN="center">
-    3-21-1</TD>
-    <TD>Stop Multi-Part Message</TD>
-</TR>
-
-<TR>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-acurxsize">3-22-1</TD><TD>ACURXSIZE</TD>
   <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-transfer">3-23-1</TD>
     <TD>File Transfer</TD>
   <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-get-piv-cak-cert">3-24-1</TD>
     <TD>Get PIV CAK Cert</TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-keep-active">3-24-2</TD>
-    <TD>Keep Reader Active</TD>
 </TR>
 
 </TABLE>
