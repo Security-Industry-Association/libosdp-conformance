@@ -494,6 +494,7 @@ typedef struct osdp_context
   int tamper;
   int next_nak; // nak the next incoming message from the CP
   int power_report;
+  int tamper_report;
   int card_data_valid; // bits
   int card_format; // 0 for raw, 1 for P/Data/P, 2-0xff invalid
   int creds_a_avail; // octets
