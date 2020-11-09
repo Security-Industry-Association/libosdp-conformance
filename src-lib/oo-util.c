@@ -1421,8 +1421,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         memcpy (context->last_keyboard_data+1, temp, 7);
         context->last_keyboard_data [0] = *(2+msg->data_payload);
       };
-      osdp_conformance.resp_keypad.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_keypad, OCONFORM_EXERCISED);
       break;
 
     // action for NAK

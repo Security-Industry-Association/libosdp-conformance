@@ -86,6 +86,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_ostatr        "070-08-01"
 #define OOC_SYMBOL_resp_rstatr        "070-09-01"
 #define OOC_SYMBOL_rep_raw            "070-10-01"
+#define OOC_SYMBOL_resp_keypad        "070-12-01"
 #define OOC_SYMBOL_resp_com           "070-13-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-16-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-17-01"
@@ -202,7 +203,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_rstatr;             // 4-8-1
   OSDP_CONFORM rep_raw;                 // 4-9
   OSDP_CONFORM rep_formatted;           // 4-10-1
-  OSDP_CONFORM resp_keypad;             // 4-11-1
+  OSDP_CONFORM resp_keypad;
   OSDP_CONFORM resp_com;
   OSDP_CONFORM rep_scan_send;           // 4-13
   OSDP_CONFORM rep_scan_match;          // 4-14

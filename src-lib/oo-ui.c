@@ -844,7 +844,7 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         if (context->verbosity > 3)
           fprintf (stderr, "Sending keypad response %s\n",
             keypad_message+2);
-        SET_PASS (context, "4-11-1");
+        osdp_test_set_status(OOC_SYMBOL_resp_keypad, OCONFORM_EXERCISED);
       };
       break;
 
