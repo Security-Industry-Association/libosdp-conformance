@@ -506,7 +506,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->last_command_sent EQUALS OSDP_KEYSET)
         osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
-        osdp_test_set_status(OOC_SYMBOL_resp_ostat_ack, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_ostatr_ack, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_PIVDATA)
         osdp_test_set_status(OOC_SYMBOL_cmd_pivdata, OCONFORM_EXERCISED);
 
