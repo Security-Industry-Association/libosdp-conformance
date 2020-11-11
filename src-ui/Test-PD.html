@@ -151,7 +151,7 @@ Recent PD
   </TR>
 </TABLE>
 <BR>
-060-02-01 060-02-02 060-03-01 060-04-01 062-05-01 060-06-01 060-07-01 060-08-01 060-09-01 060-10-01 060-10-02 060-10-03 060-10-04 060-10-05 060-10-06 060-10-07 060-10-08 060-10-09 060-11-01 060-12-01 060-13-01 060-14-01 060-15-01 060-16-01 060-17-01 060-18-01 060-19-01<BR>
+060-02-01 060-02-02 060-03-01 060-04-01 062-05-01 060-06-01 060-07-01 060-08-01 060-09-01 060-10-01 060-10-02 060-10-03 060-10-04 060-10-05 060-10-06 060-10-07 060-10-08 060-10-09<BR>
 <TABLE><CAPTION><B>Test Group 6 (Commands)</B></CAPTION>
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
@@ -186,88 +186,91 @@ Recent PD
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?1">
       <EM>Test</EM></A></TD>
     <TD>LED Test (Red) [<A HREF="/cgi-bin/do-confirm?3-10-1">OK</A>]</TD>
-
-    <TD ALIGN="CENTER">060-09-02</TD>
-      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-led?2">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"> <SPAN>
-        LED Test (Green) [<A HREF="/cgi-bin/do-confirm?3-10-2">OK</A>]
-      </SPAN></TD>
-
-    <TD ALIGN="CENTER">060-10-01</TD>
-      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-buzz">
-      <EM>Test</EM></A></TD>
-    <TD>Command: osdp_BUZ [<A HREF="/cgi-bin/do-confirm?3-11-1">OK</A>]</TD>
   </TR>
   <TR>
+    <TD ALIGN="CENTER">060-10-04</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>LED: Green</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-11-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_BUZ</TD>
+
     <TD ALIGN="CENTER">060-12-01</TD>
-      <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-comset?2+115200">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>COMSET (115200/A=2)</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_TEXT</TD>
+
+    <TD ALIGN="CENTER">060-13-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_COMSET</TD>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">060-18-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_3_20_1">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>Command: osdp_MFG</SPAN></TD>
+    <TD ALIGN="CENTER">060-14-01</TD>
+      <TD ALIGN="CENTER">t.b.d.</TD>
+    <TD>Cmd: BIOREAD</TD>
+    <TD ALIGN="CENTER">060-15-01</TD>
+      <TD ALIGN="CENTER">t.b.d.</TD>
+    <TD>Cmd: BIOMATCH</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">070-16-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_KEYSET</TD>
+
+    <TD ALIGN="CENTER">070-17-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_CHLNG</TD>
+
+    <TD ALIGN="CENTER">070-18-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_SCRYPT</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-19-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_MFG</TD>
   </TR>
   <TR>
     </TD>
     <TD ALIGN="CENTER">060-20-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-acurxsize">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>Cmd: osdp_KEEPACTIVE</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_ACURXSIZE</TD>
 
     <TD ALIGN="CENTER">060-21-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-keep-active">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>Cmd: osdp_KEEPACTIVE</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_KEEPACTIVE</TD>
 
     <TD ALIGN="CENTER">060-22-01</TD>
       <TD ALIGN="CENTER">t.b.d.</TD>
-    <TD ALIGN="CENTER"><SPAN>Cmd: ABORT</SPAN></TD>
+    <TD>Cmd: ABORT</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">060-23-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-060-23-01">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>Cmd: PIVDATA</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: PIVDATA</TD>
 
     <TD ALIGN="CENTER">060-24-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-060-24-01">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>Cmd: GENAUTH</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: GENAUTH</TD>
 
-    <TD ALIGN="CENTER">060-24-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-060-24-02">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>GENAUTH after RAW</SPAN></TD>
+    <TD ALIGN="CENTER">060-24-02</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>GENAUTH after RAW</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">060-25-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-060-25-01">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>CRAUTH</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>CRAUTH</TD>
 
     <TD ALIGN="CENTER">060-25-02</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-060-25-02">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>CRAUTH after RAW</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>CRAUTH after RAW</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">060-26-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=CP-transfer">
-      <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER"><SPAN>Cmd: osdp_FILETRANSFER</SPAN></TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: osdp_FILETRANSFER</TD>
 
     <TD ALIGN="CENTER">060-27-01</TD>
       <TD ALIGN="CENTER">t.b.d.</TD>
@@ -348,39 +351,6 @@ Recent PD
   <TD ALIGN="CENTER">
     3-10-1</TD>
     <TD>LED Test (Red) [4]
-    </TD>
-  <TD ALIGN="CENTER">
-    3-10-2</TD>
-    <TD>LED Test (Green) [4]
-    </TD>
-  <TD ALIGN="center">
-    3-11-1</TD>
-    <TD>Buzzer Control [4]
-    </TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER">
-    3-12-1</TD>
-    <TD>Text output [4]
-    </TD>
-  <TD ALIGN="CENTER">
-    3-14-1</TD>
-    <TD>COMSET
-    </TD>
-  <TD ALIGN="CENTER">
-    3-17-1</TD>
-    <TD>
-    Request biometrics read [4]
-    </TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-18-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Req bio match
-    </TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-20-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    MFG Message</SPAN>
     </TD>
 </TR>
 </TABLE>
