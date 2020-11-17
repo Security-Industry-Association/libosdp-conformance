@@ -305,16 +305,8 @@ dump_buffer_log(context, "CRAUTH: ", challenge_command, total_size);
       {
         unsigned char key_buffer [2+OSDP_KEY_OCTETS];
         unsigned short int keybuflth;
-struct timespec pre_command_sleep;
-struct timespec sleep_leftover;
 
 
-memset(&pre_command_sleep, 0, sizeof(pre_command_sleep));
-memset(&sleep_leftover, 0, sizeof(sleep_leftover));
-pre_command_sleep.tv_nsec = 175*1000*1000; // 175 milliseconds
-//status_posix = 
-///nanosleep(&pre_command_sleep, &sleep_leftover);
-       
         keybuflth = sizeof(key_buffer) - 2;
         status = osdp_string_to_buffer(context,
           details, key_buffer+2, &keybuflth);
@@ -327,15 +319,17 @@ if(1)//        if (context->verbosity > 3)
         {
           dump_buffer_log(context, "KEYSET key:", key_buffer, keybuflth);
         };
+fprintf(stderr, "DEBUG: sending keyset cl %d kbl %d\n",
+  current_length, keybuflth);
         status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
           &current_length, keybuflth, key_buffer,
           OSDP_SEC_SCS_17, 0, NULL);
+fprintf(stderr, "DEBUG: send keyset status %d cl %d\n",
+  status, current_length);
 
         // load it to prepare for use, and save it.
-        memcpy(context->current_scbk, key_buffer+2,
-          sizeof(context->current_scbk));
-        oo_save_parameters(context, OSDP_SAVED_PARAMETERS, NULL);
-///nanosleep(&pre_command_sleep, &sleep_leftover);
+//        memcpy(context->current_scbk, key_buffer+2, sizeof(context->current_scbk));
+        oo_save_parameters(context, OSDP_SAVED_PARAMETERS, key_buffer+2);
       };
       break;
 

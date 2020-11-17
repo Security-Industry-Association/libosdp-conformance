@@ -700,7 +700,7 @@ cmd->command = OSDP_CMD_NOOP;
       };
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;
-      if (ctx->verbosity > 3)
+      //if (ctx->verbosity > 3)
       {
         fprintf(ctx->log, "Enqueue: keyset key %s\n", cmd->details);
       };

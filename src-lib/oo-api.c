@@ -1,3 +1,5 @@
+extern char trace_in_buffer [];
+extern char trace_out_buffer [];
 /*
   osdp-api - bits to implement HUP-based "API"
 
@@ -113,13 +115,26 @@ int
   OSDP_COMMAND *cmd;
   OSDP_COMMAND extracted;
   int status;
+  int waiting;
 
 
   status = ST_OK;
+if (ctx->verbosity > 3)
+{
+  osdp_trace_dump(ctx, 1);
+};
+  waiting = osdp_awaiting_response(ctx);
   if (ctx->verbosity > 9)
-    fprintf(ctx->log, "process_command_from_queue: top\n");
-  if (!(osdp_awaiting_response(ctx)) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
+    fprintf(ctx->log, "process_command_from_queue: top, w=%d\n", waiting);
+  if ((!waiting) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
   {
+extern OSDP_BUFFER osdp_buf;
+
+fprintf(stderr, "DEBUG: process_command_from_queue inbuf %d\n", osdp_buf.next);
+fflush(ctx->log);
+fprintf(stderr, "DEBUG: trace-in %s trace-out %s\n",
+  trace_in_buffer, trace_out_buffer);
+fflush(stderr);
     memcpy(&extracted, &(ctx->q [0].cmd), sizeof(extracted));
     cmd = &extracted;
 
@@ -131,6 +146,8 @@ int
 
     if (ctx->verbosity > 3)
       fprintf(ctx->log, "process_command_from_queue: processing command %d.\n", cmd->command);
+if (cmd->command != 0)
+  fprintf(stderr, "DEBUG: processing command %d.\n", cmd->command);
     status = process_command(cmd->command, ctx,
       cmd->details_length, cmd->details_param_1, (char *)(cmd->details));
   };

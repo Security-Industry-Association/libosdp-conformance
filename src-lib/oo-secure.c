@@ -1143,6 +1143,8 @@ int
   };
   if (status EQUALS ST_OK)
   {
+    ctx->last_was_processed = 0; //starting fresh on the processing
+
     buf [0] = 0xff;
     // send start-of-message marker (0xff)
     send_osdp_data (ctx, &(buf[0]), 1);

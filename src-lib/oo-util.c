@@ -81,8 +81,6 @@ int
     raw = (char *)p;
     fprintf(stderr, "DEBUG: opm %02x%02x%02x%02x %02x%02x l=%d.\n",
       raw [0], raw [1], raw [2], raw [3], raw [4], raw [5], m->lth);
-    if (m->lth > 8)
-      fprintf(stderr, "LENGTH EXCEEDS %d\n", 8);
   };
 
   status = ST_MSG_TOO_SHORT;
@@ -344,7 +342,7 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BIOREAD");
-      osdp_conformance.cmd_bioread.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
       break;
 
     case OSDP_BIOREAD:
@@ -1352,6 +1350,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
   {
     // if we're here we think it's a whole sane response so we can say the last was processed.
     context->last_was_processed = 1;
+fprintf(stderr, "DEBUG: lwp 1355 r=%02x\n", msg->msg_cmd);
+
     status = osdp_timer_start(context, OSDP_TIMER_RESPONSE);
 
     context->last_response_received = msg->msg_cmd;
@@ -1364,6 +1364,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       // really should be more fine-grained
 
       context->last_was_processed = 1;
+fprintf(stderr, "DEBUG: ack lwp\n");
 
       if (msg->security_block_type >= OSDP_SEC_SCS_11)
       {
@@ -1528,6 +1529,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         osdp_reset_secure_channel (context);
 
       context->last_was_processed = 1; // if we got a NAK that processes the cmd
+fprintf(stderr, "DEBUG: lwp 1533\n");
       break;
 
     case OSDP_COM:
@@ -1738,6 +1740,7 @@ printf ("MMSG DONE\n");
       };
 
       context->last_was_processed = 1;
+fprintf(stderr, "DEBUG: lwp 1744\n");
 
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;

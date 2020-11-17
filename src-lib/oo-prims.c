@@ -367,9 +367,6 @@ int osdp_string_to_buffer
     memcpy(tmps, (idx)+(instring), 2);
     sscanf(tmps, "%x", &i);
     *(buffer+bidx) = i;
-    if (ctx->verbosity > 9)
-      fprintf(stderr, "osdp_string_to_buffer %d. s %s hex value 0x%x\n",
-        idx, tmps, i);
     bidx ++;
     returned_length ++;
   };

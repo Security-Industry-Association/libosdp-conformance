@@ -435,6 +435,8 @@ int
     status = ST_OSDP_SC_WRONG_STATE;
     osdp_reset_secure_channel (ctx);
   };
+fprintf(stderr, "DEBUG: bottom of SCRYPT last_ %d\n",
+  ctx->last_was_processed);
   return (status);
 
 } /* action_osdp_SCRYPT */

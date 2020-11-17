@@ -121,8 +121,10 @@ int
   };
   if (send_secure_poll)
   {
+fprintf(stderr, "DEBUG: l-before %d\n", ctx->last_was_processed);
     status = send_secure_message(ctx, OSDP_POLL, p_card.addr,
       &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, sec_blk);
+fprintf(stderr, "DEBUG: l-after %d\n", ctx->last_was_processed);
   };
 
   return (status);

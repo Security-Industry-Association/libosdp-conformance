@@ -1,3 +1,4 @@
+int lstat1;
 extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
@@ -235,6 +236,8 @@ fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
   while (!done)
   {
     fflush (context.log);
+    if (context.verbosity > 3)
+      osdp_trace_dump(&context, 1);
 
     // do a select waiting for RS-485 serial input (or a HUP)
 
@@ -394,14 +397,20 @@ if (context.verbosity > 9)
     if (status EQUALS ST_SERIAL_IN)
     {
       status = process_osdp_input (&osdp_buf);
+if (status != ST_SERIAL_IN)
+  fprintf(stderr, "DEBUG: lwp %d p o i s=%d\n", context.last_was_processed, status);
+lstat1=status;
       // if it's too short so far it'll be 'serial_in' so ignore that
       if (status EQUALS ST_SERIAL_IN)
         status = ST_OK;
     };
 
-    // if we're not waiting for a response process the command queue
+// if we're not waiting for a response process the command queue
+//    if (!osdp_awaiting_response(&context))
 
-    if (!osdp_awaiting_response(&context))
+    // if we're not waiting for a response and not in mid-receipt of a new message then process the command queue
+
+    if ((!osdp_awaiting_response(&context)) && (osdp_buf.next EQUALS 0))
     {
       status = process_command_from_queue(&context);
     };

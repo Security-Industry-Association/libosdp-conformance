@@ -368,7 +368,8 @@ if (strlen(trace_out_buffer) > 0)
 
   if (strlen(trace_out_buffer) > 0)
   {
-    fprintf(ctx->log,
+    if (print_enable)
+      fprintf(ctx->log,
 "\nOUTPUT Trace: %s\n", trace_out_buffer);
     trace_out_buffer [0] = 0;
   };
