@@ -1,4 +1,3 @@
-int lstat1;
 extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
@@ -397,9 +396,6 @@ if (context.verbosity > 9)
     if (status EQUALS ST_SERIAL_IN)
     {
       status = process_osdp_input (&osdp_buf);
-if (status != ST_SERIAL_IN)
-  fprintf(stderr, "DEBUG: lwp %d p o i s=%d\n", context.last_was_processed, status);
-lstat1=status;
       // if it's too short so far it'll be 'serial_in' so ignore that
       if (status EQUALS ST_SERIAL_IN)
         status = ST_OK;

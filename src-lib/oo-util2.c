@@ -2,7 +2,6 @@
   oo_util2 - more open-osdp util routines
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -121,10 +120,8 @@ int
   };
   if (send_secure_poll)
   {
-fprintf(stderr, "DEBUG: l-before %d\n", ctx->last_was_processed);
     status = send_secure_message(ctx, OSDP_POLL, p_card.addr,
       &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, sec_blk);
-fprintf(stderr, "DEBUG: l-after %d\n", ctx->last_was_processed);
   };
 
   return (status);

@@ -1350,7 +1350,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
   {
     // if we're here we think it's a whole sane response so we can say the last was processed.
     context->last_was_processed = 1;
-fprintf(stderr, "DEBUG: lwp 1355 r=%02x\n", msg->msg_cmd);
 
     status = osdp_timer_start(context, OSDP_TIMER_RESPONSE);
 
@@ -1364,7 +1363,6 @@ fprintf(stderr, "DEBUG: lwp 1355 r=%02x\n", msg->msg_cmd);
       // really should be more fine-grained
 
       context->last_was_processed = 1;
-fprintf(stderr, "DEBUG: ack lwp\n");
 
       if (msg->security_block_type >= OSDP_SEC_SCS_11)
       {
@@ -1529,7 +1527,6 @@ fprintf(stderr, "DEBUG: ack lwp\n");
         osdp_reset_secure_channel (context);
 
       context->last_was_processed = 1; // if we got a NAK that processes the cmd
-fprintf(stderr, "DEBUG: lwp 1533\n");
       break;
 
     case OSDP_COM:
@@ -1740,7 +1737,6 @@ printf ("MMSG DONE\n");
       };
 
       context->last_was_processed = 1;
-fprintf(stderr, "DEBUG: lwp 1744\n");
 
       osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
       break;

@@ -324,8 +324,9 @@ fprintf(stderr, "DEBUG: sending keyset cl %d kbl %d\n",
         status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
           &current_length, keybuflth, key_buffer,
           OSDP_SEC_SCS_17, 0, NULL);
-fprintf(stderr, "DEBUG: send keyset status %d cl %d\n",
+fprintf(stderr, "DEBUG: send keyset status %d cl %d sleep 1\n",
   status, current_length);
+sleep(1);
 
         // load it to prepare for use, and save it.
 //        memcpy(context->current_scbk, key_buffer+2, sizeof(context->current_scbk));

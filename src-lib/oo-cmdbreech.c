@@ -491,17 +491,16 @@ cmd->command = OSDP_CMD_NOOP;
     if (0 EQUALS strcmp (current_command, "transfer"))
     {
       cmd->command = OSDP_CMDB_TRANSFER;
-    };
 
-    // if there's a "file" argument use that
-    parameter = json_object_get (root, "file");
-    if (json_is_string (parameter))
-    {
-      strcpy ((char *)cmd->details, json_string_value (parameter));
+      // if there's a "file" argument use that
+      parameter = json_object_get (root, "file");
+      if (json_is_string (parameter))
+      {
+        strcpy ((char *)cmd->details, json_string_value (parameter));
+      };
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
-fprintf(stderr, "DEBUG: queuing TRANSFER %d\n", cmd->command);
-    status = enqueue_command(ctx, cmd);
-    cmd->command = OSDP_CMD_NOOP;
   };
 
   // command dump_status
