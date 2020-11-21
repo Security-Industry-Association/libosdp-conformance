@@ -30,6 +30,47 @@
 OSDP_CONTEXT osdp_context;
 char parameter_speed [1024];
 
+// just arbitrarily declare we have 8 LED's.  should fit all
+// the incoming use cases
+
+#define LED_CONFORMANCE_CONFIG (8)
+
+
+void
+  display_sim_led
+    (OSDP_CONTEXT *ctx,
+    json_t *root)
+
+{ /* display_sim_led */
+
+  char field_name [1024];
+  unsigned int i;
+  int led_color [LED_CONFORMANCE_CONFIG];
+  json_t *value;
+  char vstr [1024];
+
+
+  for (i=0; i<8; i++)
+  {
+    sprintf(field_name, "led_color_%02d", i);
+    value = json_object_get(root, field_name);
+    if (json_is_string(value))
+    {
+      strcpy (vstr, json_string_value (value));
+      sscanf (vstr+1, "%x", &i);
+
+      led_color [i] = i;
+    };
+  };
+  printf("<TR>");
+  for(i=0; i < LED_CONFORMANCE_CONFIG; i++)
+  {
+    printf("<TD>%02d- <SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">_%02d_</SPAN></TD>\n", i, led_color [i], i);
+  };
+  printf("</SPAN></TD>\n");
+
+} /* display_sim_led */
+
 
 void
   display_sim_reader
@@ -62,7 +103,6 @@ void
   json_error_t status_json;
   json_t *value;
 
-  unsigned int led_color;
   int pd_address;
 
 
@@ -79,7 +119,6 @@ void
   strcpy(last_update, "?");
   found_field = 0;
   pd_address = 0;
-  led_color = 0;
   for (i=0; i<OSDP_MAX_OUT; i++)
   {
     out_status [i] = malloc(1024);
@@ -183,22 +222,6 @@ void
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "led_color_00");
-    value = json_object_get (root, field);
-    if (!json_is_string (value))
-      found_field = 0;
-  };
-  if (found_field)
-  {
-    char vstr [1024];
-    unsigned int i;
-    strcpy (vstr, json_string_value (value));
-    sscanf (vstr+1, "%x", &i);
-    led_color = i;
-  };
-  if (status EQUALS ST_OK)
-  {
-    found_field = 1;
     value = json_object_get (root, "pd-acks");
     if (!json_is_string (value))
       found_field = 0;
@@ -254,10 +277,11 @@ void
   };
 
   printf ("<H2>Reader(PD) Status</H2>\n");
-  printf("<TABLE><TR>\n");
-  printf ("<TD>LED</TD><TD><SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">_0_</SPAN></TD>\n", led_color);
-  printf ("<TD>Text</TD><TD>%s</TD>\n", ctx->text);
-  printf("</TR></TABLE>\n");
+  printf("LED Output:<BR>\n");
+  printf("<TABLE>\n");
+  display_sim_led(ctx, root);
+  printf ("<TR><TD>Text</TD><TD>%s</TD></TR>\n", ctx->text);
+  printf("</TABLE>\n");
   printf("<TABLE>\n");
   printf("<TR>\n");
   printf("<TD>Address</TD><TD>%2x</TD>\n", pd_address);
