@@ -2,6 +2,7 @@
 
 PROGS=osdp-dump osdp-sc-calc
 CGI_PROGS=osdp-decode osdp-packet-decode
+ACTIONS=osdp_ID
 OSDPINCLUDE=../include
 OSDPBUILD=../opt/osdp-conformance
 OSDPLIB=${OSDPBUILD}/lib
@@ -20,6 +21,8 @@ build:	all
 	cp ${PROGS} ${OSDPBUILD}/bin
 	mkdir -p ${OSDPBUILD}/cgi-bin
 	cp ${CGI_PROGS} ${OSDPBUILD}/cgi-bin
+	mkdir -p ${OSDPBUILD}/run/ACU-actions
+	(cd actions; cp ${ACTIONS} ../${OSDPBUILD}/run/ACU-actions)
 
 osdp-decode:	osdp-decode.o Makefile 
 	${LINK} -o osdp-decode osdp-decode.c ${LDFLAGS}

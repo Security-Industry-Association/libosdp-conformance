@@ -235,8 +235,6 @@ fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
   while (!done)
   {
     fflush (context.log);
-    if (context.verbosity > 3)
-      osdp_trace_dump(&context, 1);
 
     // do a select waiting for RS-485 serial input (or a HUP)
 

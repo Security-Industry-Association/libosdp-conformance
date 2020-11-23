@@ -1,0 +1,5 @@
+#!/bin/bash
+mkdir -p /opt/osdp-conformance/log
+echo >>/opt/osdp-conformance/log/osdp-actions.log osdp_ID called.
+
+

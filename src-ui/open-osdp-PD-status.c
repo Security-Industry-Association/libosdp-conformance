@@ -46,6 +46,7 @@ void
   char field_name [1024];
   unsigned int i;
   int led_color [LED_CONFORMANCE_CONFIG];
+  unsigned long led_value;
   json_t *value;
   char vstr [1024];
 
@@ -57,9 +58,9 @@ void
     if (json_is_string(value))
     {
       strcpy (vstr, json_string_value (value));
-      sscanf (vstr+1, "%x", &i);
+      sscanf (vstr+1, "%lx", &led_value);
 
-      led_color [i] = i;
+      led_color [i] = led_value;
     };
   };
   printf("<TR>");

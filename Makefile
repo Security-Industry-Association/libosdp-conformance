@@ -38,6 +38,9 @@ osdp-tls:	release
 	rm -f release-osdp-conformance.tgz
 	tar czf release-osdp-conformance.tgz opt/*
 
+package:	osdp-tls
+	(cd package; make package)
+
 clean:
 	(cd include; make clean; cd ..)
 	(cd src-lib; make clean; cd ..)
@@ -45,6 +48,7 @@ clean:
 	(cd src-tls; make clean; cd ..)
 	(cd src-ui; make clean; cd ..)
 	(cd src-tools; make clean; cd ..)
+	(cd package; make clean)
 	rm -f release-osdp-conformance.tgz
 	rm -rf opt
 

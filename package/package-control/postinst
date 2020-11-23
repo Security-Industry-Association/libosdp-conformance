@@ -1,0 +1,5 @@
+#!/bin/bash
+echo make sure www-data has sudo and bash
+
+echo >>/opt/osdp-conformance/log/install.log libosdp-conformance was installed.
+

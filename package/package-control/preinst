@@ -1,0 +1,4 @@
+#!/bin/bash
+mkdir -p /opt/osdp-conformance/log
+echo >>/opt/osdp-conformance/log/install.log preinst executed.
+
