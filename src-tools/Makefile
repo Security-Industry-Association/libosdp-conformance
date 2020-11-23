@@ -2,7 +2,12 @@
 
 PROGS=osdp-dump osdp-sc-calc
 CGI_PROGS=osdp-decode osdp-packet-decode
-ACTIONS=osdp_ID
+ACTIONS=\
+  osdp_ACK osdp_ACURXSIZE osdp_BIOMATCH osdp_BIOREAD osdp_BUSY osdp_BUZ osdp_CAP osdp_CCRYPT osdp_CHLNG osdp_COM osdp_COMSET osdp_CRAUTH osdp_CRAUTHR \
+  osdp_DATA osdp_DIAG osdp_FILETRANSFER osdp_FTSTAT osdp_GENAUTH osdp_GENAUTHR osdp_ID osdp_ISTAT osdp_ISTATR osdp_KEEPACTIVE osdp_KEYPAD osdp_KEYSET \
+  osdp_LED osdp_LSTAT osdp_LSTATR osdp_MFG osdp_MFGERRR osdp_MFGREP osdp_NAK osdp_OSTAT osdp_OSTATR osdp_OUT \
+  osdp_PDCAP osdp_PDID osdp_PIVDATA osdp_PIVDATAR osdp_POLL osdp_RAW osdp_RMAC_I osdp_RSTAT osdp_RSTATR osdp_SCRYPT osdp_TEXT \
+  osdp_XRD osdp_XWR
 OSDPINCLUDE=../include
 OSDPBUILD=../opt/osdp-conformance
 OSDPLIB=${OSDPBUILD}/lib
