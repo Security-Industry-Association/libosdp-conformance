@@ -31,7 +31,7 @@ all:	lib
 lib:
 	(cd src-lib; make all; cd ..)
 
-osdp-tls:	release
+osdp-tls:	build
 	(cd src-tls; make all; cd ..)
 	(cd src-tls; make build; cd ..)
 	(cd src-ui; make build-tls; cd ..)
@@ -71,7 +71,4 @@ build:	all
 	cp doc/config-examples/open-osdp-params-PD.json \
 	  opt/osdp-conformance/run/PD/
 	(cd test; make build-test; cd ..)
-
-release:	build
-	tar czf release-osdp-conformance.tgz opt/*
 
