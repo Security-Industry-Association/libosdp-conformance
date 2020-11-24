@@ -14,14 +14,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+REPORT=/opt/osdp-conformance/results/report.log
+
 echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>OSDP Conformance Report</TITLE><BODY><PRE>"
-if [ ! -e /opt/osdp-conformance/log/report.log ]; then
+if [ ! -e ${REPORT} ]; then
   echo Run 'Generate report' first.
 fi
-  sudo -n cat /opt/osdp-conformance/log/report.log
+  sudo -n cat ${REPORT}
 fi
 
 echo after test
