@@ -188,7 +188,7 @@ Recent ACU
   <TR>
     <TD ALIGN="CENTER">060-02-01</TD>
     <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Command: osdp_POLL</TD>
+    <TD ALIGN="CENTER">Command: osdp_POLL</TD>
 
     <TD ALIGN="CENTER">060-02-02</TD>
     <TD ALIGN="CENTER">(auto)</TD>
@@ -305,6 +305,42 @@ Recent ACU
     <TD>Cmd: KEEPACTIVE</TD>
   </TR>
 
+  <TR>
+    <TD ALIGN="CENTER">060-23-01</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/do-get-piv-cak-cert">
+      <EM>Test</EM></A></TD>
+    <TD>Cmd: PIVDATA</TD>
+
+    <TD ALIGN="CENTER">060-24-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Cmd: GENAUTH</TD>
+
+    <TD ALIGN="CENTER">060-24-02</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>GENAUTH after RAW</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-25-01</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>CRAUTH</TD>
+
+    <TD ALIGN="CENTER">060-25-02</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>CRAUTH after RAW</TD>
+  </TR>
+  <TR>
+    <TD ALIGN="CENTER">060-26-01</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/do-transfer">
+      <EM>Test</EM></A></TD>
+    <TD>Cmd: osdp_FILETRANSFER</TD>
+
+    <TD ALIGN="CENTER">060-27-01</TD>
+      <TD ALIGN="CENTER">t.b.d.</TD>
+    <TD>Extended Write</TD>
+  </TR>
+
 </TABLE>
 <BR>
 <TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
@@ -367,31 +403,6 @@ Recent ACU
   </TR>
 </TABLE>
 
-<TABLE>
-<CAPTION><B>Test Group 3 Commands [2]</B></CAPTION>
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<TR>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-</TR>
-
-<TR>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-transfer">3-23-1</TD>
-    <TD>File Transfer</TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-get-piv-cak-cert">3-24-1</TD>
-    <TD>Get PIV CAK Cert</TD>
-</TR>
-
-</TABLE>
 <TABLE>
 <CAPTION><B>Test Group 4 Responses [2]</B></CAPTION>
 <COL WIDTH="75">
@@ -458,15 +469,6 @@ Recent ACU
     Busy [4]</SPAN></TD>
 </TR>
 </table>
-<P>
-<EM>Notes</EM>
-<OL>
-<LI>(4-8-1) Power cycle or induce tamper to test</LI>
-<LI>Test groups numbered to match Peripheral Profile</LI>
-<LI>(4-7-2) Induce digital output to test</LI>
-<LI>Runs automatically upon receipt of message</LI>
-<LI>Click OK to confirm that test worked</LI>
-</OL>
 
 <P>
 <A name="control_bottom"></A>
