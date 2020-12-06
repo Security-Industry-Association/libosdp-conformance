@@ -119,10 +119,6 @@ int
 
 
   status = ST_OK;
-if (ctx->verbosity > 3)
-{
-  osdp_trace_dump(ctx, 1);
-};
   waiting = osdp_awaiting_response(ctx);
   if (ctx->verbosity > 9)
     fprintf(ctx->log, "process_command_from_queue: top, w=%d\n", waiting);

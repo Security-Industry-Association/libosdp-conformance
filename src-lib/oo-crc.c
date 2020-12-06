@@ -1,8 +1,7 @@
 /*
   oosdp-crc - crc routine for open-osdp
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
-  (C)Copyright 2014-2015 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2017-2020 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org

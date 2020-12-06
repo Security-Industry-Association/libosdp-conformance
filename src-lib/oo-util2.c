@@ -469,7 +469,7 @@ int
 
   ctx->last_was_processed = 0; //starting fresh on the processing
 
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
   {
     fprintf (ctx->log, "Top of send_message cmd=%02x:\n", command);
     fflush (ctx->log);

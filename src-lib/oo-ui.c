@@ -881,6 +881,8 @@ fprintf(stderr,
           }
           else
           {
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
+
             current_length = 0;
             status = send_message_ex (context, OSDP_LED, p_card.addr,
               &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message,

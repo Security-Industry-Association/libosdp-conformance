@@ -309,7 +309,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ISTAT");
 
-      osdp_conformance.cmd_istat.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_istat, OCONFORM_EXERCISED);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -505,6 +505,8 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
         osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_KEYSET)
         osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
+      if (ctx->last_command_sent EQUALS OSDP_LED)
+        osdp_test_set_status(OOC_SYMBOL_cmd_led_any, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
         osdp_test_set_status(OOC_SYMBOL_resp_ostatr_ack, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_PIVDATA)
@@ -558,7 +560,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ISTATR");
 
-      osdp_conformance.cmd_istat.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_istat, OCONFORM_EXERCISED);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -570,6 +572,8 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_LSTATR");
 
+      if (ctx->last_command_sent EQUALS OSDP_POLL)
+        osdp_test_set_status(OOC_SYMBOL_poll_lstatr, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_LSTAT)
         osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_EXERCISED);
 

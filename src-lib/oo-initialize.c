@@ -2,7 +2,6 @@
   oo_initialize - init code for OSDP
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
