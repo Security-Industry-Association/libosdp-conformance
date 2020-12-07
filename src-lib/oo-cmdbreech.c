@@ -378,6 +378,11 @@ int
     };
   };
 
+  // command conform_2-14-3: rogue secure poll
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_2_14_3")) {
+      cmd->command = OSDP_CMDB_CONFORM_2_14_3; }; };
 
   // command conform_3_14_2 - corrupted COMSET
 
@@ -391,11 +396,19 @@ int
     };
   };
 
-  // command conform_2-14-3: rogue secure poll
+  // command conform_6_10_2 (LED was Red)
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_2_14_3")) {
-      cmd->command = OSDP_CMDB_CONFORM_2_14_3; }; };
+    if (0 EQUALS strcmp (current_command, "conform_6_10_2")) {
+      osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
+      cmd->command = OSDP_CMDB_NOOP; }; };
+
+  // command conform_6_10_3 (LED was Green)
+
+  if (status EQUALS ST_OK) {
+    if (0 EQUALS strcmp (current_command, "conform_6_10_2")) {
+      osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_EXERCISED);
+      cmd->command = OSDP_CMDB_NOOP; }; };
 
   // command conform_3_20_1 - MFG
 

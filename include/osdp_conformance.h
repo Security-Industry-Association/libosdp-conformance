@@ -168,6 +168,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_ostat_ack;           // 3-7-2
   OSDP_CONFORM cmd_rstat;               // 3-8-1
   OSDP_CONFORM cmd_out;                 // 3-9-1
+  OSDP_CONFORM cmd_led_any;
   OSDP_CONFORM cmd_led_red;
   OSDP_CONFORM cmd_led_green;
   OSDP_CONFORM cmd_buz;
