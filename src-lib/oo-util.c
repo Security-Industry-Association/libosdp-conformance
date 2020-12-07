@@ -1415,8 +1415,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         strcat(tlogmsg, tlog2);
       };
       fprintf (context->log, "Input Status: %s\n", tlogmsg);
-      osdp_conformance.resp_istatr.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
       break;
 
     case OSDP_KEYPAD:
@@ -1496,33 +1495,59 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       };
       osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
 
-      // if the PD NAK'd a BIOREAD fail the test.
-      if (context->last_command_sent EQUALS OSDP_BIOREAD)
+      // collateral effects of a NAK...
+
+      // if the PD NAK'd during secure channel set-up then reset out of secure channel
+
+      if (context->secure_channel_use [OO_SCU_ENAB] & 0x80)
       {
-        osdp_test_set_status(OOC_SYMBOL_cmd_bioread, OCONFORM_FAIL);
-      };
-      // if the PD NAK'd a BIOMATCH fail the test.
-      if (context->last_command_sent EQUALS OSDP_BIOMATCH)
+        osdp_reset_secure_channel (context);
+      }
+      else
       {
-        osdp_test_set_status(OOC_SYMBOL_cmd_biomatch, OCONFORM_FAIL);
-      };
-      // if the PD NAK'd an ID fail the test.
-      if (context->last_command_sent EQUALS OSDP_ID)
-      {
-        osdp_conformance.cmd_id.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), "3-2-1");
-      };
+        // if the PD said it does BIO and it NAK'd a BIOREAD fail the test.
+
+        if (context->last_command_sent EQUALS OSDP_BIOREAD)
+        {
+          if (context->configured_biometrics)
+            osdp_test_set_status(OOC_SYMBOL_cmd_bioread, OCONFORM_FAIL);
+        };
+
+        // if the PD NAK'd a BIOMATCH fail the test.
+
+        if (context->last_command_sent EQUALS OSDP_BIOMATCH)
+        {
+          if (context->configured_biometrics)
+            osdp_test_set_status(OOC_SYMBOL_cmd_biomatch, OCONFORM_FAIL);
+        };
+
+        // if the PD NAK'd an ID fail the test.
+
+        if (context->last_command_sent EQUALS OSDP_ID)
+        {
+          osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_FAIL);
+        };
+
+        // if the PD NAK'd an RSTAT that is ok because RSTAT/RSTATR are effectively deprecated
+
+        if (context->last_command_sent EQUALS OSDP_RSTAT)
+        {
+fprintf(context->log, "DEBUG: NAK %02x for osdp_RSTAT received\n", *(msg->data_payload));
+          osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
+        };
       // if the PD NAK'd an ISTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_ISTAT)
       {
         osdp_conformance.cmd_istat.test_status = OCONFORM_FAIL;
         SET_FAIL ((context), "3-6-1");
       };
+
       // if the PD NAK'd a KEYSET fail the test.
       if (context->last_command_sent EQUALS OSDP_KEYSET)
       {
         osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_FAIL);
       };
+
       // if the PD NAK'd an LSTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_LSTAT)
       {
@@ -1531,12 +1556,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       // if the PD NAK'd a CAP fail the test.
       if (context->last_command_sent EQUALS OSDP_CAP)
       {
-        osdp_conformance.cmd_cap.test_status = OCONFORM_FAIL;
-        SET_FAIL ((context), "3-3-1");
+        osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_FAIL);
       };
-      // if the PD NAK'd during secure channel set-up then reset out of secure channel
-      if (context->secure_channel_use [OO_SCU_ENAB] & 0x80)
-        osdp_reset_secure_channel (context);
+
+      };
 
       context->last_was_processed = 1; // if we got a NAK that processes the cmd
       break;

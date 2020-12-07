@@ -461,8 +461,7 @@ int
       };
       break;
     case OSDP_CAP_BIOMETRICS:
-      fprintf(ctx->log,
-"Capability not processed in this ACU: %s\n", osdp_pdcap_function(entry->function_code));
+      ctx->configured_biometrics = 1;
       break;
     case OSDP_CAP_CARD_FORMAT:
       switch(entry->compliance)

@@ -458,6 +458,7 @@ typedef struct osdp_context
   int last_was_processed;
   int max_message; // max message from PD, if set
   int max_acu_receive;
+  int configured_biometrics; // 0 if nothing, do not assume nonzero tells match vs. capture.
   int configured_inputs;
   int configured_outputs;
 
