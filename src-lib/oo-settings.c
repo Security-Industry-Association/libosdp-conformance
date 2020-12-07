@@ -234,6 +234,24 @@ int
     strcpy (ctx->init_command, json_string_value (value));
   }; 
 
+  // parameter "inputs" (value must be in range 0 - OOSDP_DEFAULT_INPUTS)
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "inputs");
+    if (!json_is_string (value))
+      found_field = 0;
+    if (found_field)
+    {
+      int count;
+      char count_string [1024];
+      strcpy (count_string, json_string_value (value));
+      sscanf (count_string, "%x", &count);
+      if ((count >=0) && (count <= OOSDP_DEFAULT_INPUTS))
+        ctx->configured_inputs = count;
+    }; 
+  };
+
   // parameter  "key" ("DEFAULT" or a 16-byte hex value)
 
   if (status EQUALS ST_OK)
@@ -333,6 +351,24 @@ int
       memcpy(hexbyte, vstr+4, 2); sscanf(hexbyte, "%2x", &i); ctx->vendor_code [2] = 0xff & i;
       memcpy(ctx->MFG_oui, ctx->vendor_code, sizeof(ctx->MFG_oui));
     };
+  };
+
+  // parameter "outputs" (value must be in range 0 - OOSDP_DEFAULT_OUTPUTS)
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "outputs");
+    if (!json_is_string (value))
+      found_field = 0;
+    if (found_field)
+    {
+      int count;
+      char count_string [1024];
+      strcpy (count_string, json_string_value (value));
+      sscanf (count_string, "%x", &count);
+      if ((count >=0) && (count <= OOSDP_DEFAULT_OUTPUTS))
+        ctx->configured_outputs = count;
+    }; 
   };
 
   // poll

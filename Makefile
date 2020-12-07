@@ -3,8 +3,7 @@
 # This makes the RS-485 version.  To make the TLS version,
 # you need to explicitly do "make osdp-tls"
 
-#  (C)Copyright 2017-2019 Smithee Solutions LLC
-#  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+#  (C)Copyright 2017-2020 Smithee Solutions LLC
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.

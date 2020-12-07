@@ -1047,10 +1047,18 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
             };
         unsigned char
           osdp_cap_response_data [3*(16-1)] = {
-            1,2,OOSDP_CFG_INPUTS, // 8 inputs, on/of/nc/no
+
+#define CAP_INDEX_INPUTS (0)
+            1,2,OOSDP_DEFAULT_INPUTS, // on/off/nc/no
+
+#define CAP_INDEX_OUTPUTS (1)
             2,2,8, // 8 outputs, on/off/drive
+
             3,1,0, // 1024 bits max
+
+#define CAP_INDEX_LEDS (3)
             4,1,8, // on/off only, 8 LED's
+
             5,1,1, // audible annunciator present, claim on/off only
             6,1,1, // 1 row of 16 characters
             //7 // assume 7 (time keeping) is deprecated
@@ -1073,6 +1081,10 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
            response_cap = osdp_cap_response_short;
            response_length = sizeof(osdp_cap_response_short);
          };
+
+         // propagate current in and out configuration
+         osdp_cap_response_data [ (3*CAP_INDEX_INPUTS) + 1] = context->configured_inputs;
+         osdp_cap_response_data [ (3*CAP_INDEX_OUTPUTS) + 1] = context->configured_outputs;
 
          // for any kind of secure channel enablement set the PDCAP values
          // "we always support SCBK-D"
@@ -1161,7 +1173,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
       status = ST_OK;
       {
         unsigned char
-          osdp_istat_response_data [OOSDP_CFG_INPUTS];
+          osdp_istat_response_data [OOSDP_DEFAULT_INPUTS];
 
         // hard code to show all inputs in '0' state.
 
@@ -1792,6 +1804,8 @@ printf ("MMSG DONE\n");
         fprintf (context->log, " Ext Rdr %d Tamper Status %s\n",
           0, tstatus);
         osdp_test_set_status(OOC_SYMBOL_resp_rstatr, OCONFORM_EXERCISED);
+        if (context->last_command_sent EQUALS OSDP_RSTAT)
+          osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
       };
       break;
     };

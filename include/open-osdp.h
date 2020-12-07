@@ -41,7 +41,8 @@
 
 // default configuration
 
-#define OOSDP_CFG_INPUTS (8)
+#define OOSDP_DEFAULT_INPUTS (8)
+#define OOSDP_DEFAULT_OUTPUTS (8)
 
 #define OSDP_PROFILE_PERIPHERAL_TEST_PD (0x0000)
 #define OSDP_PROFILE_PERIPHERAL_TEST_CP (0x1000)
@@ -457,6 +458,8 @@ typedef struct osdp_context
   int last_was_processed;
   int max_message; // max message from PD, if set
   int max_acu_receive;
+  int configured_inputs;
+  int configured_outputs;
 
   // OSDP protocol context
   char last_command_sent;

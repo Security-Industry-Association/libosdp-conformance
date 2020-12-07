@@ -62,8 +62,8 @@ int
 
   status = ST_OK;
   osdp_test_set_status(OOC_SYMBOL_cmd_out, OCONFORM_EXERCISED);
-fprintf (stderr, "data_length in OSDP_OUT: %d\n",
-  msg->data_length);
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "data_length in OSDP_OUT: %d\n", msg->data_length);
 #if 0
 // if too many for me (my MAX) then error and NAK?
 // set 'timer' to msb*256+lsb

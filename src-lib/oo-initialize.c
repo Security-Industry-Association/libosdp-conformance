@@ -236,6 +236,9 @@ int
   p_card.value_len = 4;
   p_card.bits = 26;
 
+    context->configured_inputs = OOSDP_DEFAULT_INPUTS;
+    context->configured_outputs = OOSDP_DEFAULT_OUTPUTS;
+
   m_check = OSDP_CRC;
   // to force checksum-only set m_check to OSDP_CHECKSUM here.
 
