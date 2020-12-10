@@ -477,7 +477,8 @@ int
     fprintf(sf,
 "\"pd-naks\" : \"%d\",", ctx->sent_naks);
     fprintf(sf,
-"\"dropped\" : \"%d\",\"octets\":\"%d\",", ctx->dropped_octets, ctx->bytes_received);
+"\"dropped\" : \"%d\",\"octets-received\":\"%d\",\"octets-sent\":\"%d\",",
+      ctx->dropped_octets, ctx->bytes_received, ctx->bytes_sent);
     fprintf(sf,
 "\"seq-bad\" : \"%d\",", ctx->seq_bad);
     fprintf (sf,

@@ -344,9 +344,9 @@ fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
         }
         else
         {
+          context.bytes_received++;
           if (context.trace & 1)
           {
-            context.bytes_received++;
             sprintf(octet, " %02x", buffer [0]);
             strcat(trace_in_buffer, octet);
 if (context.verbosity > 9)
@@ -458,6 +458,7 @@ int
     };
   };
   write (context->fd, buf, lth);
+  context->bytes_sent = context->bytes_sent + lth;
   
   return (ST_OK);
 
