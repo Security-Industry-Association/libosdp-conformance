@@ -269,7 +269,12 @@ exit(-1);
         int challenge_size;
         unsigned char osdp_command;
         int total_size;
+//int gate_1;
 
+//gate_1 = 0;
+        osdp_command = OSDP_CRAUTH;
+//if (gate_1)
+//{
         challenge_size = details_length;
         challenge_payload_size = sizeof(challenge_command);
         strcpy (context->test_in_progress, "x-challenge");
@@ -280,8 +285,9 @@ exit(-1);
           (unsigned char *)details, details_length);
         details_length = total_size;
         osdp_command = OSDP_CRAUTH;
+//};
         if (command EQUALS OSDP_CMDB_CHALLENGE)
-          osdp_command = OSDP_GENAUTH;
+          osdp_command = OSDP_CRAUTH;
         current_length = 0;
         status = send_message_ex(context, osdp_command, p_card.addr,
           &current_length, total_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);

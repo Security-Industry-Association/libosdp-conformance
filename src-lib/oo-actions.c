@@ -895,6 +895,10 @@ int
 
   if (0 EQUALS strcmp (ctx->test_in_progress, "060-25-03"))
   {
+fprintf(stderr, "DEBUG: inserted POLL before CRAUTH\n");
+    memset(&command_for_later, 0, sizeof(command_for_later));
+    command_for_later.command = OSDP_CMDB_SEND_POLL;
+    status = enqueue_command(ctx, &command_for_later);
 fprintf(stderr, "DEBUG: crauth enqueued\n");
     memset(&command_for_later, 0, sizeof(command_for_later));
     command_for_later.command = OSDP_CMDB_CHALLENGE;
