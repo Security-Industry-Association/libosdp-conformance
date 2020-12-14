@@ -1,8 +1,5 @@
-int pending_response_length;
-unsigned char pending_response_data [1500];
-unsigned char pending_response;
 /*
-  oosdp-actions - open osdp action routines
+  oo-actions - open osdp action routines
 
   (C)Copyright 2017-2020 Smithee Solutions LLC
 
@@ -37,11 +34,16 @@ unsigned char pending_response;
 #include <osdp_conformance.h>
 
 
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-extern OSDP_PARAMETERS
-  p_card;
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_PARAMETERS p_card;
 char tlogmsg [2*1024];
+
+
+// used for responses to osdp_POLL
+
+int pending_response_length;
+unsigned char pending_response_data [1500];
+unsigned char pending_response;
 
 
 int
@@ -811,6 +813,7 @@ int
 
   int bits;
   char cmd [2*1024];
+  OSDP_COMMAND command_for_later;
   int display;
   char hstr [1024]; // hex string of raw card data payload
   unsigned char *raw_data;
@@ -878,31 +881,6 @@ int
       };
 
       status = oo_write_status (ctx);
-if (0)
-//(bits EQUALS 26)
-      {
-int idx;
-int bits_to_print;
-
-        bits_to_print = bits;
-        idx = 0;
-        fprintf(ctx->log, "CARD DATA (%d bits): %02x", bits, raw_data [0]);
-        idx++; // just output first octet
-        if (bits_to_print > 8)
-          bits_to_print = bits_to_print - 8;
-        else
-          bits_to_print = 0;
-        while (bits_to_print > 0)
-        {
-          fprintf(ctx->log, "-%02x", raw_data [idx]);
-          idx++;
-          if (bits_to_print > 8)
-            bits_to_print = bits_to_print - 8;
-          else
-            bits_to_print = 0;
-        };
-        fprintf(ctx->log, "\n");
-      };
 
       // run the action routine with the bytes,bit count,format
 
@@ -911,6 +889,20 @@ int bits_to_print;
         hstr, bits, *(msg->data_payload+1));
       system(cmd);
     }; // not encrypted
+  };
+
+  // if a (react to raw) crauth was requested, enqueue the request
+
+  if (0 EQUALS strcmp (ctx->test_in_progress, "060-25-03"))
+  {
+fprintf(stderr, "DEBUG: crauth enqueued\n");
+    memset(&command_for_later, 0, sizeof(command_for_later));
+    command_for_later.command = OSDP_CMDB_CHALLENGE;
+    memcpy(command_for_later.details, ctx->test_details, ctx->test_details_length);
+    command_for_later.details_length = ctx->test_details_length;
+    ctx->test_details_length = 0; // done with it, "clear" the buffer.
+
+    status = enqueue_command(ctx, &command_for_later);
   };
 
   // if a genauth-after-raw was requested, do it now.
@@ -947,7 +939,7 @@ fprintf(stderr, "DEBUG: give GENAUTH a chance...\n"); sleep(5);
     };
   };
 
-  // if a crnauth-after-raw was requested, do it now.
+  // if a crauth-after-raw was requested, do it now.
 
   if (0 EQUALS strcmp (ctx->test_in_progress, "060-25-02"))
   {
@@ -956,7 +948,6 @@ fprintf(stderr, "DEBUG: give GENAUTH a chance...\n"); sleep(5);
     int details_length;
     unsigned char payload [OSDP_OFFICIAL_MSG_MAX];
     int payload_length;
-
 
     memset(details, 0, sizeof(details));
     details_length = 270; // estimated null payload ... //sizeof(details);

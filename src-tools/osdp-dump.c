@@ -4,7 +4,6 @@
   command line interface version.
 
   (C)Copyright 2017-2018 Smithee Solutions LLC
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -32,6 +31,7 @@ unsigned char creds_buffer_a [64*1024];
 int creds_buffer_a_lth;
 int creds_buffer_a_next;
 int creds_buffer_a_remaining;
+OSDP_OUT_CMD current_output_command [16];
 OSDP_BUFFER osdp_buf;
 OSDP_INTEROP_ASSESSMENT osdp_conformance;
 OSDP_PARAMETERS p_card;

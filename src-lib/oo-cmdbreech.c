@@ -563,10 +563,12 @@ cmd->command = OSDP_CMD_NOOP;
         {
           cmd->command = OSDP_CMDB_CONFORM_060_25_02; // witness-after-raw
         };
-        if (0 EQUALS strcmp("challenge", json_string_value (value)))
+        if (0 EQUALS strcmp("060-25-03", json_string_value (value)))
         {
-          cmd->command = OSDP_CMDB_CHALLENGE;
+          cmd->command = OSDP_CMDB_CONFORM_060_25_03; // enqueue challenge after raw
         };
+        if (0 EQUALS strcmp("challenge", json_string_value (value)))
+        { cmd->command = OSDP_CMDB_CHALLENGE; };
       };
 
       // details [0] is algoref

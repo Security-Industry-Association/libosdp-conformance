@@ -144,6 +144,15 @@ exit(-1);
         fprintf (context->log, "Sending osdp_CRAUTH after next osdp_RAW\n");
       break;
 
+    case OSDP_CMDB_CONFORM_060_25_03:
+      status = ST_OK;
+      strcpy (context->test_in_progress, "060-25-03"); // crauth enqueue-after-raw
+      memcpy(context->test_details, details, details_length);
+      context->test_details_length = details_length;
+      if (context->verbosity > 2)
+        fprintf (context->log, "Enqueuing osdp_CRAUTH after next osdp_RAW\n");
+      break;
+
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
       osdp_conformance.signalling.test_status = OCONFORM_FAIL;
@@ -267,19 +276,8 @@ exit(-1);
         memset (&challenge_command, 0, sizeof (challenge_command));
         total_size = challenge_size + sizeof(*challenge_hdr) - 1; // hdr has 1 byte of data
 
-        status= oo_build_genauth(ctx, (unsigned char *)challenge_command, &challenge_payload_size, (unsigned char *)details, details_length);
-
-#if 0
-        challenge_hdr = (OSDP_MULTI_HDR_IEC *)&(challenge_command [0]);
-        challenge_hdr->total_lsb = total_size & 0xff;
-        challenge_hdr->total_msb = (total_size & 0xff00) >> 8;
-        challenge_hdr->offset_lsb = 0;
-        challenge_hdr->offset_msb = 0;
-        challenge_hdr->data_len_lsb = challenge_hdr->total_lsb;
-        challenge_hdr->data_len_msb = challenge_hdr->total_msb;
-        memcpy(&(challenge_hdr->algo_payload), details, details_length);
-dump_buffer_log(context, "CRAUTH: ", challenge_command, total_size);
-#endif
+        status= oo_build_genauth(ctx, (unsigned char *)challenge_command, &challenge_payload_size,
+          (unsigned char *)details, details_length);
         details_length = total_size;
         osdp_command = OSDP_CRAUTH;
         if (command EQUALS OSDP_CMDB_CHALLENGE)

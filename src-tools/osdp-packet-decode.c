@@ -4,7 +4,6 @@
   glue and stubs on top of normal osdp library to just dump the packet.
 
   (C)Copyright 2017-2018 Smithee Solutions LLC
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -29,6 +28,7 @@
 
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+OSDP_OUT_CMD current_output_command [16];
 OSDP_CONTEXT context;
 unsigned char creds_buffer_a [64*1024];
 int creds_buffer_a_lth;
@@ -39,6 +39,8 @@ OSDP_INTEROP_ASSESSMENT osdp_conformance;
 OSDP_PARAMETERS p_card;
 char trace_in_buffer [1024];
 char trace_out_buffer [1024];
+
+
 void
   bytes_from_string
     (char *string,
