@@ -119,6 +119,7 @@ fprintf(ctx->log, "  crauthr payload %02x%02x%02x...\n",
     };
     sprintf(details, "\"crauthr-response\":\"%s\",", response_payload);
     osdp_test_set_status_ex(OOC_SYMBOL_resp_crauthr, OCONFORM_EXERCISED, details);
+    osdp_test_set_status_ex(OOC_SYMBOL_cmd_crauth, OCONFORM_EXERCISED, "");
   }
   else
   {

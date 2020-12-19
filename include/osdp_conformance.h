@@ -74,8 +74,10 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_pivdata        "060-23-01"
 #define OOC_SYMBOL_cmd_genauth        "060-24-01"
 #define OOC_SYMBOL_060_24_02          "060-24-02" // genauth after raw
+#define OOC_SYMBOL_060_24_03          "060-24-03"
 #define OOC_SYMBOL_cmd_crauth         "060-25-01"
 #define OOC_SYMBOL_060_25_02          "060-25-02" // crauth after raw
+#define OOC_SYMBOL_060_25_03          "060-25-03"
 #define OOC_SYMBOL_cmd_filetransfer   "060-26-01"
 #define OOC_SYMBOL_cmd_xwr            "060-27-01"
 

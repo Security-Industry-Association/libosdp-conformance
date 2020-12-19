@@ -135,6 +135,15 @@ exit(-1);
         fprintf (context->log, "Sending osdp_GENAUTH after next osdp_RAW\n");
       break;
 
+    case OSDP_CMDB_CONFORM_060_24_03:
+      status = ST_OK;
+      strcpy (context->test_in_progress, "060-24-03"); // crauth enqueue-after-raw
+      memcpy(context->test_details, details, details_length);
+      context->test_details_length = details_length;
+      if (context->verbosity > 2)
+        fprintf (context->log, "Enqueuing osdp_GENAUTH after next osdp_RAW\n");
+      break;
+
     case OSDP_CMDB_CONFORM_060_25_02:
       status = ST_OK;
       strcpy (context->test_in_progress, "060-25-02"); // crauth-after-raw
@@ -272,7 +281,7 @@ exit(-1);
 //int gate_1;
 
 //gate_1 = 0;
-        osdp_command = OSDP_CRAUTH;
+        osdp_command = OSDP_GENAUTH;
 //if (gate_1)
 //{
         challenge_size = details_length;
@@ -284,7 +293,6 @@ exit(-1);
         status= oo_build_genauth(ctx, (unsigned char *)challenge_command, &challenge_payload_size,
           (unsigned char *)details, details_length);
         details_length = total_size;
-        osdp_command = OSDP_CRAUTH;
 //};
         if (command EQUALS OSDP_CMDB_CHALLENGE)
           osdp_command = OSDP_CRAUTH;
@@ -885,12 +893,12 @@ fprintf(stderr,
           }
           else
           {
-            osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
-
             current_length = 0;
             status = send_message_ex (context, OSDP_LED, p_card.addr,
               &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message,
               OSDP_SEC_SCS_17, 0, NULL);
+            memcpy(context->test_details, (char *)&led_control_message, sizeof(led_control_message));
+            context->test_details_length = sizeof(led_control_message);
           };
         }
         else

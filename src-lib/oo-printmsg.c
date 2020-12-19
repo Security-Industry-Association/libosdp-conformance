@@ -1,7 +1,7 @@
 /*
   oo-printmsg - open osdp message printing routines
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2020 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -196,6 +196,7 @@ int
 
 
   status = ST_OK;
+  tlogmsg [0] = 0;
   oh = (OSDP_HDR *)(osdp_msg->ptr);
   if (osdp_msg->security_block_length > 0)
   {

@@ -506,7 +506,22 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->last_command_sent EQUALS OSDP_KEYSET)
         osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_LED)
+      {
+        // note this assumes the command was setting the permanent on
+        // color
+
+#define LP_ON (12) // LED Perm On Color
         osdp_test_set_status(OOC_SYMBOL_cmd_led_any, OCONFORM_EXERCISED);
+        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_RED)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
+        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_GREEN)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_EXERCISED);
+        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_AMBER)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_amber, OCONFORM_EXERCISED);
+        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_blue, OCONFORM_EXERCISED);
+        ctx->test_details_length = 0;
+      };
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
         osdp_test_set_status(OOC_SYMBOL_resp_ostatr_ack, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_PIVDATA)

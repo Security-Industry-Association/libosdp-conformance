@@ -891,6 +891,28 @@ int
     }; // not encrypted
   };
 
+  // if a (react to raw) genauth was requested, enqueue the request
+
+  if (0 EQUALS strcmp (ctx->test_in_progress, "060-24-03"))
+  {
+    // stick in a poll so the next commend is not back to back with the osdp_RAW response
+
+    memset(&command_for_later, 0, sizeof(command_for_later));
+    command_for_later.command = OSDP_CMDB_SEND_POLL;
+    status = enqueue_command(ctx, &command_for_later);
+    memset(&command_for_later, 0, sizeof(command_for_later));
+    command_for_later.command = OSDP_CMDB_WITNESS;
+    memcpy(command_for_later.details, ctx->test_details, ctx->test_details_length);
+    command_for_later.details_length = ctx->test_details_length;
+    ctx->test_details_length = 0; // done with it, "clear" the buffer.
+
+    status = enqueue_command(ctx, &command_for_later);
+
+    // say they did this command.  report generator will know this vs. a crauth
+
+    osdp_test_set_status(OOC_SYMBOL_060_24_03, OCONFORM_EXERCISED);
+  };
+
   // if a (react to raw) crauth was requested, enqueue the request
 
   if (0 EQUALS strcmp (ctx->test_in_progress, "060-25-03"))
@@ -907,6 +929,10 @@ fprintf(stderr, "DEBUG: crauth enqueued\n");
     ctx->test_details_length = 0; // done with it, "clear" the buffer.
 
     status = enqueue_command(ctx, &command_for_later);
+
+    // say they did this command.  report generator will know this vs. a crauth
+
+    osdp_test_set_status(OOC_SYMBOL_060_25_03, OCONFORM_EXERCISED);
   };
 
   // if a genauth-after-raw was requested, do it now.

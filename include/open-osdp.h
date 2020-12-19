@@ -203,7 +203,8 @@
 #define OSDP_CMDB_CONFORM_060_24_02 (1045)
 #define OSDP_CMDB_CONFORM_060_25_02 (1046)
 #define OSDP_CMDB_PIVDATA           (1047)
-#define OSDP_CMDB_CONFORM_060_25_03 (1048) // temp for enqueue crauth-after-raw
+#define OSDP_CMDB_CONFORM_060_25_03 (1048) // enqueue crauth after raw
+#define OSDP_CMDB_CONFORM_060_24_03 (1049) // enqueue genauth after raw
 
 #define OSDP_CMD_NOOP         (0)
 
