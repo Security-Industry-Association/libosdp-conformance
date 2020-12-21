@@ -491,6 +491,7 @@ int
     {
       unsigned char *osdp_lstat_response_data;
 
+      tlogmsg [0] = 0;
       msg = (OSDP_MSG *) aux;
       if (msg->security_block_length > 0)
       {
