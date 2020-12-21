@@ -89,6 +89,18 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.cmd_led_any.test_status),
       0, 0, 0, 0, 0,
                         "Command: LED(Any)"},
+    {         OOC_SYMBOL_cmd_led_amber,
+      &(osdp_conformance.cmd_led_amber.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: LED(Amber)"},
+    {         OOC_SYMBOL_cmd_led_black,
+      &(osdp_conformance.cmd_led_black.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: LED(Black)"},
+    {         OOC_SYMBOL_cmd_led_blue,
+      &(osdp_conformance.cmd_led_blue.test_status),
+      0, 0, 0, 0, 0,
+                        "Command: LED(Blue)"},
     {         OOC_SYMBOL_cmd_led_green,
       &(osdp_conformance.cmd_led_green.test_status),
       0, 0, 0, 0, 0,
@@ -262,10 +274,14 @@ OSDP_CONFORMANCE_TEST
                         "Command/Reply"},
     { "2-15-2", &(osdp_conformance.invalid_command.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-16-1", &(osdp_conformance.CHKSUM_CRC16.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
-    { "2-16-2", &(osdp_conformance.checksum.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
+    {         OOC_SYMBOL_CRC,
+      &(osdp_conformance.CRC.test_status),
+      1, 0, 0, 0, 0,
+                        "CRC"},
+    {         OOC_SYMBOL_checksum,
+      &(osdp_conformance.checksum.test_status),
+      1, 0, 0, 0, 0,
+                        "Checksum"},
     { "2-17-1", &(osdp_conformance.multipart.test_status),
       0, 0, 0, 0, 0, "---"},
 
@@ -494,8 +510,6 @@ void
     osdp_test_set_status(OOC_SYMBOL_SOM_sent, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_LEN, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_CTRL, OCONFORM_EXERCISED);
-    oconf->CHKSUM_CRC16.test_status =
-      OCONFORM_EXERCISED;
   };
 
   ctx->report = fopen ("/opt/osdp-conformance/results/report.log", "w");
@@ -610,12 +624,6 @@ void
   LOG_REPORT ((log_string,
 "2-15-2 No invalid C/R received            %s",
     conformance_status (oconf->invalid_command.test_status)));
-  LOG_REPORT ((log_string,
-"2-16-1 CHKSUM/CRC16                       %s",
-    conformance_status (oconf->CHKSUM_CRC16.test_status)));
-  LOG_REPORT ((log_string,
-"2-16-2 Checksum                           %s",
-    conformance_status (oconf->checksum.test_status)));
   LOG_REPORT ((log_string,
 "2-17-1 Large Data Messages                %s",
     conformance_status (oconf->multipart.test_status)));

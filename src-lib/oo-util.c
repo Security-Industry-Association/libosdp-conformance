@@ -96,8 +96,6 @@ int
     m_check = OSDP_CHECKSUM; // Issue #11
     if (context->verbosity > 9)
       fprintf(context->log, "m_check set to CHECKSUM (parse)\n");
-    osdp_conformance.checksum.test_status =
-      OCONFORM_EXERCISED;
   }
   else
   {
@@ -686,27 +684,10 @@ fprintf(stderr, "lstat 1000\n");
 
       parsed_cksum = checksum (m->ptr, m->lth-1);
 
-// hmmm
+      // last byte is checksum
 
-// checksum is in low-order byte of 16 bit message suffix
-      wire_cksum = *(m->cmd_payload + 2 + msg_data_length);
-// ("experimental") if it's a reply and it has no data
-// then use the last byte as the checksum
+      wire_cksum = (unsigned char)*(m->lth -1 + m->ptr);
 
-if (0) //if ((p->addr & 0x80) && (m->lth == 7))
-{
-  char *p;
-  int i;
-  unsigned old;
-  old = wire_cksum;
-  wire_cksum = *(m->cmd_payload + 1 + msg_data_length);
-  fprintf(stderr, "wck old %x now %x, p %x cmd %x\n", old, wire_cksum, parsed_cksum, returned_hdr->command);
-  p = (char *)(m->ptr);
-  for (i=0; i<16; i++)
-    fprintf(stderr, " %02x", (unsigned)*(p+i)); 
-  fprintf(stderr, "\n");
-};
-wire_cksum = (unsigned char)*(m->lth -1 + m->ptr);
       if (context->verbosity > 99)
       {
         fprintf (stderr, "pck %04x wck %04x\n",

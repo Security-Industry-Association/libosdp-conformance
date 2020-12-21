@@ -60,6 +60,13 @@ int
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
+  if (status EQUALS ST_OK)
+  {
+    if (msg.check_size EQUALS 2)
+      osdp_test_set_status(OOC_SYMBOL_CRC, OCONFORM_EXERCISED);
+    else
+      osdp_test_set_status(OOC_SYMBOL_checksum, OCONFORM_EXERCISED);
+  };
 
   /*
     if it didn't look right to the parser, dump it and let the retry process handle it.

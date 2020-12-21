@@ -39,7 +39,9 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_LEN                "050-09-06"
 #define OOC_SYMBOL_CTRL               "050-09-07"
 #define OOC_SYMBOL_CMND_REPLY         "050-09-09"
+#define OOC_SYMBOL_checksum           "050-09-11"
 #define OOC_SYMBOL_SOM_sent           "050-09-12"
+#define OOC_SYMBOL_CRC                "050-09-15"
 
 #define OOC_SYMBOL_cmd_poll           "060-02-01"
 #define OOC_SYMBOL_poll_lstatr        "060-02-02"
@@ -151,8 +153,8 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rogue_secure_poll;       // 2-14-3
   OSDP_CONFORM CMND_REPLY;
   OSDP_CONFORM invalid_command;         // 2-15-2
-  OSDP_CONFORM CHKSUM_CRC16;            // 2-16-1
-  OSDP_CONFORM checksum;                // 2-16-2
+  OSDP_CONFORM CRC;          
+  OSDP_CONFORM checksum;    
   OSDP_CONFORM multipart;               // 2.17
 
   // section 6
@@ -171,8 +173,11 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_rstat;               // 3-8-1
   OSDP_CONFORM cmd_out;                 // 3-9-1
   OSDP_CONFORM cmd_led_any;
+  OSDP_CONFORM cmd_led_black;
   OSDP_CONFORM cmd_led_red;
   OSDP_CONFORM cmd_led_green;
+  OSDP_CONFORM cmd_led_amber;
+  OSDP_CONFORM cmd_led_blue;
   OSDP_CONFORM cmd_buz;
   OSDP_CONFORM cmd_text;                // 3-12-1
   OSDP_CONFORM cmd_comset;
