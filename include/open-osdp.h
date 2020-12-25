@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (82)
-#define OSDP_VERSION_BUILD ( 7)
+#define OSDP_VERSION_MINOR (83)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
@@ -203,8 +203,8 @@
 #define OSDP_CMDB_CONFORM_060_24_02 (1045)
 #define OSDP_CMDB_CONFORM_060_25_02 (1046)
 #define OSDP_CMDB_PIVDATA           (1047)
-#define OSDP_CMDB_CONFORM_060_25_03 (1048) // enqueue crauth after raw
-#define OSDP_CMDB_CONFORM_060_24_03 (1049) // enqueue genauth after raw
+#define OSDP_CMDB_CONFORM_060_25_03 (1048) // enqueue challenge after raw
+#define OSDP_CMDB_CONFORM_060_24_03 (1049) // enqueue witness after raw
 
 #define OSDP_CMD_NOOP         (0)
 
