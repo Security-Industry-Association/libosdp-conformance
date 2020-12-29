@@ -132,7 +132,7 @@ exit(-1);
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)
-        fprintf (context->log, "Sending osdp_GENAUTH after next osdp_RAW\n");
+        fprintf (context->log, "Sending osdp_GENAUTH after next Raw response\n");
       break;
 
     case OSDP_CMDB_CONFORM_060_24_03:
@@ -141,7 +141,7 @@ exit(-1);
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)
-        fprintf (context->log, "Enqueuing osdp_GENAUTH after next osdp_RAW\n");
+        fprintf (context->log, "Enqueuing osdp_GENAUTH after next Raw response\n");
       break;
 
     case OSDP_CMDB_CONFORM_060_25_02:
@@ -150,7 +150,7 @@ exit(-1);
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)
-        fprintf (context->log, "Sending osdp_CRAUTH after next osdp_RAW\n");
+        fprintf (context->log, "Sending osdp_CRAUTH after next Raw response\n");
       break;
 
     case OSDP_CMDB_CONFORM_060_25_03:
@@ -159,7 +159,7 @@ exit(-1);
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)
-        fprintf (context->log, "Enqueuing osdp_CRAUTH after next osdp_RAW\n");
+        fprintf (context->log, "Enqueuing osdp_CRAUTH after next Raw response\n");
       break;
 
     case OSDP_CMDB_CONFORM_2_2_1:
@@ -299,6 +299,13 @@ exit(-1);
         current_length = 0;
         status = send_message_ex(context, osdp_command, p_card.addr,
           &current_length, total_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);
+
+// if it was a witness, sleep a while in case it takes a while for the ACK to get back.
+if (command EQUALS OSDP_CMDB_WITNESS)
+{
+  fprintf(stderr, "DEBUG: sleep after GENAUTH send\n");
+  sleep(5);
+}
       };
       break;
 
