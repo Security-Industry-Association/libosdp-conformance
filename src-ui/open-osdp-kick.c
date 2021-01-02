@@ -1,7 +1,7 @@
 /*
   open-osdp-kick - kick the OSDP process in the Unix socket
 
-  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org

@@ -1,7 +1,7 @@
 /*
   oosdp_ui - UI routines for open-osdp
 
-  (C)2014-2017 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
