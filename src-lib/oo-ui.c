@@ -1,16 +1,7 @@
-extern int pending_response_length;
-extern unsigned char pending_response_data [1500];
-extern unsigned char pending_response;
-
-char file_transfer_buffer [2048];
-
-unsigned char leftover_command;
-unsigned char leftover_data [4*1024];
-int leftover_length;
 /*
   oo-ui - UI routines for open-osdp
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -27,6 +18,15 @@ int leftover_length;
   See the License for the specific language governing permissions and
   limitations under the License.
 */
+extern int pending_response_length;
+extern unsigned char pending_response_data [1500];
+extern unsigned char pending_response;
+
+char file_transfer_buffer [2048];
+
+unsigned char leftover_command;
+unsigned char leftover_data [4*1024];
+int leftover_length;
 
 
 #include <stdio.h>
@@ -815,8 +815,9 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
         }
         else
         {
-          status = send_message (context,
-            OSDP_ISTAT, p_card.addr, &current_length, 0, NULL);
+          status = send_message_ex (context, OSDP_ISTAT, p_card.addr,
+            &current_length, 0, NULL,
+            OSDP_SEC_SCS_17, 0, NULL);
           if (context->verbosity > 3)
             fprintf (stderr, "Requesting Input Status\n");
           osdp_conformance.cmd_istat.test_status =
@@ -933,8 +934,9 @@ fprintf(stderr,
           osdp_LSTAT requires no arguments.
         */
         current_length = 0;
-        status = send_message (context,
-          OSDP_LSTAT, p_card.addr, &current_length, 0, NULL);
+
+        status = send_message_ex (context, OSDP_LSTAT, p_card.addr,
+          &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
         osdp_conformance.cmd_lstat.test_status =
           OCONFORM_EXERCISED;
         if (context->verbosity > 3)
@@ -950,8 +952,8 @@ fprintf(stderr,
           osdp_OSTAT requires no arguments.
         */
         current_length = 0;
-        status = send_message (context,
-          OSDP_OSTAT, p_card.addr, &current_length, 0, NULL);
+        status = send_message_ex (context,
+          OSDP_OSTAT, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
         if (context->verbosity > 3)
           fprintf (stderr, "Requesting Output Status\n");
       };
@@ -966,8 +968,9 @@ fprintf(stderr,
           out_lth;
 
         current_length = 0;
-fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
-  current_output_command [0].output_number);
+        if (context->verbosity > 3)
+          fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
+            current_output_command [0].output_number);
         osdp_out_msg [0].output_number =
           current_output_command [0].output_number;
         osdp_out_msg [0].control_code = current_output_command [0].control_code;
@@ -975,9 +978,9 @@ fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
         osdp_out_msg [0].timer_msb =
           (current_output_command [0].timer > 8) & 0xff;
         out_lth = sizeof (osdp_out_msg [0]);
-        status = send_message (context,
-          OSDP_OUT, p_card.addr, &current_length, out_lth,
-          (unsigned char *)osdp_out_msg);
+        status = send_message_ex (context,
+          OSDP_OUT, p_card.addr, &current_length,
+          out_lth, (unsigned char *)osdp_out_msg, OSDP_SEC_SCS_17, 0, NULL);
         status = ST_OK;
       };
       break;
@@ -1012,8 +1015,8 @@ fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
     case OSDP_CMDB_RSTAT:
       status = ST_OK;
       current_length = 0;
-      status = send_message (context,
-        OSDP_RSTAT, p_card.addr, &current_length, 0, NULL);
+      status = send_message_ex (context,
+        OSDP_RSTAT, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
       if (context->verbosity > 2)
         fprintf (stderr, "Requesting (External) Reader (Tamper) Status\n");
       break;
