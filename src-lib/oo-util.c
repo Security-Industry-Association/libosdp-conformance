@@ -257,6 +257,13 @@ fprintf(stderr, "d 1 at 811\n");
 if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
   display = 1;
 
+if (context->verbosity > 3)
+{
+  if (p->ctrl & 0x08)
+  {
+    fprintf(stderr, "DEBUG: SCS\n");
+  };
+};
     osdp_trace_dump(context, display);
 
     if (display)

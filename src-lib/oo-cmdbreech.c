@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -737,6 +737,9 @@ cmd->command = OSDP_CMD_NOOP;
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 

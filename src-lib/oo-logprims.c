@@ -1,7 +1,7 @@
 /*
   oo-logprims - open osdp logging sub-functions
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -330,6 +330,7 @@ void
   FILE *tf;
 
 
+  fflush(ctx->log);
 if (ctx->verbosity > 9)
 {
   fprintf(stderr, "DEBUG: penab %d olen %d ilen %d\n",
@@ -337,6 +338,12 @@ if (ctx->verbosity > 9)
 }
 
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
+  if (ctx->verbosity > 9)
+  {
+    fprintf(ctx->log, "DEBUG: osdp_trace_dump fetched current time ol=%d il=%d\n",
+      (int)strlen(trace_out_buffer), (int)strlen(trace_in_buffer));
+    fflush(ctx->log);
+  };
   tf = fopen(OSDP_TRACE_FILE, "a+");
 //tf = NULL;
   if (tf)
