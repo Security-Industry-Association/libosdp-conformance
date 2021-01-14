@@ -140,6 +140,20 @@ fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
     };
     if (filetransfer_delay > 0)
     {
+      // if the current offset is zero this is an "initial" delay
+
+      if (ctx->xferctx.current_offset == 0)
+      {
+        osdp_test_set_status(OOC_SYMBOL_ftstat_dly_init, OCONFORM_EXERCISED);
+      };
+
+      // if the file transfer is done this is a "final" delay
+
+      if (ctx->xferctx.current_offset == 0)
+      {
+        osdp_test_set_status(OOC_SYMBOL_ftstat_dly_final, OCONFORM_EXERCISED);
+      };
+
       delay_time.tv_sec = delay_sec;
       delay_time.tv_nsec = delay_nsec;
       (void) nanosleep(&delay_time, NULL);

@@ -1,7 +1,7 @@
 /*
   osdp_conformance.h - conformance metrics per profiles
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -106,6 +106,9 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_crauthr       "070-22-01"
 #define OOC_SYMBOL_resp_mfgerrr       "070-24-01"
 #define OOC_SYMBOL_resp_ftstat        "070-25-01"
+#define OOC_SYMBOL_ftstat_dly_init    "070-25-02"
+#define OOC_SYMBOL_ftstat_dly_final   "070-25-03"
+#define OOC_SYMBOL_ftstat_bufsize     "070-25-04"
 
 typedef struct osdp_interop_assessment
 {
@@ -227,6 +230,9 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM resp_mfgerrr;
   OSDP_CONFORM resp_busy;
   OSDP_CONFORM resp_ftstat;
+  OSDP_CONFORM resp_ftstat_dly_init;
+  OSDP_CONFORM resp_ftstat_dly_final;
+  OSDP_CONFORM resp_ftstat_bufsize;
   OSDP_CONFORM resp_genauthr;
   OSDP_CONFORM resp_crauthr;
   OSDP_CONFORM resp_pivdatar;

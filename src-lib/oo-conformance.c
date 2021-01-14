@@ -1,7 +1,7 @@
 /*
   oosdp_conformance - conformance reporting routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -378,6 +378,18 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_ftstat.test_status),
       0, 0, 0, 0, 0,
                         "Response: osdp_FTSTAT"},
+    {         OOC_SYMBOL_ftstat_dly_init,
+      &(osdp_conformance.resp_ftstat_dly_init.test_status),
+      0, 0, 0, 0, 0,
+                        "FTSTAT Delay(initial)"},
+    {         OOC_SYMBOL_ftstat_dly_final,
+      &(osdp_conformance.resp_ftstat_dly_final.test_status),
+      0, 0, 0, 0, 0,
+                        "FTSTAT Delay(final)"},
+    {         OOC_SYMBOL_ftstat_bufsize,
+      &(osdp_conformance.resp_ftstat_bufsize.test_status),
+      0, 0, 0, 0, 0,
+                        "FTSTAT buffer size"},
     {         OOC_SYMBOL_rep_nak,
       &(osdp_conformance.rep_nak.test_status),
       1, 1, 1, 1, 0,

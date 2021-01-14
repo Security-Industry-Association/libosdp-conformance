@@ -178,6 +178,8 @@ int
       }
       else
       {
+        // if the PD offered a new message size note that test result.
+        osdp_test_set_status(OOC_SYMBOL_ftstat_bufsize, OCONFORM_EXERCISED);
         osdp_doubleByte_to_array(ctx->max_message, response.FtUpdateMsgMax);
 fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
 fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);
