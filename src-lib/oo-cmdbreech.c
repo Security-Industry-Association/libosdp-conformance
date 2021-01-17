@@ -883,6 +883,12 @@ fprintf(ctx->log, "DEBUG: perf_off_time %d.\n", led_ctl->perm_off_time);
       {
         led_ctl->temp_control = OSDP_LED_TEMP_SET;
       };
+
+      if (status EQUALS ST_OK)
+      {
+        status = enqueue_command(ctx, cmd);
+        cmd->command = OSDP_CMD_NOOP;
+      };
     };
   }; 
   if (status EQUALS ST_OK)

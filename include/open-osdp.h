@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (84)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_BUILD ( 3)
 
 #define OSDP_TRACE_VERSION_0 (0)
 
