@@ -1,7 +1,7 @@
 /*
   oo-actions - open osdp action routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -816,6 +816,7 @@ int
   int bits;
   char cmd [2*1024];
   OSDP_COMMAND command_for_later;
+  char details [1024];
   int display;
   char hstr [1024]; // hex string of raw card data payload
   unsigned char *raw_data;
@@ -824,13 +825,13 @@ int
 
   status = ST_OK;
   display = 0; // assume encrypted and can't see it.
-  if (ctx->role EQUALS OSDP_ROLE_CP)
+  details [0] = 0;
+
+  if (ctx->role EQUALS OSDP_ROLE_CP) // check this, should not need to check this here.
   {
     (void)oosdp_make_message (OOSDP_MSG_RAW, tlogmsg, msg);
     fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log); tlogmsg [0] = 0;
 
-    osdp_test_set_status(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED);
-    osdp_conformance.cmd_poll_raw.test_status = OCONFORM_EXERCISED;
     raw_data = msg->data_payload + 4;
     dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, msg->data_length);
     if (msg->security_block_length > 0)
@@ -884,6 +885,23 @@ int
 
       status = oo_write_status (ctx);
 
+      /*
+        build up raw details for the results file.
+        (yeah I decode it several times.)
+      */
+      {
+        int i;
+        char octet [3];
+
+        strcpy(details, "\"payload\":\"");
+        for (i=0; i<msg->data_length; i++)
+        {
+          sprintf(octet, "%02x", *(msg->data_payload+i));
+          strcat(details, octet);
+        };
+        strcpy(details, "\"");
+      };
+
       // run the action routine with the bytes,bit count,format
 
       sprintf(cmd,
@@ -891,13 +909,17 @@ int
         hstr, bits, *(msg->data_payload+1));
       system(cmd);
     }; // not encrypted
+
+    // I'm the ACU, I got an osdp_RAW, report results and details
+
+    osdp_test_set_status_ex(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED, details);
   };
 
   // if a (react to raw) genauth was requested, enqueue the request
 
   if (0 EQUALS strcmp (ctx->test_in_progress, "060-24-03"))
   {
-    // stick in a poll so the next commend is not back to back with the osdp_RAW response
+    // stick in a poll so the next command is not back to back with the osdp_RAW response
 
     memset(&command_for_later, 0, sizeof(command_for_later));
     command_for_later.command = OSDP_CMDB_SEND_POLL;

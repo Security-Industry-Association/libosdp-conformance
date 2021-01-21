@@ -1,7 +1,7 @@
 /*
   oo_util - open osdp utility routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -540,15 +540,13 @@ fprintf(stderr, "lstat 1000\n");
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-// ASSUMES NO SECURITY
+
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDID");
 
       // if we had sent an osdp_ID then that worked.
       if ((context->last_command_sent EQUALS OSDP_ID))
         osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
-
-      osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
       break;
 
     case OSDP_PIVDATA:

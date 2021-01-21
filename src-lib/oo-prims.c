@@ -386,6 +386,15 @@ int osdp_timer_start
 
 
   status = ST_OK;
+if (timer_index == OSDP_TIMER_RESPONSE)
+{
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "DEBUG: osdp_timer_start: old s %ld ns %ld\n",
+      ctx->timer[timer_index].i_sec,
+      ctx->timer[timer_index].i_nsec);
+  };
+};
   if ((timer_index < 0) || (timer_index > OSDP_TIMER_MAX))
     status = ST_OSDP_BAD_TIMER;
   if (status EQUALS ST_OK)
@@ -400,6 +409,15 @@ int osdp_timer_start
       ctx->timer [timer_index].current_nanoseconds = ctx->timer [timer_index].i_nsec;
       ctx->timer [timer_index].status = OSDP_TIMER_RESTARTED;
     };
+if (timer_index == OSDP_TIMER_RESPONSE)
+{
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "DEBUG: osdp_timer_start: restart s %ld ns %ld\n",
+      ctx->timer[timer_index].i_sec,
+      ctx->timer[timer_index].i_nsec);
+  };
+};
   };
 
   return (status);
