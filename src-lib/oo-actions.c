@@ -899,7 +899,7 @@ int
           sprintf(octet, "%02x", *(msg->data_payload+i));
           strcat(details, octet);
         };
-        strcpy(details, "\"");
+        strcat(details, "\",");
       };
 
       // run the action routine with the bytes,bit count,format
