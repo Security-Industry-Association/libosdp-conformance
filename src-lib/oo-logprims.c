@@ -25,6 +25,7 @@
 
 
 #include <open-osdp.h>
+#include <osdpcap.h>
 extern char trace_in_buffer [];
 extern char trace_out_buffer [];
 
@@ -359,15 +360,20 @@ if (ctx->verbosity > 9)
 {
 if (strlen(trace_out_buffer) > 0)
       fprintf(tf,
-"{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"out\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
+"{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"out\", \"data\" : \"%s\", \"%s\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
         current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_out_buffer,
-        OSDP_TRACE_VERSION_0, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
+        OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
+        OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
     fflush(tf);
     if (strlen(trace_in_buffer) > 0)
       fprintf(tf,
-"{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"%s\", \"data\" : \"%s\", \"osdp-trace-version\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
-        current_time_fine.tv_sec, current_time_fine.tv_nsec, tag, trace_in_buffer,
-        OSDP_TRACE_VERSION_0, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
+"{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
+        OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
+        OSDPCAP_TAG_TIME_NSEC, current_time_fine.tv_nsec,
+        OSDPCAP_TAG_INPUT_OUTPUT, tag,
+        OSDPCAP_TAG_DATA, trace_in_buffer,
+        OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
+        OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
 };
     fflush(tf);
     fclose(tf);

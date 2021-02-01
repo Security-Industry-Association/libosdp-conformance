@@ -28,10 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (84)
-#define OSDP_VERSION_BUILD ( 3)
-
-#define OSDP_TRACE_VERSION_0 (0)
+#define OSDP_VERSION_MINOR (90)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
