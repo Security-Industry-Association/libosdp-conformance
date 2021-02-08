@@ -1,5 +1,5 @@
 /*
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 */
 #include <stdio.h>
 #include <string.h>
@@ -180,6 +180,8 @@ int
       ret_cmd = OSDP_CMDB_BIOMATCH;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
+    if (0 EQUALS strcmp(command, "keyset"))
+      ret_cmd = OSDP_CMDB_KEYSET;
     if (0 EQUALS strcmp(command, "pivdata"))
       ret_cmd = OSDP_CMDB_PIVDATA;
     if (0 EQUALS strcmp(command, "polling"))

@@ -929,6 +929,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_UNSUPPORTED_AUTH_PAYLOAD ( 87)
 #define ST_OSDP_PAYLOAD_TOO_SHORT        ( 88)
 #define ST_MSG_TOO_LONG                  ( 89)
+#define ST_OSDP_BAD_KEY_LENGTH           ( 90)
 
 int
   m_version_minor;

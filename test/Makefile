@@ -1,6 +1,6 @@
 # Make file for test directory of libosdp-conformance
 
-OSDP_HOME=/opt/osdp-conformance
+OSDP_HOME=opt/osdp-conformance
 SHELL_SCRIPTS=conformance/100-cp-test conformance/150-cp-comset \
   conformance/200-pd-test
 

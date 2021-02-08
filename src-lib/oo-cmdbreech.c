@@ -98,31 +98,59 @@ int
   // command bio_read send bio read template command
 
   case OSDP_CMDB_BIOREAD:
+    status = ST_OK;
     cmd->command = OSDP_CMD_BIOREAD;
     break;
 
   case OSDP_CMDB_BIOMATCH:
-    cmd->command = OSDP_CMD_BIOMATCH;
     status = ST_OK;
+    cmd->command = OSDP_CMD_BIOMATCH;
     break;
 
   case OSDP_CMDB_FACTORY_DEFAULT:
+    status = ST_OK;
     fprintf(ctx->log, "***RESET TO FACTORY DEFAULT***\n");
     sprintf(command, "rm -f %s", OSDP_SAVED_PARAMETERS);
     system(command);
+    break;
+
+  case OSDP_CMDB_KEYSET:
     status = ST_OK;
+    // command "keyset" to send a KEYSET using the supplied key
+      cmd->command = OSDP_CMDB_KEYSET;
+
+    value = json_object_get (root, "psk-hex");
+    if (json_is_string (value))
+    {
+      strcpy (vstr, json_string_value (value));
+      if (strlen(vstr) != 2*OSDP_KEY_OCTETS)
+      {
+        status = ST_OSDP_BAD_KEY_LENGTH;
+      }
+      else
+      {
+        memcpy (cmd->details, vstr, OSDP_KEY_OCTETS*2);
+      };
+    };
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    //if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "Enqueue: keyset key %s\n", cmd->details);
+    };
     break;
 
   case OSDP_CMDB_NOOP:
+    status = ST_OK;
     // command parser no-op so OK command no-op
     cmd->command = OSDP_CMD_NOOP;
-    status = ST_OK;
     break;
 
   // getpiv object-id=zzzzzz offset=0000 data-element=qq
 
   case OSDP_CMDB_PIVDATA:
     cmd->command = OSDP_CMDB_PIVDATA;
+    status = ST_OK;
 
     // details:
     // first 3 octets are the object id
@@ -166,6 +194,7 @@ int
   case OSDP_CMDB_POLLING:
     {
       parameter = json_object_get(root, "action");
+      status = ST_OK;
       if (json_is_string(parameter))
       {
         if (0 EQUALS strcmp("reset", json_string_value(parameter)))
@@ -202,12 +231,14 @@ int
   case OSDP_CMDB_RESET:
     ctx->next_sequence = 0;
     cmd->command = OSDP_CMD_NOOP;
+    status = ST_OK;
     break;
 
   case OSDP_CMDB_TRACE:
     ctx->trace = 1 ^ ctx->trace; // toggle low order bit
     fprintf(ctx->log, "Tracing set to %d\n", ctx->trace);
     cmd->command = OSDP_CMD_NOOP;
+    status = ST_OK;
     break;
 
   default:
@@ -216,8 +247,11 @@ int
     status = ST_OK; // ok to proceed with old way
     break;
   };
-  value = json_object_get (root, "command");
-  if (!json_is_string (value)) status = ST_CMD_INVALID;
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "command");
+    if (!json_is_string (value)) status = ST_CMD_INVALID;
+  };
   if (status EQUALS ST_OK)
   {
     strcpy (current_command, json_string_value (value));
@@ -703,28 +737,6 @@ cmd->command = OSDP_CMD_NOOP;
     };
   };
 
-  // command "keyset" to send a KEYSET using the supplied key
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "keyset"))
-    {
-      cmd->command = OSDP_CMDB_KEYSET;
-
-      value = json_object_get (root, "psk-hex");
-      if (json_is_string (value))
-      {
-        strcpy (vstr, json_string_value (value));
-        memcpy (cmd->details, vstr, OSDP_KEY_OCTETS*2);
-      };
-      status = enqueue_command(ctx, cmd);
-      cmd->command = OSDP_CMD_NOOP;
-      //if (ctx->verbosity > 3)
-      {
-        fprintf(ctx->log, "Enqueue: keyset key %s\n", cmd->details);
-      };
-    };
-  };
-
   // command "local_status" - request local status
 
   if (status EQUALS ST_OK)
@@ -978,7 +990,7 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
     value = json_object_get (root, "command");
 
     strcpy (this_command, json_string_value (value));
-    test_command = "present_card";
+    test_command = "present-card";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_PRESENT_CARD;
