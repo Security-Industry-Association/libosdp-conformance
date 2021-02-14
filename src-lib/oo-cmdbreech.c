@@ -65,6 +65,7 @@ int
 
 
   status = ST_CMD_PATH;
+  memset(cmd, 0, sizeof(*cmd));
   cmdf = fopen (ctx->command_path, "r");
   if (cmdf != NULL)
   {
@@ -664,6 +665,13 @@ fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_IDENT;
+
+      value = json_object_get (root, "cleartext");
+      if (json_is_string (value))
+      {
+        cmd->details [0] = 1;
+      };
+
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
