@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2017-2021 Smithee Solutions LLC.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>start PD RS-485 Server</TITLE>"
-echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/osdp-conformance-PD.html\">"
+echo "<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/Test-PD.html\">"
 echo "<BODY><PRE>"
 echo "open-osdp started in PD run directory"
 echo "</BODY></HTML>"

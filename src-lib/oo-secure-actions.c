@@ -1,7 +1,7 @@
 /*
   oosdp_secure_actions - open osdp secure channel action routines
 
-  (C)Copyright 2017-2019 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -258,6 +258,9 @@ printf ("fixme: RND.B\n");
         OSDP_CCRYPT, p_card.addr, &current_length, 
         sizeof (ccrypt_response), (unsigned char *)&ccrypt_response,
         OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
+
+      (void)osdp_test_set_status(OOC_SYMBOL_cmd_chlng, OCONFORM_EXERCISED);
+      (void)osdp_test_set_status(OOC_SYMBOL_resp_ccrypt, OCONFORM_EXERCISED);
     };
   };
   return (status);
@@ -428,6 +431,9 @@ int
         OSDP_RMAC_I, p_card.addr, &current_length, 
         sizeof (message3), message3,
         OSDP_SEC_SCS_14, sizeof (sec_blk), sec_blk);
+
+      osdp_test_set_status(OOC_SYMBOL_cmd_scrypt, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_resp_rmac_i, OCONFORM_EXERCISED);
     };
   }
   else
