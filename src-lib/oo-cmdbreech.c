@@ -115,6 +115,18 @@ int
     system(command);
     break;
 
+  case OSDP_CMDB_IDENT:
+    value = json_object_get (root, "cleartext");
+    if (json_is_string (value))
+    {
+      cmd->details [0] = 1;
+    };
+
+    fprintf(ctx->log, "Command IDENT (%d) submitted.\n", cmd->details [0]);
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   case OSDP_CMDB_KEYSET:
     status = ST_OK;
     // command "keyset" to send a KEYSET using the supplied key
@@ -656,38 +668,13 @@ fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
     };
   };
 
-  // identify command - send an osdp_ID
-
-  if (status EQUALS ST_OK)
-  {
-    strcpy (this_command, json_string_value (value));
-    test_command = "identify";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
-    {
-      cmd->command = OSDP_CMDB_IDENT;
-
-      value = json_object_get (root, "cleartext");
-      if (json_is_string (value))
-      {
-        cmd->details [0] = 1;
-      };
-
-      if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
-fprintf(stderr, "test: queuing %d\n", cmd->command);
-status = enqueue_command(ctx, cmd);
-cmd->command = OSDP_CMD_NOOP;
-    };
-  }; 
 
   // initiate secure channel
 
   if (status EQUALS ST_OK)
   {
-    strcpy (this_command, json_string_value (value));
     test_command = "initiate-secure-channel";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    if (0 EQUALS strncmp (current_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_INIT_SECURE;
       cmd->details_param_1 = 0;

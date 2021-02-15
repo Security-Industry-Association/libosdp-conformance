@@ -180,6 +180,8 @@ int
       ret_cmd = OSDP_CMDB_BIOMATCH;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
+    if (0 EQUALS strcmp(command, "identify"))
+      ret_cmd = OSDP_CMDB_IDENT;
     if (0 EQUALS strcmp(command, "keyset"))
       ret_cmd = OSDP_CMDB_KEYSET;
     if (0 EQUALS strcmp(command, "pivdata"))
