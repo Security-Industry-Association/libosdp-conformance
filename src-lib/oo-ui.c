@@ -704,6 +704,8 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         unsigned char
           param [1];
 
+        fprintf(ctx->log, "Identify requested\n");
+
         current_length = 0;
         /*
           osdp_ID takes one argment, a one byte value of 0 indicating
@@ -711,7 +713,6 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         */
         param [0] = 0;
         current_length = 0;
-fprintf(stderr,"w:%d\n", context->last_was_processed);
         if (osdp_awaiting_response(context))
         {
           fprintf(stderr, "busy before OSDP_ID, skipping send\n");
@@ -728,13 +729,20 @@ fprintf(stderr,"w:%d\n", context->last_was_processed);
             fprintf(context->log, "    osdp_ID, L=%u V=%02x CLEAR=%d\n",
               (unsigned)sizeof(param), param [0], details [0]);
           };
-          status = send_message_ex (context, OSDP_ID, p_card.addr,
-            &current_length, sizeof (param), param,
-            OSDP_SEC_SCS_17, 0, NULL);
-
-          if (context->verbosity > 3)
-            fprintf (stderr, "Requesting PD Ident\n");
-          osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
+          // if cleartext was requested just send it in the clear
+          if (details [0] EQUALS 1)
+          {
+            status = send_message_ex (context, OSDP_ID, p_card.addr,
+              &current_length, sizeof (param), param,
+              OSDP_SEC_STAND_DOWN, 0, NULL);
+          }
+          else
+          {
+            status = send_message_ex (context, OSDP_ID, p_card.addr,
+              &current_length, sizeof (param), param,
+              OSDP_SEC_SCS_17, 0, NULL);
+          };
+           osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
         };
       };
       status = ST_OK;

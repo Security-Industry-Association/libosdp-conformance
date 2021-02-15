@@ -591,67 +591,67 @@ int
   status = ST_OK;
   if (ctx->role != OSDP_ROLE_MONITOR)
   {
-  current_sec_block_type = sec_block_type;
-  current_sec_block_length = sec_block_length;
-  memset(current_sec_block, 0, sizeof(current_sec_block));
-  if (sec_block != NULL)
-    memcpy(current_sec_block, sec_block, sizeof(current_sec_block));
+    current_sec_block_type = sec_block_type;
+    current_sec_block_length = sec_block_length;
+    memset(current_sec_block, 0, sizeof(current_sec_block));
+    if (sec_block != NULL)
+      memcpy(current_sec_block, sec_block, sizeof(current_sec_block));
 
-  // if we're not in secure channel it's all cleartext
+    // if we're not in secure channel it's all cleartext
 
-  if (ctx->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
-    current_sec_block_type = OSDP_SEC_NOT_SCS;
+    if (ctx->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
+      current_sec_block_type = OSDP_SEC_NOT_SCS;
 
-  // if we're in secure channel and it's not a known block it's an SCS_15/16
-  // unless there's data in which case it's a 17/18
+    // if we're in secure channel and it's not a known block it's an SCS_15/16
+    // unless there's data in which case it's a 17/18
 
-  current_sec_block_length = 0;
+    current_sec_block_length = 0;
 
-  if (current_sec_block_type EQUALS OSDP_SEC_NOT_SCS)
-  {
-    if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+    if (current_sec_block_type EQUALS OSDP_SEC_NOT_SCS)
     {
-      if (ctx->verbosity > 3)
+      if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
       {
-        fprintf(ctx->log, "send: SC; dlth %d\n", data_length);
-      };
-      if (data_length > 0)
-      {
-        if (ctx->role EQUALS OSDP_ROLE_ACU)
-          current_sec_block_type = OSDP_SEC_SCS_17;
-        else
-          current_sec_block_type = OSDP_SEC_SCS_18;
-      };
-      if (data_length EQUALS 0)
-      {
-        if (ctx->role EQUALS OSDP_ROLE_ACU)
-          current_sec_block_type = OSDP_SEC_SCS_15;
-        else
-          current_sec_block_type = OSDP_SEC_SCS_16;
+        if (ctx->verbosity > 3)
+        {
+          fprintf(ctx->log, "send: SC; dlth %d\n", data_length);
+        };
+        if (data_length > 0)
+        {
+          if (ctx->role EQUALS OSDP_ROLE_ACU)
+            current_sec_block_type = OSDP_SEC_SCS_17;
+          else
+            current_sec_block_type = OSDP_SEC_SCS_18;
+        };
+        if (data_length EQUALS 0)
+        {
+          if (ctx->role EQUALS OSDP_ROLE_ACU)
+            current_sec_block_type = OSDP_SEC_SCS_15;
+          else
+            current_sec_block_type = OSDP_SEC_SCS_16;
+        };
       };
     };
-  };
 
-  // the caller asked us to chillax even if it's in secure mode.
+    // the caller asked us to chillax even if it's in secure mode.
 
-  if (current_sec_block_type EQUALS OSDP_SEC_STAND_DOWN)
-    current_sec_block_type = OSDP_SEC_NOT_SCS;
+    if (current_sec_block_type EQUALS OSDP_SEC_STAND_DOWN)
+      current_sec_block_type = OSDP_SEC_NOT_SCS;
 
-  if (current_sec_block_type != OSDP_SEC_NOT_SCS)
-  {
-    if (ctx->verbosity > 9)
+    if (current_sec_block_type != OSDP_SEC_NOT_SCS)
     {
-      fprintf(ctx->log, "send: SC-%x\n", current_sec_block_type);
+      if (ctx->verbosity > 9)
+      {
+        fprintf(ctx->log, "send: SC-%x\n", current_sec_block_type);
+      };
+      status = send_secure_message(ctx, command, dest_addr,
+        current_length, data_length, data,
+        current_sec_block_type, current_sec_block_length, current_sec_block);
+    }
+    else
+    {
+      status = send_message (ctx, command, dest_addr, current_length,
+        data_length, data);
     };
-    status = send_secure_message(ctx, command, dest_addr,
-      current_length, data_length, data,
-      current_sec_block_type, current_sec_block_length, current_sec_block);
-  }
-  else
-  {
-    status = send_message (ctx, command, dest_addr, current_length,
-      data_length, data);
-  };
   }; // not monitor
   return(status);
 
