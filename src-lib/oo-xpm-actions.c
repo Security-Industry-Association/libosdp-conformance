@@ -1,7 +1,7 @@
 /*
   oo-xpm-actions - action routines for extended packet mode
 
-  (C)Copyright 2019 Smithee Solutions LLC
+  (C)Copyright 2019-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -45,7 +45,22 @@ int
 
 { /* action_osdp_KEEPACTIVE */
 
+  int current_length;
+  int status;
+
+
   fprintf(ctx->log, "osdp_KEEPACTIVE called\n");
+
+  current_length = 0;
+  status = send_message_ex
+    (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
+    OSDP_SEC_SCS_16, 0, NULL);
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "failed to send keepactive (status %d)\n", status);
+    fflush(ctx->log);
+  };
+
   osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
   return(ST_OK);
 

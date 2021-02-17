@@ -1,7 +1,7 @@
 /*
   oo_util2 - more open-osdp util routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -390,9 +390,16 @@ if (i != OSDP_TIMER_RESPONSE)
         };
       };
     }; // timer not stopped
+    if (ctx->verbosity > 3)
+    {
+      if (i EQUALS OSDP_TIMER_RESPONSE)
+      {
+        fprintf(ctx->log, "timer %d status %d\n", i, ctx->timer[i].status);
+      };
+    };
   };
   last_time_ex->tv_sec = time_spec.tv_sec;;
-  last_time_ex->tv_nsec = time_spec.tv_nsec;;
+   last_time_ex->tv_nsec = time_spec.tv_nsec;;
   return (return_value);
 
 } /* osdp_timeout */

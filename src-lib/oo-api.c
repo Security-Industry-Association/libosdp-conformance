@@ -3,7 +3,7 @@ extern char trace_out_buffer [];
 /*
   osdp-api - bits to implement HUP-based "API"
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -124,12 +124,8 @@ int
     fprintf(ctx->log, "process_command_from_queue: top, w=%d\n", waiting);
   if ((!waiting) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
   {
-extern OSDP_BUFFER osdp_buf;
 
-fprintf(stderr, "DEBUG: process_command_from_queue inbuf %d\n", osdp_buf.next);
 fflush(ctx->log);
-fprintf(stderr, "DEBUG: trace-in %s trace-out %s\n",
-  trace_in_buffer, trace_out_buffer);
 fflush(stderr);
     memcpy(&extracted, &(ctx->q [0].cmd), sizeof(extracted));
     cmd = &extracted;

@@ -492,6 +492,9 @@ int
         cmd->details [0] = (i & 0xff); // lsb
         cmd->details [1] = (i/0x100); // msb
       };
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   };
 

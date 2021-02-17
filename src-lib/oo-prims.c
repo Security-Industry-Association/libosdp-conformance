@@ -128,6 +128,11 @@ int
   int ret;
 
 
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "awaiting: last sq %d lastproc %d\n", ctx->last_sequence_received, ctx->last_was_processed);
+
+  };
   ret = 1;
 
   following_sequence = ctx->last_sequence_received;

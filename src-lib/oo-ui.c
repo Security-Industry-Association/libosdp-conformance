@@ -829,7 +829,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         {
           status = send_message_ex (context, OSDP_ISTAT, p_card.addr,
             &current_length, 0, NULL,
-            OSDP_SEC_SCS_17, 0, NULL);
+            OSDP_SEC_SCS_15, 0, NULL);
           if (context->verbosity > 3)
             fprintf (stderr, "Requesting Input Status\n");
           osdp_conformance.cmd_istat.test_status =
@@ -845,10 +845,9 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         char keepactive_time [2];
 
         memcpy(keepactive_time, details, 2);
-        status = ST_OK;
-        status = send_message (context,
-          OSDP_KEEPACTIVE, p_card.addr, &current_length,
-          sizeof (keepactive_time), (unsigned char *)&keepactive_time);
+        current_length = 0;
+        status = send_message_ex (context, OSDP_KEEPACTIVE, p_card.addr,
+            &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
       };
       break;
 
