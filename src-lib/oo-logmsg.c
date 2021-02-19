@@ -130,6 +130,7 @@ int
   OSDP_MSC_CR_AUTH *cr_auth;
   int d;
   OSDP_HDR_FILETRANSFER *filetransfer_message;
+  char file_transfer_status_detail [1024];
   OSDP_HDR_FTSTAT *ftstat;
   OSDP_MULTI_HDR_IEC *genauth_msg;
   OSDP_MULTI_HDR_IEC *genauthr_msg;
@@ -150,8 +151,8 @@ int
   char *sec_block;
   char tlogmsg [3*1024];
   char tmps [1024];
-  char tmpstr [1024];
-  char tmpstr2 [2*1024];
+  char tmpstr [2*1024];
+  char tmpstr2 [3*1024];
   int status;
   unsigned short int ustmp; // throw-away unsigned short integer (fits a "doubleByte")
   unsigned int utmp; // throw-away unsigned integer (fits a "quadByte")
@@ -343,9 +344,25 @@ int
     tlogmsg[0] = 0;
     osdp_array_to_doubleByte(ftstat->FtDelay, &newdelay);
     osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &newmax);
+    {
+      short int i;
+      i = (ftstat->FtStatusDetail[1] << 8) + ftstat->FtStatusDetail [0];
+      switch (i)
+      {
+      case OSDP_FILETRANSFER_STATUS_OK:
+        sprintf(file_transfer_status_detail, "%d (OK to proceed)", i);
+        break;
+      case OSDP_FILETRANSFER_STATUS_UNACCEPTABLE:
+        sprintf(file_transfer_status_detail, "%d (file data unacceptable or malformed)", i);
+        break;
+      default:
+        sprintf(file_transfer_status_detail, "%d", i);
+        break;
+      };
+    };
     sprintf(tmpstr,
-"File Transfer STATUS: Detail %02x%02x Action %02x Delay %02x-%02x(%d. ms) Update-max %02x-%02x(%d.)\n",
-      ftstat->FtStatusDetail [0], ftstat->FtStatusDetail [1],
+"File Transfer STATUS: Detail %s Action %02x Delay %02x-%02x(%d. ms) Update-max %02x-%02x(%d.)\n",
+      file_transfer_status_detail,
       ftstat->FtAction,
       ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,
       ftstat->FtUpdateMsgMax [0], ftstat->FtUpdateMsgMax [1], newmax);

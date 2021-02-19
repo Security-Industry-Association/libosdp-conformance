@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (91)
-#define OSDP_VERSION_BUILD ( 7)
+#define OSDP_VERSION_BUILD ( 8)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -394,6 +394,8 @@ typedef struct osdp_context_filetransfer
 #define OSDP_XFER_STATE_IDLE         (0)
 #define OSDP_XFER_STATE_TRANSFERRING (1)
 #define OSDP_XFER_STATE_FINISHING    (2)
+#define OSDP_FILETRANSFER_STATUS_OK           ( 0) // "OK to proceed"
+#define OSDP_FILETRANSFER_STATUS_UNACCEPTABLE (-3) // "file data unacceptable or malformed"
 
 
 typedef struct osdp_command

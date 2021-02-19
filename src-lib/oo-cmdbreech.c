@@ -335,6 +335,9 @@ int
         sscanf (vstr, "%d", &i);
         cmd->details [2] = i;
       };
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 
@@ -966,6 +969,9 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
         sscanf (vstr, "%d", &i);
         current_output_command [0].timer = i;
       };
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 

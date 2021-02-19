@@ -192,8 +192,9 @@ delay_nsec = delay_nsec * 1000;
     break;
 
   default:
-    status = ST_OSDP_FILEXFER_ERROR;
-    fprintf(stderr, "FTSTAT Detail: %02x\n", filetransfer_status);
+    fprintf(stderr, "Unknown FTSTAT Detail: %d\n", filetransfer_status);
+    // stop transfer if there is an error.
+    status = ST_OSDP_FILEXFER_WRAPUP;
     break;
   };
 

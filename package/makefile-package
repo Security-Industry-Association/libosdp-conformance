@@ -9,5 +9,5 @@ all:
 	( cd ${PACKAGE_NAME}; tar xvf ../built.tgz; )
 
 clean:
-	rm -rf ${PACKAGE_NAME} ../../built.tgz
+	rm -rf ${PACKAGE_NAME} built.tgz
 
