@@ -1,7 +1,7 @@
 /*
   oo-printmsg - open osdp message printing routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -228,7 +228,7 @@ int
     fclose (identf);
   };
   sprintf (tlogmsg, 
-"  PD Identification: OUI %02x-%02x-%02x Model %d Ver %d SN %02x%02x%02x%02x FW %d.%d Build %d\n",
+"  PD Identification: OUI %02x-%02x-%02x Model %d Ver %d SN %02x-%02x-%02x-%02x FW %d.%d Build %d\n",
      *(osdp_msg->data_payload + 0), *(osdp_msg->data_payload + 1),
      *(osdp_msg->data_payload + 2), *(osdp_msg->data_payload + 3),
      *(osdp_msg->data_payload + 4), *(osdp_msg->data_payload + 5),
