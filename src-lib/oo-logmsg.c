@@ -27,8 +27,8 @@
 #define OSDP_REP_MSC_CR_AUTH (0x14)
 #define OSDP_REP_MSC_STAT    (0xFD)
 
-char OSDP_VENDOR_INID [] = { 0x00, 0x75, 0x32 };
-char OSDP_VENDOR_WAVELYNX [] = { 0x5C, 0x26, 0x23 };
+static char OSDP_VENDOR_INID [] = { 0x00, 0x75, 0x32 };
+static char OSDP_VENDOR_WAVELYNX [] = { 0x5C, 0x26, 0x23 };
 
 typedef struct __attribute__((packed)) osdp_msc_crauth
 {
@@ -128,7 +128,6 @@ int
   OSDP_MULTI_HDR_IEC *crauth_msg;
   OSDP_MULTI_HDR_IEC *crauthr_msg;
   OSDP_MSC_CR_AUTH *cr_auth;
-  OSDP_MSC_CR_AUTH_RESPONSE *cr_auth_response;
   int d;
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   OSDP_HDR_FTSTAT *ftstat;
@@ -139,7 +138,6 @@ int
   char hstr [1024];
   int i;
   int idx;
-  OSDP_MSC_STATUS *msc_status;
   OSDP_MSG *msg;
   unsigned short int newdelay;
   unsigned short int newmax;
@@ -148,7 +146,6 @@ int
   OSDP_HDR *osdp_wire_message;
   unsigned char *payload;
   int payload_size;
-  OSDP_MSC_PIV_DATA *piv_data;
   int scb_present;
   char *sec_block;
   char tlogmsg [3*1024];
@@ -628,75 +625,22 @@ int
   case OOSDP_MSG_MFGREP:
     {
       OSDP_MFG_HEADER *mrep;
-      int process_as_special;
 
+
+      // unwind the headers so we have the osdp_MFGREP payload in hand...
       memset(tlogmsg, 0, sizeof(tlogmsg));
-      process_as_special = 0;
-
       msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - sizeof(*mrep) + 1;
       mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
 
-      process_as_special = 0;
-      if (0 EQUALS memcmp(mrep->vendor_code, OSDP_VENDOR_INID, sizeof(OSDP_VENDOR_INID)))
-        process_as_special = 1;
+      status = oo_mfg_reply_action(&context, msg, mrep);
+fprintf(stderr, "DEBUG: MFG Reply action returned %d\n", status);
+status = ST_OK;
 
-      if (!process_as_special)
-      {
-        sprintf(tlogmsg, "(General) MFG Reply: OUI:%02x-%02x-%02x RepID: %02x\n",
-          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-          mrep->command_id);
-      };
-      if (process_as_special)
-      {
-        sprintf(tlogmsg, "MFG Reply: OUI:%02x-%02x-%02x RepID: %02x\n",
-          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-          mrep->command_id);
-        switch (mrep->command_id)
-        {
-        case OSDP_REP_MSC_CR_AUTH:
-          {
-            cr_auth_response = (OSDP_MSC_CR_AUTH_RESPONSE *)(msg->data_payload);
-            sprintf(tmps,
-"MSC CRAUTH RESPONSE TotSize:%d. Offset:%d FragSize: %d\n",
-              cr_auth_response->mpd_size_total, cr_auth_response->mpd_offset,
-              cr_auth_response->mpd_fragment_size);
-            strcat(tlogmsg, tmps);
-            count = sizeof(*cr_auth_response) + cr_auth_response->mpd_fragment_size - 1 - sizeof(cr_auth_response->vendor_code)
-              - sizeof(cr_auth_response->command_id);
-          };
-          break;
-
-        case OSDP_REP_MSC_PIVDATA:
-          {
-            piv_data = (OSDP_MSC_PIV_DATA *)(msg->data_payload);
-            sprintf(tmps,
-"MSC PIVDATA\n  TotSize:%d. Offset:%d FragSize: %d\n",
-              piv_data->mpd_size_total, piv_data->mpd_offset,
-              piv_data->mpd_fragment_size);
-            strcat(tlogmsg, tmps);
-            count = sizeof(*piv_data) + piv_data->mpd_fragment_size - 1 - sizeof(piv_data->vendor_code)
-              - sizeof(piv_data->command_id);
-          };
-          break;
-        case OSDP_REP_MSC_STAT:
-          {
-            msc_status = (OSDP_MSC_STATUS *)(msg->data_payload);
-            sprintf(tmps, "MSC STATUS %02x Info %02x %02x\n", 
-              msc_status->status, msc_status->info [0], msc_status->info [1]);
-            count = sizeof(*msc_status) - sizeof(piv_data->vendor_code)
-              - sizeof(piv_data->command_id);
-          };
-          break;
-        default:
-          sprintf(tlogmsg, "(General) MFG Response: OUI:%02x-%02x-%02x RepID: %02x\n",
-            mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-            mrep->command_id);
-          break;
-        };
-      };
+      sprintf(tlogmsg, "MFG Response: OUI:%02x-%02x-%02x RepID: %02x\n",
+        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2], mrep->command_id);
 
       strcat(tlogmsg, "  Raw:");
       for (idx=0; idx<count; idx++)

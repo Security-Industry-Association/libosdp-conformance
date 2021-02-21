@@ -1,4 +1,4 @@
-# Make file for libosdp
+# Make file for libosdp-conformance
 
 #  (C)Copyright 2017-2021 Smithee Solutions LLC
 
@@ -18,7 +18,7 @@
 #  limitations under the License.
 
 
-OUTLIB=libosdp.a
+OUTLIB=libosdp-conformance.a
 
 # built with gcc.  note it also builds with clang.
 CC=gcc
@@ -35,18 +35,20 @@ build:	all
 clean:
 	rm -f core *.o ${OUTLIB}
 
-libosdp.a:	\
-	oo-actions.o oo-api.o oo-bio.o \
-	  oo-cmdbreech.o oo-io-actions.o oo-initialize.o oo-process.o \
+${OUTLIB}:	\
+	oo-actions.o oo-api.o oo-bio.o oo-conformance.o oo-crc.o \
+	  oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
+	  oo-logprims.o oo-mfg-actions.o \
+	  oo-printmsg.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
-	  oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
-	  oo-crc.o oo-conformance.o \
+	  oo-xpm-actions.o oo-xwrite.o \
 	  oo-files.o oo-logmsg.o oo-prims.o \
 	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
-	ar r libosdp.a \
+	ar r ${OUTLIB} \
 	  oo-actions.o oo-api.o oo-bio.o \
-	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-process.o oo-util.o oo-util2.o \
-	  oo-util3.o oo-logprims.o oo-printmsg.o oo-xpm-actions.o oo-xwrite.o \
+	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o \
+	  oo-printmsg.o oo-process.o oo-util.o oo-util2.o \
+	  oo-util3.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oo-crc.o oo-files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
 	  oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
@@ -68,6 +70,9 @@ oo-initialize.o:	oo-initialize.c ../include/open-osdp.h
 
 oo-io-actions.o:	oo-io-actions.c ../include/osdp-tls.h ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-io-actions.c
+
+oo-mfg-actions.o:	oo-mfg-actions.c ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-mfg-actions.c
 
 oo-process.o:	oo-process.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-process.c

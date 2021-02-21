@@ -25,6 +25,7 @@ CFLAGS=-DOSDP_CONFORMANCE -I /tester/current/include
 LDFLAGS=/opt/osdp-conformance/lib/aes.o -L /tester/current/lib
 
 PROGS = open-osdp
+OSDPLIB = osdp-conformance
 
 all:	${PROGS}
 
@@ -38,7 +39,7 @@ build:	all
 
 open-osdp:	open-osdp.o Makefile ../src-lib/libosdp.a
 	${CC} ${LDFLAGS} -o open-osdp -g open-osdp.o \
-	  -L ../src-lib -losdp \
+	  -L ../src-lib -l${OSDPLIB} \
 	  -ljansson -lrt
 
 open-osdp.o:	open-osdp.c

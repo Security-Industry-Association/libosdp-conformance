@@ -930,6 +930,8 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_PAYLOAD_TOO_SHORT        ( 88)
 #define ST_MSG_TOO_LONG                  ( 89)
 #define ST_OSDP_BAD_KEY_LENGTH           ( 90)
+#define ST_OSDP_MFG_VENDOR_DETECTED      ( 91)
+#define ST_OSDP_MFG_VENDOR_PROCESSED     ( 92)
 
 int
   m_version_minor;
@@ -983,6 +985,7 @@ int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
 int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
+int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFG_HEADER *mrep);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_write_status (OSDP_CONTEXT *ctx);

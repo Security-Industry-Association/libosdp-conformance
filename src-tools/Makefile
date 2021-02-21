@@ -14,7 +14,7 @@ OSDPLIB=${OSDPBUILD}/lib
 CC=gcc
 CFLAGS=-c -g -I${OSDPINCLUDE} -I/opt/osdp-conformance/include -Wall -Werror
 LINK=gcc
-LDFLAGS=-g /opt/osdp-conformance/lib/aes.o -L ${OSDPLIB} -l osdp -ljansson
+LDFLAGS=-g /opt/osdp-conformance/lib/aes.o -L ${OSDPLIB} -l osdp-conformance -ljansson
 
 all:	${PROGS} ${CGI_PROGS}
 
