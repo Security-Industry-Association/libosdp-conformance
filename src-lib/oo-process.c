@@ -36,7 +36,11 @@ int leftover_length;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
-
+extern unsigned char last_command_received;
+extern unsigned char last_sequence_received;
+extern unsigned char last_check_value;
+extern int saved_next;
+int retries_from_acu;
 
 int
   process_osdp_input
@@ -45,6 +49,7 @@ int
 { /* process_osdp_input */
 
   OSDP_MSG msg;
+  int nak_not_msg;
   OSDP_HDR parsed_msg;
   int status;
   OSDP_BUFFER temp_buffer;
@@ -57,9 +62,11 @@ int
 
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
+fprintf(stderr, "preparse length %d\n", msg.lth);
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
   if (status EQUALS ST_OK)
   {
+fprintf(stderr, "postparse length %d\n", msg.lth);
     context.last_sequence_received = msg.sequence;
 
     if (msg.check_size EQUALS 2)
@@ -90,7 +97,32 @@ int
 
     if (context.role EQUALS OSDP_ROLE_PD)
     {
-      current_length = 0;
+unsigned short int current_check_value;
+      // is it a resend?
+      current_check_value = *(unsigned short int *)(msg.crc_check);
+      if (msg.check_size EQUALS 1)
+        current_check_value = 0xff & current_check_value; // crc is 2 bytes checksum is the low order byte
+fprintf(context.log,
+"DEBUG: nak in progress lc %02x ls %02x lck %02x %d. %x saved s %d\n",
+  last_command_received, last_sequence_received, last_check_value, msg.check_size, current_check_value, saved_next);
+      if ((last_command_received EQUALS parsed_msg.command) && (last_check_value EQUALS current_check_value))
+      {
+int old_s;
+old_s = context.next_sequence;
+if (context.next_sequence EQUALS 1)
+  context.next_sequence = 3;
+else
+  context.next_sequence --;
+retries_from_acu++;
+fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n",
+  retries_from_acu, old_s, context.next_sequence);
+fflush(context.log);
+
+send_response = 0;
+status = ST_OK;
+      }
+      if (status != ST_OK) {
+        current_length = 0;
       osdp_nak_response [0] = 0xff;
       send_response = 1;
 
@@ -98,21 +130,25 @@ int
       switch(status)
       {
       default:
+        nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_CMD_UNABLE;
         break;
       case ST_NOT_MY_ADDR:
         send_response = 0; // not for me, don't answer.
         break;
       case ST_OSDP_SC_BAD_HASH:
+        nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_ENC_REQ;
         fprintf(context.log, "  NAK: Bad hash, sending NAK %d\n", OO_NAK_ENC_REQ);
         break;
       case ST_OSDP_BAD_SEQUENCE:
+        nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_SEQUENCE;
 
         // reset the current sequence number to zero (for the NAK)
         context.next_sequence = 0;
         break;
+        };
       };
 
       if (send_response)
@@ -123,6 +159,9 @@ int
           OSDP_NAK, p_card.addr, &current_length,
           1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
         context.sent_naks ++;
+
+        if (nak_not_msg)
+          osdp_test_set_status(OOC_SYMBOL_resp_nak_not_msg, OCONFORM_EXERCISED);
 
         // if we just sent a bad-sequence NAK then reset the sequence number.
         // (for subsequent packets)
@@ -245,6 +284,19 @@ int
       // if we experienced an error we just reset things and continue
       status = ST_SERIAL_IN;
   };
+if (status EQUALS ST_OK)
+{
+  int i;
+  char temps [4096];
+  char octet_string [1024];
+  temps[0] = 0;
+  for (i=0; i<msg.lth; i++)
+  {
+    sprintf(octet_string, " %02x", *(msg.ptr+i));
+    strcat(temps, octet_string);
+  };
+  fprintf(stderr, "bottom of process_osdp_input: buffer %s\n", temps);
+};
   return (status);
 
 } /* process_osdp_input */

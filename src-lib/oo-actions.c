@@ -54,12 +54,16 @@ int
 { /* action_osdp_COMSET */
 
   int current_length;
+  unsigned char from_address;
   int i;
   unsigned char osdp_com_response_data [5];
   char logmsg [1024];
+  OSDP_HDR *p;
   int status;
 
 
+  p = (OSDP_HDR *)(msg->ptr);
+  from_address = p->addr;
   memset (osdp_com_response_data, 0, sizeof (osdp_com_response_data));
   i = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
     (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
@@ -77,7 +81,7 @@ int
   *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
   status = ST_OK;
   current_length = 0;
-        status = send_message_ex (ctx, OSDP_COM, p_card.addr,
+        status = send_message_ex (ctx, OSDP_COM, oo_response_address(ctx, from_address),
           &current_length, sizeof (osdp_com_response_data), osdp_com_response_data,
           OSDP_SEC_SCS_18, 0, NULL);
   if (ctx->verbosity > 2)

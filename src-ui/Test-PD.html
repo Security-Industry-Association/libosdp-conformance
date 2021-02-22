@@ -64,27 +64,31 @@ Recent PD
   <TR>
     <TD ALIGN="CENTER">050-05-01</TD>
       <TD ALIGN="CENTER">(auto)</TD>
-      <TD ALIGN="CENTER">Multi-byte encoding</TD>
+      <TD>Multi-byte encoding</TD>
 
     <TD ALIGN="CENTER">050-06-01</TD>
       <TD ALIGN="CENTER">(auto)</TD>
-      <TD ALIGN="CENTER">Packet size (ACU to PD)</TD>
+      <TD>Packet size (ACU to PD)</TD>
 
     <TD ALIGN="CENTER">050-06-02</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=PD-conform_050_06_02">
       <EM>Test</EM></A></TD>
-      <TD ALIGN="CENTER">Packet size (PD to ACU)</TD>
+      <TD>Packet size (PD to ACU)</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">050-07-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Timing</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD>Timing</TD>
 
     <TD ALIGN="CENTER">050-08-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Synchronization</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD>Synchronization</TD>
+
+    <TD ALIGN="CENTER">050-09-14</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Rogue Secure Poll</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">050-09-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Packet Format</TD>
+    <TD ALIGN="CENTER">(auto)</TD> <TD>Packet Format</TD>
 
     <TD ALIGN="CENTER">050-09-03</TD>
     <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD>
@@ -106,6 +110,10 @@ Recent PD
     <TD ALIGN="CENTER">050-09-07</TD>
     <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD>
 
+    <TD ALIGN="CENTER">050-09-02</TD>
+    <TD ALIGN="CENTER">(auto)</TD>
+    <TD>Sequence 0</TD>
+
     <TD ALIGN="CENTER">050-09-08</TD>
     <TD ALIGN="CENTER">(auto)</TD>
     <TD ALIGN="CENTER">Security Control Block</TD>
@@ -113,11 +121,11 @@ Recent PD
   <TR>
     <TD ALIGN="CENTER">050-09-11</TD>
     <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">Checksum</TD>
+    <TD>Checksum</TD>
 
-    <TD ALIGN="CENTER">050-09-14</TD>
+    <TD ALIGN="CENTER">050-09-15</TD>
     <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">CRC</TD>
+    <TDCENTER">CRC</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">050-02-01</TD>
@@ -145,77 +153,6 @@ Recent PD
     <TD ALIGN="CENTER">(auto)</TD>
     <TD>Signalling (230,400)</TD>
   </TR>
-
-
-
-
-
-
-
-
-
-
-
-
-<TR><TD>aa</TD><TD>bb</TD><TD>cc</TD></TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>SOM</TD>
-
-    <TD ALIGN="CENTER">050-09-12</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>SOM Sent</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-04</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Address</TD>
-
-    <TD ALIGN="CENTER">050-09-13</TD>
-    <TD ALIGN="CENTER">
-      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_11_3">
-        <EM>Test</EM></A>
-    </TD>
-    <TD>Configuration Address (7F)</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-06</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Length</TD>
-
-    <TD ALIGN="CENTER">050-09-07</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Control field</TD>
-
-    <TD ALIGN="CENTER">050-09-08</TD>
-    <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-init-secure">
-      <EM>Test</EM></A>
-    </TD>
-    <TD>Security Control Block</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-11</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Checksum</TD>
-
-    <TD ALIGN="CENTER">050-09-14</TD>
-    <TD ALIGN="CENTER">
-      <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform_2_14_3">
-      <EM>Test</EM></TD>
-    <TD>Rogue Secure Poll</TD>
-
-    <TD ALIGN="CENTER">050-09-15</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>CRC</TD>
-  </TR>
-
-
-
-
-
-
-
 
 </TABLE>
 <BR>

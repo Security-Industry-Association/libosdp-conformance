@@ -370,6 +370,17 @@ if (context.verbosity > 9)
           // messages start with SOM, anything else is noise.
           // (checksum mechanism copes with SOM's in the middle of a msg.)
 
+if (!(osdp_buf.buf [0] EQUALS C_SOM))
+{
+  char temp_buffer [2048];
+  fprintf(stderr, "DEBUG: first octet of buffer is %02x\n", osdp_buf.buf[0]);
+  osdp_buf.next --;
+  if (osdp_buf.next > 1)
+  {
+    memcpy(temp_buffer, osdp_buf.buf+1, osdp_buf.next);
+    memcpy(osdp_buf.buf, temp_buffer, osdp_buf.next);
+  };
+};
           if (osdp_buf.next EQUALS 1)
           {
             if (!(osdp_buf.buf [0] EQUALS C_SOM))

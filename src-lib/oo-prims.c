@@ -8,10 +8,9 @@
 #include <osdp-tls.h>
 #include <open-osdp.h>
 #include <osdp_conformance.h>
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-extern OSDP_PARAMETERS
-  p_card;
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_PARAMETERS p_card;
+extern OSDP_BUFFER osdp_buf;
 
 
 void
@@ -70,6 +69,7 @@ char *
 
 } /* oo_lookup_nak_text */
 
+
 unsigned char
   oo_response_address
     (OSDP_CONTEXT *ctx,
@@ -89,6 +89,7 @@ unsigned char
   return(ret_addr);
 
 } /* oo_response_address */
+
 
 void
   osdp_array_to_doubleByte
@@ -128,7 +129,7 @@ int
   int ret;
 
 
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
   {
     fprintf(ctx->log, "awaiting: last sq %d lastproc %d\n", ctx->last_sequence_received, ctx->last_was_processed);
 
@@ -152,19 +153,25 @@ int
   {
     if (following_sequence EQUALS -1)
     {
-      ret = 0; // ok to proceed if nothig received
+      ret = 0; // ok to proceed if nothing received
     }
     else
     {
       if (ctx->verbosity > 3)
-        fprintf(ctx->log, "DEBUG: not actually ready\n");
+      {
+        fprintf(ctx->log,
+"DEBUG: not actually ready n %d f %d bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",
+          ctx->next_sequence, following_sequence, osdp_buf.next,
+          osdp_buf.buf [0], osdp_buf.buf [1], osdp_buf.buf [2],
+          osdp_buf.buf [5], osdp_buf.buf [6]);
+      };
       ret = 1; // not actually ready.
     };
   };
 
   if (ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED)
   {
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
     {
       fprintf(ctx->log, "receive timeout, attempting transmission (%d)\n", ctx->last_sequence_received);
     };

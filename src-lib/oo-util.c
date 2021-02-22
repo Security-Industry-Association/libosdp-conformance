@@ -40,6 +40,11 @@ time_t previous_time;
 char tlogmsg [1024];
 char tlogmsg2 [3*1024];
 int mfg_rep_sequence;
+extern OSDP_BUFFER osdp_buf;
+unsigned char last_command_received;
+unsigned char last_sequence_received;
+unsigned char last_check_value;
+int saved_next;
 
 
 /*
@@ -105,19 +110,28 @@ int
 
   if (m->lth > OSDP_OFFICIAL_MSG_MAX)
     status = ST_MSG_TOO_LONG;
+
   if ((status EQUALS ST_OK) || (status EQUALS ST_MSG_TOO_SHORT))
   {
     if (m->lth >= (m->check_size+sizeof (OSDP_HDR)))
     {
       status = ST_OK;
       msg_lth = p->len_lsb + (256*p->len_msb);
-      hashable_length = msg_lth;
-      if ((m->lth) > msg_lth)
-        m->remainder = msg_lth - m->lth;
+      if (msg_lth > OSDP_OFFICIAL_MSG_MAX)
+        status = ST_MSG_TOO_LONG;
+      if (status EQUALS ST_OK)
+      {
+        hashable_length = msg_lth;
+        if ((m->lth) > msg_lth)
+          m->remainder = msg_lth - m->lth;
 
-      // now that we have a bit of header figure out how much the whole thing is.  need all of it to process it.
-      if (m->lth < msg_lth)
-        status = ST_MSG_TOO_SHORT;
+        /*
+          now that we have a bit of header figure out how much the whole thing is.
+          need all of it to process it.
+        */
+        if (m->lth < msg_lth)
+          status = ST_MSG_TOO_SHORT;
+      };
     };
   };
   if (status != ST_OK)
@@ -678,6 +692,11 @@ fprintf(stderr, "lstat 1000\n");
         status = ST_BAD_CRC;
         context->crc_errs ++;
       };
+      if (status EQUALS ST_OK)
+      {
+        last_check_value = wire_crc;
+        last_command_received = m->msg_cmd;
+      };
     }
     else
     {
@@ -712,6 +731,12 @@ fprintf(stderr, "\n"); fflush(stderr);
 status = ST_OK; // tolerate checksum error and continue
         context->checksum_errs ++;
       };
+      if (status EQUALS ST_OK)
+      {
+        last_check_value = wire_cksum;
+        last_command_received = m->msg_cmd;
+      };
+
     };
 
     // if the sequence number didn't line up report
@@ -755,11 +780,18 @@ status = ST_OK; // tolerate checksum error and continue
         {
           if (wire_sequence != 0)
           {
+fprintf(context->log,
+"DEBUG: bad seq bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",
+            osdp_buf.next,
+            osdp_buf.buf [0], osdp_buf.buf [1], osdp_buf.buf [2],
+            osdp_buf.buf [5], osdp_buf.buf [6]);
+
             fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
             status = ST_OSDP_BAD_SEQUENCE;
             context->seq_bad++;
 
-            context->next_sequence = 0; // if things are messed up start back at the initial sequence
+saved_next = context->next_sequence;
+//            context->next_sequence = 0; // if things are messed up start back at the initial sequence
           };
         };
       };

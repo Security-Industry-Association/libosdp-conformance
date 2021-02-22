@@ -390,7 +390,7 @@ if (i != OSDP_TIMER_RESPONSE)
         };
       };
     }; // timer not stopped
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
     {
       if (i EQUALS OSDP_TIMER_RESPONSE)
       {
