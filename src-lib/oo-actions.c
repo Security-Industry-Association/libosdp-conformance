@@ -291,7 +291,7 @@ int
 
   int current_length;
   int i;
-  OSDP_MFG_HEADER *mfg;
+  OSDP_MFG_COMMAND *mfg;
   OSDP_CONFIG_GUID *mfg_config_guid;
   unsigned char osdp_com_response_data [5];
   int status;
@@ -300,17 +300,17 @@ int
 
   status = ST_OK;
   unknown = 1;
-  mfg = (OSDP_MFG_HEADER *)(msg->data_payload);
+  mfg = (OSDP_MFG_COMMAND *)(msg->data_payload);
   mfg_config_guid = (OSDP_CONFIG_GUID *)&(mfg->data);
 
 fprintf (stderr, "osdp_MFG action stub\n");
 fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
   mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2],
-  mfg->command_id, mfg->data);
+  mfg->mfg_command_id, mfg->data);
 
   if (0 EQUALS memcmp(mfg->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE)))
   {
-    switch (mfg->command_id)
+    switch (mfg->mfg_command_id)
     {
     case OOSDP_MFG_CONFIG_GUID:
       if (0 EQUALS memcmp(mfg_config_guid->guid, ctx->my_guid, sizeof(ctx->my_guid)))
@@ -335,13 +335,13 @@ fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
       break;
     case OOSDP_MFG_PING:
       {
-        unsigned char mfg_response [sizeof(struct osdp_mfg_header) + 4];
-        OSDP_MFG_HEADER *mh;
+        unsigned char mfg_response [sizeof(struct osdp_mfg_command) + 4];
+        OSDP_MFG_COMMAND *mh;
 
         unknown = 0; // we known this guy
-        mh = (OSDP_MFG_HEADER *)mfg_response;
+        mh = (OSDP_MFG_COMMAND *)mfg_response;
         memcpy(mh->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE));
-        mh->command_id = OOSDP_MFGR_PING_ACK;
+        mh->mfg_command_id = OOSDP_MFGR_PING_ACK;
         memcpy(&(mh->data), (char *)&(mfg->data), 4); // arbitrarily copy the 4 detail bytes back at ya
         current_length = 0;
         status = send_message(ctx, OSDP_MFGREP, p_card.addr, &current_length, sizeof(mfg_response), mfg_response);

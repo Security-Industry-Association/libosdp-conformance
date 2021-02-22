@@ -248,8 +248,7 @@ exit(-1);
 
     case OSDP_CMDB_CONFORM_3_20_1:
       {
-        OSDP_MFG_HEADER
-          omfg;
+        OSDP_MFG_COMMAND omfg;
 
         osdp_conformance.resp_mfg.test_status = OCONFORM_EXERCISED;
         strcpy (context->test_in_progress, "3_20_1");
@@ -257,7 +256,7 @@ exit(-1);
         omfg.vendor_code [0] = context->MFG_oui [0];
         omfg.vendor_code [1] = context->MFG_oui [1];
         omfg.vendor_code [2] = context->MFG_oui [2];
-        omfg.command_id = 1;
+        omfg.mfg_command_id = 1;
         omfg.data = 0xff;
         current_length = 0;
         status = send_message_ex(context, OSDP_MFG, p_card.addr,
@@ -359,13 +358,13 @@ sleep(1);
         int i;
         int idx;
         OSDP_MFG_ARGS *oargs;
-        OSDP_MFG_HEADER *omfg;
+        OSDP_MFG_COMMAND *omfg;
         int out_idx;
         int send_length;
         char tmps [3];
 
         oargs = (OSDP_MFG_ARGS *)details;
-        omfg = (OSDP_MFG_HEADER *)data;
+        omfg = (OSDP_MFG_COMMAND *)data;
         tmps[2] = 0;
         memcpy(tmps, oargs->oui+0, 2);
         sscanf(tmps, "%x", &i);
@@ -376,8 +375,8 @@ sleep(1);
         memcpy(tmps, oargs->oui+4, 2);
         sscanf(tmps, "%x", &i);
         omfg->vendor_code [2] = i;
-        omfg->command_id = oargs->command_ID;
-        send_length = sizeof(OSDP_MFG_HEADER) - 1;
+        omfg->mfg_command_id = oargs->command_ID;
+        send_length = sizeof(OSDP_MFG_COMMAND) - 1;
         out_idx = 0;
 fprintf(stderr, "string is >%s<\n", oargs->c_s_d);
         for (idx=0; idx<strlen(oargs->c_s_d); idx=idx+2)

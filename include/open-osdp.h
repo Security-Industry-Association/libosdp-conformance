@@ -725,12 +725,20 @@ typedef struct osdp_mfg_args
   char c_s_d [2*1024]; // command-specific details
 } OSDP_MFG_ARGS;
 
-typedef struct osdp_mfg_header
+typedef struct osdp_mfg_command
 {
   unsigned char vendor_code [3];
-  unsigned char command_id;
+  unsigned char mfg_command_id;
   unsigned char data; // placeholder for first byte
-} OSDP_MFG_HEADER;
+} OSDP_MFG_COMMAND;
+
+typedef struct osdp_mfg_response
+{
+  unsigned char vendor_code [3];
+  unsigned char mfg_response_status;
+  unsigned char mfg_response_code;
+  unsigned char data;
+} OSDP_MFGREP_RESPONSE;
 
 typedef struct osdp_config_guid
 {
@@ -985,7 +993,7 @@ int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
   int security_block_type, unsigned char *hash, int message_length);
 int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
-int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFG_HEADER *mrep);
+int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_write_status (OSDP_CONTEXT *ctx);

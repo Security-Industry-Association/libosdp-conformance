@@ -498,7 +498,8 @@ fprintf(stderr, "lstat 1000\n");
     case OSDP_MFGREP:
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
-      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
+      msg_data_length = msg_data_length - 6;
+      msg_data_length = msg_data_length - m->check_size; // 1 for checksum 2 for CRC
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_MFGREP");
       break;
@@ -758,6 +759,8 @@ status = ST_OK; // tolerate checksum error and continue
             fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
             status = ST_OSDP_BAD_SEQUENCE;
             context->seq_bad++;
+
+            context->next_sequence = 0; // if things are messed up start back at the initial sequence
           };
         };
       };
@@ -1580,116 +1583,19 @@ fprintf(context->log, "DEBUG: NAK %02x for osdp_RSTAT received\n", *(msg->data_p
 
     case OSDP_MFGREP:
       {
-        OSDP_MFG_HEADER *mfg;
+        OSDP_MFGREP_RESPONSE *mfg;
 
         status = ST_OK;
         oh = (OSDP_HDR *)(msg->ptr);
         count = oh->len_lsb + (oh->len_msb << 8);
-        count = count - 7;
-        count = count - sizeof(OSDP_MFG_HEADER);
+        count = count - 6; // assumes no SCS header
+        count = count - msg->check_size;
         
-        mfg = (OSDP_MFG_HEADER *)(msg->data_payload);
-        sprintf (tlogmsg,
-          "OUI %02x%02x%02x Length %d",
+        mfg = (OSDP_MFGREP_RESPONSE *)(msg->data_payload);
+        sprintf (tlogmsg, "OUI %02x%02x%02x response length %d",
           mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], count);
         fprintf (context->log, "  Mfg Reply %s\n", tlogmsg);
-        dump_buffer_log(context, "MFGREP: ", &(mfg->data), count);
-        {
-          char cmd [1024];
-          FILE *mrdat;
-          char mfg_rep_data_file [1024];
-
-          sprintf(mfg_rep_data_file, "/opt/osdp-conformance/run/CP/pd_%02d_mfgrep.dat", p_card.addr);
-          mrdat = fopen(mfg_rep_data_file, "w");
-          if (mrdat != NULL)
-          {
-            int total_length;
-
-fprintf(stderr, "Opened %s for writing\n", mfg_rep_data_file);
-//KLUDGE count-6 blindly assumes 2-totlen 2-fraglen 2-fragoff
-            fwrite(6+&(mfg->data), sizeof(unsigned char), count-6, mrdat);
-
-            if (context->verbosity > 3)
-            { 
-              fprintf(stderr, "multi: add at %05d. lth %d.\n",
-                context->next_in, count-6);
-            };
-            memcpy(context->mmsgbuf+context->next_in, 6+&(mfg->data), count-6);
-            context->next_in = context->next_in + (count-6);
-            total_length = mfg->data;
-            total_length = total_length + 256 * *(&(mfg->data) + 1);
-            if (context->next_in EQUALS total_length)
-            {
-              FILE *asmf;
-              asmf = fopen("/opt/osdp-conformance/run/CP/mfg-rep.bin", "w");
-              if (asmf != NULL)
-              {
-fprintf(stderr, "Opened %s for writing\n", "/opt/osdp-conformance/run/CP/mfg-rep.bin");
-                fwrite(context->mmsgbuf, sizeof(unsigned char), total_length, asmf);
-                fclose(asmf);
-                context->next_in = 0;
-              };
-            };              
-// CHECK SECURE CHANNEL
-            fclose(mrdat);
-            if (context->verbosity > 3)
-            {
-              sprintf(cmd, "mv /opt/osdp-conformance/run/CP/pd_%02d_mfgrep.dat /opt/osdp-conformance/run/CP/%02X_mfgrep.dat",
-                p_card.addr, mfg_rep_sequence);
-              system(cmd);
-              mfg_rep_sequence++;
-            };
-          };
-        };
-
-#if 0 // not multi-part now...
-        /*
-          process a multi-part message fragment
-        */
-	// if we're already started cannot restart
-        if ((mmsg->MpdOffset == 0) && (context->total_len != 0))
-          status = ST_MMSG_SEQ_ERR;
-        if (status == ST_OK)
-        {
-          if (mmsg->MpdOffset == 0)
-          {
-            // starting a new one
-            context->total_len = mmsg->MpdSizeTotal;
-          };
-        };
-        if (status == ST_OK)
-        {
-          // must be in sequential order
-          if (mmsg->MpdOffset != context->next_in)
-            status = ST_MMSG_OUT_OF_ORDER;
-        };
-        if (status == ST_OK)
-        {
-          if ((mmsg->MpdFragmentSize + context->next_in) > context->total_len)
-            status = ST_MMSG_LAST_FRAG_TOO_BIG;
-        };
-        if (status == ST_OK)
-        {
-          // values checked out.  add this fragment
-          memcpy (context->mmsgbuf+context->next_in,
-            sizeof (OSDP_MULTI_HDR) + msg->data_payload,
-            mmsg->MpdFragmentSize);
-
-          if ((context->next_in + mmsg->MpdFragmentSize) == context->total_len)
-          {
-            // finished, process it now
-printf ("MMSG DONE\n");
-
-            // and clean up when done processing
-            context->total_len = 0;
-            context->next_in = 0;
-          }
-          else
-          {
-            context->next_in = context->next_in + mmsg->MpdFragmentSize;
-          };
-        };
-#endif
+        dump_buffer_log(context, "MFGREP: ", msg->data_payload, count);
       };
       break;
 

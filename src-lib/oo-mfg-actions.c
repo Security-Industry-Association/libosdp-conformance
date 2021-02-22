@@ -111,7 +111,7 @@ int
   oo_mfg_reply_action
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg,
-    OSDP_MFG_HEADER *mrep)
+    OSDP_MFGREP_RESPONSE *mrep)
 
 { /* oo_mfg_reply_action */
 
@@ -144,7 +144,7 @@ int
 
   case 1: // INID
     status = ST_OSDP_MFG_VENDOR_DETECTED;
-    switch (mrep->command_id)
+    switch (mrep->mfg_response_status)
     {
     case OSDP_REP_MSC_CR_AUTH:
       status = ST_OSDP_MFG_VENDOR_PROCESSED;

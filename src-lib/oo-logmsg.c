@@ -505,14 +505,14 @@ int
 
   case OOSDP_MSG_MFG:
     {
-      OSDP_MFG_HEADER *mrep;
+      OSDP_MFG_COMMAND *mrep;
       int process_as_special;
 
       if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
       {
-      memset(tlogmsg, 0, sizeof(tlogmsg));
-      process_as_special = 0;
-      msg = (OSDP_MSG *) aux;
+        memset(tlogmsg, 0, sizeof(tlogmsg));
+        process_as_special = 0;
+        msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - sizeof(*oh);
@@ -521,7 +521,7 @@ int
       else
         count = count - 1;
 
-      mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
+      mrep = (OSDP_MFG_COMMAND *)(msg->data_payload);
       process_as_special = 0;
       if (0 EQUALS
         memcmp(mrep->vendor_code, OSDP_VENDOR_INID,
@@ -536,15 +536,15 @@ int
         sprintf(tlogmsg,
 "(General) MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
           mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-          mrep->command_id);
+          mrep->mfg_command_id);
       };
       if (process_as_special)
       {
         sprintf(tlogmsg,
           "  MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
           mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-          mrep->command_id);
-        switch (mrep->command_id)
+          mrep->mfg_command_id);
+        switch (mrep->mfg_command_id)
         {
         case OSDP_CMD_MSC_CR_AUTH:
           {
@@ -595,7 +595,7 @@ int
           sprintf(tlogmsg,
 "MSC (MFG) Request: OUI:%02x-%02x-%02x Command: %02x\n",
             mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-            mrep->command_id);
+            mrep->mfg_command_id);
           break;
         };
       }; 
@@ -624,28 +624,51 @@ int
 
   case OOSDP_MSG_MFGREP:
     {
-      OSDP_MFG_HEADER *mrep;
+      int dumpcount;
+      OSDP_MFGREP_RESPONSE *mrep;
+      char *p;
 
 
+      dumpcount = 0;
       // unwind the headers so we have the osdp_MFGREP payload in hand...
       memset(tlogmsg, 0, sizeof(tlogmsg));
       msg = (OSDP_MSG *) aux;
       oh = (OSDP_HDR *)(msg->ptr);
       count = oh->len_lsb + (oh->len_msb << 8);
-      count = count - sizeof(*mrep) + 1;
-      mrep = (OSDP_MFG_HEADER *)(msg->data_payload);
+      count = count - 6; // assumes cleartext
+      dumpcount = count - msg->check_size;
+      dumpcount = dumpcount - 3; // for OUI
+      mrep = (OSDP_MFGREP_RESPONSE *)(msg->data_payload);
 
-      status = oo_mfg_reply_action(&context, msg, mrep);
+      if (context.role EQUALS OSDP_ROLE_ACU)
+      {
+        status = oo_mfg_reply_action(&context, msg, mrep);
 fprintf(stderr, "DEBUG: MFG Reply action returned %d\n", status);
 status = ST_OK;
+      };
 
-      sprintf(tlogmsg, "MFG Response: OUI:%02x-%02x-%02x RepID: %02x\n",
-        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2], mrep->command_id);
-
-      strcat(tlogmsg, "  Raw:");
-      for (idx=0; idx<count; idx++)
+      sprintf(tlogmsg, "MFG Response: OUI:%02x-%02x-%02x",
+        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2]);
+      if (count > 3)
       {
-        sprintf(tmps, " %02x", *(unsigned char *)(&(mrep->data)+idx));
+        sprintf(tmps, " MFG Response Status: %02x", mrep->mfg_response_status);
+        strcat(tlogmsg, tmps);
+        dumpcount --;
+        p = (char *)&(mrep->mfg_response_code);
+        if (count > 4)
+        {
+          sprintf(tmps, " Code: %02x", mrep->mfg_response_code);
+          strcat(tlogmsg, tmps);
+          dumpcount --;
+          p = (char *)&(mrep->data);
+        };
+      };
+
+      strcat(tlogmsg, "\n");
+      strcat(tlogmsg, "  Raw:");
+      for (idx=0; idx < dumpcount; idx++)
+      {
+        sprintf(tmps, " %02x", *(p+idx));
         strcat(tlogmsg, tmps);
       };
       strcat(tlogmsg, "\n");
