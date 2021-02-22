@@ -45,6 +45,7 @@ unsigned char last_command_received;
 unsigned char last_sequence_received;
 unsigned char last_check_value;
 int saved_next;
+extern char trace_in_buffer [];
 
 
 /*
@@ -899,6 +900,20 @@ saved_next = context->next_sequence;
     if (context->role EQUALS OSDP_ROLE_MONITOR)
     {
       // pretty print the message if there are juicy details.
+// m->ptr m->lth
+{
+  int i;
+  char temps [4096];
+  char octet_string [1024];
+  temps[0] = 0;
+  for (i=0; i<m->lth; i++)
+  {
+    sprintf(octet_string, " %02x", *(m->ptr+i));
+    strcat(temps, octet_string);
+  };
+  strcpy(trace_in_buffer, temps);
+  osdp_trace_dump(context, 1);
+};
       (void)monitor_osdp_message (context, m);
 
       status = ST_MONITOR_ONLY;
