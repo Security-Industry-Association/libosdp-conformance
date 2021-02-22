@@ -533,7 +533,13 @@ int
         if (ctx->verbosity > 9)
           fprintf(stderr, "before send: buffer %s\n", temps);
         strcpy(trace_out_buffer, temps);
-        osdp_trace_dump(ctx, 1);
+
+        // print trace to log if verbose
+
+        if (context.verbosity > 3)
+          osdp_trace_dump(&context, 1);
+        else
+          osdp_trace_dump(&context, 0);
       };
 
       // parse the message for display.  role to parse is the OTHER guy

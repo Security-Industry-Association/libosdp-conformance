@@ -288,20 +288,27 @@ status = ST_OK;
       // if we experienced an error we just reset things and continue
       status = ST_SERIAL_IN;
   };
-if (status EQUALS ST_OK)
-{
-  int i;
-  char temps [4096];
-  char octet_string [1024];
-  temps[0] = 0;
-  for (i=0; i<msg.lth; i++)
+  if (status EQUALS ST_OK)
   {
-    sprintf(octet_string, " %02x", *(msg.ptr+i));
-    strcat(temps, octet_string);
+    int i;
+    char temps [4096];
+    char octet_string [1024];
+
+    temps[0] = 0;
+    for (i=0; i<msg.lth; i++)
+    {
+      sprintf(octet_string, " %02x", *(msg.ptr+i));
+      strcat(temps, octet_string);
+    };
+    strcpy(trace_in_buffer, temps);
+
+    // print trace to log if verbose
+
+    if (context.verbosity > 3)
+      osdp_trace_dump(&context, 1);
+    else
+      osdp_trace_dump(&context, 0);
   };
-  strcpy(trace_in_buffer, temps);
-  osdp_trace_dump(&context, 1);
-};
   return (status);
 
 } /* process_osdp_input */
