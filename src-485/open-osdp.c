@@ -376,7 +376,6 @@ if (context.verbosity > 9)
 if (!(osdp_buf.buf [0] EQUALS C_SOM))
 {
   char temp_buffer [2048];
-  fprintf(stderr, "DEBUG: first octet of buffer is %02x\n", osdp_buf.buf[0]);
   osdp_buf.next --;
   if (osdp_buf.next > 1)
   {

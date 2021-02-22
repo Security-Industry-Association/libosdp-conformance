@@ -520,20 +520,21 @@ int
 
       m.ptr = test_blk; // marshalled outbound message
       m.lth = *current_length;
-{
-  int i;
-  char temps [4096];
-  char octet_string [1024];
-  temps[0] = 0;
-  for (i=0; i<*current_length; i++)
-  {
-    sprintf(octet_string, " %02x", *(i+m.ptr));
-    strcat(temps, octet_string);
-  };
-  fprintf(stderr, "before send: buffer %s\n", temps);
+      {
+        int i;
+        char temps [4096];
+        char octet_string [1024];
+        temps[0] = 0;
+        for (i=0; i<*current_length; i++)
+        {
+          sprintf(octet_string, " %02x", *(i+m.ptr));
+          strcat(temps, octet_string);
+        };
+        if (ctx->verbosity > 9)
+          fprintf(stderr, "before send: buffer %s\n", temps);
         strcpy(trace_out_buffer, temps);
         osdp_trace_dump(ctx, 1);
-};
+      };
 
       // parse the message for display.  role to parse is the OTHER guy
       parse_role = OSDP_ROLE_ACU;

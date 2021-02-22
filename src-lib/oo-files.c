@@ -1,7 +1,7 @@
 /*
   oosdp_files - osdp file io/
 
-  (C)2017-2020 Smithee Solutions LLC
+  (C)2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -471,18 +471,15 @@ int
     current_time = time (NULL);
     strcpy (current_date_string, asctime (localtime (&current_time)));
     current_date_string [strlen (current_date_string)-1] = 0;
-    fprintf (sf, "{");
-    fprintf (sf,
-"\"last_update\" : \"%s\",\n",
-      current_date_string);
-    fprintf(sf, " \"mmt\" : \"%d\",", osdp_conformance.conforming_messages);
+
+    fprintf(sf, "{");
+    fprintf(sf, "\"last_update\" : \"%s\",", current_date_string);
+    fprintf(sf, "\"mmt\" : \"%d\",", osdp_conformance.conforming_messages);
+    fprintf(sf, "\"retries\" : \"%d\",", ctx->retries);
+    fprintf(sf, "\"role\" : \"%d\",", ctx->role);
     if (strlen (ctx->text) > 0)
-    fprintf (sf,
-"\"text\" : \"%s\",",
-        ctx->text);
-    fprintf (sf,
-"\"role\" : \"%d\",\n",
-      ctx->role);
+      fprintf(sf,"\"text\" : \"%s\",", ctx->text);
+
     fprintf(sf, " \"key-slot\" : \"%d\", ", ctx->current_key_slot);
     fprintf(sf, " \"scbk\" : \"");
     for (i=0; i<OSDP_KEY_OCTETS; i++)
@@ -506,8 +503,7 @@ int
     fprintf(sf,
 "\"dropped\" : \"%d\",\"octets-received\":\"%d\",\"octets-sent\":\"%d\",",
       ctx->dropped_octets, ctx->bytes_received, ctx->bytes_sent);
-    fprintf(sf,
-"\"seq-bad\" : \"%d\",", ctx->seq_bad);
+    fprintf(sf, "\"seq-bad\" : \"%d\",", ctx->seq_bad);
     fprintf (sf,
 "\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
     fprintf (sf,

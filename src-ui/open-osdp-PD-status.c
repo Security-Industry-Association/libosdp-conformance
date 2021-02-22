@@ -1,7 +1,7 @@
 /*
   open-osdp-PD-status - display PD status as refreshing HTML page
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -97,6 +97,7 @@ void
   int stat_naks;
   int stat_pdus_received;
   int stat_pdus_sent;
+  int stat_retries;
   int stat_seq_errs;
   char stat_key [1024];
   char stat_key_slot [1024];
@@ -108,12 +109,15 @@ void
 
 
   status = ST_OK;
+
   stat_buffer_overflows = 0;
   stat_checksum_errs = 0;
   stat_crc_errs = 0;
   stat_hash_ok = 0;
-  stat_key_slot [0] = 0;
   stat_key [0] = 0;
+  stat_key_slot [0] = 0;
+  stat_retries = 0;
+
 
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   current_time = time (NULL);
@@ -198,6 +202,13 @@ void
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
     stat_seq_errs = i; };
+  if (status EQUALS ST_OK) {
+    found_field = 1; value = json_object_get (root, "retries");
+    if (!json_is_string (value)) found_field = 0; };
+  if (found_field) { char vstr [1024]; int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    stat_retries = i; };
   if (status EQUALS ST_OK) {
     found_field = 1; value = json_object_get (root, "hash-bad");
     if (!json_is_string (value)) found_field = 0; };
@@ -290,6 +301,7 @@ void
   printf("<TD>Received</TD><TD>%5d</TD>\n", stat_pdus_received);
   printf("<TD>Sent</TD><TD>%5d</TD>\n", stat_pdus_sent);
   printf("<TD>NAK</TD><TD>%5d</TD>\n", stat_naks);
+  printf("<TD>Retries</TD><TD>%5d</TD>\n", stat_retries);
   printf("</TR>\n");
   printf("</TABLE>\n");
   printf("<TABLE>\n");

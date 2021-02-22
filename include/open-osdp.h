@@ -515,6 +515,7 @@ typedef struct osdp_context
   int checksum_errs;
   int hash_ok;
   int hash_bad;
+  int retries; // retries as detected at the PD
   int seq_bad;
   int pdus_received;
   int pdus_sent;

@@ -40,7 +40,6 @@ extern unsigned char last_command_received;
 extern unsigned char last_sequence_received;
 extern unsigned char last_check_value;
 extern int saved_next;
-int retries_from_acu;
 extern char trace_in_buffer [];
 extern char trace_out_buffer [];
 
@@ -67,7 +66,6 @@ int
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
   if (status EQUALS ST_OK)
   {
-fprintf(stderr, "postparse length %d\n", msg.lth);
     context.last_sequence_received = msg.sequence;
 
     if (msg.check_size EQUALS 2)
@@ -99,13 +97,18 @@ fprintf(stderr, "postparse length %d\n", msg.lth);
     if (context.role EQUALS OSDP_ROLE_PD)
     {
 unsigned short int current_check_value;
-      // is it a resend?
+
+
       current_check_value = *(unsigned short int *)(msg.crc_check);
       if (msg.check_size EQUALS 1)
         current_check_value = 0xff & current_check_value; // crc is 2 bytes checksum is the low order byte
+
 fprintf(context.log,
 "DEBUG: nak in progress lc %02x ls %02x lck %02x %d. %x saved s %d\n",
   last_command_received, last_sequence_received, last_check_value, msg.check_size, current_check_value, saved_next);
+
+      // is it a resend?
+
       if ((last_command_received EQUALS parsed_msg.command) && (last_check_value EQUALS current_check_value))
       {
 int old_s;
@@ -114,9 +117,9 @@ if (context.next_sequence EQUALS 1)
   context.next_sequence = 3;
 else
   context.next_sequence --;
-retries_from_acu++;
+context.retries ++;
 fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n",
-  retries_from_acu, old_s, context.next_sequence);
+  context.retries, old_s, context.next_sequence);
 fflush(context.log);
 
 send_response = 0;
@@ -296,7 +299,6 @@ if (status EQUALS ST_OK)
     sprintf(octet_string, " %02x", *(msg.ptr+i));
     strcat(temps, octet_string);
   };
-  fprintf(stderr, "bottom of process_osdp_input: buffer %s\n", temps);
   strcpy(trace_in_buffer, temps);
   osdp_trace_dump(&context, 1);
 };
