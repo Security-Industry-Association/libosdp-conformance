@@ -4,5 +4,8 @@ usermod --shell /bin/bash www-data
 
 echo make sure www-data has sudo and bash
 
+mkdir -p /opt/osdp-conformance/run/ACU
+mkdir -p /opt/osdp-conformance/run/MON
+mkdir -p /opt/osdp-conformance/run/PD
 echo >>/opt/osdp-conformance/log/install.log libosdp-conformance was installed.
 
