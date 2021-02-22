@@ -41,6 +41,8 @@ extern unsigned char last_sequence_received;
 extern unsigned char last_check_value;
 extern int saved_next;
 int retries_from_acu;
+extern char trace_in_buffer [];
+extern char trace_out_buffer [];
 
 int
   process_osdp_input
@@ -62,7 +64,6 @@ int
 
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
-fprintf(stderr, "preparse length %d\n", msg.lth);
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
   if (status EQUALS ST_OK)
   {
@@ -296,6 +297,8 @@ if (status EQUALS ST_OK)
     strcat(temps, octet_string);
   };
   fprintf(stderr, "bottom of process_osdp_input: buffer %s\n", temps);
+  strcpy(trace_in_buffer, temps);
+  osdp_trace_dump(&context, 1);
 };
   return (status);
 

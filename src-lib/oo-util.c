@@ -277,7 +277,9 @@ if (context->verbosity > 3)
     fprintf(stderr, "DEBUG: SCS\n");
   };
 };
+#ifdef PREV_TRACE
     osdp_trace_dump(context, display);
+#endif
 
     if (display)
     {

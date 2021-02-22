@@ -981,7 +981,9 @@ int
   status = ST_OK;
 
   // dump the trace buffer before creating the log message
+#ifdef PREV_TRACE
   osdp_trace_dump(context, 1);
+#endif
 
   llogtype = logtype;
   role_tag = "";

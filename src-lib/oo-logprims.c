@@ -63,6 +63,9 @@ int
 
   wire_crc = *(1+msg->crc_check) << 8 | *(msg->crc_check);
   wire_cksum = *(1+msg->crc_check);
+sprintf(tmpstr2, "-ckz %d check %02x %02x-",
+  msg->check_size, *(msg->crc_check), *(1+msg->crc_check));
+strcat(tlogmsg, tmpstr2);
 
   sprintf(tmpstr2, " CRC=%04x", wire_crc);
   if (msg->check_size != 2)
@@ -346,7 +349,6 @@ if (ctx->verbosity > 9)
     fflush(ctx->log);
   };
   tf = fopen(OSDP_TRACE_FILE, "a+");
-//tf = NULL;
   if (tf)
   {
     char *tag;
@@ -355,15 +357,15 @@ if (ctx->verbosity > 9)
     if (ctx->role EQUALS OSDP_ROLE_MONITOR)
       tag = "trace";
 
-//    if (strlen(trace_out_buffer) > 0) fprintf(stderr, "DEBUG: tout %ld.\n", strlen(trace_out_buffer));
-//    if (strlen(trace_in_buffer) > 0) fprintf(stderr, "DEBUG:  tin %ld.\n", strlen(trace_in_buffer));
-{
-if (strlen(trace_out_buffer) > 0)
+    if (strlen(trace_out_buffer) > 0)
       fprintf(tf,
-"{ \"time-sec\" : \"%010ld\", \"time-nsec\" : \"%09ld\", \"io\" : \"out\", \"data\" : \"%s\", \"%s\":\"%d\", \"osdp-source\":\"libosdp-conformance %d.%d-%d\" }\n",
-        current_time_fine.tv_sec, current_time_fine.tv_nsec, trace_out_buffer,
+"{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
+        OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
+        OSDPCAP_TAG_TIME_NSEC, current_time_fine.tv_nsec,
+        OSDPCAP_TAG_INPUT_OUTPUT, "out",
+        OSDPCAP_TAG_DATA, trace_out_buffer,
         OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
-        OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
+        OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
     fflush(tf);
     if (strlen(trace_in_buffer) > 0)
       fprintf(tf,
@@ -374,7 +376,6 @@ if (strlen(trace_out_buffer) > 0)
         OSDPCAP_TAG_DATA, trace_in_buffer,
         OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
         OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
-};
     fflush(tf);
     fclose(tf);
   };
