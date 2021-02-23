@@ -103,13 +103,10 @@ int
     m_check = OSDP_CRC;
   };
 
-//fprintf(stderr, "DEBUG: 110 l=%d s %d\n", m->lth, status);
   if (m->lth > OSDP_OFFICIAL_MSG_MAX)
     status = ST_MSG_TOO_LONG;
-//fprintf(stderr, "DEBUG: 113 l=%d s %d\n", m->lth, status);
   if ((status EQUALS ST_OK) || (status EQUALS ST_MSG_TOO_SHORT))
   {
-//fprintf(stderr, "DEBUG: l=%d. cs %d sh %d\n", m->lth, m->check_size, sizeof(OSDP_HDR));
     if (m->lth >= (m->check_size+sizeof (OSDP_HDR)))
     {
       status = ST_OK;
@@ -232,7 +229,9 @@ int
       display = 1;
     if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
     {
-      if ((m->msg_cmd != OSDP_FILETRANSFER) && (m->msg_cmd != OSDP_FTSTAT))
+      display = 1;
+
+//      if ((m->msg_cmd != OSDP_FILETRANSFER) && (m->msg_cmd != OSDP_FTSTAT))
       {
         display = 1;
       };
@@ -250,7 +249,6 @@ int
         osdp_array_to_doubleByte(ft->FtStatusDetail, &ft_status_detail);
         if (ft_status_detail != 0)
         {
-fprintf(stderr, "d 1 at 811\n");
           display = 1;
         };
       };
@@ -547,7 +545,7 @@ fprintf(stderr, "lstat 1000\n");
         strcpy (tlogmsg2, "osdp_PDID");
 
       // if we had sent an osdp_ID then that worked.
-      if ((context->last_command_sent EQUALS OSDP_ID))
+      if (context->last_command_sent EQUALS OSDP_ID)
         osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
       break;
 

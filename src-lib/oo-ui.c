@@ -510,6 +510,11 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             context->xferctx.current_send_length = context->max_message;
           };
           size_to_read = context->max_message;
+
+          // adjust for header, crc
+          size_to_read = size_to_read - 6 - 2;
+          // if it's checsum use -1 not -2.  if it's secure, add in 4 bytes of mac and 2 for the SCS header
+
           size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
 fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
 memset(&(file_transfer->FtData), 0, size_to_read);

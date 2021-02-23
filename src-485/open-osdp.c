@@ -105,6 +105,7 @@ int
   if (status EQUALS ST_OK)
   {
     memset (&context, 0, sizeof (context));
+    context.last_sequence_received = -1;
     context.current_menu = OSDP_MENU_TOP;
     strcpy (context.init_parameters_path, "open-osdp-params.json");
     strcpy (context.log_path, "osdp.log");

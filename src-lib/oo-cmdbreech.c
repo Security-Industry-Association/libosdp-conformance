@@ -345,6 +345,9 @@ int
     if (0 EQUALS strcmp (current_command, "capabilities"))
     {
       cmd->command = OSDP_CMDB_CAPAS;
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 

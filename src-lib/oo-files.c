@@ -127,11 +127,8 @@ int
 
 #define MS_IN_NS (1000*1000)
 delay_nsec = filetransfer_delay;
-fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
 delay_nsec = delay_nsec * 1000;
-fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
 delay_nsec = delay_nsec * 1000;
-fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
 //    delay_nsec = filetransfer_delay * MS_IN_NS;
     if (delay_nsec > 999999999)
     {
@@ -156,6 +153,7 @@ fprintf(stderr, "DEBUG: delay %ld\n", delay_nsec);
 
       delay_time.tv_sec = delay_sec;
       delay_time.tv_nsec = delay_nsec;
+      fprintf(ctx->log, "  filetransfer sleep delay %ld %ld\n", delay_time.tv_sec, delay_time.tv_nsec);
       (void) nanosleep(&delay_time, NULL);
     };
 
@@ -230,8 +228,9 @@ void
 
 { /* osdp_wrapup_filetransfer */
 
-fflush(ctx->log);
-fprintf(stderr, "DEBUG: osdp_wrapup_filetransfer xferf %lx\n", (unsigned long)(ctx->xferctx.xferf));
+  fflush(ctx->log);
+  if (ctx->verbosity > 3)
+    fprintf(stderr, "DEBUG: osdp_wrapup_filetransfer xferf %lx\n", (unsigned long)(ctx->xferctx.xferf));
   fclose(ctx->xferctx.xferf);
   fprintf(ctx->log, "  File transfer: finished, total length was %d.\n",
     ctx->xferctx.total_length);
@@ -375,7 +374,14 @@ int
     if (ctx->xferctx.current_send_length)
       size_to_read = ctx->xferctx.current_send_length;
     else
+    {
       size_to_read = ctx->max_message;
+    };
+
+    // adjust for header, crc
+    size_to_read = size_to_read - 6 - 2;
+    // if it's checsum use -1 not -2.  if it's secure, add in 4 bytes of mac and 2 for the SCS header
+
     size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
     status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,
       ctx->xferctx.xferf);

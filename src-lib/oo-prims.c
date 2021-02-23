@@ -158,7 +158,8 @@ int
     }
     else
     {
-fprintf(ctx->log, "DEBUG: not actually ready\n");
+      if (ctx->verbosity > 3)
+        fprintf(ctx->log, "DEBUG: not actually ready\n");
       ret = 1; // not actually ready.
     };
   };

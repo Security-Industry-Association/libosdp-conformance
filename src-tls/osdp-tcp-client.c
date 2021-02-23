@@ -1,8 +1,7 @@
 /*
   osdp-tcp-client - TCP-only version of osdp-net-client
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
-  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -304,6 +303,7 @@ int
   int ufd;
 
 
+  done_tls = 0;
   status = initialize (&config, argc, argv);
   if (status EQUALS ST_OK)
   {

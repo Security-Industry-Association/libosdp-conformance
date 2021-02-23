@@ -1,7 +1,7 @@
 /*
   oo_util3 -more (3)  open osdp utility routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -832,6 +832,11 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+    case OSDP_FTSTAT:
+      status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_MFGERRR:
       status = oosdp_make_message (OOSDP_MSG_MFGERRR, tlogmsg, msg);
       if (status == ST_OK)
@@ -851,16 +856,15 @@ int
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
+
   case OSDP_FILETRANSFER:
-    if ((context->verbosity > 3) || (context->role EQUALS OSDP_ROLE_MONITOR))
-    {
-      status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
-      if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-    };
+    status = oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
+    if (status == ST_OK)
+      status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
     break;
 
   case OSDP_FTSTAT:
+fprintf(stderr, "DEBUG: FTSTAT log 864\n");
     status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);

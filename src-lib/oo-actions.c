@@ -178,9 +178,18 @@ int
       }
       else
       {
+        int offered_size;
+
         // if the PD offered a new message size note that test result.
         osdp_test_set_status(OOC_SYMBOL_ftstat_bufsize, OCONFORM_EXERCISED);
-        osdp_doubleByte_to_array(ctx->max_message, response.FtUpdateMsgMax);
+
+        // offer an updated receive size.  Use 500 to test (assumes max was around 768).
+        // should be careful about checksum/crc and mac or not/scs or not.
+        offered_size = ctx->max_message;
+        if (offered_size > 500)
+          offered_size = 500;
+        osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
+
 fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
 fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);
 fprintf(stderr, "current_send_length : %d\n", ctx->xferctx.current_send_length);
@@ -269,9 +278,9 @@ fprintf(stderr, "t=%d o=%d\n",
 
     if ((ctx->xferctx.total_length EQUALS 0) || (ctx->xferctx.total_length EQUALS ctx->xferctx.current_offset))
     {
-fprintf(stderr, "DEBUG: wrapup\n");fflush(ctx->log);
+      fflush(ctx->log);
       osdp_wrapup_filetransfer(ctx);
-      status = osdp_send_filetransfer(ctx); // will send benign msg
+// make sure removing this doesn't break wavelynx...      status = osdp_send_filetransfer(ctx); // will send benign msg
     };
   };
   };
