@@ -33,12 +33,10 @@ int leftover_length;
 #include <osdp_conformance.h>
 
 
-extern OSDP_INTEROP_ASSESSMENT
-  osdp_conformance;
-extern OSDP_CONTEXT
-  context;
-extern OSDP_PARAMETERS
-  p_card;
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_CONTEXT context;
+extern OSDP_PARAMETERS p_card;
+
 
 int
   process_osdp_input
@@ -62,6 +60,8 @@ int
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
   if (status EQUALS ST_OK)
   {
+    context.last_sequence_received = msg.sequence;
+
     if (msg.check_size EQUALS 2)
       osdp_test_set_status(OOC_SYMBOL_CRC, OCONFORM_EXERCISED);
     else

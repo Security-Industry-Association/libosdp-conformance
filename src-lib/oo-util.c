@@ -153,6 +153,7 @@ int
 
     // various control info in CTRL byte
     msg_sqn = (p->ctrl) & 0x03;
+    m->sequence = msg_sqn;
     msg_scb = (p->ctrl) & 0x08;
 
     // depending on whether it's got a security block or not
@@ -1347,7 +1348,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       break;
     };
   } /* role PD */
-  if (context -> role EQUALS OSDP_ROLE_ACU)
+  if (context->role EQUALS OSDP_ROLE_ACU)
   {
     // if we're here we think it's a whole sane response so we can say the last was processed.
     context->last_was_processed = 1;

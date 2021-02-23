@@ -468,6 +468,7 @@ typedef struct osdp_context
   char last_response_received;
   char next_response;
   int next_sequence;
+  int last_sequence_received;
   int left_to_send;
 
   OSDP_PD_CAPABILITY pd_cap;
@@ -828,6 +829,7 @@ typedef struct osdp_msg
   int security_block_type;
   int security_block_length;
   int payload_decrypted;
+  int sequence;
 } OSDP_MSG;
 
 typedef struct __attribute__((packed)) osdp_multi_hdr_iec

@@ -124,10 +124,19 @@ int
 
 { /* osdp_awaiting_response */
 
+  int following_sequence;
   int ret;
 
 
   ret = 1;
+
+  following_sequence = ctx->last_sequence_received;
+  if (following_sequence >= 0)
+  {
+    following_sequence = (ctx->last_sequence_received + 1) % 4;
+    if (following_sequence EQUALS 0)
+      following_sequence = 1;
+  };
 
   if (ctx->last_was_processed)
   {
@@ -140,6 +149,21 @@ int
       ret = 0; // if no response but timeout, call it "not waiting"
     };
   };
+
+  if (ctx->next_sequence != following_sequence)
+  {
+    if (following_sequence EQUALS -1)
+    {
+      ret = 0; // ok to proceed if nothig received
+    }
+    else
+    {
+fprintf(ctx->log, "DEBUG: not actually ready\n");
+      ret = 1; // not actually ready.
+    };
+  };
+  fflush(ctx->log);
+
   return (ret);
 
 } /* osdp_awaiting_response */
