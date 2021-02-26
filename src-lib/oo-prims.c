@@ -141,13 +141,6 @@ int
   if (ctx->last_was_processed)
   {
     ret = 0;
-  }
-  else
-  {
-    if (ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED)
-    {
-      ret = 0; // if no response but timeout, call it "not waiting"
-    };
   };
 
   if (ctx->next_sequence != following_sequence)
@@ -162,6 +155,15 @@ int
         fprintf(ctx->log, "DEBUG: not actually ready\n");
       ret = 1; // not actually ready.
     };
+  };
+
+  if (ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED)
+  {
+    if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "receive timeout, attempting transmission (%d)\n", ctx->last_sequence_received);
+    };
+    ret = 0; // if no response but timeout, call it "not waiting"
   };
   fflush(ctx->log);
 

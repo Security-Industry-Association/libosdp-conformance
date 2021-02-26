@@ -144,13 +144,6 @@ delay_nsec = delay_nsec * 1000;
         osdp_test_set_status(OOC_SYMBOL_ftstat_dly_init, OCONFORM_EXERCISED);
       };
 
-      // if the file transfer is done this is a "final" delay
-
-      if (ctx->xferctx.current_offset == 0)
-      {
-        osdp_test_set_status(OOC_SYMBOL_ftstat_dly_final, OCONFORM_EXERCISED);
-      };
-
       delay_time.tv_sec = delay_sec;
       delay_time.tv_nsec = delay_nsec;
       fprintf(ctx->log, "  filetransfer sleep delay %ld %ld\n", delay_time.tv_sec, delay_time.tv_nsec);
@@ -184,6 +177,7 @@ delay_nsec = delay_nsec * 1000;
 // wavelynx sends status 3 at the end
     status = ST_OSDP_FILEXFER_FINISHING;
     ctx->xferctx.state = OSDP_XFER_STATE_FINISHING;
+    osdp_test_set_status(OOC_SYMBOL_ftstat_dly_final, OCONFORM_EXERCISED);
     break;
 
   case OSDP_FTSTAT_PROCESSED:
@@ -222,6 +216,13 @@ delay_nsec = delay_nsec * 1000;
 } /* osdp_ftstat_validate */
 
 
+/*
+  osdp_wrapup_filetransfer - conclude processing of a file transfer.
+
+  Note:
+    this can get called from the FTSTAT or the last FILETRANSFER so it
+    has to be benign about multiple calls.
+*/
 void
   osdp_wrapup_filetransfer
     (OSDP_CONTEXT *ctx)
@@ -231,7 +232,12 @@ void
   fflush(ctx->log);
   if (ctx->verbosity > 3)
     fprintf(stderr, "DEBUG: osdp_wrapup_filetransfer xferf %lx\n", (unsigned long)(ctx->xferctx.xferf));
-  fclose(ctx->xferctx.xferf);
+  if (ctx->xferctx.xferf != NULL)
+  {
+    fclose(ctx->xferctx.xferf);
+    fprintf(ctx->log, "closing transferred file\n");
+    ctx->xferctx.xferf = NULL;
+  };
   fprintf(ctx->log, "  File transfer: finished, total length was %d.\n",
     ctx->xferctx.total_length);
   ctx->xferctx.current_offset = 0;
