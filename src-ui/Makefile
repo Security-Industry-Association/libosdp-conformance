@@ -17,7 +17,6 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-
 # built with gcc.  note it also builds with clang.
 
 CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -Wall -Werror
@@ -33,7 +32,7 @@ CGIPROGS = \
   shutdown-osdp vm-status
 CGISCRIPTS = conformance-report \
   do-acurxsize do-buzz do-comset do-confirm do-keep-active\
-  do-get-piv-cak-cert do-init-secure do-keypad do-led do-text \
+  do-get-piv-cak-cert do-init-secure do-keypad do-led do-send-explicit do-text \
   do-transfer do-verb-cp do-verb-pd
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
@@ -47,7 +46,8 @@ PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
   Test-ACU.html Test-PD.html
 TLS_PAGES = 
 
-SCRIPTS = clean-run do-CP-command exec-CP485 exec-PD485 \
+SCRIPTS = clean-run do-CP-command \
+  do-send-explicit exec-CP485 exec-PD485 \
   HUP-CP HUP-MON HUP-PD \
   STOP-CP STOP-MON STOP-PD \
   set-pid \

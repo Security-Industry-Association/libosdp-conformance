@@ -247,6 +247,39 @@ int
     status = ST_OK;
     break;
 
+  // command send-explicit - sends the (up to 128) bytes specified
+
+  case OSDP_CMDB_SEND_EXPLICIT:
+    cmd->command = OSDP_CMDB_SEND_EXPLICIT;
+    {
+      int i;
+      char octet [4];
+      int octet_value;
+      char raw_bytes [1024];
+
+      cmd->details_length = 0; // until we know there's something there
+      parameter = json_object_get(root, "data");
+      if (json_is_string(parameter))
+      {
+        if (strlen(json_string_value(parameter)) <= 128)
+        {
+          strcpy(raw_bytes, json_string_value(parameter));
+          cmd->details_length = strlen(raw_bytes)/2;
+          for (i=0; i<cmd->details_length; i++)
+          {
+            octet [3] = 0;
+            octet [0] = raw_bytes [2*i];
+            octet [1] = raw_bytes [1+2*i];
+            sscanf(octet, "%x", &octet_value);
+            cmd->details [i] = octet_value;
+          };
+        };
+      };
+    };
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMDB_NOOP;
+    break;
+
   case OSDP_CMDB_TRACE:
     ctx->trace = 1 ^ ctx->trace; // toggle low order bit
     fprintf(ctx->log, "Tracing set to %d\n", ctx->trace);

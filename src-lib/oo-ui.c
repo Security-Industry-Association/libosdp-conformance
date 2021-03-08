@@ -428,6 +428,22 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       };
       break;
 
+    case OSDP_CMDB_SEND_EXPLICIT:
+      if (details_param_1 > 0)
+      {
+        current_length = 0;
+        status = send_message_ex(context, details[0], p_card.addr,
+          &current_length, details_length, (unsigned char *)(details+1),
+          OSDP_SEC_SCS_17, 0, NULL);
+      }
+      else
+      {
+        // really raw
+
+        status = send_osdp_data (ctx, (unsigned char *)details, details_length);
+      };
+      break;
+
     case OSDP_CMDB_STOP:
       fprintf (context->log, "STOP command received.  Terminating now.\n");
       fflush(context->log);

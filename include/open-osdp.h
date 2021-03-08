@@ -203,6 +203,7 @@
 #define OSDP_CMDB_PIVDATA           (1047)
 #define OSDP_CMDB_CONFORM_060_25_03 (1048) // enqueue challenge after raw
 #define OSDP_CMDB_CONFORM_060_24_03 (1049) // enqueue witness after raw
+#define OSDP_CMDB_SEND_EXPLICIT     (1050)
 
 #define OSDP_CMD_NOOP         (0)
 
