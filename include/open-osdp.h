@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (91)
-#define OSDP_VERSION_BUILD ( 9)
+#define OSDP_VERSION_BUILD (10)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -435,6 +435,7 @@ typedef struct osdp_context
   int trace; // 0=disabled 1=enabled
   int verbosity;
   unsigned char my_guid [128/8];
+  int pd_filetransfer_payload;
 
   OSDP_COMMAND_QUEUE *q;
   int cmd_q_overflow;

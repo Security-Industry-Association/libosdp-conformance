@@ -7,5 +7,12 @@ echo make sure www-data has sudo and bash
 mkdir -p /opt/osdp-conformance/run/ACU
 mkdir -p /opt/osdp-conformance/run/MON
 mkdir -p /opt/osdp-conformance/run/PD
+
+# set up default parameter files 
+
+cp /opt/osdp-conformance/run/ACU/open-osdp-params-ACU.json /opt/osdp-conformance/run/ACU/open-osdp-params.json
+cp /opt/osdp-conformance/run/PD/open-osdp-params-PD.json /opt/osdp-conformance/run/PD/open-osdp-params.json
+cp /opt/osdp-conformance/run/MON/open-osdp-params-MON.json /opt/osdp-conformance/run/MON/open-osdp-params.json
+
 echo >>/opt/osdp-conformance/log/install.log libosdp-conformance was installed.
 

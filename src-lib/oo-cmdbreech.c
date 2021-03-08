@@ -345,9 +345,19 @@ int
 
   if (status EQUALS ST_OK)
   {
+
+    // command capabilities
+    // cleartext:1 means send unencrypted even with an active secure channel session
+
     if (0 EQUALS strcmp (current_command, "capabilities"))
     {
       cmd->command = OSDP_CMDB_CAPAS;
+
+      value = json_object_get (root, "cleartext");
+      if (json_is_string (value))
+      {
+        cmd->details [0] = 1;
+      };
 
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;
@@ -378,10 +388,22 @@ int
         sscanf (vstr, "%d", &i);
         *(int *) &(cmd->details [4]) = i; // by convention bytes 4,5,6,7 are the speed.
       };
+
+      // cleartext:1 means send unencrypted even with an active secure channel session
+
+      value = json_object_get (root, "cleartext");
+      if (json_is_string (value))
+      {
+        cmd->details [0] = 1;
+      };
+
       if (ctx->verbosity > 2)
         fprintf (stderr, "Command COMSET Address %d Speed %d\n",
           (int) (cmd->details [0]),
           *(int *) &(cmd->details [4]));
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 

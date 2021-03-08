@@ -354,6 +354,7 @@ int
   };
 
   // parameter "outputs" (value must be in range 0 - OOSDP_DEFAULT_OUTPUTS)
+
   if (status EQUALS ST_OK)
   {
     found_field = 1;
@@ -368,6 +369,23 @@ int
       sscanf (count_string, "%x", &count);
       if ((count >=0) && (count <= OOSDP_DEFAULT_OUTPUTS))
         ctx->configured_outputs = count;
+    }; 
+  };
+
+
+  // parameter "pd-filetransfer-recsize" is bytes to ask for in osdp_FTSTAT response (for a PD)
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "pd-filetransfer-recsize");
+    if (!json_is_string (value))
+      found_field = 0;
+    if (found_field)
+    {
+      int i;
+      sscanf(json_string_value (value), "%d", &i);
+      ctx->pd_filetransfer_payload = i;
     }; 
   };
 

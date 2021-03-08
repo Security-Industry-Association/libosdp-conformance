@@ -192,7 +192,16 @@ int
         offered_size = ctx->max_message;
         if (offered_size > 500)
           offered_size = 500;
+
+        // if there was a configured size, offer that
+        if (ctx->pd_filetransfer_payload > 0)
+          offered_size = ctx->pd_filetransfer_payload;
+
         osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
+
+        fprintf(ctx->log, " FTSTAT Off %d Tot %d Current %d Xmax %d\n",
+          ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
+          offered_size);
 
 fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
 fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);

@@ -63,9 +63,7 @@ int
 
   wire_crc = *(1+msg->crc_check) << 8 | *(msg->crc_check);
   wire_cksum = *(1+msg->crc_check);
-sprintf(tmpstr2, "-ckz %d check %02x %02x-",
-  msg->check_size, *(msg->crc_check), *(1+msg->crc_check));
-strcat(tlogmsg, tmpstr2);
+//sprintf(tmpstr2, "-ckz %d check %02x %02x-", msg->check_size, *(msg->crc_check), *(1+msg->crc_check)); strcat(tlogmsg, tmpstr2);
 
   sprintf(tmpstr2, " CRC=%04x", wire_crc);
   if (msg->check_size != 2)

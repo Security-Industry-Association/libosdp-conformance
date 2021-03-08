@@ -5,7 +5,7 @@ BUILT=..
 all: 
 	mkdir -p ${PACKAGE_NAME}/DEBIAN
 	cp package-control/preinst package-control/postinst package-control/prerm package-control/postrm ${PACKAGE_NAME}/DEBIAN
-	(cd ${BUILT}; tar czvf package/built.tgz opt/osdp-conformance/bin opt/osdp-conformance/cgi-bin opt/osdp-conformance/www; )
+	(cd ${BUILT}; tar czvf package/built.tgz opt/osdp-conformance/bin opt/osdp-conformance/cgi-bin opt/osdp-conformance/run opt/osdp-conformance/www; )
 	( cd ${PACKAGE_NAME}; tar xvf ../built.tgz; )
 
 clean:

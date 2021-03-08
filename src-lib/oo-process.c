@@ -103,9 +103,9 @@ unsigned short int current_check_value;
       if (msg.check_size EQUALS 1)
         current_check_value = 0xff & current_check_value; // crc is 2 bytes checksum is the low order byte
 
-fprintf(context.log,
-"DEBUG: nak in progress lc %02x ls %02x lck %02x %d. %x saved s %d\n",
-  last_command_received, last_sequence_received, last_check_value, msg.check_size, current_check_value, saved_next);
+      fprintf(context.log,
+        "  NAK: last-cmd %02x last-seq %d last-checkval %04x\n",
+        last_command_received, last_sequence_received, last_check_value);
 
       // is it a resend?
 

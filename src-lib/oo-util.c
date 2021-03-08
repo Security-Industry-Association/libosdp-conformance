@@ -44,7 +44,6 @@ extern OSDP_BUFFER osdp_buf;
 unsigned char last_command_received;
 unsigned char last_sequence_received;
 unsigned char last_check_value;
-int saved_next;
 extern char trace_in_buffer [];
 
 
@@ -793,8 +792,8 @@ fprintf(context->log,
             status = ST_OSDP_BAD_SEQUENCE;
             context->seq_bad++;
 
-saved_next = context->next_sequence;
-//            context->next_sequence = 0; // if things are messed up start back at the initial sequence
+            // putting this back (0.91-10)
+            context->next_sequence = 0; // if things are messed up start back at the initial sequence
           };
         };
       };
