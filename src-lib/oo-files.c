@@ -387,7 +387,7 @@ int
 
     // adjust for header, crc
     size_to_read = size_to_read - 6 - 2;
-    // if it's checsum use -1 not -2.  if it's secure, add in 4 bytes of mac and 2 for the SCS header
+    // if it's checksum use -1 not -2.  if it's secure, add in 4 bytes of mac and 2 for the SCS header
 
     size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
     status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,
@@ -415,6 +415,8 @@ int
       transfer_send_size = size_to_read;
       transfer_send_size = transfer_send_size - 1 + sizeof (*ft);
       current_length = 0;
+      if (ctx->verbosity > 3)
+        fprintf(ctx->log, "osdp_FILETRANSFER: sending %d. bytes\n", transfer_send_size);
       status = send_message_ex(ctx, OSDP_FILETRANSFER, p_card.addr, &current_length,
         transfer_send_size, (unsigned char *)ft,
         OSDP_SEC_SCS_17, 0, NULL);

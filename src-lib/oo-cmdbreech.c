@@ -631,14 +631,11 @@ cmd->command = OSDP_CMD_NOOP;
 
   if (status EQUALS ST_OK)
   {
-    strcpy (this_command, json_string_value (value));
-    test_command = "dump_status";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
+    if (0 EQUALS strcmp (current_command, "dump_status"))
     {
       cmd->command = OSDP_CMDB_DUMP_STATUS;
       if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
+        fprintf (stderr, "dump_status command received.\n");
     };
   }; 
 
@@ -763,6 +760,7 @@ fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
 
   if (status EQUALS ST_OK)
   {
+    value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
     test_command = "input_status";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
@@ -800,6 +798,7 @@ fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
 
   if (status EQUALS ST_OK)
   {
+    value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
     test_command = "local_status";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
@@ -1050,7 +1049,6 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
     json_t *option;
 
     value = json_object_get (root, "command");
-
     strcpy (this_command, json_string_value (value));
     test_command = "present-card";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
@@ -1106,6 +1104,7 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
 
   if (status EQUALS ST_OK)
   {
+    value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
     test_command = "reader_status";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
@@ -1119,6 +1118,7 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
 
   if (status EQUALS ST_OK)
   {
+    value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
     test_command = "reset_power";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
@@ -1131,6 +1131,7 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
   }; 
   if (status EQUALS ST_OK)
   {
+    value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
     test_command = "send_poll";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
@@ -1149,6 +1150,7 @@ fprintf(stderr, "DEBUG: output-number set to %d\n",
   };
   if (status EQUALS ST_OK)
   {
+    value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
     test_command = "tamper";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
