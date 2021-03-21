@@ -532,7 +532,8 @@ int
         };
         if (ctx->verbosity > 9)
           fprintf(stderr, "before send: buffer %s\n", temps);
-        strcpy(trace_out_buffer, temps);
+        if (context.trace)
+          strcpy(trace_out_buffer, temps);
 
         // print trace to log if verbose
 

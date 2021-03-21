@@ -101,6 +101,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_com           "070-13-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-16-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-17-01"
+#define OOC_SYMBOL_resp_mfgrep        "070-18-01"
 #define OOC_SYMBOL_resp_busy          "070-19-01"
 #define OOC_SYMBOL_resp_pivdatar      "070-20-01"
 #define OOC_SYMBOL_resp_genauthr      "070-21-01"

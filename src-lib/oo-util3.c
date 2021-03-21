@@ -622,15 +622,37 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       break;
 
     case OSDP_MFGREP:
+      {
+        char command [5*1024];
+        char details [5*1024];
+        int i;
+        char octet [3];
+        char payload_string [4096];
+
+        payload_string [0] = 0;
+        strcpy(details, " \"response\":\"");
+        for (i=0; i < m->data_length; i++)
+        {
+          sprintf(octet, "%02x", m->data_payload [i]);
+          strcat(payload_string, octet);
+        };
+        strcat(details, payload_string);
+        strcat(details, "\",");
+        sprintf(command,
+          "/opt/osdp-conformance/run/ACU-actions/osdp_MFGREP %d. %s",
+          m->data_length, payload_string);
+        system(command);
+
       status = ST_OSDP_CMDREP_FOUND;
       m->data_payload = m->cmd_payload + 1;
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_MFGREP");
 
-      osdp_conformance.resp_mfg.test_status = OCONFORM_EXERCISED;
+      status = osdp_test_set_status_ex(OOC_SYMBOL_resp_mfgrep, OCONFORM_EXERCISED, details);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
+      };
       break;
 
     case OSDP_NAK:
