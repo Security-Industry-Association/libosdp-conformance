@@ -49,6 +49,8 @@ int
   int i;
   char json_string [16384];
   OSDP_MFG_ARGS *mfg_args;
+  char octet [4];
+  int octet_value;
   json_t *parameter;
   json_t *root;
   int set_led_temp;
@@ -247,14 +249,40 @@ int
     status = ST_OK;
     break;
 
+  // command scbk-default - change the value of SCBK-D (parameter 'scbk-d' is a hex string.)
+
+  case OSDP_CMDB_SCBK_DEFAULT:
+    parameter = json_object_get(root, "scbk-d");
+    if (json_is_string(parameter))
+    {
+      char new_default_key [OSDP_KEY_OCTETS];
+      char raw_bytes [1024];
+
+      strcpy(raw_bytes, json_string_value(parameter));
+      if (strlen(raw_bytes) EQUALS (2*OSDP_KEY_OCTETS))
+      {
+        memset(new_default_key, 0, sizeof(new_default_key));
+        for (i=0; i<(2*OSDP_KEY_OCTETS); i++)
+        {
+          octet [3] = 0;
+          octet [0] = raw_bytes [2*i];
+          octet [1] = raw_bytes [1+2*i];
+          sscanf(octet, "%x", &octet_value);
+          new_default_key [i] = octet_value;
+        };
+        memcpy(ctx->current_default_scbk, new_default_key, sizeof(ctx->current_default_scbk));
+        fprintf(ctx->log, "SCBK-D is now %s\n", raw_bytes);
+      };
+    };
+    status = ST_OK;
+    break;
+
   // command send-explicit - sends the (up to 128) bytes specified
 
   case OSDP_CMDB_SEND_EXPLICIT:
     cmd->command = OSDP_CMDB_SEND_EXPLICIT;
     {
       int i;
-      char octet [4];
-      int octet_value;
       char raw_bytes [1024];
 
       cmd->details_length = 0; // until we know there's something there

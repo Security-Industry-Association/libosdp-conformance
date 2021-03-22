@@ -204,6 +204,7 @@
 #define OSDP_CMDB_CONFORM_060_25_03 (1048) // enqueue challenge after raw
 #define OSDP_CMDB_CONFORM_060_24_03 (1049) // enqueue witness after raw
 #define OSDP_CMDB_SEND_EXPLICIT     (1050)
+#define OSDP_CMDB_SCBK_DEFAULT      (1051)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -482,6 +483,7 @@ typedef struct osdp_context
   unsigned char last_calculated_in_mac [OSDP_KEY_OCTETS];
   unsigned char last_calculated_out_mac [OSDP_KEY_OCTETS];
   unsigned char current_scbk [OSDP_KEY_OCTETS];
+  unsigned char current_default_scbk [OSDP_KEY_OCTETS];
   unsigned char rnd_a [8];
   unsigned char rnd_b [8];
   unsigned char s_enc [16];

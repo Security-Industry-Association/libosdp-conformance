@@ -1,7 +1,7 @@
 /*
   oo_initialize - init code for OSDP
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -211,6 +211,7 @@ int
     context->enable_poll = OO_POLL_ENABLED;
 
     context->current_key_slot = -1;
+    memcpy(context->current_default_scbk, OSDP_SCBK_DEFAULT, sizeof(context->current_default_scbk));
 
     m_version_minor = OSDP_VERSION_MINOR;
     m_build = OSDP_VERSION_BUILD;
