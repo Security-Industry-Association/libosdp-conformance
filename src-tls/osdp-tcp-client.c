@@ -501,6 +501,11 @@ int
         status = ST_OK;
     };
 #endif
+
+    if ((!osdp_awaiting_response(&context)) && (osdp_buf.next EQUALS 0))
+    {
+      status = process_command_from_queue(&context);
+    };
     if (status != ST_OK)
     {
       done_tls = 1;

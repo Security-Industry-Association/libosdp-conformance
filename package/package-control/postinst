@@ -14,5 +14,9 @@ cp /opt/osdp-conformance/run/ACU/open-osdp-params-ACU.json /opt/osdp-conformance
 cp /opt/osdp-conformance/run/PD/open-osdp-params-PD.json /opt/osdp-conformance/run/PD/open-osdp-params.json
 cp /opt/osdp-conformance/run/MON/open-osdp-params-MON.json /opt/osdp-conformance/run/MON/open-osdp-params.json
 
+# resave settings
+cd /tmp
+/opt/tester/cgi-bin/save-osdp-conformance >stdout 2>stderr
+
 echo >>/opt/osdp-conformance/log/install.log libosdp-conformance was installed.
 

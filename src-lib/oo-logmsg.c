@@ -107,8 +107,6 @@ typedef struct __attribute__((packed)) osdp_msc_status
 
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
-extern char trace_in_buffer [];
-extern char trace_out_buffer [];
 
 
 /*

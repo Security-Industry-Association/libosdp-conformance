@@ -300,7 +300,8 @@ status = ST_OK;
       sprintf(octet_string, " %02x", *(msg.ptr+i));
       strcat(temps, octet_string);
     };
-    strcpy(trace_in_buffer, temps);
+    if (context.trace & 1)
+      strcpy(trace_in_buffer, temps);
 
     // print trace to log if verbose
 

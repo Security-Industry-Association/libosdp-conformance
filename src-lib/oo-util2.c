@@ -39,8 +39,7 @@ extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
 char tlogmsg [1024];
-extern char trace_in_buffer [];
-extern char trace_out_buffer [];
+extern char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
 
 
 /*

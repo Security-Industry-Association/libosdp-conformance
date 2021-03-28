@@ -908,7 +908,8 @@ fprintf(context->log,
         sprintf(octet_string, " %02x", *(m->ptr+i));
         strcat(temps, octet_string);
       };
-      strcpy(trace_in_buffer, temps);
+      if (context->trace & 1)
+        strcpy(trace_in_buffer, temps);
       if (context->verbosity > 3)
         osdp_trace_dump(context, 1);
       else
