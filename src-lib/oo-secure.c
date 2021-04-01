@@ -1034,7 +1034,7 @@ int
     ctx->current_key_slot = secure_message->sec_blk_data;
     if (secure_message->sec_blk_data EQUALS OSDP_KEY_SCBK_D)
     {
-      memcpy (ctx->current_scbk, OSDP_SCBK_DEFAULT, sizeof (ctx->current_scbk));
+      memcpy (ctx->current_scbk, ctx->current_default_scbk, sizeof (ctx->current_scbk));
       ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
     }
     if (secure_message->sec_blk_data EQUALS OSDP_KEY_SCBK)
@@ -1048,7 +1048,7 @@ int
   {
     if (ctx->enable_secure_channel EQUALS 2)
     {
-      memcpy (ctx->current_scbk, OSDP_SCBK_DEFAULT, sizeof (ctx->current_scbk));
+      memcpy (ctx->current_scbk, ctx->current_default_scbk, sizeof (ctx->current_scbk));
       ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
     }
     if (ctx->enable_secure_channel EQUALS 1)
