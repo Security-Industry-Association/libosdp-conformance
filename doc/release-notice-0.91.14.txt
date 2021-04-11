@@ -1,0 +1,7 @@
+changes in x.x.x-x
+
+tuned serial write logic to improve behavior during file transfer.
+
+added port parameter to settings.  this is the port number at the other end of a tcp connection
+for osdp-tcp-client (and other uses.)
+
