@@ -1,5 +1,7 @@
 Changes in 0.91-14
 
+updated documentation to include scbk-default, port parameter.
+
 tuned serial write logic to improve behavior during file transfer.
 
 added port parameter to settings.  this is the port number at the other end of a tcp connection
