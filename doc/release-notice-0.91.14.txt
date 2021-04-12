@@ -2,6 +2,9 @@ Changes in 0.91-14
 
 updated documentation to include scbk-default, port parameter.
 
+corrected issue where comset and id would not be transmitted
+if the PD is in "NAK everything, I want encryption" mode.
+
 tuned serial write logic to improve behavior during file transfer.
 
 added port parameter to settings.  this is the port number at the other end of a tcp connection
