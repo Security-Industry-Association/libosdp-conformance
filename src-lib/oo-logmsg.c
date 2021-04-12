@@ -2,7 +2,7 @@
 
   oo-logmsg.c - prints log messages
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   OSDP Working Group community.
@@ -325,7 +325,7 @@ int
       ustmp, filetransfer_message->FtData);
     strcat(tlogmsg, tmpstr);
     sprintf(tmpstr,
-"  File transfer: Cur Off %8d. Tot Lth %8d. Cur Snd %d. Handle %lx",
+"  File transfer: Cur Off %8d. Tot Lth %8d. Cur Snd %d. Handle %lx\n",
       context.xferctx.current_offset, context.xferctx.total_length, context.xferctx.current_send_length,
       (unsigned long)(context.xferctx.xferf));
     strcat(tlogmsg, tmpstr);
@@ -336,7 +336,7 @@ int
     ftstat = (OSDP_HDR_FTSTAT *)(msg->data_payload);
 
     // dump the FTSTAT response in case it's weird
-    if (context.verbosity > 2)
+    if (context.verbosity > 9)
       dump_buffer_log(&context, "  FTSTAT: ", (unsigned char *)ftstat, msg->lth);
 
     tlogmsg[0] = 0;
@@ -359,7 +359,7 @@ int
       };
     };
     sprintf(tmpstr,
-"File Transfer STATUS: Detail %s Action %02x Delay %02x-%02x(%d. ms) Update-max %02x-%02x(%d.)\n",
+"  Response: osdp_FTSTAT.  Detail Detail %s; Action %02x Delay %02x-%02x(%d. ms) Update-max %02x-%02x(%d.)\n",
       file_transfer_status_detail,
       ftstat->FtAction,
       ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,

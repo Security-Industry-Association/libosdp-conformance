@@ -204,6 +204,20 @@ int
     };
   }; 
 
+  // parameter "enable-trace"
+  if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
+  {
+    found_field = 1;
+    value = json_object_get (root, "enable-trace");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    fprintf(ctx->log, "enabling protocol tracing\n");
+    ctx->trace = 1;
+  }; 
+
   // parameter "fqdn"
 
   if (status EQUALS ST_OK)
@@ -372,7 +386,6 @@ int
     }; 
   };
 
-
   // parameter "pd-filetransfer-recsize" is bytes to ask for in osdp_FTSTAT response (for a PD)
 
   if (status EQUALS ST_OK)
@@ -408,6 +421,20 @@ int
 fprintf(stderr, "DEBUG: poll deprecated\n");
 //    p_card.poll = i;
   }; 
+
+  // port - port number at the other end of tls or tcp connection
+
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "");
+    if (json_is_string (value))
+    {
+      int i;
+      sscanf(json_string_value(value), "%d", &i);
+      ctx->listen_sap = i;
+      fprintf(ctx->log, "Listen Service Access Point set to %d.\n", ctx->listen_sap);
+    };
+  };
 
   // results - "keep" or "new", default is "new"
 
@@ -627,20 +654,6 @@ fprintf (stderr, "processing value %s\n",
       idata ++;
       p_card.value_len ++;
     };
-  }; 
-
-  // parameter "enable-trace"
-  if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
-  {
-    found_field = 1;
-    value = json_object_get (root, "enable-trace");
-    if (!json_is_string (value))
-      found_field = 0;
-  };
-  if (found_field)
-  {
-    fprintf(ctx->log, "enabling protocol tracing\n");
-    ctx->trace = 1;
   }; 
 
   // parameter "pdcap-format"

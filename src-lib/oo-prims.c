@@ -157,15 +157,23 @@ int
     }
     else
     {
-      if (ctx->verbosity > 9)
+      // if last was a zero and next is a zero then it's ok we are resetting seq nums
+      if ((ctx->last_sequence_received EQUALS 0) && (ctx->next_sequence EQUALS 0))
       {
-        fprintf(ctx->log,
+        ret = 0;
+      }
+      else
+      {
+        if (ctx->verbosity > 9)
+        {
+          fprintf(ctx->log,
 "DEBUG: not actually ready n %d f %d bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",
-          ctx->next_sequence, following_sequence, osdp_buf.next,
-          osdp_buf.buf [0], osdp_buf.buf [1], osdp_buf.buf [2],
-          osdp_buf.buf [5], osdp_buf.buf [6]);
+            ctx->next_sequence, following_sequence, osdp_buf.next,
+            osdp_buf.buf [0], osdp_buf.buf [1], osdp_buf.buf [2],
+            osdp_buf.buf [5], osdp_buf.buf [6]);
+        };
+        ret = 1; // not actually ready.
       };
-      ret = 1; // not actually ready.
     };
   };
 
@@ -435,7 +443,7 @@ int osdp_timer_start
   status = ST_OK;
 if (timer_index == OSDP_TIMER_RESPONSE)
 {
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
   {
     fprintf(ctx->log, "DEBUG: osdp_timer_start: old s %ld ns %ld\n",
       ctx->timer[timer_index].i_sec,
@@ -458,7 +466,7 @@ if (timer_index == OSDP_TIMER_RESPONSE)
     };
 if (timer_index == OSDP_TIMER_RESPONSE)
 {
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
   {
     fprintf(ctx->log, "DEBUG: osdp_timer_start: restart s %ld ns %ld\n",
       ctx->timer[timer_index].i_sec,

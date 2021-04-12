@@ -41,7 +41,7 @@ extern unsigned char last_sequence_received;
 extern unsigned char last_check_value;
 extern int saved_next;
 extern char trace_in_buffer [];
-extern char trace_out_buffer [];
+//extern char trace_out_buffer [];
 
 int
   process_osdp_input

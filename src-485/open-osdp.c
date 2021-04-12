@@ -440,6 +440,9 @@ if (!(osdp_buf.buf [0] EQUALS C_SOM))
 } /* main for open-osdp */
 
 
+int tmp_completed;
+int tmp_waiting;
+
 int
   send_osdp_data
     (OSDP_CONTEXT *context,
@@ -447,6 +450,15 @@ int
     int lth)
 
 { /* send_osdp_data */
+
+  fd_set exceptfds;
+  fd_set readfds;
+  int scount;
+  const sigset_t sigmask;
+  int status_select;
+  struct timespec timeout;
+  fd_set writefds;
+
 
   if (context->verbosity > 9)
   {
@@ -472,6 +484,25 @@ int
     };
   };
   write (context->fd, buf, lth);
+
+    FD_ZERO (&readfds);
+    FD_ZERO (&writefds);
+    FD_SET (context->fd, &writefds);
+    scount = context->fd+1;
+    FD_ZERO (&exceptfds);
+    timeout.tv_sec = 0;
+    timeout.tv_nsec = 100000000;
+    status_select = pselect (scount, &readfds, &writefds, &exceptfds,
+      &timeout, &sigmask);
+    if (status_select > 0)
+    {
+      tmp_completed++;
+    }
+    else
+    {
+      tmp_waiting++;
+    };
+
   context->bytes_sent = context->bytes_sent + lth;
   
   return (ST_OK);

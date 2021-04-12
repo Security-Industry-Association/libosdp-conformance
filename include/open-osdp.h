@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (91)
-#define OSDP_VERSION_BUILD (13)
+#define OSDP_VERSION_BUILD (14)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -447,6 +447,7 @@ typedef struct osdp_context
   int fd;
   FILE *log;
   char network_address [1024];
+  int listen_sap;
   FILE *report;
   struct termios tio;
 

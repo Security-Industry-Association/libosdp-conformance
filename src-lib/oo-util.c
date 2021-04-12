@@ -80,13 +80,6 @@ int
 
 
   p = (OSDP_HDR *)m->ptr;
-  if (context->verbosity > 9)
-  {
-    char *raw;
-    raw = (char *)p;
-    fprintf(stderr, "DEBUG: opm %02x%02x%02x%02x %02x%02x l=%d.\n",
-      raw [0], raw [1], raw [2], raw [3], raw [4], raw [5], m->lth);
-  };
 
   status = ST_MSG_TOO_SHORT;
 
@@ -277,9 +270,6 @@ if (context->verbosity > 3)
     fprintf(stderr, "DEBUG: SCS\n");
   };
 };
-#ifdef PREV_TRACE
-    osdp_trace_dump(context, display);
-#endif
 
     if (display)
     {

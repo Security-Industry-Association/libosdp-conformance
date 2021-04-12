@@ -519,6 +519,7 @@ int
 
       m.ptr = test_blk; // marshalled outbound message
       m.lth = *current_length;
+if (0)
       {
         int i;
         char temps [4096];
@@ -575,13 +576,6 @@ int
       // and after we sent the whole PDU bump the counter
       ctx->pdus_sent++;
     };
-
-    if (ctx->verbosity > 4)
-    {
-#ifdef PREV_TRACE
-      osdp_trace_dump(ctx, 1);
-#endif
-    };
   };
   if (status EQUALS ST_OK)
   {
@@ -624,6 +618,13 @@ int
   status = ST_OK;
   if (ctx->role != OSDP_ROLE_MONITOR)
   {
+    // dump trace buffers so in's and out's land in correct order
+
+    if (context.verbosity > 3)
+      osdp_trace_dump(&context, 1);
+    else
+      osdp_trace_dump(&context, 0);
+
     current_sec_block_type = sec_block_type;
     current_sec_block_length = sec_block_length;
     memset(current_sec_block, 0, sizeof(current_sec_block));
@@ -685,6 +686,13 @@ int
       status = send_message (ctx, command, dest_addr, current_length,
         data_length, data);
     };
+
+    // dump trace buffers after also so in's and out's land in correct order
+
+    if (context.verbosity > 3)
+      osdp_trace_dump(&context, 1);
+    else
+      osdp_trace_dump(&context, 0);
   }; // not monitor
   return(status);
 

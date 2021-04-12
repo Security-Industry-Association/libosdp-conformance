@@ -136,6 +136,11 @@ config->listen_sap = 10001;
     tag = "CP";
   else
     tag = "PD";
+  if (context.listen_sap != 0)
+  {
+    // use the specificed port number if provided
+    config->listen_sap = context.listen_sap;
+  };
 
   // initialize my current pid
   if (status EQUALS ST_OK)

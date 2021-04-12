@@ -1,5 +1,5 @@
-extern char trace_in_buffer [];
-extern char trace_out_buffer [];
+//extern char trace_in_buffer [];
+//extern char trace_out_buffer [];
 /*
   osdp-api - bits to implement HUP-based "API"
 
@@ -120,6 +120,10 @@ int
 
   status = ST_OK;
   waiting = osdp_awaiting_response(ctx);
+if (waiting)
+{
+  fprintf(stderr, "DEBUG: process_command_from_queue: waiting\n");
+};
   if (ctx->verbosity > 9)
     fprintf(ctx->log, "process_command_from_queue: top, w=%d\n", waiting);
   if ((!waiting) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
