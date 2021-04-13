@@ -1,5 +1,7 @@
 Changes in 0.91-14
 
+fix pd tracing to only dump input buffer once
+
 updated documentation to include scbk-default, port parameter.
 
 corrected issue where comset and id would not be transmitted

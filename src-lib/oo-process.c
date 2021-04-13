@@ -288,7 +288,7 @@ status = ST_OK;
       // if we experienced an error we just reset things and continue
       status = ST_SERIAL_IN;
   };
-  if (status EQUALS ST_OK)
+  if (0) //(status EQUALS ST_OK)
   {
     int i;
     char temps [4096];

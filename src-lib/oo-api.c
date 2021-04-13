@@ -1,5 +1,3 @@
-//extern char trace_in_buffer [];
-//extern char trace_out_buffer [];
 /*
   osdp-api - bits to implement HUP-based "API"
 
