@@ -113,6 +113,9 @@ int
     (OO_POLL_RESUME EQUALS (ctx->enable_poll)))
       send_poll = 0;
 
+  // dump the trace buffer 
+  if (context.trace) osdp_trace_dump(&context, 0);
+
   if (send_poll)
   {
     current_length = 0;

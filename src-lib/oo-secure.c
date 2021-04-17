@@ -768,7 +768,8 @@ void
   // secure channel processing is being reset.  set things
   // back to the beginning.
 
-  fprintf (ctx->log, "  Resetting Secure Channel\n");
+  if (ctx->verbosity > 3)
+    fprintf (ctx->log, "  Resetting Secure Channel\n");
 
   // refresh rnd.a
   memcpy (ctx->rnd_a, "12345678", 8);
@@ -782,8 +783,11 @@ void
   ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_DISABLED;
   if (ctx->enable_secure_channel > 0)
   {
-    fprintf(ctx->log, "  Enabling Secure Channel\n");
-    dump_buffer_log(ctx, "Current SCBK:", ctx->current_scbk, sizeof(ctx->current_scbk));
+    if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "  Enabling Secure Channel\n");
+      dump_buffer_log(ctx, "  Current SCBK:", ctx->current_scbk, sizeof(ctx->current_scbk));
+    };
     ctx->secure_channel_use [OO_SCU_ENAB] = OO_SCS_USE_ENABLED;
   };
 

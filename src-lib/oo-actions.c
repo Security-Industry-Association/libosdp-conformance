@@ -53,6 +53,7 @@ int
 
 { /* action_osdp_COMSET */
 
+  char cmd [1024];
   int current_length;
   unsigned char from_address;
   int i;
@@ -62,6 +63,7 @@ int
   int status;
 
 
+  sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_COMSET"); system(cmd);
   p = (OSDP_HDR *)(msg->ptr);
   from_address = p->addr;
   memset (osdp_com_response_data, 0, sizeof (osdp_com_response_data));
@@ -84,6 +86,10 @@ int
         status = send_message_ex (ctx, OSDP_COM, oo_response_address(ctx, from_address),
           &current_length, sizeof (osdp_com_response_data), osdp_com_response_data,
           OSDP_SEC_SCS_18, 0, NULL);
+
+  osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
+  sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_COM"); system(cmd);
+
   if (ctx->verbosity > 2)
   {
           sprintf (logmsg, "Responding with OSDP_COM");
@@ -102,6 +108,7 @@ int
     (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS, NULL);
     status = init_serial (ctx, p_card.filename);
   };
+  osdp_test_set_status(OOC_SYMBOL_cmd_comset, OCONFORM_EXERCISED);
   return (status);
 
 } /* action_osdp_COMSET */
@@ -1074,9 +1081,8 @@ int
   osdp_test_set_status(OOC_SYMBOL_resp_rstatr, OCONFORM_EXERCISED);
   osdp_rstat_response_data [ 0] = 1; //hard code to "not connected"
   current_length = 0;
-  status = send_message (ctx, OSDP_RSTATR, p_card.addr,
-    &current_length,
-    sizeof (osdp_rstat_response_data), osdp_rstat_response_data);
+//  status = send_message (ctx, OSDP_RSTATR, p_card.addr, &current_length, sizeof (osdp_rstat_response_data), osdp_rstat_response_data);
+  status = send_message_ex(ctx, OSDP_RSTATR, p_card.addr, &current_length, sizeof (osdp_rstat_response_data), osdp_rstat_response_data, OSDP_SEC_SCS_18, 0, NULL);
   if (ctx->verbosity > 2)
   {
     sprintf (tlogmsg, "Responding with OSDP_RSTATR (Ext Tamper)");
@@ -1121,8 +1127,8 @@ int
   // we always ack the TEXT command regardless of param errors
 
   current_length = 0;
-  status = send_message
-    (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+//  status = send_message (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
+  status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
   ctx->pd_acks ++;
   if (ctx->verbosity > 2)
     fprintf (ctx->log, "Responding with OSDP_ACK\n");

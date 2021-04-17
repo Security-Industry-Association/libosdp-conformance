@@ -715,7 +715,7 @@ status = ST_OK;
         }
         else
         {
-          sprintf (tlogmsg, "NAK: Error Code %02x%s\n",
+          sprintf (tlogmsg, "  NAK: Error Code %02x%s\n",
             *(0+msg->data_payload), tmpmsg2);
         };
       }

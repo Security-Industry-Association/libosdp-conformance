@@ -151,7 +151,9 @@ int
 { /* action_osdp_CHLNG */
 
   OSDP_SC_CCRYPT ccrypt_response;
+  char cmd [1024];
   int current_length;
+  char details [1024];
   int nak;
   unsigned char osdp_nak_response_data [2];
   OSDP_SECURE_MESSAGE *s_msg;
@@ -254,12 +256,17 @@ printf ("fixme: RND.B\n");
 
       current_length = 0;
  
+      sprintf(details, "RND.A=%02x%02x%02x%02x%02x%02x%02x%02x",
+         ctx->rnd_a [0], ctx->rnd_a [1], ctx->rnd_a [2], ctx->rnd_a [3], ctx->rnd_a [4], ctx->rnd_a [5], ctx->rnd_a [6], ctx->rnd_a [7]);
+
+      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_CHLNG"); system(cmd);
+
       status = send_secure_message (ctx,
         OSDP_CCRYPT, p_card.addr, &current_length, 
         sizeof (ccrypt_response), (unsigned char *)&ccrypt_response,
         OSDP_SEC_SCS_12, sizeof (sec_blk), sec_blk);
 
-      (void)osdp_test_set_status(OOC_SYMBOL_cmd_chlng, OCONFORM_EXERCISED);
+      (void)osdp_test_set_status_ex(OOC_SYMBOL_cmd_chlng, OCONFORM_EXERCISED, details);
       (void)osdp_test_set_status(OOC_SYMBOL_resp_ccrypt, OCONFORM_EXERCISED);
     };
   };

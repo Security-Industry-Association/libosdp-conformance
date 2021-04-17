@@ -116,7 +116,6 @@ int
       strcpy (context.init_parameters_path, argv [1]);
     };
     fprintf(stderr, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
-fprintf(stderr, "DEBUG: main context is 0x%lx\n", (unsigned long)(&context));
 
     system("mkdir -p /opt/osdp-conformance/results");
     status = initialize_osdp (&context);
@@ -169,7 +168,7 @@ int
   int c1;
   int done;
   fd_set exceptfds;
-  char octet [1024]; // used for text version of byte in tracing
+//  char octet [1024]; // used for text version of byte in tracing
   fd_set readfds;
   int scount;
   const sigset_t sigmask;
@@ -339,8 +338,10 @@ int
 
       if (FD_ISSET (context.fd, &readfds))
       {
-        unsigned char buffer [2];
-        status_io = read (context.fd, buffer, 1);
+        char buffer [2048];
+//        unsigned char buffer [2];
+
+        status_io = read (context.fd, buffer, OSDP_OFFICIAL_MSG_MAX); // 1);
         if (status_io < 1)
         {
           // continue if it was a serial error
@@ -348,15 +349,21 @@ int
         }
         else
         {
+          if (context.verbosity > 8)
+          {
+            if (status_io > 1) fprintf(stderr, "DEBUG: 485 read returned %d. octets\n", status_io);
+          };
+          status = osdp_stream_read(&context, buffer, status_io);
+
+#ifdef OLDE_INPUT
+
+// zzz
           context.bytes_received++;
           if (context.trace & 1)
           {
             sprintf(octet, " %02x", buffer [0]);
             strcat(trace_in_buffer, octet);
-if (context.verbosity > 9)
-{
-  fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer);
-};
+            if (context.verbosity > 9) { fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer); };
           };
           if (context.verbosity > 10)
             fprintf (stderr, "485 read returned %d bytes\n",
@@ -368,40 +375,40 @@ if (context.verbosity > 9)
             osdp_buf.buf [osdp_buf.next] = buffer [0];
             osdp_buf.next ++;
 
-          // if we're reading noise dump bytes until a clean header starts
+            // if we're reading noise dump bytes until a clean header starts
 
-          // messages start with SOM, anything else is noise.
-          // (checksum mechanism copes with SOM's in the middle of a msg.)
+            // messages start with SOM, anything else is noise.
+            // (checksum mechanism copes with SOM's in the middle of a msg.)
 
-if (!(osdp_buf.buf [0] EQUALS C_SOM))
-{
-  char temp_buffer [2048];
-  osdp_buf.next --;
-  if (osdp_buf.next > 1)
-  {
-    memcpy(temp_buffer, osdp_buf.buf+1, osdp_buf.next);
-    memcpy(osdp_buf.buf, temp_buffer, osdp_buf.next);
-  };
-};
-          if (osdp_buf.next EQUALS 1)
-          {
             if (!(osdp_buf.buf [0] EQUALS C_SOM))
             {
-              context.dropped_octets = context.dropped_octets + osdp_buf.next;
-              osdp_buf.next = 0;
-// zzz move up one byte
+              char temp_buffer [2048];
+              osdp_buf.next --;
+              if (osdp_buf.next > 1)
+              {
+                memcpy(temp_buffer, osdp_buf.buf+1, osdp_buf.next);
+                memcpy(osdp_buf.buf, temp_buffer, osdp_buf.next);
+              };
             };
+            if (osdp_buf.next EQUALS 1)
+            {
+              if (!(osdp_buf.buf [0] EQUALS C_SOM))
+              {
+                context.dropped_octets = context.dropped_octets + osdp_buf.next;
+                osdp_buf.next = 0;
+              };
+            };
+          }
+          else
+          {
+            fprintf(context.log, "Serial Overflow, resetting input buffer\n");
+            context.dropped_octets = context.dropped_octets + osdp_buf.next;
+            osdp_buf.overflow ++;
+            osdp_buf.next = 0; 
           };
-        }
-        else
-        {
-          fprintf(context.log, "Serial Overflow, resetting input buffer\n");
-          context.dropped_octets = context.dropped_octets + osdp_buf.next;
-          osdp_buf.overflow ++;
-          osdp_buf.next = 0; 
+#endif
         };
       };
-    };
     }; // select returned nonzero number of fd's
 
     // if there was input, process the message

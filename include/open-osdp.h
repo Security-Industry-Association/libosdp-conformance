@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 0)
 #define OSDP_VERSION_MINOR (91)
-#define OSDP_VERSION_BUILD (15)
+#define OSDP_VERSION_BUILD (16)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -950,6 +950,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_BAD_KEY_LENGTH           ( 90)
 #define ST_OSDP_MFG_VENDOR_DETECTED      ( 91)
 #define ST_OSDP_MFG_VENDOR_PROCESSED     ( 92)
+#define ST_OSDP_BAD_INPUT_COUNT          ( 93)
 
 int
   m_version_minor;
@@ -1025,20 +1026,21 @@ void osdp_create_keys (OSDP_CONTEXT *ctx);
 void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
 int osdp_encrypt_payload(OSDP_CONTEXT *ctx, unsigned char *data, int data_length, unsigned char *enc_buf,
   int *padded_length, int *padding);
-void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
-
-int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
 int osdp_filetransfer_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FILETRANSFER *msg, unsigned short int *fragsize, unsigned int *offset);
 int osdp_ftstat_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *msg);
+int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
 char *osdp_led_color_lookup(unsigned char led_color_number);
 int osdp_log_summary(OSDP_CONTEXT *ctx);
 int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
 char *osdp_pdcap_function(int func);
+void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
 char *osdp_sec_block_dump (unsigned char *sec_block);
 int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
+int osdp_stream_read(OSDP_CONTEXT *ctx, char *buffer, int buffer_input_length);
+
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int osdp_string_to_buffer (OSDP_CONTEXT *ctx, char *instring, unsigned char *buffer, unsigned short int *buffer_length_returned);
 int osdp_timer_start (OSDP_CONTEXT *ctx, int timer_index);

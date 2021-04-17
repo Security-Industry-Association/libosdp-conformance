@@ -1,4 +1,6 @@
-Changes in 0.91-14
+Changes in 0.91-16
+
+return encrypted ack if text command in secure channel
 
 fix pd tracing to only dump input buffer once
 

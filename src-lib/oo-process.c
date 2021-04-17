@@ -33,15 +33,16 @@ int leftover_length;
 #include <osdp_conformance.h>
 
 
-extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_CONTEXT context;
-extern OSDP_PARAMETERS p_card;
 extern unsigned char last_command_received;
-extern unsigned char last_sequence_received;
 extern unsigned char last_check_value;
+extern unsigned char last_sequence_received;
+OSDP_BUFFER osdp_buf;
+extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_PARAMETERS p_card;
 extern int saved_next;
 extern char trace_in_buffer [];
-//extern char trace_out_buffer [];
+
 
 int
   process_osdp_input
@@ -157,11 +158,13 @@ status = ST_OK;
 
       if (send_response)
       {
+        char cmd [1024];
         if (context.verbosity > 3)
           fprintf(context.log, "DEBUG: NAK: %d.\n", osdp_nak_response [0]);
         (void)send_message_ex(&context,
           OSDP_NAK, p_card.addr, &current_length,
           1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
+        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_NAK transmitted"); system(cmd);
         context.sent_naks ++;
 
         if (nak_not_msg)
@@ -313,4 +316,76 @@ status = ST_OK;
   return (status);
 
 } /* process_osdp_input */
+
+
+/*
+  osdp_stream_read - processes bytes just read in from whatever stream we're running
+*/
+
+int
+  osdp_stream_read
+    (OSDP_CONTEXT *ctx,
+    char *buffer,
+    int buffer_input_length)
+
+{ /* osdp_stream_read */
+
+  int i;
+  char octet [1024];
+  int status;
+  char temp_buffer [2048];
+
+
+  status = ST_OK;
+
+  if (buffer_input_length <= 0)
+    status = ST_OSDP_BAD_INPUT_COUNT;
+  if (buffer_input_length > 0)
+  {
+//    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "stream contained %4d octets\n", buffer_input_length);
+    for (i=0; i<buffer_input_length; i++)
+    {
+      ctx->bytes_received++;
+      if (ctx->trace & 1)
+      {
+        sprintf(octet, " %02x", buffer [i]);
+        strcat(trace_in_buffer, octet);
+        if (context.verbosity > 9) { fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer); };
+      };
+
+      status = ST_SERIAL_IN;
+      if (osdp_buf.next < sizeof (osdp_buf.buf))
+      {
+        osdp_buf.buf [osdp_buf.next] = buffer [i];
+        osdp_buf.next ++;
+
+        // if we're reading noise dump bytes until a clean header starts
+
+        // messages start with SOM, anything else is noise.
+        // (checksum mechanism copes with SOM's in the middle of a msg.)
+
+        if (!(osdp_buf.buf [0] EQUALS C_SOM)) //really index zero, first octet of buffer
+        {
+          context.dropped_octets = context.dropped_octets + 1;
+          osdp_buf.next --;
+          if (osdp_buf.next > 1)
+          {
+            memcpy(temp_buffer, osdp_buf.buf+1, osdp_buf.next);
+            memcpy(osdp_buf.buf, temp_buffer, osdp_buf.next);
+          };
+        };
+      }
+      else
+      {
+        fprintf(context.log, "Serial Overflow, resetting input buffer\n");
+        context.dropped_octets = context.dropped_octets + osdp_buf.next;
+        osdp_buf.overflow ++;
+        osdp_buf.next = 0;
+      };
+    };
+  };
+  return(status);
+
+} /* osdp_stream_read */
 

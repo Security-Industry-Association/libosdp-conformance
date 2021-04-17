@@ -1004,7 +1004,7 @@ int
       logmsg[0]=0;
       osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
       current_length = 0;
-      current_security = OSDP_SEC_SCS_15;
+      current_security = OSDP_SEC_SCS_16;
       status = send_message_ex(context, OSDP_ACK, p_card.addr,
         &current_length, 0, NULL, current_security, 0, NULL);
       context->pd_acks ++;
@@ -1316,9 +1316,9 @@ fprintf(stderr, "lstat 1684\n");
       osdp_lstat_response_data [ 0] = context->tamper;
       osdp_lstat_response_data [ 1] = context->power_report; // report power failure
       current_length = 0;
-      status = send_message (context, OSDP_LSTATR, p_card.addr,
-        &current_length,
-        sizeof (osdp_lstat_response_data), osdp_lstat_response_data);
+
+      status = send_message_ex(context, OSDP_LSTATR, p_card.addr,
+        &current_length, 2, osdp_lstat_response_data, OSDP_SEC_SCS_18, 0, NULL);
       if (context->verbosity > 2)
       {
         sprintf (logmsg, "Responding with OSDP_LSTATR (Power)");
