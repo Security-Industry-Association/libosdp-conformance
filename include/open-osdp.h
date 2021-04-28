@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (91)
-#define OSDP_VERSION_BUILD (16)
+#define OSDP_VERSION_MINOR (93)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -467,6 +467,10 @@ typedef struct osdp_context
   int configured_biometrics; // 0 if nothing, do not assume nonzero tells match vs. capture.
   int configured_inputs;
   int configured_outputs;
+  int capability_max_packet;
+  int capability_configured_leds;
+  int capability_configured_sounder;
+  int capability_configured_text;
 
   // OSDP protocol context
   char last_command_sent;
@@ -951,6 +955,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_MFG_VENDOR_DETECTED      ( 91)
 #define ST_OSDP_MFG_VENDOR_PROCESSED     ( 92)
 #define ST_OSDP_BAD_INPUT_COUNT          ( 93)
+#define ST_OSDP_TOO_MANY_CAPAS           ( 94)
 
 int
   m_version_minor;
@@ -1028,6 +1033,7 @@ int osdp_encrypt_payload(OSDP_CONTEXT *ctx, unsigned char *data, int data_length
   int *padded_length, int *padding);
 int osdp_filetransfer_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FILETRANSFER *msg, unsigned short int *fragsize, unsigned int *offset);
 int osdp_ftstat_validate (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *msg);
+int osdp_get_capabilities(OSDP_CONTEXT *ctx, unsigned char *capabilities_list, int *capabilities_response_length);
 int osdp_get_key_slot (OSDP_CONTEXT *ctx, OSDP_MSG *msg, int *key_slot);
 char *osdp_led_color_lookup(unsigned char led_color_number);
 int osdp_log_summary(OSDP_CONTEXT *ctx);

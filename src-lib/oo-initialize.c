@@ -227,6 +227,7 @@ int
     context->serial_number [1] = 0xfe;
     context->serial_number [2] = 0xde;
     context->serial_number [3] = 0xed;
+    context->capability_configured_sounder = 1; // it's got a beeper
 
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;

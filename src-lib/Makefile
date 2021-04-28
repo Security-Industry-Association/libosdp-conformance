@@ -36,7 +36,7 @@ clean:
 	rm -f core *.o ${OUTLIB}
 
 ${OUTLIB}:	\
-	oo-actions.o oo-api.o oo-bio.o oo-conformance.o oo-crc.o \
+	oo-actions.o oo-api.o oo-bio.o oo-capabilities.o oo-conformance.o oo-crc.o \
 	  oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
 	  oo-logprims.o oo-mfg-actions.o \
 	  oo-printmsg.o oo-process.o \
@@ -45,7 +45,7 @@ ${OUTLIB}:	\
 	  oo-files.o oo-logmsg.o oo-prims.o \
 	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
 	ar r ${OUTLIB} \
-	  oo-actions.o oo-api.o oo-bio.o \
+	  oo-actions.o oo-api.o oo-bio.o oo-capabilities.o \
 	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o \
 	  oo-printmsg.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-xpm-actions.o oo-xwrite.o \
@@ -101,6 +101,9 @@ oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 # different as it uses source here by inclusion
 oo-conformance.o:	oo-conformance.c oo-SKIP.c
 	${CC} ${CFLAGS} -I. oo-conformance.c
+
+oo-capabilities.o:	oo-capabilities.c
+	${CC} ${CFLAGS} oo-capabilities.c
 
 oo-crc.o:	oo-crc.c
 	${CC} ${CFLAGS} oo-crc.c

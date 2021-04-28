@@ -168,7 +168,7 @@ int
   int c1;
   int done;
   fd_set exceptfds;
-//  char octet [1024]; // used for text version of byte in tracing
+  char octet [1024]; // used for text version of byte in tracing
   fd_set readfds;
   int scount;
   const sigset_t sigmask;
@@ -341,7 +341,7 @@ int
         char buffer [2048];
 //        unsigned char buffer [2];
 
-        status_io = read (context.fd, buffer, OSDP_OFFICIAL_MSG_MAX); // 1);
+        status_io = read (context.fd, buffer, 1); //OSDP_OFFICIAL_MSG_MAX); // 1);
         if (status_io < 1)
         {
           // continue if it was a serial error
@@ -353,9 +353,10 @@ int
           {
             if (status_io > 1) fprintf(stderr, "DEBUG: 485 read returned %d. octets\n", status_io);
           };
-          status = osdp_stream_read(&context, buffer, status_io);
+// not working...  status = osdp_stream_read(&context, buffer, status_io);
 
-#ifdef OLDE_INPUT
+//#ifdef OLDE_INPUT
+
 
 // zzz
           context.bytes_received++;
@@ -406,7 +407,7 @@ int
             osdp_buf.overflow ++;
             osdp_buf.next = 0; 
           };
-#endif
+//#endif
         };
       };
     }; // select returned nonzero number of fd's
@@ -414,7 +415,9 @@ int
     // if there was input, process the message
     if (status EQUALS ST_SERIAL_IN)
     {
+      //fprintf(stderr, "DEBUG: before process_osdp_input: buffer contains %d. octets\n", osdp_buf.next);
       status = process_osdp_input (&osdp_buf);
+      //fprintf(stderr, "DEBUG: after process_osdp_input: buffer contains %d. octets, status %d.\n", osdp_buf.next, status);
       // if it's too short so far it'll be 'serial_in' so ignore that
       if (status EQUALS ST_SERIAL_IN)
         status = ST_OK;

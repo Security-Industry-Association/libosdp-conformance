@@ -272,6 +272,7 @@ status = ST_OK;
   // move the existing buffer up to the front if it was unknown, not mine,
   // monitor only, or processed
 
+  //fprintf(stderr, "DEBUG: MOVE MOVE MOVE MOVE status %d\n", status);
   if ((status EQUALS ST_PARSE_UNKNOWN_CMD) || \
     (status EQUALS ST_BAD_CRC) || \
     (status EQUALS ST_OSDP_BAD_SEQUENCE) || \
@@ -283,6 +284,21 @@ status = ST_OK;
   {
     int length;
     length = (parsed_msg.len_msb << 8) + parsed_msg.len_lsb;
+// zzz
+{
+  int i;
+  char new_trace_buffer [3*1024];
+  char tmps [1024];
+
+  new_trace_buffer [0] = 0;
+  for (i=0; i<length; i++)
+  {
+    sprintf(tmps, " %02x", osdp_buf->buf[0]);
+    strcat(new_trace_buffer, tmps);
+  };
+  strcat(new_trace_buffer, "\n");
+  //fprintf(stderr, "DEBUG: new trace buffer %s\n", new_trace_buffer);
+}
     memcpy (temp_buffer.buf, osdp_buf->buf+length, osdp_buf->next-length);
     temp_buffer.next = osdp_buf->next-length;
     memcpy (osdp_buf->buf, temp_buffer.buf, temp_buffer.next);
@@ -342,21 +358,25 @@ int
     status = ST_OSDP_BAD_INPUT_COUNT;
   if (buffer_input_length > 0)
   {
-//    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
       fprintf(ctx->log, "stream contained %4d octets\n", buffer_input_length);
     for (i=0; i<buffer_input_length; i++)
     {
+fflush(ctx->log);
       ctx->bytes_received++;
       if (ctx->trace & 1)
       {
         sprintf(octet, " %02x", buffer [i]);
         strcat(trace_in_buffer, octet);
-        if (context.verbosity > 9) { fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer); };
+// if (context.verbosity > 9)
+{ fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer); };
       };
 
       status = ST_SERIAL_IN;
+fprintf(stderr, "DEBUG: next before add is %d\n", osdp_buf.next);
       if (osdp_buf.next < sizeof (osdp_buf.buf))
       {
+fprintf(stderr, "DEBUG: storing %02x in buffer[%d]\n", buffer [i], osdp_buf.next);
         osdp_buf.buf [osdp_buf.next] = buffer [i];
         osdp_buf.next ++;
 
@@ -367,6 +387,8 @@ int
 
         if (!(osdp_buf.buf [0] EQUALS C_SOM)) //really index zero, first octet of buffer
         {
+fprintf(stderr, "DEBUG: drop %02x next was %d dropped before %d\n",
+  osdp_buf.buf[0], osdp_buf.next, context.dropped_octets);
           context.dropped_octets = context.dropped_octets + 1;
           osdp_buf.next --;
           if (osdp_buf.next > 1)
@@ -385,6 +407,7 @@ int
       };
     };
   };
+fprintf(stderr, "DEBUG: osdp_stream_read - bottom: next %d overflow %d inlength %d\n", osdp_buf.next, osdp_buf.overflow, buffer_input_length);
   return(status);
 
 } /* osdp_stream_read */

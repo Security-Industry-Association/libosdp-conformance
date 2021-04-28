@@ -108,6 +108,7 @@ int
   {
     if (m->lth >= (m->check_size+sizeof (OSDP_HDR)))
     {
+      //fprintf(stderr, "DEBUG: (osdp_parse_message) length acceptable\n");
       status = ST_OK;
       msg_lth = p->len_lsb + (256*p->len_msb);
       if (msg_lth > OSDP_OFFICIAL_MSG_MAX)
@@ -957,6 +958,7 @@ int
 
   status = ST_MSG_UNKNOWN;
   oo_osdp_max_packet = 768; // less than the 1K in some of the buffer routines
+  context->capability_max_packet = oo_osdp_max_packet;
   oh = (OSDP_HDR *)(msg->ptr);
   if (context -> role EQUALS OSDP_ROLE_PD)
   {
@@ -1064,6 +1066,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
       {
         unsigned char *response_cap;
         int response_length;
+#ifdef OLD_STYLE_PDCAP
         unsigned char
           osdp_cap_response_short [] = {
             3,1,0, // 1024 bits max
@@ -1075,7 +1078,6 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
             };
         unsigned char
           osdp_cap_response_data [3*(16-1)] = {
-
 #define CAP_INDEX_INPUTS (0)
             1,2,OOSDP_DEFAULT_INPUTS, // on/off/nc/no
 
@@ -1099,10 +1101,19 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
             13,0,0, // no keypad
             14,0,0, // no biometric
             15,0,0, // no SPE support (secure pin entry)
-            16,1,0  // IEC version
+            16,2,0  // SIA 2.2 version
             };
+#endif
 
-         response_cap = osdp_cap_response_data;
+        unsigned char new_capas [32*3];
+        int new_length;
+        new_length = sizeof(new_capas);
+        status = osdp_get_capabilities(context, new_capas, &new_length);
+        response_cap = new_capas;
+        response_length = new_length;
+
+#ifdef OLD_STYLE_PDCAP
+        response_cap = osdp_cap_response_data;
          response_length = sizeof(osdp_cap_response_data);
          if (context->pdcap_select)
          {
@@ -1123,6 +1134,7 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
            osdp_cap_response_data [ (3*CAP_SCHAN_INDEX) + 1] = 1;
            osdp_cap_response_data [ (3*CAP_SCHAN_INDEX) + 2] = 1;
          };
+#endif
 
         status = ST_OK;
         current_length = 0;
