@@ -596,6 +596,9 @@ int
 
   if (status EQUALS ST_OK) {
     if (0 EQUALS strcmp(current_command, "mfg")) {
+      int found_oui;
+
+      found_oui = 0;
       cmd->command = OSDP_CMDB_MFG; 
       mfg_args = (OSDP_MFG_ARGS *)(cmd->details);
       memset(mfg_args, 0, sizeof (*mfg_args));
@@ -614,11 +617,15 @@ int
       parameter = json_object_get(root, "oui");
       if (json_is_string(parameter))
       {
+        found_oui = 1;
         strcpy(mfg_args->oui, json_string_value(parameter));
       };
-fprintf(stderr, "test: queuing MFG %d\n", cmd->command);
-status = enqueue_command(ctx, cmd);
-cmd->command = OSDP_CMD_NOOP;
+      if (!found_oui)
+      {
+        sprintf(mfg_args->oui, "%02x%02x%02x", ctx->vendor_code [0], ctx->vendor_code [1], ctx->vendor_code [2]);
+      };
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   };
 
