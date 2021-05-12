@@ -249,6 +249,12 @@ int
     status = ST_OK;
     break;
 
+  case OSDP_CMDB_RESET_STATS:
+    oosdp_clear_statistics(ctx);
+    cmd->command = OSDP_CMD_NOOP;
+    status = ST_OK;
+    break;
+
   // command scbk-default - change the value of SCBK-D (parameter 'scbk-d' is a hex string.)
 
   case OSDP_CMDB_SCBK_DEFAULT:

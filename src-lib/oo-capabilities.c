@@ -14,7 +14,8 @@ int osdp_add_capability(OSDP_CONTEXT *ctx, unsigned char *capas, unsigned char c
   unsigned char number_of, int *capabilities_response_length, int max);
 
 
-/* osdp_get_capabilities - builds out capabilities response based on current configuration
+/*
+  osdp_get_capabilities - builds out capabilities response based on current configuration
 
   input: context, your capability list (must be 32*3 bytes)
   output: your list populated, length of list in bytes
@@ -27,7 +28,7 @@ int
 
 { /* osdp_get_capabilities */
 
-  static unsigned char capas [32*3];
+  unsigned char capas [32*3];
   int status;
 
 

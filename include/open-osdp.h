@@ -28,7 +28,7 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (93)
+#define OSDP_VERSION_MINOR (94)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
@@ -205,6 +205,7 @@
 #define OSDP_CMDB_CONFORM_060_24_03 (1049) // enqueue witness after raw
 #define OSDP_CMDB_SEND_EXPLICIT     (1050)
 #define OSDP_CMDB_SCBK_DEFAULT      (1051)
+#define OSDP_CMDB_RESET_STATS       (1052)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -1059,6 +1060,7 @@ void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_xwrite_get_mode (OSDP_CONTEXT *ctx);
 int osdp_xwrite_mode1 (OSDP_CONTEXT *ctx, int command, unsigned char * payload, int payload_length);
 int osdp_xwrite_set_mode (OSDP_CONTEXT *ctx, int mode);
+void oosdp_clear_statistics(OSDP_CONTEXT *ctx);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);

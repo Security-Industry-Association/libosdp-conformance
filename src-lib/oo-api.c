@@ -28,8 +28,7 @@
 #include <osdp_conformance.h>
 
 
-extern OSDP_CONTEXT
-  context;
+extern OSDP_CONTEXT context;
 
 int
   enqueue_command
@@ -177,4 +176,28 @@ void
     context.cmd_hist_counter = 0;
 
 } /* preserve_current_command */
+
+
+void
+  oosdp_clear_statistics
+    (OSDP_CONTEXT *ctx)
+
+{ /* oosdp_clear_statistics */
+
+  ctx->acu_polls = 0;
+  ctx->bytes_received = 0;
+  ctx->bytes_sent = 0;
+  ctx->checksum_errs = 0;
+  ctx->crc_errs = 0;
+  ctx->dropped_octets = 0;
+  ctx->hash_bad = 0;
+  ctx->hash_ok = 0;
+  ctx->pd_acks = 0;
+  ctx->pdus_received = 0;
+  ctx->pdus_sent = 0;
+  ctx->retries = 0;
+  ctx->sent_naks = 0;
+  ctx->seq_bad = 0;
+
+} /* oosdp_clear_statistics */
 
