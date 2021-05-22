@@ -515,7 +515,12 @@ void dump_buffer_log
   int l2;
 
   l2 = l;
-  fprintf(ctx->log, "%s (L=%d./0x%04x)\n    ", tag, l, l);
+  fprintf(ctx->log, "%s (L=%d./0x%04x)", tag, l, l);
+
+  // if it's "short" put it on the same line for easy grepping
+
+  if (l2 > 32)
+    fprintf(ctx->log, "\n    ");
   for (i=0; i<l2; i++)
   {
     if (0 != (i % 4))

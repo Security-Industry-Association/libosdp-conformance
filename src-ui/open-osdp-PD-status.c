@@ -95,8 +95,6 @@ void
   int stat_hash_bad;
   int stat_hash_ok;
   int stat_naks;
-  int stat_pdus_received;
-  int stat_pdus_sent;
   int stat_retries;
   int stat_seq_errs;
   char stat_key [1024];
@@ -167,20 +165,6 @@ void
     sscanf (vstr, "%d", &i);
     stat_acu_polls = i;
   };
-  if (status EQUALS ST_OK) {
-    found_field = 1; value = json_object_get (root, "pdus-received");
-    if (!json_is_string (value)) found_field = 0; };
-  if (found_field) { char vstr [1024]; int i;
-    strcpy (vstr, json_string_value (value));
-    sscanf (vstr, "%d", &i);
-    stat_pdus_received = i; };
-  if (status EQUALS ST_OK) {
-    found_field = 1; value = json_object_get (root, "pdus-sent");
-    if (!json_is_string (value)) found_field = 0; };
-  if (found_field) { char vstr [1024]; int i;
-    strcpy (vstr, json_string_value (value));
-    sscanf (vstr, "%d", &i);
-    stat_pdus_sent = i; };
   if (status EQUALS ST_OK) {
     found_field = 1; value = json_object_get (root, "crc_errs");
     if (!json_is_string (value)) found_field = 0; };
@@ -298,8 +282,8 @@ void
   printf("<TR>\n");
   printf("<TD>Address</TD><TD>%2x</TD>\n", pd_address);
   printf("<TD>Speed</TD><TD>%s</TD>\n", parameter_speed);
-  printf("<TD>Received</TD><TD>%5d</TD>\n", stat_pdus_received);
-  printf("<TD>Sent</TD><TD>%5d</TD>\n", stat_pdus_sent);
+  printf("<TD>Polls</TD><TD>%5d</TD>\n", stat_acu_polls);
+  printf("<TD>Acks</TD><TD>%5d</TD>\n", stat_pd_acks);
   printf("<TD>NAK</TD><TD>%5d</TD>\n", stat_naks);
   printf("<TD>Retries</TD><TD>%5d</TD>\n", stat_retries);
   printf("</TR>\n");
@@ -343,7 +327,7 @@ printf("<TR><TD>Last update</TD><TD>%s</TD></TR>\n", last_update);
     stat_buffer_overflows);
   if (strlen(stat_key) > 0)
   {
-    printf("  Key %s (%s)", stat_key, stat_key_slot);
+    printf("  Key %s", stat_key);
   };
   printf("\n");
 }

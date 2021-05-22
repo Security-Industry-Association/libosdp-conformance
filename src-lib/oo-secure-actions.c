@@ -312,7 +312,6 @@ fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
     OSDP_SEC_SCS_16, 0, NULL);
 
   osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_EXERCISED);
-fprintf(ctx->log, "DEBUG: action_osdp_KEYSET bottom\n");
   return (status);
 
 } /* action_osdp_KEYSET */
