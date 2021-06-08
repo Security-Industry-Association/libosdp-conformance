@@ -816,9 +816,12 @@ typedef struct __attribute__((packed)) osdp_hdr_ftstat
   unsigned char FtStatusDetail [2];
   unsigned char FtUpdateMsgMax [2];
 } OSDP_HDR_FTSTAT;
-#define OSDP_FTSTAT_POLL_RESPONSE (0x04)
-#define OSDP_FTSTAT_LEAVE_SECURE  (0x02)
-#define OSDP_FTSTAT_INTERLEAVE    (0x01)
+
+// bits in FtAction response
+
+#define OSDP_FTACTION_POLL_RESPONSE (0x04)
+#define OSDP_FTACTION_LEAVE_SECURE  (0x02)
+#define OSDP_FTACTION_INTERLEAVE    (0x01)
 
 // codes in FtStatusDetail
 
