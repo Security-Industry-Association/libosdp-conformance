@@ -281,6 +281,14 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
       fprintf(ctx->log, "failed to load key from saved parameters\n");
     };
   };
+
+  value = json_object_get(saved_parameters_root, "serial-speed");
+  if (json_is_string(value))
+  {
+    char new_speed [1024];
+    strcpy(new_speed, json_string_value(value));
+fprintf(stderr, "DEBUG: new speed %s\n", new_speed);
+  };
   return(ST_OK);
 
 } /* oo_load_parameters */

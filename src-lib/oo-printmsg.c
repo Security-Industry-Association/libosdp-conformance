@@ -310,7 +310,12 @@ int
   status = ST_OK;
   oh = (OSDP_HDR *)(osdp_msg->ptr);
   count = oh->len_lsb + (oh->len_msb << 8);
-  count = count - 8;  // payload
+  count = count - 6;  // strip header
+  if ((oh->ctrl) & 0x04)
+    count = count - 2; // CRC
+  else
+    count = count - 1; // Checksum
+
   count = count - 4; // 1 for reader number, 1 for format, 2 for no. of bits
   hstr [0] = 0;
   tlogmsg [0] = 0;
