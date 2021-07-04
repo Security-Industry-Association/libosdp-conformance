@@ -898,18 +898,6 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
           led_control_message;
 
         memcpy (&led_control_message, details, sizeof (led_control_message));
-fprintf(stderr,
-"Rdr %d. LED %d. TEMP Ctl %02x ON=%02x OFF=%02x ON-COL=%02x OFF-COL=%02x Timer LSB %02x MSB %02x\n",
-  led_control_message.reader, led_control_message.led,
-  led_control_message.temp_control, 
-  led_control_message.temp_on, led_control_message.temp_off,
-  led_control_message.temp_on_color, led_control_message.temp_off_color,
-  led_control_message.temp_timer_lsb, led_control_message.temp_timer_msb);
-fprintf(stderr,
-"  PERM Ctl %02x ON-Time=%02x OFF-Time=%02x ON-COL=%02x OFF-COL=%02x\n",
-  led_control_message.perm_control, 
-  led_control_message.perm_on_time, led_control_message.perm_off_time,
-  led_control_message.perm_on_color, led_control_message.perm_off_color);
 
         details_length = sizeof (error_details);
         status = osdp_validate_led_values (&led_control_message,

@@ -37,7 +37,7 @@ int creds_buffer_a_remaining;
 OSDP_BUFFER osdp_buf;
 OSDP_INTEROP_ASSESSMENT osdp_conformance;
 OSDP_PARAMETERS p_card;
-char trace_in_buffer [1024];
+char trace_in_buffer [4*1024];
 char trace_out_buffer [1024];
 
 
@@ -56,19 +56,37 @@ int
 
   OSDP_CONTEXT *ctx;
   OSDP_MSG m;
-  char osdp_message [1024];
-  char osdp_message_bytes [1024];
+  char osdp_message [4*1024];
+  char osdp_message_bytes [4*1024];
   int osdp_message_length;
   char *p;
   OSDP_HDR returned_hdr;
   int status;
+  int ui_mode;
 
 
+  /*
+    run as a cgi or command line.
+  */
+  ui_mode = 0; // cgi
   p = getenv("QUERY_STRING");
-  strcpy(osdp_message, p+4);
-  printf("Content-type: text/html\n\n");
-  printf("<HTML><HEAD><TITLE>Dump</TITLE></HEAD><BODY>\n");
-  printf("<PRE>\n");
+  if (p)
+  {
+    strcpy(osdp_message, p+4);
+    ui_mode = 0; // cgi
+  }
+  else
+  {
+    strcpy(osdp_message, argv [1]);
+    ui_mode = 1; // command line
+  };
+
+  if (ui_mode == 0)
+  {
+    printf("Content-type: text/html\n\n");
+    printf("<HTML><HEAD><TITLE>Dump</TITLE></HEAD><BODY>\n");
+    printf("<PRE>\n");
+  };
   status = ST_OK;
   ctx = &context;
   memset(ctx, 0, sizeof(*ctx));
@@ -129,7 +147,7 @@ void
   int len;
   char *pdest;
   char *psource;
-  char ptemp [1024];
+  char ptemp [4*1024];
   int status;
 
 

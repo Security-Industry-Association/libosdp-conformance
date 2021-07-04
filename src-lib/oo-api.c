@@ -138,9 +138,11 @@ fflush(stderr);
     ctx->q [OSDP_COMMAND_QUEUE_SIZE-1].status = 0;
 
     if (ctx->verbosity > 3)
+    {
       fprintf(ctx->log, "process_command_from_queue: processing command %d.\n", cmd->command);
-if (cmd->command != 0)
-  fprintf(stderr, "DEBUG: processing command %d.\n", cmd->command);
+      if (cmd->command != 0)
+        fprintf(stderr, "DEBUG: processing command %d.\n", cmd->command);
+    };
     status = process_command(cmd->command, ctx,
       cmd->details_length, cmd->details_param_1, (char *)(cmd->details));
   };

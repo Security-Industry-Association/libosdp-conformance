@@ -42,7 +42,7 @@ int
   printf("OSDP Protocol Decoder<BR>\n");
   printf ("<FORM ACTION=\"/cgi-bin/osdp-packet-decode\" METHOD=GET>\n");
   printf (
-"<INPUT TYPE=TEXT NAME=\"pdu\" size=64 maxlength=1000>\n");
+"<INPUT TYPE=TEXT NAME=\"pdu\" size=64 maxlength=4000>\n");
   printf ("<INPUT TYPE=SUBMIT VALUE=\"Decode\"></FORM>\n");
   printf("</BODY></HTML>\n");
   return (status);
