@@ -178,11 +178,14 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_rstat;               // 3-8-1
   OSDP_CONFORM cmd_out;                 // 3-9-1
   OSDP_CONFORM cmd_led_any;
-  OSDP_CONFORM cmd_led_black;
+  OSDP_CONFORM cmd_led_black;           // 060-10-02
   OSDP_CONFORM cmd_led_red;
   OSDP_CONFORM cmd_led_green;
   OSDP_CONFORM cmd_led_amber;
   OSDP_CONFORM cmd_led_blue;
+  OSDP_CONFORM cmd_led_magenta;
+  OSDP_CONFORM cmd_led_cyan;
+  OSDP_CONFORM cmd_led_white;
   OSDP_CONFORM cmd_buz;
   OSDP_CONFORM cmd_text;                // 3-12-1
   OSDP_CONFORM cmd_comset;

@@ -731,6 +731,9 @@ typedef struct osdp_rdr_led_ctl
 #define OSDP_LEDCOLOR_GREEN (2)
 #define OSDP_LEDCOLOR_AMBER (3)
 #define OSDP_LEDCOLOR_BLUE (4)
+#define OSDP_LEDCOLOR_MAGENTA (5)
+#define OSDP_LEDCOLOR_CYAN    (6)
+#define OSDP_LEDCOLOR_WHITE   (7)
 
 typedef struct osdp_mfg_args
 {

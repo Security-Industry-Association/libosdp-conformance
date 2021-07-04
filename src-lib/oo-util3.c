@@ -518,10 +518,16 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
           osdp_test_set_status(OOC_SYMBOL_cmd_led_black, OCONFORM_EXERCISED);
         if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_blue, OCONFORM_EXERCISED);
+        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_CYAN)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_cyan, OCONFORM_EXERCISED);
         if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_GREEN)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_EXERCISED);
+        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_MAGENTA)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_magenta, OCONFORM_EXERCISED);
         if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_RED)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
+        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_WHITE)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_white, OCONFORM_EXERCISED);
 
         ctx->test_details_length = 0;
       };
