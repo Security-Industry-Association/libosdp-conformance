@@ -167,11 +167,20 @@ char
   case OSDP_LEDCOLOR_BLACK:
     sprintf(value, "Black");
     break;
+  case OSDP_LEDCOLOR_CYAN:
+    sprintf(value, "Cyan");
+    break;
   case OSDP_LEDCOLOR_GREEN:
     sprintf(value, "Green");
     break;
+  case OSDP_LEDCOLOR_MAGENTA:
+    sprintf(value, "Magenta");
+    break;
   case OSDP_LEDCOLOR_RED:
     sprintf(value, "Red");
+    break;
+  case OSDP_LEDCOLOR_WHITE:
+    sprintf(value, "White");
     break;
   };
   return (value); 
