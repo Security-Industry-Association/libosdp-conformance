@@ -38,6 +38,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_SOM                "050-09-03"
 #define OOC_SYMBOL_LEN                "050-09-06"
 #define OOC_SYMBOL_CTRL               "050-09-07"
+#define OOC_SYMBOL_security_block     "050-09-08"
 #define OOC_SYMBOL_CMND_REPLY         "050-09-09"
 #define OOC_SYMBOL_checksum           "050-09-11"
 #define OOC_SYMBOL_SOM_sent           "050-09-12"
@@ -68,6 +69,8 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_cmd_bioread        "060-14-01"
 #define OOC_SYMBOL_cmd_biomatch       "060-15-01"
 #define OOC_SYMBOL_cmd_keyset         "060-16-01"
+#define OOC_SYMBOL_scs_paired         "060-16-02"
+#define OOC_SYMBOL_scs_rotate         "060-16-03"
 #define OOC_SYMBOL_cmd_chlng          "060-17-01"
 #define OOC_SYMBOL_cmd_scrypt         "060-18-01"
 #define OOC_SYMBOL_cmd_mfg            "060-19-01"
@@ -193,6 +196,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM cmd_bioread;
   OSDP_CONFORM cmd_biomatch;
   OSDP_CONFORM cmd_keyset;
+  OSDP_CONFORM scs_paired;
   OSDP_CONFORM cmd_chlng;
   OSDP_CONFORM cmd_scrypt;
   OSDP_CONFORM cmd_acurxsize;

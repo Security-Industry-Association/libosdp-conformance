@@ -3,7 +3,7 @@
 /*
   oosdp-secure - open osdp secure channel routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -745,7 +745,10 @@ int
     {
       key_slot = OSDP_KEY_SCBK;
       if (ctx->secure_channel_use [OO_SCU_KEYED] != OO_SECPOL_KEYLOADED)
+      {
+        fprintf(ctx->log, "  No SCBK available in ACU.  Check osdp-saved-parameters.json\n");
         status = ST_OSDP_NO_KEY_LOADED;
+      };
     }
     else
     {

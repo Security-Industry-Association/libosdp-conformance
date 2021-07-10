@@ -344,6 +344,10 @@ int
     fprintf (ctx->log, "*** SECURE CHANNEL OPERATIONAL***\n");
     (void)osdp_test_set_status(OOC_SYMBOL_cmd_scrypt, OCONFORM_EXERCISED);
     (void)osdp_test_set_status(OOC_SYMBOL_resp_rmac_i, OCONFORM_EXERCISED);
+    // if we're set up not on the default key it's on the paired key
+    if (memcmp(ctx->current_scbk, ctx->current_default_scbk, sizeof(ctx->current_scbk)) != 0)
+      (void)osdp_test_set_status(OOC_SYMBOL_scs_paired, OCONFORM_EXERCISED);
+
   }
   else
   {

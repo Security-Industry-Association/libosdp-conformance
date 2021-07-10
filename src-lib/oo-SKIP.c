@@ -48,7 +48,6 @@ void
   oconf->resp_mfg.test_status = OCONFORM_SKIP;
   oconf->resp_ostatr_range.test_status =
     OCONFORM_SKIP;
-  oconf->security_block.test_status = OCONFORM_SKIP;
   oconf->timeout_resend.test_status = OCONFORM_SKIP;
   oconf->timing.test_status = OCONFORM_SKIP;
 

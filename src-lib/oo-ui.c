@@ -227,7 +227,6 @@ exit(-1);
         status = send_message_ex (context, OSDP_ID, 0x7F,
           &current_length, sizeof (param), param,
           OSDP_SEC_SCS_17, 0, NULL);
-        osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
         status = ST_OK;
       };
       break;
@@ -762,7 +761,6 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
               &current_length, sizeof (param), param,
               OSDP_SEC_SCS_17, 0, NULL);
           };
-           osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
         };
       };
       status = ST_OK;

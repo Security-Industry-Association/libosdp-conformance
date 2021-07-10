@@ -860,11 +860,15 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+# if 0
+// action_osdp_FTSTAT already does this.
+
     case OSDP_FTSTAT:
       status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+#endif
     case OSDP_MFGERRR:
       status = oosdp_make_message (OOSDP_MSG_MFGERRR, tlogmsg, msg);
       if (status == ST_OK)

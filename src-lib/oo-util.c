@@ -207,6 +207,10 @@ int
       sec_blk_length = (unsigned)*(m->ptr + 5);
       m->security_block_type = sec_block_type;
       m->security_block_length = sec_blk_length;
+      if (m->security_block_length > 0)
+        osdp_test_set_status(OOC_SYMBOL_security_block, OCONFORM_EXERCISED);
+
+
       m -> cmd_payload = m->ptr + 5 + sec_blk_length;
 
       // whole thing less 5 hdr less 1 cmd less sec blk less 2 crc

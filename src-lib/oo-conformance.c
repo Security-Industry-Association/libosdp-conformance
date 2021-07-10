@@ -64,10 +64,6 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.cmd_acurxsize.test_status),
       0, 0, 0, 0, 0,
                         "Command: osdp_ACURXSIZE"},
-    {         OOC_SYMBOL_resp_istatr,
-      &(osdp_conformance.resp_istatr.test_status),
-      1, 1, 1, 1, 0,
-                        "Response: ISTATR"},
     {         OOC_SYMBOL_cmd_crauth,
       &(osdp_conformance.cmd_crauth.test_status),
       0, 0, 0, 0, 0,
@@ -167,6 +163,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_genauthr.test_status),
       0, 0, 0, 0, 0,
                         "Response: osdp_GENAUTHR"},
+    {         OOC_SYMBOL_resp_istatr,
+      &(osdp_conformance.resp_istatr.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: ISTATR"},
     {         OOC_SYMBOL_resp_keypad,
       &(osdp_conformance.resp_keypad.test_status),
       0, 0, 0, 0, 0,
@@ -203,6 +203,16 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.signalling.test_status),
       1, 0, 0, 0, 0,
                         "signalling"},
+    {         OOC_SYMBOL_scs_paired,
+      &(osdp_conformance.scs_paired.test_status),
+      1, 1, 1, 1, 0,
+                        "SCS Paired"},
+    {         OOC_SYMBOL_security_block,
+      &(osdp_conformance.security_block.test_status),
+      1, 1, 1, 1, 0,
+                        "SCS Hdr"},
+    { "2-14-1", &(osdp_conformance.security_block.test_status),
+      1, 0, 0, 0, 0, "---" }, // ??
 
     // old tag names
 
@@ -273,8 +283,6 @@ OSDP_CONFORMANCE_TEST
     { "2-13-2", &(osdp_conformance.control_2.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-13-3", &(osdp_conformance.ctl_seq.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
-    { "2-14-1", &(osdp_conformance.security_block.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-14-2", &(osdp_conformance.scb_absent.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
