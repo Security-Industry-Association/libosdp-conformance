@@ -77,7 +77,9 @@ void
   display_sim_reader
   (OSDP_CONTEXT *ctx,
   char *buffer)
-{
+
+{ /* display_sim_reader */
+
   time_t current_time;
   struct timespec current_time_fine;
   char field [1024];
@@ -165,6 +167,11 @@ void
     sscanf (vstr, "%d", &i);
     stat_acu_polls = i;
   };
+
+  if (status EQUALS ST_OK)
+  { found_field = 1; value = json_object_get (root, "serial_speed"); if (!json_is_string (value)) found_field = 0; };
+
+  if (found_field) { strcpy (parameter_speed, json_string_value (value)); };
   if (status EQUALS ST_OK) {
     found_field = 1; value = json_object_get (root, "crc_errs");
     if (!json_is_string (value)) found_field = 0; };
