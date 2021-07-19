@@ -884,6 +884,7 @@ fprintf(context->log,
     context->packets_received ++;
 
     if (context->role EQUALS OSDP_ROLE_PD)
+    {
       if ((p_card.addr != (0x7f & p->addr)) && (p->addr != OSDP_CONFIGURATION_ADDRESS))
       {
         if (context->verbosity > 3)
@@ -891,6 +892,13 @@ fprintf(context->log,
             p->addr, p_card.addr);
         status = ST_NOT_MY_ADDR;
       };
+
+      // for the PD, go ahead and dump the trace buffers now.
+      if (context->verbosity > 3)
+        osdp_trace_dump(context, 1);
+      else
+        osdp_trace_dump(context, 0);
+    };
     if (context->role EQUALS OSDP_ROLE_MONITOR)
     {
       int i;

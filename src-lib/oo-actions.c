@@ -210,12 +210,14 @@ int
           ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
           offered_size);
 
-fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
-fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);
-fprintf(stderr, "current_send_length : %d\n", ctx->xferctx.current_send_length);
-fprintf(stderr, "response mmax %02x %02x\n",
-  response.FtUpdateMsgMax [0],
-  response.FtUpdateMsgMax [1]);
+        if (ctx->verbosity > 3)
+        {
+          fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
+          fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);
+          fprintf(stderr, "current_send_length : %d\n", ctx->xferctx.current_send_length);
+          fprintf(stderr, "response mmax %02x %02x\n",
+            response.FtUpdateMsgMax [0], response.FtUpdateMsgMax [1]);
+        };
         osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
       };
