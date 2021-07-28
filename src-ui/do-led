@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2020 Smithee Solutions LLC
-# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2017-2021 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,6 +28,8 @@ CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
 
 # unilaterally clear out the last temp command
+mkdir -p /opt/osdp-conformance/tmp
+cd /opt/osdp-conformance/tmp
 sudo -n rm -f ${CMDPATH}
 
 sudo -n echo  >${CMDPATH} "{"

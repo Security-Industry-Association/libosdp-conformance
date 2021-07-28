@@ -950,10 +950,6 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
         status = send_message_ex (context, OSDP_LSTAT, p_card.addr,
           &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
-        osdp_conformance.cmd_lstat.test_status =
-          OCONFORM_EXERCISED;
-        if (context->verbosity > 3)
-          fprintf (stderr, "Requesting Local Status\n");
       };
       status = ST_OK;
       break;

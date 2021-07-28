@@ -431,7 +431,7 @@ int
       if (msg->security_block_length EQUALS 0)
       {
         sprintf (tlogmsg,
-"Keep credential read active %02x %02x",
+"Keep credential read active (bytes 0..1) %02x%02x\n",
           *(msg->data_payload+0), *(msg->data_payload+1));
       };
     };
