@@ -68,10 +68,18 @@ int
   // if we're not enabled for secure channel
 
   if (ctx->role EQUALS OSDP_ROLE_ACU)
+  {
     if (ctx->xferctx.total_length EQUALS 0)
+    {
+      if (ctx->verbosity > 3)
+        fprintf(ctx->log, "background: tl %d. ns %d lsr %d lwp %d response timer %d\n", ctx->xferctx.total_length,
+          ctx->next_sequence, ctx->last_sequence_received, ctx->last_was_processed,
+          ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED);
       if (ctx->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
         if (!(ctx->secure_channel_use [OO_SCU_ENAB] & 0x80))
           send_poll = 1;
+    };
+  };
 
   // for an ACU, considering file transfer, if we're in secure channel
 
