@@ -532,7 +532,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
         ctx->test_details_length = 0;
       };
       if (ctx->last_command_sent EQUALS OSDP_OSTAT)
-        osdp_test_set_status(OOC_SYMBOL_resp_ostatr_ack, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_ostatr, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_PIVDATA)
         osdp_test_set_status(OOC_SYMBOL_cmd_pivdata, OCONFORM_EXERCISED);
 

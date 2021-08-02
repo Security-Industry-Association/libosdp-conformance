@@ -137,12 +137,10 @@ delay_nsec = delay_nsec * 1000;
     };
     if (filetransfer_delay > 0)
     {
-      // if the current offset is zero this is an "initial" delay
+      // delay likely at front and certainly not at the end.
+      // can't use offset of 0 as it's been updated already for the first send
 
-      if (ctx->xferctx.current_offset == 0)
-      {
-        osdp_test_set_status(OOC_SYMBOL_ftstat_dly_init, OCONFORM_EXERCISED);
-      };
+      osdp_test_set_status(OOC_SYMBOL_ftstat_dly_init, OCONFORM_EXERCISED);
 
       delay_time.tv_sec = delay_sec;
       delay_time.tv_nsec = delay_nsec;
