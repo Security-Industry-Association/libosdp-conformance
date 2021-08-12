@@ -165,30 +165,25 @@ exit(-1);
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
       osdp_conformance.signalling.test_status = OCONFORM_FAIL;
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
-        "9600");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "9600", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_2:
       strcpy (context->test_in_progress, "2-2-2");
       osdp_conformance.alt_speed_2.test_status = OCONFORM_FAIL;
-//      status = send_comset (context, p_card.addr, "19200");
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
-        "19200");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "19200", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_3:
       strcpy (context->test_in_progress, "2-2-3");
       osdp_conformance.alt_speed_3.test_status = OCONFORM_FAIL;
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
-        "38400");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "38400", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_4:
       strcpy (context->test_in_progress, "2-2-4");
       osdp_conformance.alt_speed_4.test_status = OCONFORM_FAIL;
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr,
-        "115200");
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "115200", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_6_1:
@@ -654,20 +649,30 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
     case OSDP_CMDB_COMSET:
       {
-        int
-          new_speed;
+        int dest_address;
+        int new_speed;
 
 
+        /*
+            details [0] is the new address
+            details [1] is 1 if to send in the clear during a secure channel session 
+            details [2] is 1 if you are to send as the current address (else send to config address)
+            details [4..7] are the new speed
+
+
+        */
         new_speed = 0;
+        dest_address = OSDP_CONFIGURATION_ADDRESS;
+        if (details [2])
+          dest_address = p_card.addr;
         memcpy (&new_speed, details+4, 4);
         sprintf (context->serial_speed, "%d", new_speed);
         context->new_address = details [0];
         osdp_test_set_status(OOC_SYMBOL_cmd_comset, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
-          fprintf (stderr, "Set Comms: addr to %02x speed to %s.\n",
+          fprintf (ctx->log, "Set Comms: addr to %02x speed to %s.\n",
             context->new_address, context->serial_speed);
-        status = send_comset (context, OSDP_CONFIGURATION_ADDRESS,
-          context->new_address, context->serial_speed);
+        status = send_comset (context, dest_address, context->new_address, context->serial_speed, details [1]);
 
         // reset protocol to beginning
 

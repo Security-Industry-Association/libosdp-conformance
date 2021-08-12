@@ -431,8 +431,15 @@ int
     };
   }; 
 
-  // COMSET.  takes two option arguments, "new_address" and "new_speed".
-  // default for new_address is 0x00, default for new_speed is 9600
+  /*
+    COMSET.  takes two option arguments, "new_address" and "new_speed".
+    default for new_address is 0x00, default for new_speed is 9600
+    details block:
+      details [0] is the new address
+      details [1] is 1 if to send in the clear during a secure channel session 
+      details [2] is 1 if you are to send as the current address (else send to config address)
+      details [4..7] are the new speed
+  */
 
   if (status EQUALS ST_OK)
   {
@@ -456,17 +463,25 @@ int
         *(int *) &(cmd->details [4]) = i; // by convention bytes 4,5,6,7 are the speed.
       };
 
-      // cleartext:1 means send unencrypted even with an active secure channel session
+      // cleartext means send unencrypted even with an active secure channel session
 
       value = json_object_get (root, "cleartext");
       if (json_is_string (value))
       {
-        cmd->details [0] = 1;
+        cmd->details [1] = 1;
+      };
+
+      // send-direct if you want to send as the current address else it sends as the config-address
+
+      value = json_object_get (root, "send-direct");
+      if (json_is_string (value))
+      {
+        cmd->details [2] = 1;
       };
 
       if (ctx->verbosity > 2)
-        fprintf (stderr, "Command COMSET Address %d Speed %d\n",
-          (int) (cmd->details [0]),
+        fprintf (ctx->log, "Received command COMSET Address %d Clr %d SendNotCfg %d Speed %d\n",
+          (int) (cmd->details [0]), (int) (cmd->details [1]), (int) (cmd->details [2]),
           *(int *) &(cmd->details [4]));
 
       status = enqueue_command(ctx, cmd);
@@ -534,7 +549,7 @@ int
     {
       cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
 
-      status = send_comset (ctx, p_card.addr, 0, "999999");
+      status = send_comset (ctx, p_card.addr, 0, "999999", 0);
     };
   };
 

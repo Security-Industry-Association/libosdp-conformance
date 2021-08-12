@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 0)
-#define OSDP_VERSION_MINOR (98)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (99)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -1096,9 +1096,7 @@ int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);
 int send_bio_read_template (OSDP_CONTEXT *ctx);
-int send_comset
-  (OSDP_CONTEXT *ctx, unsigned char pd_address, unsigned char new_addr,
-  char *speed_string);
+int send_comset(OSDP_CONTEXT *ctx, unsigned char pd_address, unsigned char new_addr, char *speed_string, int send_style);
 int send_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int *current_length, int data_length, unsigned char *data);
 int send_message_ex(OSDP_CONTEXT *ctx, int command, int dest_addr,

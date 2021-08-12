@@ -417,27 +417,25 @@ if (i != OSDP_TIMER_RESPONSE)
 } /* osdp_timeout */
    
 
+/*
+  send_comset - sends the actual osdp_COMSET command
+
+  send_style is 1 if you are to stand down from secure channel to send this in the clear
+*/
 int
   send_comset
-    (OSDP_CONTEXT
-      *ctx,
-    unsigned char
-      pd_address,
-    unsigned char
-      new_address,
-    char
-      *speed_string)
+    (OSDP_CONTEXT *ctx,
+    unsigned char pd_address,
+    unsigned char new_address,
+    char *speed_string,
+    int send_style)
 
 { /* send_comset */
 
-  int
-    current_length;
-  int
-    new_speed;
-  unsigned char
-    param [5];
-  int
-    status;
+  int current_length;
+  int new_speed;
+  unsigned char param [5];
+  int status;
 
 
   sscanf (speed_string, "%d", &new_speed);
@@ -448,9 +446,16 @@ int
   param [4] = (new_speed & 0xff000000) >> 24;
   current_length = 0;
   osdp_test_set_status(OOC_SYMBOL_cmd_comset, OCONFORM_EXERCISED);
-  status = send_message_ex(ctx, OSDP_COMSET, pd_address, &current_length,
-    sizeof(param), param, OSDP_SEC_SCS_17, 0, NULL);
-
+  if (send_style)
+  {
+    status = send_message_ex(ctx, OSDP_COMSET, pd_address, &current_length,
+      sizeof (param), param, OSDP_SEC_STAND_DOWN, 0, NULL);
+  }
+  else
+  {
+    status = send_message_ex(ctx, OSDP_COMSET, pd_address, &current_length,
+      sizeof(param), param, OSDP_SEC_SCS_17, 0, NULL);
+  };
   sprintf (ctx->serial_speed, "%d", new_speed);
   if (ctx->verbosity > 2)
     fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",
