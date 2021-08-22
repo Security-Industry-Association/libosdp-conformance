@@ -537,9 +537,15 @@ int
 
   // command conform_2-14-3: rogue secure poll
 
-  if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_2_14_3")) {
-      cmd->command = OSDP_CMDB_CONFORM_2_14_3; }; };
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "conform_2_14_3"))
+    {
+      cmd->command = OSDP_CMDB_CONFORM_2_14_3;
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+    };
+  };
 
   // command conform_3_14_2 - corrupted COMSET
 
