@@ -462,7 +462,7 @@ int
 
     sprintf(results_filename, "/opt/osdp-conformance/results/070-05-%02d-results.json", 1+entry->function_code);
     capf = fopen(results_filename, "w");
-    fprintf(capf, "{\"test\":\"070-05-%02d\",\"pdcap-function\":\"%d\",\"pdcap-compliance\":\"%d\",\"pdcap-number\":\"%d\"}\n",
+    fprintf(capf, "{\"test\":\"070-05-%02d\",\"test-status\":\"1\",\"pdcap-function\":\"%d\",\"pdcap-compliance\":\"%d\",\"pdcap-number\":\"%d\"}\n",
       entry->function_code+1, entry->function_code, entry->compliance, entry->number_of);
     fclose(capf);
 

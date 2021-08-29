@@ -1,5 +1,5 @@
 /*
-  oo_util - open osdp utility routines
+  oo-util - open osdp utility routines
 
   (C)Copyright 2017-2021 Smithee Solutions LLC
 
@@ -1517,8 +1517,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         system(cmd);
 
         fprintf (context->log, "%s\n", tlogmsg);
+// { *(0+msg->data_payload) is nak code 070-03-(3+that) is test zzz };
         switch(*(0+msg->data_payload))
         {
+//7 3 3 is nak 0
 //not yet displayed: OO_NAK_COMMAND_LENGTH OO_NAK_BIO_TYPE_UNSUPPORTED OO_NAK_BIO_FMT_UNSUPPORTED OO_NAK_CMD_UNABLE
         case OO_NAK_CHECK_CRC:
           fprintf(context->log, "  NAK: (1)Bad CRC/Checksum\n");
@@ -1692,6 +1694,7 @@ fprintf(context->log, "DEBUG: NAK %02x for osdp_RSTAT received\n", *(msg->data_p
         msg->data_payload [5], msg->data_payload [6], msg->data_payload [7], msg->data_payload [8],
         msg->data_payload [9], msg->data_payload [10], msg->data_payload [11]);
 
+      osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
       osdp_test_set_status_ex(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED, details);
       if ((msg->data_payload [0] EQUALS 0) &&
         (msg->data_payload [1] EQUALS 0) &&
@@ -1728,7 +1731,13 @@ fprintf(context->log, "DEBUG: NAK %02x for osdp_RSTAT received\n", *(msg->data_p
 
       context->last_was_processed = 1;
 
-      osdp_conformance.rep_device_ident.test_status = OCONFORM_EXERCISED;
+      sprintf(details,
+"\"pd-oui\":\"%02x%02x%02x\",\"pd-model\":\"%d\",\"pd-version\":\"%d\",\"pd-serial\":\"%02x%02x%02x%02x\",\"pd-firmware\":\"%d-%d-%d\",",
+        msg->data_payload [0], msg->data_payload [1], msg->data_payload [2],
+        msg->data_payload [3], msg->data_payload [4],
+        msg->data_payload [5], msg->data_payload [6], msg->data_payload [7], msg->data_payload [8],
+        msg->data_payload [9], msg->data_payload [10], msg->data_payload [11]);
+      osdp_test_set_status_ex(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED, details);
       break;
 
     case OSDP_PIVDATA:

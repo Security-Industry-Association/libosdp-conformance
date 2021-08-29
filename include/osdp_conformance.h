@@ -93,6 +93,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_rep_device_ident   "070-04-01"
 #define OOC_SYMBOL_rep_pdid_check     "070-04-02"
 #define OOC_SYMBOL_rep_device_capas   "070-05-01"
+#define OOC_SYMBOL_resp_cap_card_fmt  "070-05-03"
 #define OOC_SYMBOL_resp_lstatr        "070-06-01"
 #define OOC_SYMBOL_resp_lstatr_tamper "070-06-02"
 #define OOC_SYMBOL_resp_lstatr_power  "070-06-03"
@@ -218,6 +219,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_device_ident;
   OSDP_CONFORM rep_pdid_check;
   OSDP_CONFORM rep_device_capas;
+  OSDP_CONFORM resp_cap_card_fmt;
   OSDP_CONFORM rep_capas_consistent;    // 4-4-2
   OSDP_CONFORM resp_lstatr;
   OSDP_CONFORM resp_lstatr_tamper;
