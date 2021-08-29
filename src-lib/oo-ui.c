@@ -817,6 +817,9 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
           if (status EQUALS ST_OK)
           {
+if (ctx->verbosity > 3)
+  fprintf(ctx->log, "about to send CHLNG\n");
+
             status = send_secure_message (context,
               OSDP_CHLNG, p_card.addr, &current_length, 
               sizeof (context->rnd_a), context->rnd_a,

@@ -134,6 +134,9 @@ int
     fprintf(ctx->log, "awaiting: last sq %d lastproc %d\n", ctx->last_sequence_received, ctx->last_was_processed);
 
   };
+
+  // assume it is awaiting a response
+
   ret = 1;
 
   following_sequence = ctx->last_sequence_received;
@@ -144,13 +147,22 @@ int
       following_sequence = 1;
   };
 
+
+  // if we've processed the response, we're ok to proceed
+
   if (ctx->last_was_processed)
   {
     ret = 0;
   };
 
-  if (ctx->next_sequence != following_sequence)
+  // assuming we have not already decided it's ok to proceed, look at sequence numbers
+
+  if (ret && (ctx->next_sequence != following_sequence))
   {
+    if (ctx->verbosity > 9)
+      fprintf(stderr, "DEBUG: waiting-ret %d following %d last %d next %d last-processed %d\n",
+        ret, following_sequence, ctx->last_sequence_received, ctx->next_sequence, ctx->last_was_processed);
+
     if (following_sequence EQUALS -1)
     {
       ret = 0; // ok to proceed if nothing received
@@ -164,7 +176,7 @@ int
       }
       else
       {
-        if (ctx->verbosity > 9)
+        if (ctx->verbosity > 3)
         {
           fprintf(ctx->log,
 "DEBUG: not actually ready n %d f %d bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",

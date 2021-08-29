@@ -924,6 +924,15 @@ fprintf(context->log,
     };
   };
 
+  // specifically for bad sequence, call it that they did respond so life can proceed.
+
+  if (status EQUALS ST_OSDP_BAD_SEQUENCE)
+  {
+    if (context->verbosity > 3)
+      fprintf(context->log, "  ...accepting bad sequence as a response\n");
+    context->last_was_processed = 1;
+  };
+
   // if there was an error dump the log buffer
 
   if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT) &&
