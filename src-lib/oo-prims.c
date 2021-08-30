@@ -176,7 +176,7 @@ int
       }
       else
       {
-        if (ctx->verbosity > 3)
+        if (ctx->verbosity > 9)
         {
           fprintf(ctx->log,
 "DEBUG: not actually ready n %d f %d bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",

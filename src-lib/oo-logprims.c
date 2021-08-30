@@ -375,6 +375,7 @@ if (ctx->verbosity > 9)
         OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
     fflush(tf);
     if (strlen(trace_in_buffer) > 0)
+    {
       fprintf(tf,
 "{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
         OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
@@ -383,6 +384,7 @@ if (ctx->verbosity > 9)
         OSDPCAP_TAG_DATA, trace_in_buffer,
         OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
         OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
+    }
     fflush(tf);
     fclose(tf);
   };

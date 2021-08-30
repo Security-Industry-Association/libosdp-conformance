@@ -71,7 +71,7 @@ int
   {
     if (ctx->xferctx.total_length EQUALS 0)
     {
-      if (ctx->verbosity > 3)
+      if (ctx->verbosity > 9)
         fprintf(ctx->log, "background: tl %d. ns %d lsr %d lwp %d response timer %d\n", ctx->xferctx.total_length,
           ctx->next_sequence, ctx->last_sequence_received, ctx->last_was_processed,
           ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED);

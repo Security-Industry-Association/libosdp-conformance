@@ -91,14 +91,13 @@ int
   if (msg_check_type EQUALS 0)
   {
     m->check_size = 1;
-    m_check = OSDP_CHECKSUM; // Issue #11
-    if (context->verbosity > 9)
-      fprintf(context->log, "m_check set to CHECKSUM (parse)\n");
+// do NOT change m_check global just because this packet was different...    m_check = OSDP_CHECKSUM; // Issue #11
+//    if (context->verbosity > 2) fprintf(context->log, "m_check set to CHECKSUM (parse)\n");
   }
   else
   {
     m->check_size = 2;
-    m_check = OSDP_CRC;
+//    m_check = OSDP_CRC;
   };
 
   if (m->lth > OSDP_OFFICIAL_MSG_MAX)
@@ -268,13 +267,13 @@ int
 if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
   display = 1;
 
-if (context->verbosity > 3)
-{
-  if (p->ctrl & 0x08)
-  {
-    fprintf(stderr, "DEBUG: SCS\n");
-  };
-};
+    if (context->verbosity > 9)
+    {
+      if (p->ctrl & 0x08)
+      {
+        fprintf(stderr, "DEBUG: SCS\n");
+      };
+    };
 
     if (display)
     {
