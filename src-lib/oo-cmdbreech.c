@@ -559,6 +559,17 @@ int
     };
   };
 
+  // command conform_5_9_16 - corrupt CRC in (command or) response
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "conform_5_9_16"))
+    {
+      cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
+      ctx->next_crc_bad = 1;
+    };
+  };
+
   // command conform_6_10_2 (LED was Red)
 
   if (status EQUALS ST_OK) {

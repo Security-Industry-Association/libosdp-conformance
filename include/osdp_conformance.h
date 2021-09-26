@@ -43,6 +43,8 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_checksum           "050-09-11"
 #define OOC_SYMBOL_SOM_sent           "050-09-12"
 #define OOC_SYMBOL_CRC                "050-09-15"
+#define OOC_SYMBOL_CRC_bad_response   "050-09-16"
+#define OOC_SYMBOL_CRC_bad_command    "050-09-17"
 
 #define OOC_SYMBOL_cmd_poll           "060-02-01"
 #define OOC_SYMBOL_poll_lstatr        "060-02-02"
@@ -163,6 +165,8 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM CMND_REPLY;
   OSDP_CONFORM invalid_command;         // 2-15-2
   OSDP_CONFORM CRC;          
+  OSDP_CONFORM CRC_bad_response;
+  OSDP_CONFORM CRC_bad_command;
   OSDP_CONFORM checksum;    
   OSDP_CONFORM multipart;               // 2.17
 

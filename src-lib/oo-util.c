@@ -687,6 +687,10 @@ fprintf(stderr, "lstat 1000\n");
         };
         status = ST_BAD_CRC;
         context->crc_errs ++;
+        if (context->role EQUALS OSDP_ROLE_ACU)
+          osdp_test_set_status(OOC_SYMBOL_CRC_bad_response, OCONFORM_EXERCISED);
+        else
+          osdp_test_set_status(OOC_SYMBOL_CRC_bad_command, OCONFORM_EXERCISED);
       };
       if (status EQUALS ST_OK)
       {
@@ -1589,12 +1593,16 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_FAIL);
         };
+        // if the PD NAK'd a KEEPACTIVE that is ok because those are rare
+        if (context->last_command_sent EQUALS OSDP_KEEPACTIVE)
+        {
+          osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
+        };
 
         // if the PD NAK'd an RSTAT that is ok because RSTAT/RSTATR are effectively deprecated
 
         if (context->last_command_sent EQUALS OSDP_RSTAT)
         {
-fprintf(context->log, "DEBUG: NAK %02x for osdp_RSTAT received\n", *(msg->data_payload));
           osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
         };
       // if the PD NAK'd an ISTAT fail the test.

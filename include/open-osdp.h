@@ -28,7 +28,7 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR ( 1)
+#define OSDP_VERSION_MINOR ( 2)
 #define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
@@ -508,6 +508,7 @@ typedef struct osdp_context
   int last_errno;
   int tamper;
   int next_nak; // nak the next incoming message from the CP
+  int next_crc_bad;
   int power_report;
   int tamper_report;
   int card_data_valid; // bits
