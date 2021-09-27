@@ -563,7 +563,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_5_9_16"))
+    if (0 EQUALS strcmp (current_command, "conform_050_09_16"))
     {
       cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
       ctx->next_crc_bad = 1;
