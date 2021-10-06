@@ -1245,8 +1245,9 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
         osdp_test_set_status(OOC_SYMBOL_cmd_istat, OCONFORM_EXERCISED);
         osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
         current_length = 0;
-        status = send_message (context, OSDP_ISTATR, p_card.addr,
-          &current_length, sizeof (osdp_istat_response_data), osdp_istat_response_data);
+
+        status = send_message_ex(context, OSDP_ISTATR, p_card.addr,
+          &current_length, sizeof(osdp_istat_response_data), osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
         if (context->verbosity > 2)
         {
           sprintf (logmsg, "Responding with OSDP_ISTAT (hard-coded all zeroes)");
