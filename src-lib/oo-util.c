@@ -797,6 +797,19 @@ fprintf(context->log,
       };
     };
 
+    // make sure it's for me or the config address
+
+    if (context->role EQUALS OSDP_ROLE_PD)
+    {
+      if ((p_card.addr != (0x7f & p->addr)) && (p->addr != OSDP_CONFIGURATION_ADDRESS))
+      {
+        if (context->verbosity > 3)
+          fprintf (stderr, "addr mismatch for: %02x me: %02x\n",
+            p->addr, p_card.addr);
+        status = ST_NOT_MY_ADDR;
+      };
+    };
+
     // check the MAC if it's secure channel formatted
 
     if (status EQUALS ST_OK)
@@ -888,14 +901,6 @@ fprintf(context->log,
 
     if (context->role EQUALS OSDP_ROLE_PD)
     {
-      if ((p_card.addr != (0x7f & p->addr)) && (p->addr != OSDP_CONFIGURATION_ADDRESS))
-      {
-        if (context->verbosity > 3)
-          fprintf (stderr, "addr mismatch for: %02x me: %02x\n",
-            p->addr, p_card.addr);
-        status = ST_NOT_MY_ADDR;
-      };
-
       // for the PD, go ahead and dump the trace buffers now.
       if (context->verbosity > 3)
         osdp_trace_dump(context, 1);
