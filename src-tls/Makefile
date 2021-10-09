@@ -23,7 +23,7 @@
 CC=gcc
 #CC=clang
 CFLAGS=-I /opt/tester/include
-LDFLAGS=/opt/osdp-conformance/lib/aes.o -L../src-lib -l osdp-conformance -L /opt/osdp-conformance/lib -L /opt/tester/lib
+LDFLAGS=/opt/osdp-conformance/lib/aes.o -L../src-lib -l osdp-conformance -L /opt/osdp-conformance/lib -L /opt/tester/lib -ljansson
 # note you should put LDFLAGS as far to the back of the command line as possible
 
 
@@ -45,7 +45,7 @@ initiator:	initiator.o Makefile
 osdp-net-client:	osdp-net-client.o osdp-local-config.h \
 	  ../src-lib/libosdp.a Makefile
 	${CC} -o osdp-net-client -g osdp-net-client.o \
-	  -lgnutls -ljansson -lrt ${LDFLAGS}
+	  -lgnutls -lrt ${LDFLAGS}
 
 osdp-net-server:	osdp-net-server.o osdp-local-config.h \
 	  ../src-lib/libosdp.a Makefile
