@@ -1,6 +1,6 @@
-unsigned char leftover_command;
-unsigned char leftover_data [4*1024];
-int leftover_length;
+extern unsigned char leftover_command;
+extern unsigned char leftover_data [4*1024];
+extern int leftover_length;
 
 /*
   oo-process - process OSDP message input
@@ -37,7 +37,7 @@ extern OSDP_CONTEXT context;
 extern unsigned char last_command_received;
 extern unsigned char last_check_value;
 extern unsigned char last_sequence_received;
-OSDP_BUFFER osdp_buf;
+extern OSDP_BUFFER osdp_buf;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 extern int saved_next;

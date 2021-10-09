@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR ( 3)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR ( 4)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -769,9 +769,25 @@ typedef struct osdp_config_guid
 
 #ifdef _OO_INITIALIZE_
 unsigned char OOSDP_MFG_VENDOR_CODE [3] = {0x0A, 0x00, 0x17 };
+char tlogmsg [2*1024];
+char tlogmsg2 [3*1024];
+int m_build;
+int m_dump;
+int m_check;
+int m_version_minor;
+int mfg_rep_sequence;
+time_t previous_time;
 #endif
 #ifndef _OO_INITIALIZE_
-unsigned char OOSDP_MFG_VENDOR_CODE [3];
+extern unsigned char OOSDP_MFG_VENDOR_CODE [3];
+extern char tlogmsg [];
+extern char tlogmsg2 [];
+extern int m_build;
+extern int m_check;
+extern int m_dump;
+extern int m_version_minor;
+extern int mfg_rep_sequence;
+extern time_t previous_time;
 #endif
 
 #define OOSDP_MFG_PING (1) // sent for testing, expects an MFG-PING-ACK
@@ -965,14 +981,6 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_BAD_INPUT_COUNT          ( 93)
 #define ST_OSDP_TOO_MANY_CAPAS           ( 94)
 
-int
-  m_version_minor;
-int
-  m_build;
-int
-  m_check;
-int
-  m_dump;
 
 
 int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

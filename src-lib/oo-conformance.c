@@ -40,7 +40,7 @@ int
 
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 char log_string [1024];
-OSDP_CONTEXT context;
+extern OSDP_CONTEXT context;
 
 // test control info
 typedef struct osdp_conformance_test

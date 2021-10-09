@@ -28,7 +28,6 @@
 #include <open-osdp.h>
 #include <iec-xwrite.h>
 extern OSDP_PARAMETERS p_card;
-char tlogmsg [1024];
 
 
 int

@@ -1,8 +1,8 @@
 // oo-io-actions
 
-int pending_response_length;
-unsigned char pending_response_data [1500];
-unsigned char pending_response;
+extern int pending_response_length;
+extern unsigned char pending_response_data [1500];
+extern unsigned char pending_response;
 /*
   oosdp-actions - open osdp action routines
 
@@ -42,7 +42,6 @@ extern OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 extern OSDP_PARAMETERS
   p_card;
-char tlogmsg [2*1024];
 
 
 int

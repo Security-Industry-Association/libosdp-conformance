@@ -37,7 +37,6 @@ void osdp_sc_pad (unsigned char *block, int current_length);
 
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
-char tlogmsg [1024];
 void osdp_pad_message
   (unsigned char *outblock, unsigned char *inblock, unsigned int inlength);
 

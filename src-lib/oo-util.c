@@ -36,10 +36,6 @@
 extern OSDP_CONTEXT context;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
-time_t previous_time;
-char tlogmsg [1024];
-char tlogmsg2 [3*1024];
-int mfg_rep_sequence;
 extern OSDP_BUFFER osdp_buf;
 unsigned char last_command_received;
 unsigned char last_sequence_received;

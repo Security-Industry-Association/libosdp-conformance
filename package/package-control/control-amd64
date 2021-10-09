@@ -2,7 +2,7 @@ Package: libosdp-conformance
 Version: 1.04-1
 Section: custom
 Priority: optional
-Architecture: arm64
+Architecture: amd64
 Essential: no
 Installed-Size: 1024
 Maintainer: github@smithee.solutions

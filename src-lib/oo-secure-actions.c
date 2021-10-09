@@ -34,7 +34,6 @@ extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 
 
 extern OSDP_PARAMETERS p_card;
-char tlogmsg [1024];
 
 
 int

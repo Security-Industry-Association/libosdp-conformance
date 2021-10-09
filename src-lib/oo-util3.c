@@ -42,10 +42,6 @@ unsigned int web_color_lookup [16] = {
     0x0000FF, 0x010101, 0x010101, 0x010101,
     0x010101, 0x010101, 0x010101, 0x010101,
   };
-time_t previous_time;
-char tlogmsg [1024];
-char tlogmsg2 [3*1024];
-int mfg_rep_sequence;
 
 
 int
