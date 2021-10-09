@@ -35,7 +35,6 @@ OSDP_OUT_CMD current_output_command [16];
 OSDP_BUFFER osdp_buf;
 OSDP_INTEROP_ASSESSMENT osdp_conformance;
 OSDP_PARAMETERS p_card;
-char tlogmsg [1024];
 char trace_in_buffer [1024];
 char trace_out_buffer [1024];
 
