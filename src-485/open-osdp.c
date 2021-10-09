@@ -362,7 +362,7 @@ int
           context.bytes_received++;
           if (context.trace & 1)
           {
-            sprintf(octet, " %02x", buffer [0]);
+            sprintf(octet, " %02x", (unsigned char)(buffer [0]));
             strcat(trace_in_buffer, octet);
             if (context.verbosity > 9) { fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer); };
           };
@@ -489,7 +489,7 @@ int
     octet [2] = 0;
     for (i=0; i<lth; i++)
     {
-      sprintf(octet, " %02x", buf [i]);
+      sprintf(octet, " %02x", (unsigned char)(buf [i]));
       strcat(trace_out_buffer, octet);
     };
   };
