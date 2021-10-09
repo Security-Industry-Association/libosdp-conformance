@@ -717,6 +717,8 @@ fprintf(stderr, "lstat 1000\n");
       {
 char *p;
 int i;
+        fprintf(context->log, "CHECKSUM ERROR Parsed=0x%02x Wire=0x%02x\n",
+          parsed_cksum, wire_cksum);
 fprintf(stderr, "Checksum error != c=%x p %x %x\n",
   (unsigned)(returned_hdr->command), (unsigned)parsed_cksum, (unsigned)wire_cksum);
 p = (char *)(m->ptr);
@@ -1343,7 +1345,6 @@ fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
       break;
 
     case OSDP_LSTAT:
-fprintf(stderr, "lstat 1684\n");
     status = ST_OK;
     {
       unsigned char

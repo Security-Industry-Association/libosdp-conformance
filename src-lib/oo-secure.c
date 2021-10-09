@@ -464,7 +464,8 @@ fprintf(stderr, "DEBUG: initiating padding removal\n");
       if (cptr EQUALS msg->data_payload)
         done = 1;
     };
-fprintf(stderr, "DEBUG: padding removal complete.\n");
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "DEBUG: padding removal complete.\n");
 
     // if there was padding adjust the actual length.
     if (found_marker && (pad_blocksize > 0))
