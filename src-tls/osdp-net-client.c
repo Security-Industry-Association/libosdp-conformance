@@ -70,8 +70,7 @@ OSDP_INTEROP_ASSESSMENT
   osdp_conformance;
 OSDP_PARAMETERS
   p_card;
-time_t
-  previous_time;
+extern time_t previous_time;
 int
   request_immediate_poll;
 char

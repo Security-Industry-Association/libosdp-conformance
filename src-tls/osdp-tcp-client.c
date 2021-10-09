@@ -62,7 +62,7 @@ struct timespec last_time_check_ex;
 OSDP_BUFFER osdp_buf;
 OSDP_INTEROP_ASSESSMENT osdp_conformance;
 OSDP_PARAMETERS p_card;
-time_t previous_time;
+extern time_t previous_time;
 int request_immediate_poll;
 struct sockaddr_in sa_serv;
 char *tag;
