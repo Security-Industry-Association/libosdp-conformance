@@ -351,7 +351,7 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_BIOREAD");
+        strcpy (tlogmsg2, "osdp_ACURXSIZE");
       osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
       break;
 
@@ -360,7 +360,7 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       msg_data_length = 0;
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BIOREAD");
-      osdp_conformance.cmd_bioread.test_status = OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_cmd_bioread, OCONFORM_EXERCISED);
       break;
 
     case OSDP_BUSY:
@@ -1040,35 +1040,7 @@ int
       break;
 
     case OSDP_BIOREAD:
-      sprintf (logmsg, "BIOREAD rdr=%02x type=%02x format=%02x quality=%02x\n",
-          *(msg->data_payload + 0), *(msg->data_payload + 1),
-          *(msg->data_payload + 2), *(msg->data_payload + 3));
-      fprintf (context->log, "%s", logmsg);
-      fprintf (stderr, "%s", logmsg);
-      logmsg[0]=0;
-
-      // we don't actually DO a biometrics read at this time, so NAK it.
-      {
-        current_length = 0;
-        osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
-        osdp_nak_response_data [1] = 0xff;
-fprintf(context->log, "DEBUG2: NAK: %d.\n", osdp_nak_response_data [0]);
-        status = send_message (context,
-          OSDP_NAK, p_card.addr, &current_length, 1, osdp_nak_response_data);
-        context->sent_naks ++;
-        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
-        if (context->verbosity > 2)
-        {
-          fprintf (context->log, "Responding with OSDP NAK\n");
-          fprintf (stderr, "CMD %02x Unknown\n", msg->msg_cmd);
-        };
-      };
-      osdp_conformance.cmd_bioread.test_status =
-        OCONFORM_EXERCISED;
-      current_length = 0;
-      status = send_message
-        (context, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
-      context->pd_acks ++;
+      status = action_osdp_BIOREAD(context, msg);
       break;
 
     case OSDP_BUZ:

@@ -1,7 +1,7 @@
 /*
   oo-settings - json init file processing
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2021 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -203,6 +203,26 @@ int
     sscanf (vstr, "%d", &i);
     if (i != 0)
       ctx->disable_certificate_checking = i;
+  }; 
+
+  // parameter "enable-biometrics"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "enable-biometrics");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    if ((i >= 0) && (i <= 2))
+      ctx->pd_cap.enable_biometrics = i;
   }; 
 
   // parameter "enable-install"

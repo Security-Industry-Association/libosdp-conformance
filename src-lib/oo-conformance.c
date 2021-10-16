@@ -155,6 +155,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.rep_ack.test_status),
       1, 1, 1, 1, 0,
                         "Response: ACK" },
+    {         OOC_SYMBOL_resp_bioreadr,
+      &(osdp_conformance.resp_bioreadr.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: BIOREADR"},
     {         OOC_SYMBOL_rep_device_ident,
       &(osdp_conformance.rep_device_ident.test_status),
       1, 1, 1, 1, 0,
@@ -456,8 +460,6 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_com.test_status),
       0, 0, 0, 0, 0,
                         "Response: osdp_COM"},
-    { "4-13-1", &(osdp_conformance.rep_scan_send.test_status),
-      0, 0, 0, 0, 0, "---" },
     { "4-14-1", &(osdp_conformance.rep_scan_match.test_status),
       0, 0, 0, 0, 0, "---" },
     { "4-15-1", &(osdp_conformance.resp_mfg.test_status),
@@ -802,9 +804,6 @@ void
   LOG_REPORT ((log_string,
 "4-12-1 COM Report                         %s",
     conformance_status (oconf->resp_com.test_status)));
-  LOG_REPORT ((log_string,
-"4-13-1 Biometrics Read                    %s",
-    conformance_status (oconf->rep_scan_send.test_status)));
   LOG_REPORT ((log_string,
 "4-14-1 Biometrics Match                   %s",
     conformance_status (oconf->rep_scan_match.test_status)));

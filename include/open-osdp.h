@@ -28,7 +28,7 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR ( 4)
+#define OSDP_VERSION_MINOR ( 5)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
@@ -133,6 +133,7 @@
 #define OSDP_RAW      (0x50)
 #define OSDP_KEYPAD   (0x53)
 #define OSDP_COM      (0x54)
+#define OSDP_BIOREADR (0x57)
 #define OSDP_CCRYPT   (0x76)
 #define OSDP_SCRYPT   (0x77)
 #define OSDP_RMAC_I   (0x78)
@@ -271,12 +272,18 @@ typedef struct osdp_pdcap_entry
 #define OSDP_CAP_SPE            (15) // secure pin entry
 #define OSDP_CAP_VERSION        (16)
 
+// some of the PD's capabilities
+
 typedef struct osdp_pd_capability
 {
   unsigned int rec_max;
   int smart_card_transparent;
   int smart_card_extended_packet_mode;
+  int enable_biometrics; // 0=disabled 1=does bioread 2=does biomatch 3-255 RFU
 } OSDP_PD_CAPABILITY;
+#define OSDP_BIOPD_DOES_BIOREAD (1)
+#define OSDP_BIOPD_DISABLED (0)
+#define OSDP_BIOPD_DOES_BIOMATCH (2)
 
 // for secure channel
 typedef struct osdp_secure_message
@@ -443,6 +450,8 @@ typedef struct osdp_context
   OSDP_COMMAND_QUEUE *q;
   int cmd_q_overflow;
 
+  OSDP_PD_CAPABILITY pd_cap;
+
   // IO context
   int current_pid;
   int fd;
@@ -481,8 +490,6 @@ typedef struct osdp_context
   int next_sequence;
   int last_sequence_received;
   int left_to_send;
-
-  OSDP_PD_CAPABILITY pd_cap;
 
   // secure channel
   int current_key_slot; // -1 or OSDP_SCBK_D or OSDP_SCBK
@@ -980,9 +987,10 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_MFG_VENDOR_PROCESSED     ( 92)
 #define ST_OSDP_BAD_INPUT_COUNT          ( 93)
 #define ST_OSDP_TOO_MANY_CAPAS           ( 94)
+#define ST_OSDP_UNKNOWN_BIO_ACTION       ( 95)
 
 
-
+int action_osdp_BIOREAD(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

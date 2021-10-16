@@ -44,7 +44,6 @@ void
   oconf->resp_input_consistent.test_status =
     OCONFORM_SKIP;
   oconf->rep_scan_match.test_status = OCONFORM_SKIP;
-  oconf->rep_scan_send.test_status = OCONFORM_SKIP;
   oconf->resp_mfg.test_status = OCONFORM_SKIP;
   oconf->resp_ostatr_range.test_status =
     OCONFORM_SKIP;

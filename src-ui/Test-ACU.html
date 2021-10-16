@@ -3,7 +3,7 @@
 <TITLE>Test ACU: check PD</TITLE>
 </HEAD>
 <BODY>
-<H3>Exerciser: Test ACU - Check PD conformance (1.04 Build 1)</H3>
+<H3>Exerciser: Test ACU - Check PD conformance (1.05 Build 1)</H3>
 
 <P ALIGN="RIGHT">
 Generate
@@ -381,21 +381,26 @@ Recent ACU
     <TD ALIGN="CENTER">070-05-01</TD>
     <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
       <EM>Test</EM></A></TD>
-    <TD>Response: osdp_PDCAP</TD>
+    <TD>Resp: PDCAP</TD>
 
     <TD ALIGN="CENTER">070-06-01</TD>
     <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
       <EM>Test</EM></A></TD>
-    <TD>Response: osdp_LSTATR</TD>
+    <TD>Resp: LSTATR</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-10-01</TD>
     <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Response: osdp_RAW</TD>
+    <TD>Resp: RAW</TD>
 
     <TD ALIGN="CENTER">070-13-01</TD>
     <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Response: osdp_COM</TD>
+    <TD>Resp: COM</TD>
+
+    <TD ALIGN="CENTER">070-14-01</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-bio-read">
+      <EM>Test</EM></A></TD>
+    <TD>Resp: BIOREADR</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-16-01</TD>
@@ -406,74 +411,11 @@ Recent ACU
     <TD ALIGN="CENTER">(auto)</TD>
     <TD>Response: osdp_RMAC_I</TD>
   </TR>
-</TABLE>
-
-<TABLE>
-<CAPTION><B>Test Group 4 Responses [2]</B></CAPTION>
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
-<COL WIDTH="75">
-<COL WIDTH="200">
 <TR>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH>
-</TR>
-<TR>
-  <TD> </TD><TD> </TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-4-2</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    PDCAP sanity check</SPAN></TD>
-  <TD> </TD><TD> </TD>
-<TD ALIGN="center">4-5-2</TD><TD>LSTATR Tamper [4]</TD>
-</TR>
-
-<TR>
-<TD ALIGN="center">4-5-3</TD><TD>LSTATR Power [4]</TD>
 <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-input_status">4-6-1</A></TD><TD>osdp_ISTATR</TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-6-2</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    ISTATR sanity check</SPAN></TD>
 <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-output_status">4-7-1</A></TD><TD>osdp_OSTATR</TD>
 </TR>
-
-<TR>
-<TD ALIGN="center">4-7-2</TD><TD>OSTATR POLL [3]</TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-7-3</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Output status consistency</SPAN></TD>
-<TD ALIGN="center">4-8-1</TD><TD>osdp_RSTATR [1]</TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-10-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Formatted Read</SPAN></TD>
-  <TD ALIGN="CENTER">
-    4-11-1</TD>
-    <TD>
-    Keypad [4]</TD>
-  <TD> </TD><TD> </TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-13-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Biometrics Read</SPAN></TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-14-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Biometrics Match</SPAN></TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">4-15-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Manufacturer Response</SPAN></TD>
-  <TD ALIGN="CENTER"><SPAN>4-16-1</SPAN></TD>
-    <TD><SPAN>
-    Busy [4]</SPAN></TD>
-</TR>
-</table>
+</TABLE>
 
 <P>
 <A name="control_bottom"></A>

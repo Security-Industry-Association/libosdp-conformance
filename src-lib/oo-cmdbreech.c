@@ -103,6 +103,9 @@ int
   case OSDP_CMDB_BIOREAD:
     status = ST_OK;
     cmd->command = OSDP_CMD_BIOREAD;
+    // todo: allow parameters here
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
     break;
 
   case OSDP_CMDB_BIOMATCH:
