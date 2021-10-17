@@ -1,5 +1,5 @@
 {
-   "role" : "MONITOR"
+   "role" : "MON"
   ,"serial_device" : "/dev/ttyUSB0"
   ,"serial_speed" : "9600"
   ,"verbosity" : "3"
