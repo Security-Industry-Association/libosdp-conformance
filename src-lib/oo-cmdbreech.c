@@ -856,6 +856,7 @@ fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
     {
       cmd->command = OSDP_CMDB_KEYPAD;
 
+      memset(vstr, 0, sizeof(vstr));
       value = json_object_get (root, "digits");
       if (json_is_string (value))
       {
@@ -865,7 +866,9 @@ fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
           fprintf (stderr, "Too many digits in keypad input, truncating to first 9\n");
           vstr [9] = 0;
         };
-        memcpy (cmd->details, vstr, 9);
+        memcpy(cmd->details, vstr, 9);
+        status = enqueue_command(ctx, cmd);
+        cmd->command = OSDP_CMD_NOOP;
       };
     };
   };
