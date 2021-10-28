@@ -370,6 +370,7 @@ int
 
 } /* osdp_build_message */
 
+
 int
   osdp_decrypt_payload
     (OSDP_CONTEXT *ctx,
@@ -388,6 +389,7 @@ int
   int status;
 
 
+fprintf(stderr, "DEBUG:osdp_decrypt_payload: top, SCS=%02x\n", msg->security_block_type);
   status = ST_OK;
   memcpy(decrypt_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
   if (ctx->verbosity > 9)
@@ -398,7 +400,7 @@ int
     fprintf(ctx->log,
 "osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n", msg->security_block_type,
       msg->data_length);
-  if (msg->security_block_type > OSDP_SEC_SCS_16)
+  if (msg->security_block_type EQUALS OSDP_SEC_SCS_18)
   {
     if (ctx->verbosity > 3)
     {
