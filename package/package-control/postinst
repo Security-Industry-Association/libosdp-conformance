@@ -10,6 +10,8 @@ mkdir -p /opt/osdp-conformance/run/PD
 
 # set up default parameter files 
 
+echo "NOTICE: OSDP parameters may be updated."
+
 cp /opt/osdp-conformance/run/ACU/open-osdp-params-ACU.json /opt/osdp-conformance/run/ACU/open-osdp-params.json
 cp /opt/osdp-conformance/run/PD/open-osdp-params-PD.json /opt/osdp-conformance/run/PD/open-osdp-params.json
 cp /opt/osdp-conformance/run/MON/open-osdp-params-MON.json /opt/osdp-conformance/run/MON/open-osdp-params.json

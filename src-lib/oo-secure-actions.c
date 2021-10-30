@@ -217,7 +217,7 @@ int
       osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
       if (ctx->verbosity > 2)
       {
-        fprintf (ctx->log, "NAK: SCBK not initialized");
+        fprintf (ctx->log, "NAK: SCBK not initialized\n");
       };
     };
     if (!nak && (status EQUALS ST_OK))

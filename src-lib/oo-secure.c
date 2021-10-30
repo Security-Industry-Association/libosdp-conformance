@@ -389,7 +389,8 @@ int
   int status;
 
 
-fprintf(stderr, "DEBUG:osdp_decrypt_payload: top, SCS=%02x\n", msg->security_block_type);
+  if (ctx->verbosity > 3)
+    fprintf(stderr, "DEBUG:osdp_decrypt_payload: top, SCS=%02x\n", msg->security_block_type);
   status = ST_OK;
   memcpy(decrypt_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
   if (ctx->verbosity > 9)
@@ -397,10 +398,21 @@ fprintf(stderr, "DEBUG:osdp_decrypt_payload: top, SCS=%02x\n", msg->security_blo
   for(i=0; i<OSDP_KEY_OCTETS; i++)
     decrypt_iv [i] = ~decrypt_iv [i];
   if (ctx->verbosity > 9)
-    fprintf(ctx->log,
-"osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n", msg->security_block_type,
+    fprintf(ctx->log, "osdp_decrypt_payload: sec blk typ %02x payload is %d. bytes\n", msg->security_block_type,
       msg->data_length);
-  if (msg->security_block_type EQUALS OSDP_SEC_SCS_18)
+
+  // assuming there is a payload decrypt it.
+
+  if ((msg->data_length EQUALS 0) && (msg->security_block_type EQUALS OSDP_SEC_SCS_17))
+  {
+    fprintf(ctx->log, "WARNING WARNING WARNING no payload in SCS-17 packet\n");
+  };
+  if ((msg->data_length EQUALS 0) && (msg->security_block_type EQUALS OSDP_SEC_SCS_18))
+  {
+    fprintf(ctx->log, "WARNING WARNING WARNING no payload in SCS-18 packet\n");
+  };
+  if ((msg->data_length > 0) &&
+    ((msg->security_block_type EQUALS OSDP_SEC_SCS_17) || (msg->security_block_type EQUALS OSDP_SEC_SCS_18)))
   {
     if (ctx->verbosity > 3)
     {
