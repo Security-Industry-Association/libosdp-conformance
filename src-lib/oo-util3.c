@@ -36,9 +36,10 @@
 extern OSDP_CONTEXT context;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
+// blue was 444444
 unsigned int web_color_lookup [16] = {
     0x000000, 0xFF0000, 0x00FF00, 0x008080,
-    0x444444, 0x550101, 0x660101, 0x770101,
+    0x00BFFF, 0x550101, 0x660101, 0x770101,
     0x0000FF, 0x010101, 0x010101, 0x010101,
     0x010101, 0x010101, 0x010101, 0x010101,
   };
