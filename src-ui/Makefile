@@ -65,6 +65,7 @@ clean:
 build:	all
 	mkdir -p ../opt/osdp-conformance/bin
 	mkdir -p ../opt/osdp-conformance/cgi-bin
+	mkdir -p ../opt/osdp-conformance/etc
 	mkdir -p ../opt/osdp-conformance/www
 	mkdir -p ../opt/osdp-conformance/run/ACU
 	mkdir -p ../opt/osdp-conformance/run/MON
@@ -74,6 +75,7 @@ build:	all
 	cp ${CGISCRIPTS} ../opt/osdp-conformance/cgi-bin
 	cp ${SCRIPTS} ../opt/osdp-conformance/bin
 	cp ${PROGS} ../opt/osdp-conformance/bin
+	cp osdp.conf www-data ../opt/osdp-conformance/etc
 
 build-tls:	${TLS_CGIPROGS} ${TLS_PAGES} ${TLS_SCRIPTS} ${TLS_PROGS} build
 	# (no TLS pages) cp ${TLS_PAGES} ../opt/osdp-conformance/www
