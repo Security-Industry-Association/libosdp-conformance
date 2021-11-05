@@ -330,8 +330,6 @@ if(1)//        if (context->verbosity > 3)
         {
           dump_buffer_log(context, "KEYSET key:", key_buffer, keybuflth);
         };
-fprintf(stderr, "DEBUG: sending keyset cl %d kbl %d\n",
-  current_length, keybuflth);
         status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
           &current_length, keybuflth, key_buffer,
           OSDP_SEC_SCS_17, 0, NULL);
@@ -892,6 +890,7 @@ if (ctx->verbosity > 3)
           fprintf (stderr, "Sending keypad response %s\n",
             keypad_message+2);
         osdp_test_set_status(OOC_SYMBOL_resp_keypad, OCONFORM_EXERCISED);
+        status = ST_OK;
       };
       break;
 

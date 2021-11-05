@@ -219,6 +219,7 @@ int
 
 
   status = ST_CMD_UNKNOWN;
+fprintf(stderr, "DEBUG: unknown 221 1\\n");
   ret_cmd = OSDP_CMDB_NOOP; // no-op if not known
   value = json_object_get (root, "command");
   if (!json_is_string (value))

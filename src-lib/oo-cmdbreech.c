@@ -799,7 +799,6 @@ int
         cmd->details_length = 2+lth; //algoref, keyref, payload
       };
 
-fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;
     };
@@ -947,7 +946,6 @@ fprintf(stderr, "DEBUG: enqueue %d\n", cmd->command);
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         led_ctl->perm_off_time = i;
-fprintf(ctx->log, "DEBUG: perf_off_time %d.\n", led_ctl->perm_off_time);
       };
       value = json_object_get (root, "perm-off-color");
       if (json_is_string (value))
@@ -1085,8 +1083,6 @@ fprintf(ctx->log, "DEBUG: perf_off_time %d.\n", led_ctl->perm_off_time);
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         current_output_command [0].output_number = i;
-fprintf(stderr, "DEBUG: output-number set to %d\n", 
-  current_output_command [0].output_number);
       };
       value = json_object_get (root, "control-code");
       if (json_is_string (value))
