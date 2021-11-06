@@ -1458,19 +1458,37 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       break;
 
     case OSDP_KEYPAD:
-      status = ST_OK;
-      sprintf (tlogmsg, "Reader: %d. Digits: %d. First Digit: 0x%02x",
-          *(0+msg->data_payload),
-          *(1+msg->data_payload),
-          *(2+msg->data_payload));
-      fprintf (context->log, "PD Keypad Buffer: %s\n", tlogmsg);
       {
+        char command [1024];
+        int kblimit;
         char temp [8];
-        memcpy (temp, context->last_keyboard_data, 7);
-        memcpy (context->last_keyboard_data+1, temp, 7);
-        context->last_keyboard_data [0] = *(2+msg->data_payload);
+        char tstring [1024];
+
+        status = ST_OK;
+        tstring[0] = 0;
+        kblimit = sizeof(temp);
+        sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_KEYPAD %d %d %02X ", 
+          *(0+msg->data_payload), *(1+msg->data_payload), *(2+msg->data_payload));
+
+        sprintf (tlogmsg, "Reader: %d. Digits: %d. First Digit: ",
+          *(0+msg->data_payload), *(1+msg->data_payload));
+        if (msg->data_payload [1] <= sizeof(temp))
+          kblimit = msg->data_payload [1];
+        
+        for (i=0; i<kblimit; i++)
+        {
+          sprintf(tstring, "%02X", msg->data_payload [2+i]);
+          strcat(tlogmsg, tstring);
+          strcat(command, tstring);
+
+          memcpy (temp, context->last_keyboard_data, 7);
+          memcpy (context->last_keyboard_data+1, temp, 7);
+          context->last_keyboard_data [0] = msg->data_payload [2+i];
+        };
+        fprintf (context->log, "PD Keypad Buffer: %s\n", tlogmsg);
+        system(command);
+        osdp_test_set_status(OOC_SYMBOL_resp_keypad, OCONFORM_EXERCISED);
       };
-      osdp_test_set_status(OOC_SYMBOL_resp_keypad, OCONFORM_EXERCISED);
       break;
 
     // action for NAK
