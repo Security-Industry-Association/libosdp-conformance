@@ -66,7 +66,17 @@ void
   printf("<TR>");
   for(i=0; i < LED_CONFORMANCE_CONFIG; i++)
   {
-    printf("<TD>%02d- <SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">_%02d_</SPAN></TD>\n", i, led_color [i], i);
+    if (led_value != 0x808000)
+    {
+      printf("<TD>%02d- <SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">_%02d_</SPAN></TD>\n", i, led_color [i], i);
+    };
+    if (led_value EQUALS 0x808000)
+    {
+      printf("<TD>%02d- <SPAN STYLE=\"BACKGROUND-COLOR:FF0000;\">_%01d_</SPAN>", i, (i / 10) * 10);
+      printf("<SPAN STYLE=\"BACKGROUND-COLOR:00FF00;\">%01d_</SPAN>\n", (i % 10));
+      printf("</TD>\n");
+    };
+
   };
   printf("</SPAN></TD>\n");
 
