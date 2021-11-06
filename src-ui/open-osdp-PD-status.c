@@ -23,6 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <arpa/inet.h>
 
 
 #include <jansson.h>
@@ -46,33 +47,35 @@ void
   char field_name [1024];
   unsigned int i;
   int led_color [LED_CONFORMANCE_CONFIG];
-  unsigned long led_value;
+  unsigned led_value;
   json_t *value;
   char vstr [1024];
 
 
   for (i=0; i<8; i++)
   {
+    led_color [i] = 0; // initialize
+
     sprintf(field_name, "led_color_%02d", i);
     value = json_object_get(root, field_name);
     if (json_is_string(value))
     {
       strcpy (vstr, json_string_value (value));
-      sscanf (vstr+1, "%lx", &led_value);
-
+      sscanf (vstr+1, "%x", &led_value);
       led_color [i] = led_value;
     };
   };
   printf("<TR>");
   for(i=0; i < LED_CONFORMANCE_CONFIG; i++)
   {
-    if (led_value != 0x808000)
+    led_value = led_color [i];
+    if (led_value != 0x008080)
     {
       printf("<TD>%02d- <SPAN STYLE=\"BACKGROUND-COLOR:%06x;\">_%02d_</SPAN></TD>\n", i, led_color [i], i);
     };
-    if (led_value EQUALS 0x808000)
+    if (led_value EQUALS 0x008080)
     {
-      printf("<TD>%02d- <SPAN STYLE=\"BACKGROUND-COLOR:FF0000;\">_%01d_</SPAN>", i, (i / 10) * 10);
+      printf("<TD>%02d- <SPAN STYLE=\"BACKGROUND-COLOR:FF0000;\">_%01d</SPAN>", i, (i / 10) * 10);
       printf("<SPAN STYLE=\"BACKGROUND-COLOR:00FF00;\">%01d_</SPAN>\n", (i % 10));
       printf("</TD>\n");
     };
