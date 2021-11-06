@@ -166,24 +166,15 @@ Recent PD
 <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
 </TR>
   <TR>
-    <TD ALIGN="CENTER">060-01-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">Cmd: POLL</TD></TR>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">060-02-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">Cmd: ID</TD>
-
     <TD ALIGN="CENTER">060-03-01</TD>
        <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
       <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER">Command: osdp_CAP</TD>
+    <TD ALIGN="CENTER">Cmd: CAP</TD>
 
     <TD ALIGN="CENTER">060-04-01</TD>
       <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
       <EM>Test</EM></A></TD>
-    <TD>Command: osdp_LSTAT</TD>
+    <TD ALIGN="CENTER">Cmd: LSTAT</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">060-10-03</TD>
@@ -349,37 +340,10 @@ Recent PD
 <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
 </TR>
   <TR>
-  </TR>
-    <TD ALIGN="CENTER">070-02-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rsp: osdp_ACK</TD>
-
-    <TD ALIGN="CENTER">070-02-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>LSTATR after ACK</TD>
-  <TR>
     <TD ALIGN="CENTER">070-03-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=PD-induce-nak">
-      <EM>Test</EM></A></TD>
-    <TD>Rsp: osdp_NAK</TD>
-
-    <TD ALIGN="CENTER">070-03-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>NAK not 1</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-04-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rsp: osdp_PDID</TD>
-
-    <TD ALIGN="CENTER">070-04-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDID check</TD>
-
-    <TD ALIGN="CENTER">070-05-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rsp: osdp_PDCAP</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=PD-induce-nak"><EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Rsp: NAK</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-05-02</TD>
@@ -464,20 +428,14 @@ Recent PD
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-10-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/send-osdp-command?cmd=PD-present-card">
-      <EM>Test</EM></A></TD>
-    <TD>Rsp: osdp_RAW</TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/send-osdp-command?cmd=PD-present-card"> <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">Rsp: RAW</TD>
 
     <TD ALIGN="CENTER">070-12-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/do-keypad?1234">
-      <EM>Test</EM></A></TD>
+    <TD ALIGN="CENTER">
+      <A HREF="/cgi-bin/do-keypad?1234"> <EM>Test</EM></A></TD>
     <TD>Rsp: osdp_KEYPAD</TD>
-
-    <TD ALIGN="CENTER">070-13-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rsp: osdp_COM</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">070-14-01</TD>
