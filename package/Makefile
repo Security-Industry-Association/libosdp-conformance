@@ -1,7 +1,7 @@
 PACKAGE_NAME=libosdp-conformance
 
 all:
-	@echo make arm64 amd64
+	@echo make amd64 arm64 armhf
 
 amd64:	${PACKAGE_NAME}-amd64.deb
 
