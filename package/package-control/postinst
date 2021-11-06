@@ -23,6 +23,13 @@ cd /tmp
 
 cp /opt/osdp-conformance/etc/osdp.conf /etc/apache2/sites-enabled
 rm -f /etc/apache2/sites-enabled/000*
+
+ln -s /etc/apache2/mods-available/cgi.load /etc/apache2/mods-enabled/cgi.load
+ln -s /etc/apache2/mods-available/cgid.load /etc/apache2/mods-enabled/cgid.load
+ln -s /etc/apache2/mods-available/cgid.conf /etc/apache2/mods-enabled/cgid.conf
+/etc/init.d/apache2 stop
+/etc/init.d/apache2 start
+
 echo web server configuration updated.
 
 cp /opt/osdp-conformance/etc/www-data /etc/sudoers.d
