@@ -1,7 +1,16 @@
 PACKAGE_NAME=libosdp-conformance
 
-all:
+all:	makefile-package
 	@echo make amd64 arm64 armhf
+	echo `dpkg-architecture | grep DEB_TARGET_ARCH=` printenv DEB_TARGET_ARCH >get-arch
+	chmod +x get-arch
+	echo architecture is `./get-arch`
+	mkdir -p ${PACKAGE_NAME}/DEBIAN
+	cp package-control/control-`./get-arch` ${PACKAGE_NAME}/DEBIAN/control
+	make -f makefile-package
+	mkdir -p ${PACKAGE_NAME}-dist
+	dpkg-deb --build ${PACKAGE_NAME} ${PACKAGE_NAME}-dist
+	cp ${PACKAGE_NAME}-dist/*.deb .
 
 amd64:	${PACKAGE_NAME}-amd64.deb
 

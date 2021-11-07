@@ -1657,7 +1657,12 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 
     case OSDP_MFGREP:
       {
+        char cmd [2*1024];
+        int i;
         OSDP_MFGREP_RESPONSE *mfg;
+        char payload [1024];
+        char tmp1 [1024];
+
 
         status = ST_OK;
         oh = (OSDP_HDR *)(msg->ptr);
@@ -1670,6 +1675,16 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], count);
         fprintf (context->log, "  Mfg Reply %s\n", tlogmsg);
         dump_buffer_log(context, "MFGREP: ", msg->data_payload, count);
+
+        payload [0] = 0;
+        for (i=0; i<count; i++)
+        {
+          sprintf(tmp1, "%02x", msg->data_payload [i]);
+          strcat(payload, tmp1);
+        };
+        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_MFGREP %02X%02X%02X %s",
+          mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], payload);
+        system(cmd);
       };
       break;
 
