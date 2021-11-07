@@ -658,8 +658,7 @@ int
       if (context.role EQUALS OSDP_ROLE_ACU)
       {
         status = oo_mfg_reply_action(&context, msg, mrep);
-fprintf(stderr, "DEBUG: MFG Reply action returned %d\n", status);
-status = ST_OK;
+        status = ST_OK; // ok regardless
       };
 
       sprintf(tlogmsg, "MFG Response: OUI:%02x-%02x-%02x",

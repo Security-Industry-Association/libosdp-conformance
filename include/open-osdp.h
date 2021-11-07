@@ -1003,6 +1003,7 @@ int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEYSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFGERRR (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_MFGREP (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OUT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_OSTAT(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_PIVDATA (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

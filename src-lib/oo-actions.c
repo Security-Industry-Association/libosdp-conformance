@@ -1066,36 +1066,6 @@ fprintf(stderr, "DEBUG: give CRAUTH a chance...\n"); sleep(5);
 
 
 int
-  action_osdp_RSTAT
-    (OSDP_CONTEXT *ctx,
-    OSDP_MSG *msg)
-
-{ /* action_osdp_RSTAT */
-
-  int current_length;
-  unsigned char osdp_rstat_response_data [1];
-  int status;
-
-
-  status = ST_OK;
-  osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
-  osdp_test_set_status(OOC_SYMBOL_resp_rstatr, OCONFORM_EXERCISED);
-  osdp_rstat_response_data [ 0] = 1; //hard code to "not connected"
-  current_length = 0;
-//  status = send_message (ctx, OSDP_RSTATR, p_card.addr, &current_length, sizeof (osdp_rstat_response_data), osdp_rstat_response_data);
-  status = send_message_ex(ctx, OSDP_RSTATR, p_card.addr, &current_length, sizeof (osdp_rstat_response_data), osdp_rstat_response_data, OSDP_SEC_SCS_18, 0, NULL);
-  if (ctx->verbosity > 2)
-  {
-    sprintf (tlogmsg, "Responding with OSDP_RSTATR (Ext Tamper)");
-    fprintf (ctx->log, "%s\n", tlogmsg); tlogmsg[0]=0;
-  };
-
-  return (status);
-
-} /* action_osdp_RSTAT */
-
-
-int
   action_osdp_TEXT
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)

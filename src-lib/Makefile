@@ -36,9 +36,10 @@ clean:
 	rm -f core *.o ${OUTLIB}
 
 ${OUTLIB}:	\
-	oo-actions.o oo-api.o oo-bio.o oo-capabilities.o oo-conformance.o oo-crc.o \
+	oo-actions.o oo-api.o \
+	oo-bio.o oo-capabilities.o oo-conformance.o oo-crc.o \
 	  oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
-	  oo-logprims.o oo-mfg-actions.o \
+	oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
 	  oo-printmsg.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-xpm-actions.o oo-xwrite.o \
@@ -46,7 +47,7 @@ ${OUTLIB}:	\
 	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
 	ar r ${OUTLIB} \
 	  oo-actions.o oo-api.o oo-bio.o oo-capabilities.o \
-	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o \
+	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
 	  oo-printmsg.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oo-crc.o oo-files.o \
@@ -73,6 +74,9 @@ oo-io-actions.o:	oo-io-actions.c ../include/osdp-tls.h ../include/open-osdp.h
 
 oo-mfg-actions.o:	oo-mfg-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-mfg-actions.c
+
+oo-mgmt-actions.o:	oo-mgmt-actions.c ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-mgmt-actions.c
 
 oo-process.o:	oo-process.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-process.c

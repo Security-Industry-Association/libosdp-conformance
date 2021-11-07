@@ -1656,36 +1656,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       break;
 
     case OSDP_MFGREP:
-      {
-        char cmd [2*1024];
-        int i;
-        OSDP_MFGREP_RESPONSE *mfg;
-        char payload [1024];
-        char tmp1 [1024];
-
-
-        status = ST_OK;
-        oh = (OSDP_HDR *)(msg->ptr);
-        count = oh->len_lsb + (oh->len_msb << 8);
-        count = count - 6; // assumes no SCS header
-        count = count - msg->check_size;
-        
-        mfg = (OSDP_MFGREP_RESPONSE *)(msg->data_payload);
-        sprintf (tlogmsg, "OUI %02x%02x%02x response length %d",
-          mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], count);
-        fprintf (context->log, "  Mfg Reply %s\n", tlogmsg);
-        dump_buffer_log(context, "MFGREP: ", msg->data_payload, count);
-
-        payload [0] = 0;
-        for (i=0; i<count; i++)
-        {
-          sprintf(tmp1, "%02x", msg->data_payload [i]);
-          strcat(payload, tmp1);
-        };
-        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_MFGREP %02X%02X%02X %s",
-          mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], payload);
-        system(cmd);
-      };
+      status = action_osdp_MFGREP(context, msg);
       break;
 
     case OSDP_OSTATR:

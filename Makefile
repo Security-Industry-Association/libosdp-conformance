@@ -70,4 +70,5 @@ build:	all
 	cp doc/config-examples/open-osdp-params-PD.json \
 	  opt/osdp-conformance/run/PD/
 	(cd test; make build-test; cd ..)
+	(cd package; make)
 
