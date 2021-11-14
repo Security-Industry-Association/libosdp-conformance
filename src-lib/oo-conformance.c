@@ -195,6 +195,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_lstatr_tamper.test_status),
       1, 1, 1, 1, 0,
                         "Response: LSTATR (tamper)"},
+    {         OOC_SYMBOL_resp_mfgrep,
+      &(osdp_conformance.resp_mfgrep.test_status),
+      1, 1, 1, 1, 0,
+                        "Response: MFGEREP"},
     {         OOC_SYMBOL_resp_ostatr,
       &(osdp_conformance.resp_ostatr.test_status),
       1, 1, 1, 1, 0,
@@ -461,8 +465,6 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0,
                         "Response: osdp_COM"},
     { "4-14-1", &(osdp_conformance.rep_scan_match.test_status),
-      0, 0, 0, 0, 0, "---" },
-    { "4-15-1", &(osdp_conformance.resp_mfg.test_status),
       0, 0, 0, 0, 0, "---" },
     {         OOC_SYMBOL_resp_busy,
       &(osdp_conformance.resp_busy.test_status),
@@ -807,9 +809,6 @@ void
   LOG_REPORT ((log_string,
 "4-14-1 Biometrics Match                   %s",
     conformance_status (oconf->rep_scan_match.test_status)));
-  LOG_REPORT ((log_string,
-"4-15-1 Mfg Response                       %s",
-    conformance_status (oconf->resp_mfg.test_status)));
   LOG_REPORT ((log_string,
 "4-16-1 Busy                               %s",
     conformance_status (oconf->resp_busy.test_status)));

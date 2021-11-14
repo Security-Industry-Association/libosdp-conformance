@@ -243,7 +243,6 @@ exit(-1);
       {
         OSDP_MFG_COMMAND omfg;
 
-        osdp_conformance.resp_mfg.test_status = OCONFORM_EXERCISED;
         strcpy (context->test_in_progress, "3_20_1");
         // send the tester's vendor code
         omfg.vendor_code [0] = context->MFG_oui [0];

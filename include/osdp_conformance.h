@@ -243,7 +243,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM rep_scan_match;          // 4-14
   OSDP_CONFORM resp_ccrypt;
   OSDP_CONFORM resp_rmac_i;
-  OSDP_CONFORM resp_mfg;                // 4-15-1
+  OSDP_CONFORM resp_mfgrep;
   OSDP_CONFORM resp_mfgerrr;
   OSDP_CONFORM resp_busy;
   OSDP_CONFORM resp_ftstat;
