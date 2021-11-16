@@ -181,6 +181,7 @@ int
 
 } /* oosdp_print_message_LED */
 
+
 int
   oosdp_print_message_PD_IDENT
   (OSDP_CONTEXT *ctx,

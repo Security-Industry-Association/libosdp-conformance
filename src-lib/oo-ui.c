@@ -680,44 +680,10 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
       break;
 
     case OSDP_CMDB_DUMP_STATUS:
-#if 1
-//0
-      fprintf (stderr,
-"Role: %d (0=CP,1=PD,2=Mon) Chksum(0)/CRC(1): %d\n",
-         context->role, m_check);
-      fprintf (stderr,
-"  Dump %d Debug %d.\n",
-         m_dump, context->verbosity);
-//"  Timeout %ld(%d.) Dump %d Debug %d.\n",
-//         context->timer[0].i_sec, p_card.poll, m_dump, context->verbosity);
-      fprintf (stderr,
-" PwrRpt %d\nACU Polls %d; PD Acks %d NAKs %d CsumErr %d\n",
-         context->power_report,
-         context->acu_polls, context->pd_acks, context->sent_naks,
-         context->checksum_errs);
-      if (context->role EQUALS OSDP_ROLE_PD)
-      {
-        fprintf (stderr, "PD Address 0x%02x ", p_card.addr);
-      };
-      {
-        int count;
-        int i;
-        count = 0;
-        if (osdp_buf.next > 0)
-          count = osdp_buf.next;
-        fprintf (stderr, "Buffer had %d bytes\n", count);
-        for (i=0; i<count; i++)
-          fprintf (stderr, " %02x", osdp_buf.buf [i]);
-        fprintf (stderr, "\n");
-        status = ST_OK;
-      };
-#endif
-      {
-        status = oo_write_status (context);
+      status = oo_write_status (context);
 
-        dump_conformance (context, &osdp_conformance);
-        status = ST_OK;
-      };
+      dump_conformance (context, &osdp_conformance);
+      status = ST_OK;
       break;
 
     case OSDP_CMDB_IDENT:

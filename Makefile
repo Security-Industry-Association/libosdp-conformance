@@ -3,7 +3,7 @@
 # This makes the RS-485 version.  To make the TLS version,
 # you need to explicitly do "make osdp-tls"
 
-#  (C)Copyright 2017-2020 Smithee Solutions LLC
+#  (C)Copyright 2017-2021 Smithee Solutions LLC
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -34,8 +34,6 @@ osdp-tls:	build
 	(cd src-tls; make all; cd ..)
 	(cd src-tls; make build; cd ..)
 	(cd src-ui; make build-tls; cd ..)
-	rm -f release-osdp-conformance.tgz
-	tar czf release-osdp-conformance.tgz opt/*
 
 package:	osdp-tls
 	(cd package; make package)
@@ -48,7 +46,7 @@ clean:
 	(cd src-ui; make clean; cd ..)
 	(cd src-tools; make clean; cd ..)
 	(cd package; make clean)
-	rm -f release-osdp-conformance.tgz
+	rm -f release-osdp-conformance.tgz *.deb
 	rm -rf opt
 
 build:	all

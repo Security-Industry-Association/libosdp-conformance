@@ -219,7 +219,6 @@ int
 
 
   status = ST_CMD_UNKNOWN;
-fprintf(stderr, "DEBUG: unknown 221 1\\n");
   ret_cmd = OSDP_CMDB_NOOP; // no-op if not known
   value = json_object_get (root, "command");
   if (!json_is_string (value))
@@ -300,11 +299,11 @@ char
     case OSDP_KEYPAD: strcpy(cmd_rep_s, "osdp_KEYPAD"); break;
     case OSDP_LSTATR: strcpy(cmd_rep_s, "osdp_LSTATR"); break;
     case OSDP_MFGERRR: strcpy(cmd_rep_s, "osdp_MFGERRR"); break;
-    case OSDP_MFGREP: strcpy(cmd_rep_s, "osdp_MFGREP"); break;
-    case OSDP_NAK:    strcpy(cmd_rep_s, "osdp_NAK"); break;
-    case OSDP_OSTATR: strcpy(cmd_rep_s, "osdp_OSTATR"); break;
-    case OSDP_PDCAP:  strcpy(cmd_rep_s, "osdp_PDCAP"); break;
-    case OSDP_PDID:   strcpy(cmd_rep_s, "osdp_PDID"); break;
+    case OSDP_MFGREP:   strcpy(cmd_rep_s, "osdp_MFGREP"); break;
+    case OSDP_NAK:      strcpy(cmd_rep_s, "osdp_NAK"); break;
+    case OSDP_OSTATR:   strcpy(cmd_rep_s, "osdp_OSTATR"); break;
+    case OSDP_PDCAP:    strcpy(cmd_rep_s, "osdp_PDCAP"); break;
+    case OSDP_PDID:     strcpy(cmd_rep_s, "osdp_PDID"); break;
     case OSDP_PIVDATAR: strcpy(cmd_rep_s, "osdp_PIVDATAR"); break;
     case OSDP_RAW:      strcpy(cmd_rep_s, "osdp_RAW"); break;
     case OSDP_RMAC_I:   strcpy(cmd_rep_s, "osdp_RMAC_I"); break;

@@ -412,13 +412,11 @@ int
   }; 
 
   // command capabilities
-
-  if (status EQUALS ST_OK)
-  {
-
     // command capabilities
     // cleartext:1 means send unencrypted even with an active secure channel session
 
+  if (status EQUALS ST_OK)
+  {
     if (0 EQUALS strcmp (current_command, "capabilities"))
     {
       cmd->command = OSDP_CMDB_CAPAS;
