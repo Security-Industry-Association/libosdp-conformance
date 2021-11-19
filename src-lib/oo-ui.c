@@ -114,8 +114,7 @@ context=ctx;
       break;
 
     case OSDP_CMDB_BIOMATCH:
-status = -1;
-exit(-1);
+      status = send_bio_match_template(ctx, (unsigned char *)details, details_length);
       break;
 
     case OSDP_CMDB_BUSY:

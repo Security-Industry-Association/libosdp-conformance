@@ -111,6 +111,22 @@ int
   case OSDP_CMDB_BIOMATCH:
     status = ST_OK;
     cmd->command = OSDP_CMD_BIOMATCH;
+    memset(cmd->details, 0, sizeof(cmd->details));
+
+    // todo: allow parameters here
+
+    // reader 0, bio type 0-not specified, bio format 0-not specified, bio quality 0xff-best, length-lsb, length-msb, data
+    cmd->details [0] = 0; // reader 0
+    cmd->details [1] = 0; // type not specified
+    cmd->details [2] = 0; // format not specified
+    cmd->details [3] = 0xff; // quality: best
+    cmd->details [4] = 8; // lth LSB - claim template has 8 bytes
+    cmd->details [5] = 0; // lth MSB
+    // note bytes 6-13 are the template (all zeroes)
+    cmd->details_length = 14;  // 6 plus the template
+
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
     break;
 
   case OSDP_CMDB_FACTORY_DEFAULT:

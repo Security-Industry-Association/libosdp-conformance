@@ -36,6 +36,87 @@
 
 
 int
+  action_osdp_BIOMATCH
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_BIOMATCH */
+
+  int current_length;
+  char logmsg [1024];
+  unsigned char osdp_bio_match_response_data [100];
+  unsigned char osdp_nak_response_data [2];
+  int response_length;
+  int status;
+
+
+  status = ST_OSDP_UNKNOWN_BIO_ACTION;
+
+  if (ctx->verbosity > 2)
+  {
+    sprintf (logmsg, "BIOMATCHR rdr=%02X type=%02X format=%02X quality=%02X\n",
+      *(msg->data_payload + 0), *(msg->data_payload + 1),
+      *(msg->data_payload + 2), *(msg->data_payload + 3));
+    fprintf (ctx->log, "%s", logmsg);
+    logmsg[0]=0;
+  };
+
+  // assuming of course it's sane
+  osdp_test_set_status(OOC_SYMBOL_cmd_biomatch, OCONFORM_EXERCISED);
+
+  if (ctx->pd_cap.enable_biometrics EQUALS 0)
+  {
+    status = ST_OK;
+
+    // if disabled do this
+
+    // we don't actually DO a biometrics read at this time, so NAK it.
+
+    current_length = 0;
+    osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+    osdp_nak_response_data [1] = 0xff;
+    status = send_message_ex(ctx, OSDP_NAK, ctx->pd_address, &current_length, 1, osdp_nak_response_data, OSDP_SEC_SCS_18, 0, NULL);
+    ctx->sent_naks ++;
+    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+    if (ctx->verbosity > 2)
+    {
+      fprintf (ctx->log, "BIO not enable, responding with NAK\n");
+    };
+  };
+
+  // if enabled for biometrics send the replay.
+
+  if (ctx->pd_cap.enable_biometrics EQUALS 1)
+  {
+    status = ST_OK;
+
+    // if there's a template json read it
+
+    memset(osdp_bio_match_response_data, 0, sizeof(osdp_bio_match_response_data));
+    response_length = 16; // bogus value
+    // response is all zeroes for now.
+
+    current_length = 0;
+    status = send_message_ex(ctx, OSDP_BIOMATCHR, ctx->pd_address, &current_length, response_length, osdp_bio_match_response_data, OSDP_SEC_SCS_18, 0, NULL);
+
+    osdp_test_set_status(OOC_SYMBOL_resp_biomatchr, OCONFORM_EXERCISED);
+  };
+
+  return(status);
+
+} /* action_osdp_BIOMATCH */
+
+
+int
+  action_osdp_BIOMATCHR
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+{
+  return(-1);
+}
+
+
+int
   action_osdp_BIOREAD
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
@@ -106,6 +187,44 @@ int
   return(status);
 
 } /* action_osdp_BIOREAD */
+
+
+int
+  action_osdp_BIOREADR
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+{
+  return(-1);
+}
+
+
+/*
+  send_bio_match_template - send an osdp_BIOMATCH command to a PD
+
+  details contains the payload structure in table 26.
+*/
+int
+  send_bio_match_template
+    (OSDP_CONTEXT
+    *ctx,
+    unsigned char *details,
+    int details_length)
+
+{ /* send_bio_match_template */
+
+  int current_length;
+  int status;
+
+
+  current_length = 0;
+  if (ctx->verbosity > 2)
+    fprintf (ctx->log, "biomatch sent t=%02X f=%02X q=%02X l=%d.\n",
+      details [1], details [2], details [3], (details [5] * 256) + details [4]);
+  status = send_message_ex(ctx, OSDP_BIOMATCH, ctx->pd_address,
+     &current_length, details_length, details, OSDP_SEC_SCS_17, 0, NULL);
+  return (status);
+
+} /* send_bio_match_template */
 
 
 /*

@@ -122,29 +122,30 @@
 #define OSDP_BOGUS        (0xFF) // bogus command code to induce NAK
 #define OSDP_ILLICIT      (0x00)
 
-#define OSDP_ACK      (0x40)
-#define OSDP_NAK      (0x41)
-#define OSDP_PDID     (0x45)
-#define OSDP_PDCAP    (0x46)
-#define OSDP_LSTATR   (0x48)
-#define OSDP_ISTATR   (0x49)
-#define OSDP_OSTATR   (0x4A)
-#define OSDP_RSTATR   (0x4B)
-#define OSDP_RAW      (0x50)
-#define OSDP_KEYPAD   (0x53)
-#define OSDP_COM      (0x54)
-#define OSDP_BIOREADR (0x57)
-#define OSDP_CCRYPT   (0x76)
-#define OSDP_SCRYPT   (0x77)
-#define OSDP_RMAC_I   (0x78)
-#define OSDP_BUSY     (0x79) // yes it's a reply
-#define OSDP_FTSTAT   (0x7A)
-#define OSDP_PIVDATAR (0x80)
-#define OSDP_GENAUTHR (0x81)
-#define OSDP_CRAUTHR  (0x82)
-#define OSDP_MFGERRR  (0x84)
-#define OSDP_MFGREP   (0x90)
-#define OSDP_XRD      (0xB1)
+#define OSDP_ACK       (0x40)
+#define OSDP_NAK       (0x41)
+#define OSDP_PDID      (0x45)
+#define OSDP_PDCAP     (0x46)
+#define OSDP_LSTATR    (0x48)
+#define OSDP_ISTATR    (0x49)
+#define OSDP_OSTATR    (0x4A)
+#define OSDP_RSTATR    (0x4B)
+#define OSDP_RAW       (0x50)
+#define OSDP_KEYPAD    (0x53)
+#define OSDP_COM       (0x54)
+#define OSDP_BIOREADR  (0x57)
+#define OSDP_BIOMATCHR (0x58)
+#define OSDP_CCRYPT    (0x76)
+#define OSDP_SCRYPT    (0x77)
+#define OSDP_RMAC_I    (0x78)
+#define OSDP_BUSY      (0x79) // yes it's a reply
+#define OSDP_FTSTAT    (0x7A)
+#define OSDP_PIVDATAR  (0x80)
+#define OSDP_GENAUTHR  (0x81)
+#define OSDP_CRAUTHR   (0x82)
+#define OSDP_MFGERRR   (0x84)
+#define OSDP_MFGREP    (0x90)
+#define OSDP_XRD       (0xB1)
 
 // NAK error codes moved to iec-nak.h
 #include <iec-nak.h>
@@ -991,7 +992,10 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_UNKNOWN_BIO_ACTION       ( 95)
 
 
+int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_BIOMATCHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_BIOREAD(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_BIOREADR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
@@ -1115,6 +1119,7 @@ char *osdp_message (int status, int detail_1, int detail_2, int detail_3);
 int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);
+int send_bio_match_template(OSDP_CONTEXT *ctx, unsigned char *details, int details_length);
 int send_bio_read_template (OSDP_CONTEXT *ctx);
 int send_comset(OSDP_CONTEXT *ctx, unsigned char pd_address, unsigned char new_addr, char *speed_string, int send_style);
 int send_message (OSDP_CONTEXT *context, int command, int dest_addr,

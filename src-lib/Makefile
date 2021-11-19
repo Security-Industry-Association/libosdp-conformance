@@ -39,7 +39,7 @@ ${OUTLIB}:	\
 	oo-actions.o oo-api.o \
 	oo-bio.o oo-callout.o oo-capabilities.o oo-conformance.o oo-crc.o \
 	  oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
-	oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
+	oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o oo-parse.o \
 	  oo-printmsg.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-xpm-actions.o oo-xwrite.o \
@@ -48,7 +48,7 @@ ${OUTLIB}:	\
 	ar r ${OUTLIB} \
 	  oo-actions.o oo-api.o oo-bio.o oo-capabilities.o oo-callout.o \
 	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
-	  oo-printmsg.o oo-process.o oo-util.o oo-util2.o \
+	  oo-parse.o oo-printmsg.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oo-crc.o oo-files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
@@ -80,6 +80,9 @@ oo-mfg-actions.o:	oo-mfg-actions.c ../include/open-osdp.h
 
 oo-mgmt-actions.o:	oo-mgmt-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-mgmt-actions.c
+
+oo-parse.o:	oo-parse.c ../include/open-osdp.h ../include/iec-nak.h
+	${CC} ${CFLAGS} oo-parse.c
 
 oo-process.o:	oo-process.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-process.c
