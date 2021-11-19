@@ -31,7 +31,7 @@ CGIPROGS = \
   tail-CP-log tail-CP-stderr tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
 CGISCRIPTS = conformance-report \
-  do-acurxsize do-bioread do-buzz do-comset do-confirm do-keep-active\
+  do-acurxsize do-biomatch do-bioread do-buzz do-comset do-confirm do-keep-active\
   do-get-piv-cak-cert do-init-secure do-keypad do-led do-send-explicit do-text \
   do-transfer do-verb-cp do-verb-pd
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \

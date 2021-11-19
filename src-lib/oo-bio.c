@@ -112,7 +112,13 @@ int
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
 {
-  return(-1);
+  char command [1024];
+
+
+  sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOMATCHR %02X %02x %02x %02X",
+    ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
+  system(command);
+  return(ST_OK);
 }
 
 
@@ -193,9 +199,27 @@ int
   action_osdp_BIOREADR
     (OSDP_CONTEXT *ctx,
     OSDP_MSG *msg)
-{
-  return(-1);
-}
+
+{ /* action_osdp_BIOREADR */
+
+  char command [4000];
+  int i;
+  char octet [3];
+  char template_string [3000];
+
+
+  template_string [0] = 0;
+  for (i=0; i<msg->data_length; i++)
+  {
+    sprintf(octet, "%02x", msg->data_payload [3+i]);
+    strcat(template_string, octet);
+  };
+  sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOMATCHR %02X %02x %02x %02X %s",
+    ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], template_string);
+  system(command);
+  return(ST_OK);
+
+} /* action_osdp_BIOREADR */
 
 
 /*

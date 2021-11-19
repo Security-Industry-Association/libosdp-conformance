@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2021 Smithee Solutions LLC
+# (C)Copyright 2021 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,8 +31,8 @@ CMDPATHX=${OSDP_PATH}/run/ACU/open_osdp_command.json
 sudo -n rm -f ${CMDPATH}
 
 sudo -n echo  >${CMDPATH} "{"
-sudo -n echo >>${CMDPATH} "   \"command\" : \"bioread\"",
-sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-bioread from UI\""
+sudo -n echo >>${CMDPATH} "   \"command\" : \"biomatch\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-biomatch-use defaults\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}
 
