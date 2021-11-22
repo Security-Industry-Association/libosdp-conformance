@@ -37,7 +37,6 @@ int
 
 { /* action_osdp_XRD */
 
-  char cmd [2*1024];
   int status;
 
 
@@ -55,8 +54,9 @@ int
 "Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
         *(msg->data_payload + 2), *(msg->data_payload + 3));
       status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
-      system(cmd);
+      status = oosdp_callout(ctx, "osdp_XRD_1_1", "");
+//      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
+//      system(cmd);
     };
   };
 
@@ -79,9 +79,8 @@ int
 
       dump_buffer_log(ctx, "APDU: ", msg->data_payload+4, msg->data_length-4);
 
-      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_2 %s",
-        apdu);
-      system(cmd);
+      status = oosdp_callout(ctx, "osdp_XRD_1_2", apdu);
+//      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_2 %s", apdu); system(cmd);
     };
   };
 

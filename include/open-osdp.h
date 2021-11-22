@@ -446,6 +446,7 @@ typedef struct osdp_context
   int verbosity;
   unsigned char my_guid [128/8];
   int pd_filetransfer_payload;
+  char service_root [1024];
 
   OSDP_COMMAND_QUEUE *q;
   int cmd_q_overflow;
@@ -1084,6 +1085,7 @@ void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
 int osdp_xwrite_get_mode (OSDP_CONTEXT *ctx);
 int osdp_xwrite_mode1 (OSDP_CONTEXT *ctx, int command, unsigned char * payload, int payload_length);
 int osdp_xwrite_set_mode (OSDP_CONTEXT *ctx, int mode);
+int oosdp_callout(OSDP_CONTEXT *ctx, char *action, char *details);
 void oosdp_clear_statistics(OSDP_CONTEXT *ctx);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);

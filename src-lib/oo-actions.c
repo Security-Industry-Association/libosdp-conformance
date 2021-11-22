@@ -52,7 +52,6 @@ int
 
 { /* action_osdp_COMSET */
 
-  char cmd [1024];
   int current_length;
   unsigned char from_address;
   int i;
@@ -62,7 +61,8 @@ int
   int status;
 
 
-  sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_COMSET"); system(cmd);
+  status = oosdp_callout(ctx, "osdp_COMSET", "");
+//  sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_COMSET"); system(cmd);
   p = (OSDP_HDR *)(msg->ptr);
   from_address = p->addr;
   memset (osdp_com_response_data, 0, sizeof (osdp_com_response_data));
@@ -87,7 +87,6 @@ int
           OSDP_SEC_SCS_18, 0, NULL);
 
   osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
-  sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_COM"); system(cmd);
 
   if (ctx->verbosity > 2)
   {
@@ -408,19 +407,17 @@ int
 { /* action_osdp_MFGERRR */
 
   char cmd [2*1024];
+  int status;
 
 
+  status = ST_OK;
   fprintf(ctx->log, "MFGERRR received\n");
 
-  // run the action routine with the bytes,bit count,format
-
-  sprintf(cmd,
-    "/opt/osdp-conformance/run/ACU-actions/osdp_MFGERRR %d. %02x",
-    msg->data_length, *(msg->data_payload));
-  system(cmd);
+  sprintf(cmd, "%02X %d.", *(msg->data_payload), msg->data_length);
+  status = oosdp_callout(ctx, "osdp_MFGERRR", cmd);
 
   osdp_test_set_status(OOC_SYMBOL_resp_mfgerrr, OCONFORM_EXERCISED);
-  return(ST_OK);
+  return(status);
 
 } /* action_osdp_MFGERRR */
 

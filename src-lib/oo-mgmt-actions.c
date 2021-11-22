@@ -63,11 +63,11 @@ int
     sprintf(tmp1, "%02x", msg->data_payload [i]);
     strcat(payload, tmp1);
   };
-  sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_MFGREP %02X%02X%02X %s PD=%02x",
-    mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], payload, ctx->pd_address);
-  system(cmd);
-
-  status = osdp_test_set_status_ex(OOC_SYMBOL_resp_mfgrep, OCONFORM_EXERCISED, "");
+  sprintf(cmd, "%02X%02X%02X %s",
+    mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], payload);
+  status = oosdp_callout(ctx, "osdp_MFGREP", cmd);
+  if (status EQUALS ST_OK)
+    status = osdp_test_set_status_ex(OOC_SYMBOL_resp_mfgrep, OCONFORM_EXERCISED, "");
 
   return(status);
 
