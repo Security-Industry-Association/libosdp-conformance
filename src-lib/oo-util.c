@@ -356,8 +356,9 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       break;
 
     case OSDP_BIOREAD:
-      m->data_payload = NULL;
-      msg_data_length = 0;
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BIOREAD");
       osdp_test_set_status(OOC_SYMBOL_cmd_bioread, OCONFORM_EXERCISED);
@@ -1021,6 +1022,7 @@ int
 
     (void)monitor_osdp_message (context, msg);
 
+fprintf(stderr, "DEBUG: process_osdp_message %02x\n", this_command);
     switch (this_command)
     {
     case OSDP_ACURXSIZE:
@@ -1405,6 +1407,11 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
   {
     // if we're here we think it's a whole sane response so we can say the last was processed.
     context->last_was_processed = 1;
+
+    if (msg->msg_cmd EQUALS OSDP_BIOREADR)
+      fprintf(stderr, "DEBUG: monitoring bioreader...\n");
+
+    (void)monitor_osdp_message (context, msg);
 
     status = osdp_timer_start(context, OSDP_TIMER_RESPONSE);
 

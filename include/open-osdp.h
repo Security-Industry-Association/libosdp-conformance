@@ -194,7 +194,7 @@
 #define OSDP_CMDB_BIOREAD        (1036)
 #define OSDP_CMDB_POLLING        (1037)
 #define OSDP_CMDB_RESET          (1038)
-#define OSDP_CMDB_BIOREADER      (1039)
+//#define OSDP_CMDB_BIOREADER      (1039)
 #define OSDP_CMDB_ACURXSIZE         (1040)
 #define OSDP_CMDB_FACTORY_DEFAULT   (1041)
 #define OSDP_CMDB_KEYSET            (1042)
@@ -224,14 +224,14 @@
 
 #define OSDP_CMD_DUMP_STATUS  (7)
 #define OSDP_CMD_SETUP        (8)
-#define OSDP_CMD_EXIT         (9)
+//#define OSDP_CMD_EXIT         (9)
 
 #define OSDP_CMD_CP_SEND_POLL (1)
 
 #define OSDP_CMD_SET_CP       (81)
 #define OSDP_CMD_SET_PD       (82)
-#define OSDP_CMD_BIOREAD      (83)
-#define OSDP_CMD_BIOMATCH     (84)
+//#define OSDP_CMD_BIOREAD      (83)
+//#define OSDP_CMD_BIOMATCH     (84)
 //#define OSDP_CMD_PIVDATA        (85)  // should be using CMDB_...
 #define zzOSDP_CMD_XWRITE       (83)
 
@@ -650,7 +650,13 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_OUT_STATUS   (5)
 #define OOSDP_MSG_OSDP         (11)
 
+// convention - first two digits are paragraph number; second 2 digest are group
+
 #define OOSDP_MSG_ACURXSIZE    (110)
+#define OOSDP_MSG_BIOMATCH     (1501)
+#define OOSDP_MSG_BIOMATCHR    (1502)
+#define OOSDP_MSG_BIOREAD      (1503)
+#define OOSDP_MSG_BIOREADR     (1504)
 #define OOSDP_MSG_BUZ          (120)
 #define OOSDP_MSG_CCRYPT       (130)
 #define OOSDP_MSG_CHLNG        (131)

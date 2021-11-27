@@ -1,3 +1,4 @@
 #!/bin/bash
+killall open-osdp
 rm -rf /opt/osdp-conformance/run/* /opt/osdp-conformance/results/*
 

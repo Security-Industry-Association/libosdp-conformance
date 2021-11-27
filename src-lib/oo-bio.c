@@ -131,6 +131,7 @@ int
 
   int current_length;
   char logmsg [1024];
+  char command [1024];
   unsigned char osdp_bio_read_response_data [100];
   unsigned char osdp_nak_response_data [2];
   int response_length;
@@ -139,13 +140,12 @@ int
 
   status = ST_OSDP_UNKNOWN_BIO_ACTION;
 
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 2)
   {
     sprintf (logmsg, "BIOREAD rdr=%02x type=%02x format=%02x quality=%02x\n",
       *(msg->data_payload + 0), *(msg->data_payload + 1),
       *(msg->data_payload + 2), *(msg->data_payload + 3));
     fprintf (ctx->log, "%s", logmsg);
-    fprintf (stderr, "%s", logmsg);
     logmsg[0]=0;
   };
 
@@ -188,6 +188,10 @@ int
     status = send_message_ex(ctx, OSDP_BIOREADR, ctx->pd_address, &current_length, response_length, osdp_bio_read_response_data, OSDP_SEC_SCS_18, 0, NULL);
 
     osdp_test_set_status(OOC_SYMBOL_resp_bioreadr, OCONFORM_EXERCISED);
+
+    sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOREAD %02X %02x %02x %02X",
+      ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
+    system(command);
   };
 
   return(status);

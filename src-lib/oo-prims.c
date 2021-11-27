@@ -233,9 +233,9 @@ int
   {
     ret_cmd = OSDP_CMDB_NOOP;
     status = ST_CMD_UNKNOWN;
-    if (0 EQUALS strcmp(command, "bio-read"))
+    if (0 EQUALS strcmp(command, "bioread"))
       ret_cmd = OSDP_CMDB_BIOREAD;
-    if (0 EQUALS strcmp(command, "bio-match"))
+    if (0 EQUALS strcmp(command, "biomatch"))
       ret_cmd = OSDP_CMDB_BIOMATCH;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
@@ -289,6 +289,10 @@ char
       sprintf(cmd_rep_s, "???2(0x%2x)", cmdrep);
       break;
     case OSDP_ACK:    strcpy(cmd_rep_s, "osdp_ACK"); break;
+    case OSDP_BIOMATCH: strcpy(cmd_rep_s, "osdp_BIOMATCH"); break;
+    case OSDP_BIOMATCHR: strcpy(cmd_rep_s, "osdp_BIOMATCHR"); break;
+    case OSDP_BIOREAD: strcpy(cmd_rep_s, "osdp_BIOREAD"); break;
+    case OSDP_BIOREADR: strcpy(cmd_rep_s, "osdp_BIOREADR"); break;
     case OSDP_BUSY:   strcpy(cmd_rep_s, "osdp_BUSY"); break;
     case OSDP_CCRYPT: strcpy(cmd_rep_s, "osdp_CCRYPT"); break;
     case OSDP_CRAUTHR: strcpy(cmd_rep_s, "osdp_CRAUTHR"); break;

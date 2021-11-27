@@ -330,6 +330,7 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
 
+fprintf(stderr, "DEBUG: osdp_parse_message cmd %02x\n", returned_hdr->command);
     switch (returned_hdr->command)
     {
     default:
@@ -356,16 +357,18 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       break;
 
     case OSDP_BIOMATCH:
-      m->data_payload = NULL;
-      msg_data_length = 0;
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BIOMATCH");
       osdp_test_set_status(OOC_SYMBOL_cmd_biomatch, OCONFORM_EXERCISED);
       break;
 
     case OSDP_BIOREAD:
-      m->data_payload = NULL;
-      msg_data_length = 0;
+      m->data_payload = m->cmd_payload + 1;
+      msg_data_length = p->len_lsb + (p->len_msb << 8);
+      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_BIOREAD");
       osdp_test_set_status(OOC_SYMBOL_cmd_bioread, OCONFORM_EXERCISED);
@@ -866,7 +869,7 @@ fprintf(context->log,
           dump_buffer_log(context, "  Raw input: ", m->ptr, m->lth);
       };
 
-      sprintf (log_line, "  Pkt: %04d Message: %s %s", context->packets_received, cmd_rep_tag, tlogmsg);
+      sprintf (log_line, "  Pkt %04d Msg %s %s", context->packets_received, cmd_rep_tag, tlogmsg);
 
       {
         char scb_tag[1024];

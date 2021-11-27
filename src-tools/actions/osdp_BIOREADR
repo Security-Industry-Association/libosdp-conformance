@@ -1,0 +1,4 @@
+#!/bin/bash
+mkdir -p /opt/osdp-conformance/log
+echo >>/opt/osdp-conformance/log/actions.log osdp_BIOREADR called $1 $2 $3 $4 $5 $6 $7 $8
+

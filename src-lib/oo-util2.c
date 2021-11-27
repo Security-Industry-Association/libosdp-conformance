@@ -571,12 +571,14 @@ if (0)
         status_monitor = ST_OK;
       };
       if (ctx->verbosity > 8)
+      {
         if (status_monitor != ST_OK)
         {
           sprintf (tlogmsg,"parse_message for monitoring returned %d.\n",
             status_monitor);
           status = oosdp_log (ctx, OSDP_LOG_STRING_CP, 1, tlogmsg);
         };
+      };
       (void)monitor_osdp_message (ctx, &m);
     };
 

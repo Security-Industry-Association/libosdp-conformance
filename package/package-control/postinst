@@ -1,7 +1,5 @@
 #!/bin/bash
 
-usermod --shell /bin/bash www-data
-
 usermod --groups sudo www-data
 usermod --shell /bin/bash www-data
 

@@ -545,6 +545,11 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
         osdp_conformance.conforming_messages ++;
       break;
 
+    case OSDP_BIOMATCH: OSDP_CHECK_CMDREP ("osdp_BIOMATCH", cmd_biomatch, 1); break;
+    case OSDP_BIOMATCHR: OSDP_CHECK_CMDREP ("osdp_BIOMATCHR", resp_biomatchr, 1); break;
+    case OSDP_BIOREAD: OSDP_CHECK_CMDREP ("osdp_BIOREAD", cmd_bioread, 1); break;
+    case OSDP_BIOREADR: OSDP_CHECK_CMDREP ("osdp_BIOREADR", resp_bioreadr, 1); break;
+
     case OSDP_BUSY:
       OSDP_CHECK_CMDREP ("osdp_BUSY", resp_busy, 1);
       break;
@@ -760,6 +765,10 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+    case OSDP_BIOMATCH: { status = oosdp_make_message (OOSDP_MSG_BIOMATCH, tlogmsg, msg);
+      if (status == ST_OK) status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg); }; break;
+    case OSDP_BIOREAD: { status = oosdp_make_message (OOSDP_MSG_BIOREAD, tlogmsg, msg);
+      if (status == ST_OK) status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg); }; break;
     case OSDP_CHLNG:
       status = oosdp_make_message (OOSDP_MSG_CHLNG, tlogmsg, msg);
       if (status == ST_OK)
@@ -816,6 +825,10 @@ int
   {
     switch (msg->msg_cmd)
     {
+    case OSDP_BIOMATCHR: { status = oosdp_make_message (OOSDP_MSG_BIOMATCHR, tlogmsg, msg);
+      if (status == ST_OK) status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg); }; break;
+    case OSDP_BIOREADR: { status = oosdp_make_message (OOSDP_MSG_BIOREADR, tlogmsg, msg);
+      if (status == ST_OK) status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg); }; break;
     case OSDP_CRAUTHR:
       status = oosdp_make_message(OOSDP_MSG_CRAUTHR, tlogmsg, msg);
       if (status == ST_OK)

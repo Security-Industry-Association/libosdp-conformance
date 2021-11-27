@@ -191,6 +191,22 @@ int
     };
     break;
 
+  case OOSDP_MSG_BIOMATCH:
+    sprintf(tlogmsg, "osdp_BIOMATCH details t.b.d.\n");
+    break;
+
+  case OOSDP_MSG_BIOMATCHR:
+    sprintf(tlogmsg, "osdp_BIOMATCHR details t.b.d.\n");
+    break;
+
+  case OOSDP_MSG_BIOREAD:
+    sprintf(tlogmsg, "osdp_BIOREAD details t.b.d.\n");
+    break;
+
+  case OOSDP_MSG_BIOREADR:
+    sprintf(tlogmsg, "osdp_BIOREADR details t.b.d.\n");
+    break;
+
   case OOSDP_MSG_BUZ:
     msg = (OSDP_MSG *) aux;
     if (msg->security_block_length > 0)
