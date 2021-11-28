@@ -181,7 +181,14 @@ int
     // if there's a template json read it
 
     memset(osdp_bio_read_response_data, 0, sizeof(osdp_bio_read_response_data));
-    response_length = 16; // bogus value
+    osdp_bio_read_response_data [0] = 0; // reader
+    osdp_bio_read_response_data [1] = 0; // status good
+    osdp_bio_read_response_data [2] = 0; // type
+    osdp_bio_read_response_data [3] = 0xff; // quality
+    osdp_bio_read_response_data [4] = 8; // lth lsb
+    osdp_bio_read_response_data [5] = 0; // lth msb
+    response_length = 6 + 8;
+
     // response is all zeroes for now.
 
     current_length = 0;

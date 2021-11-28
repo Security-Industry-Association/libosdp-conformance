@@ -1694,9 +1694,9 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       break;
 
     case OSDP_PDID:
-      status = oosdp_make_message (OOSDP_MSG_PD_IDENT, tlogmsg, msg);
-      if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+//      status = oosdp_make_message (OOSDP_MSG_PD_IDENT, tlogmsg, msg);
+//      if (status == ST_OK)
+//        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
 
       // consistency check (test 4-3-2)
       // OUI must not be zero

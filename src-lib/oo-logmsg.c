@@ -140,6 +140,7 @@ int
   OSDP_MSG *msg;
   unsigned short int newdelay;
   unsigned short int newmax;
+  char octet [3];
   OSDP_HDR *oh;
   unsigned char osdp_command;
   OSDP_HDR *osdp_wire_message;
@@ -196,7 +197,8 @@ int
     break;
 
   case OOSDP_MSG_BIOMATCHR:
-    sprintf(tlogmsg, "osdp_BIOMATCHR details t.b.d.\n");
+    sprintf(tlogmsg, "  BIO Match Response: Rdr %02X Stat %02X Score %02X ",
+      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
     break;
 
   case OOSDP_MSG_BIOREAD:
@@ -204,7 +206,14 @@ int
     break;
 
   case OOSDP_MSG_BIOREADR:
-    sprintf(tlogmsg, "osdp_BIOREADR details t.b.d.\n");
+    sprintf(tlogmsg, "  BIO Read Response: Rdr %02X Status %02X Typ %02x Qual %02X ",
+      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3]);
+    for (i=0; i<count-4; i++)
+    {
+      sprintf(octet, "%02x", msg->data_payload [4+i]);
+      strcat(tlogmsg, octet);
+    };
+    strcat(tlogmsg, "\n");
     break;
 
   case OOSDP_MSG_BUZ:
