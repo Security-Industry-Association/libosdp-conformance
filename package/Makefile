@@ -16,7 +16,7 @@ build:	all
 
 clean:
 	make -f makefile-package clean
-	rm -rf ${PACKAGE_NAME} ${PACKAGE_NAME}-build ${PACKAGE_NAME}-dist ${PACKAGE_NAME}*.deb opt  
+	rm -rf ${PACKAGE_NAME} ${PACKAGE_NAME}-build ${PACKAGE_NAME}-dist ${PACKAGE_NAME}*.deb opt  get-arch
 
 package:	build
 	mv *.deb ..

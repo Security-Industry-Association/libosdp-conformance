@@ -37,9 +37,9 @@ extern OSDP_CONTEXT context;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 extern OSDP_BUFFER osdp_buf;
-unsigned char last_command_received;
-unsigned char last_sequence_received;
-unsigned char last_check_value;
+extern unsigned char last_command_received;
+extern unsigned char last_sequence_received;
+extern unsigned char last_check_value;
 extern char trace_in_buffer [];
 
 

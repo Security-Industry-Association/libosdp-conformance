@@ -1,1 +1,0 @@
-DEB_TARGET_ARCH=arm64 printenv DEB_TARGET_ARCH
