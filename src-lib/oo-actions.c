@@ -376,6 +376,18 @@ fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
         status = send_message(ctx, OSDP_MFGREP, p_card.addr, &current_length, sizeof(mfg_response), mfg_response);
       };
       break;
+
+    case OOSDP_MFG_PIRATE:
+      {
+        unsigned char mfg_response [1600];
+
+        memset(mfg_response, 0xff, sizeof(mfg_response));
+        current_length = 0;
+        status = send_message_ex (ctx, OSDP_MFGERRR, ctx->pd_address,
+          &current_length, sizeof (mfg_response), mfg_response,
+          OSDP_SEC_SCS_18, 0, NULL);
+      };
+      break;
     };
   };
   if (unknown)

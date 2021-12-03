@@ -812,6 +812,7 @@ extern time_t previous_time;
         //         guid
         //         COMSET parameters (1 byte addr, 4 bytes baud rate)
 	// ...a total of 22 bytes
+#define OOSDP_MFG_PIRATE (3)
 
 
 #define OOSDP_MFGR_PING_ACK (1)
