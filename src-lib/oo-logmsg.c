@@ -206,8 +206,8 @@ int
     break;
 
   case OOSDP_MSG_BIOREADR:
-    sprintf(tlogmsg, "  BIO Read Response: Rdr %02X Status %02X Typ %02x Qual %02X ",
-      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3]);
+    sprintf(tlogmsg, "  BIO Read Response: Rdr %02X Status %02X Typ %02x Qual %02X (count %d.)",
+      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3], count);
     for (i=0; i<count-4; i++)
     {
       sprintf(octet, "%02x", msg->data_payload [4+i]);
