@@ -104,6 +104,36 @@ int
     status = ST_OK;
     cmd->command = OSDP_CMDB_BIOREAD;
     // todo: allow parameters here
+
+    memset(cmd->details, 0, sizeof(cmd->details));
+    cmd->details [0] = 0; // reader 0
+
+    cmd->details [1] = 0; // default bio type
+    value = json_object_get (root, "type");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [1] = i;
+    };
+
+    cmd->details [2] = 2; // ANSI/INCITS 378 Fingerprint template "49"
+    value = json_object_get (root, "template");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [2] = i;
+    };
+
+    cmd->details [3] = 0xFF; // quality
+    value = json_object_get (root, "quality");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [3] = i;
+    };
+
+    cmd->details_length = 4;
+
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;
     break;
