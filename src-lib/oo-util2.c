@@ -262,15 +262,12 @@ z64 = (0xff & (unsigned int)*(p+9));
 
 int
   next_sequence
-    (OSDP_CONTEXT
-      *ctx)
+    (OSDP_CONTEXT *ctx)
 
 { /* next_sequence */
 
-  static int
-    current_sequence;
-  int
-    do_increment;
+  static int current_sequence;
+  int do_increment;
 
 
   do_increment = 1;

@@ -488,13 +488,28 @@ fprintf(stderr, "DEBUG: poll deprecated\n");
 
   if (status EQUALS ST_OK)
   {
-    value = json_object_get (root, "");
+    value = json_object_get (root, "poll");
     if (json_is_string (value))
     {
       int i;
+      found_field = 1;
       sscanf(json_string_value(value), "%d", &i);
       ctx->listen_sap = i;
       fprintf(ctx->log, "Listen Service Access Point set to %d.\n", ctx->listen_sap);
+    };
+  };
+
+  // privacy - 1 to not dump PII
+
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "privacy");
+    if (json_is_string (value))
+    {
+      int i;
+      found_field = 1;
+      sscanf(json_string_value(value), "%d", &i);
+      ctx->privacy = i;
     };
   };
 

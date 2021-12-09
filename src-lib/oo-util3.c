@@ -47,22 +47,14 @@ unsigned int web_color_lookup [16] = {
 
 int
   osdp_build_message
-    (unsigned char
-        *buf,
-    int
-      *updated_length,
-    unsigned char
-      command,
-    int
-      dest_addr,
-    int
-      sequence,
-    int
-      data_length,
-    unsigned char
-      *data,
-    int
-      secure)
+    (unsigned char *buf,
+    int *updated_length,
+    unsigned char command,
+    int dest_addr,
+    int sequence,
+    int data_length,
+    unsigned char *data,
+    int secure)
 
 { /* osdp_build_mesage */
 

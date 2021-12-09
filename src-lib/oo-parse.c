@@ -153,7 +153,11 @@ int
 
     // various control info in CTRL byte
     msg_sqn = (p->ctrl) & 0x03;
+
     m->sequence = msg_sqn;
+if (m->sequence EQUALS 0)
+  fprintf(stderr, "DEBUG: sequence was zero\n");
+
     msg_scb = (p->ctrl) & 0x08;
 
     // depending on whether it's got a security block or not
@@ -774,7 +778,10 @@ status = ST_OK; // tolerate checksum error and continue
           match
         */
         if ((role EQUALS OSDP_ROLE_ACU) && (rcv_seq != context->next_sequence))
+        {
+fprintf(stderr, "DEBUG: detected bad sequence\n");
           bad = 1;
+        };
 
         // if we're the PD the received sequence number should match the sequence number on the wire
         if ((role EQUALS OSDP_ROLE_PD) && (wire_sequence != context->next_sequence))

@@ -202,7 +202,8 @@ int
     break;
 
   case OOSDP_MSG_BIOREAD:
-    sprintf(tlogmsg, "osdp_BIOREAD details t.b.d.\n");
+    sprintf(tlogmsg, "  BIO Read: Rdr %02X Typ %02X Fmt %02X Qual %02X",
+      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3]);
     break;
 
   case OOSDP_MSG_BIOREADR:

@@ -436,6 +436,7 @@ typedef struct osdp_context
   int process_lock; // file handle to exclusivity lock
   int keep_results; // 0 for normal results flush; nonzero to flush results
   // configuration
+  int privacy; // 1 to not display PII
   int disable_certificate_checking;
   int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled
   int enable_poll; // usuall 1 for enable, 0=disable
