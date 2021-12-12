@@ -379,7 +379,7 @@ fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
 
     case OOSDP_MFG_PIRATE:
       {
-        unsigned char mfg_response [1600];
+        unsigned char mfg_response [500];
 
         memset(mfg_response, 0xff, sizeof(mfg_response));
         current_length = 0;

@@ -1,7 +1,8 @@
 #!/bin/bash
 
-usermod --groups sudo www-data
+usermod --groups sudo,tester www-data
 usermod --shell /bin/bash www-data
+usermod --groups sudo,tester opsadmin1
 
 mkdir -p /opt/osdp-conformance/run/ACU
 mkdir -p /opt/osdp-conformance/run/MON
