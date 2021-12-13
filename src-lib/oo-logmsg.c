@@ -197,12 +197,12 @@ int
     break;
 
   case OOSDP_MSG_BIOMATCHR:
-    sprintf(tlogmsg, "  BIO Match Response: Rdr %02X Stat %02X Score %02X ",
+    sprintf(tlogmsg, "  BIO Match Response: Rdr %02X Stat %02X Score %02X\n",
       msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
     break;
 
   case OOSDP_MSG_BIOREAD:
-    sprintf(tlogmsg, "  BIO Read: Rdr %02X Typ %02X Fmt %02X Qual %02X",
+    sprintf(tlogmsg, "  BIO Read: Rdr %02X Typ %02X Fmt %02X Qual %02X\n",
       msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3]);
     break;
 
@@ -211,7 +211,10 @@ int
       msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3], count);
     for (i=0; i<count-4; i++)
     {
-      sprintf(octet, "%02x", msg->data_payload [4+i]);
+      if (context.pii_display)
+        sprintf(octet, "%02x", msg->data_payload [4+i]);
+      else
+        sprintf(octet, "**");
       strcat(tlogmsg, octet);
     };
     strcat(tlogmsg, "\n");

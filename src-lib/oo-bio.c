@@ -214,6 +214,7 @@ int
 { /* action_osdp_BIOREADR */
 
   char command [4000];
+  FILE *credsf;
   int i;
   char octet [3];
   char template_string [3000];
@@ -224,6 +225,12 @@ int
   {
     sprintf(octet, "%02x", msg->data_payload [3+i]);
     strcat(template_string, octet);
+  };
+  credsf = fopen("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", "w");
+  if (credsf != NULL)
+  {
+    fprintf(credsf, "{\"bio-template\":\"%s\"}\n", template_string);
+    fclose(credsf);
   };
   sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOMATCHR %02X %02x %02x %02X %s",
     ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], template_string);

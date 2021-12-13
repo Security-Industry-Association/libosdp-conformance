@@ -446,6 +446,7 @@ typedef struct osdp_context
   char serial_speed [1024];
   int trace; // 0=disabled 1=enabled
   int verbosity;
+  int pii_display;
   unsigned char my_guid [128/8];
   int pd_filetransfer_payload;
   char service_root [1024];
