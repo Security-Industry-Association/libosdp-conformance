@@ -882,7 +882,6 @@ int
     break;
 
   case OSDP_FTSTAT:
-fprintf(stderr, "DEBUG: FTSTAT log 864\n");
     status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
     if (status == ST_OK)
       status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);

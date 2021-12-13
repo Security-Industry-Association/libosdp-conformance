@@ -243,7 +243,7 @@ int
 
 
 /*
-  action_osdp_FTSTAT - processing incoming osdp_FTSTAT message at CP
+  action_osdp_FTSTAT - processing incoming osdp_FTSTAT message at ACU
 
   this causes the next chunk to be transferred, or terminates the transfer,
   or switches to "finishing" mode if the PD needs more time.
@@ -273,17 +273,13 @@ int
     // (and this is ok so reset the status)
     status = ST_OK;
   };
-fprintf(stderr, "DEBUG: a status in action_osdp_FTSTAT %d.\n", status);
   if (status EQUALS ST_OSDP_FILEXFER_WRAPUP)
   {
-fprintf(stderr, "DEBUG: b status in action_osdp_FTSTAT %d.\n", status);
     osdp_wrapup_filetransfer(ctx);
-fprintf(stderr, "DEBUG: c status in action_osdp_FTSTAT %d.\n", status);
     status = ST_OK;
   }
   else
   {
-fprintf(stderr, "DEBUG: d status in action_osdp_FTSTAT %d.\n", status);
     if (status EQUALS ST_OK)
   {
     // if more send more

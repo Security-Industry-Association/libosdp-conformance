@@ -155,8 +155,11 @@ int
     msg_sqn = (p->ctrl) & 0x03;
 
     m->sequence = msg_sqn;
-if (m->sequence EQUALS 0)
-  fprintf(stderr, "DEBUG: sequence was zero\n");
+    if (context->verbosity > 3)
+    {
+      if (m->sequence EQUALS 0)
+        fprintf(stderr, "DEBUG: sequence was zero\n");
+    };
 
     msg_scb = (p->ctrl) & 0x08;
 
@@ -319,6 +322,17 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
         if (msg_sqn EQUALS 0)
         {
           osdp_test_set_status(OOC_SYMBOL_seq_zero, OCONFORM_EXERCISED);
+          if ((context->next_sequence > 1) ||
+            ((context->next_sequence EQUALS 1) && (context->last_sequence_received > 0)))
+          {
+            fprintf(context->log, "Sequence restarted.  Resettinng ACU to sequence 0.\n");
+            context->next_sequence = 0;
+            if (context->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+            {
+              fprintf(context->log, "Resetting secure channel.\n");
+              osdp_reset_secure_channel(context);
+            };
+          };
         };
       };
     };

@@ -385,7 +385,11 @@ int
     // load data from file starting at msg->FtData
 
     if (ctx->xferctx.current_send_length)
+    {
       size_to_read = ctx->xferctx.current_send_length;
+fprintf(stderr, "DEBUG: size to read %d.\n", ctx->xferctx.current_send_length);
+size_to_read = 200;
+    }
     else
     {
       size_to_read = ctx->max_message;
