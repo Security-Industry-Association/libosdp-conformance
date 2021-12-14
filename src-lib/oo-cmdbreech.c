@@ -98,15 +98,22 @@ int
   };
   switch (cmd->command)
   {
-  // command bio_read send bio read template command
+
+    // command bio_read send bio read template command
+    // details are:  reader, type, format, quality 
 
   case OSDP_CMDB_BIOREAD:
     status = ST_OK;
     cmd->command = OSDP_CMDB_BIOREAD;
-    // todo: allow parameters here
-
     memset(cmd->details, 0, sizeof(cmd->details));
-    cmd->details [0] = 0; // reader 0
+
+    cmd->details [0] = 0; // default reader zero
+    value = json_object_get (root, "reader");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [0] = i;
+    };
 
     cmd->details [1] = 0; // default bio type
     value = json_object_get (root, "type");
@@ -117,7 +124,7 @@ int
     };
 
     cmd->details [2] = 2; // ANSI/INCITS 378 Fingerprint template "49"
-    value = json_object_get (root, "template");
+    value = json_object_get (root, "format");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
@@ -142,18 +149,64 @@ int
     status = ST_OK;
     cmd->command = OSDP_CMDB_BIOMATCH;
     memset(cmd->details, 0, sizeof(cmd->details));
+    cmd->details_length = 0;
 
-    // todo: allow parameters here
+    cmd->details [0] = 0; // default reader zero
+    value = json_object_get (root, "reader");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [0] = i;
+    };
+    cmd->details_length++;
 
-    // reader 0, bio type 0-not specified, bio format 0-not specified, bio quality 0xff-best, length-lsb, length-msb, data
-    cmd->details [0] = 0; // reader 0
-    cmd->details [1] = 0; // type not specified
-    cmd->details [2] = 0; // format not specified
-    cmd->details [3] = 0xff; // quality: best
-    cmd->details [4] = 8; // lth LSB - claim template has 8 bytes
-    cmd->details [5] = 0; // lth MSB
-    // note bytes 6-13 are the template (all zeroes)
-    cmd->details_length = 14;  // 6 plus the template
+    cmd->details [1] = OSDP_BIO_TYPE_LEFT_INDEX_FINGER; // 7
+    value = json_object_get (root, "type");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [1] = i;
+    };
+    cmd->details_length++;
+
+    cmd->details [2] = 2; // default s ANSI/INCITS 378 fingerprint template "49"
+    value = json_object_get (root, "format");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [2] = i;
+    };
+    cmd->details_length++;
+
+    cmd->details [3] = 0xFF; // quality
+    value = json_object_get (root, "quality");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [3] = i;
+    };
+    cmd->details_length++;
+
+    value = json_object_get (root, "template");
+    if (json_is_string (value))
+    {
+      if (strlen(json_string_value(value)) > sizeof(cmd->details - (1+cmd->details_length)))
+      {
+        fprintf(ctx->log, "BIO Template specified too large, using zeros\n");
+        cmd->details_length = cmd->details_length + 8;
+      }
+      else
+      {
+        strcpy((char *)(cmd->details+cmd->details_length), (char *)(json_string_value(value)));
+        cmd->details_length = cmd->details_length + strlen(json_string_value(value));
+      };
+    }
+    else
+    {
+      // there wasn't a template argument, use the saved one
+      strcpy((char *)(cmd->details+cmd->details_length), (char *)(ctx->saved_bio_template));
+      cmd->details_length = cmd->details_length + strlen(ctx->saved_bio_template);
+    };
 
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;

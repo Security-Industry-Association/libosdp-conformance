@@ -147,6 +147,8 @@
 #define OSDP_MFGREP    (0x90)
 #define OSDP_XRD       (0xB1)
 
+#define OSDP_BIO_TYPE_LEFT_INDEX_FINGER (7)
+
 // NAK error codes moved to iec-nak.h
 #include <iec-nak.h>
 
@@ -485,6 +487,7 @@ typedef struct osdp_context
   int capability_configured_leds;
   int capability_configured_sounder;
   int capability_configured_text;
+  char saved_bio_template [8192];
 
   // OSDP protocol context
   char last_command_sent;
@@ -550,7 +553,6 @@ typedef struct osdp_context
   unsigned char serial_number [4];
   unsigned char fw_version [3]; //major minor build
 
-
   // for multipart messages, in or out
   char *mmsgbuf;
   unsigned short int total_len;
@@ -568,14 +570,10 @@ typedef struct osdp_context
 
   OSDP_OUT_STATE out [16];
 
-  int
-    last_raw_read_bits;
-  int
-    slow_timer;
-  char
-    last_raw_read_data [1024];
-  char
-    last_keyboard_data [8];
+  int last_raw_read_bits;
+  int slow_timer;
+  char last_raw_read_data [1024];
+  char last_keyboard_data [8];
 
   OSDP_CONTEXT_FILETRANSFER xferctx;
 } OSDP_CONTEXT;

@@ -287,6 +287,15 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
     strcpy(new_speed, json_string_value(value));
 fprintf(stderr, "DEBUG: new speed %s\n", new_speed);
   };
+
+  // also load saved credentials.
+  saved_parameters_root = json_load_file("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", 0, &status_json);
+  value = json_object_get(saved_parameters_root, "bio-template");
+  if (json_is_string (value))
+  {
+    strcpy(ctx->saved_bio_template, json_string_value(value));
+  };
+
   return(ST_OK);
 
 } /* oo_load_parameters */
