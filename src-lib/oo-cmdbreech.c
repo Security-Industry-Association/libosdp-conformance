@@ -1211,6 +1211,9 @@ int
       if (ctx->verbosity > 3)
         fprintf (stderr, "command was %s\n",
           this_command);
+
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 

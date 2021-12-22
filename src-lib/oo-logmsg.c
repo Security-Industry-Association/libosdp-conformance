@@ -194,6 +194,18 @@ int
 
   case OOSDP_MSG_BIOMATCH:
     sprintf(tlogmsg, "osdp_BIOMATCH details t.b.d.\n");
+    sprintf(tlogmsg, "  BIO Match: Rdr %02X Typ %02X Fmt %02X Qual %02X (lth %d.) ",
+      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3],
+      (msg->data_payload [5])*256 + msg->data_payload [4]);
+    for (i=0; i<count-4; i++)
+    {
+      if (context.pii_display)
+        sprintf(octet, "%02x", msg->data_payload [4+i]);
+      else
+        sprintf(octet, "**");
+      strcat(tlogmsg, octet);
+    };
+    strcat(tlogmsg, ")\n");
     break;
 
   case OOSDP_MSG_BIOMATCHR:
@@ -207,7 +219,7 @@ int
     break;
 
   case OOSDP_MSG_BIOREADR:
-    sprintf(tlogmsg, "  BIO Read Response: Rdr %02X Status %02X Typ %02x Qual %02X (count %d.)",
+    sprintf(tlogmsg, "  BIO Read Response: Rdr %02X Status %02X Typ %02x Qual %02X (lth %d.) (",
       msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3], count);
     for (i=0; i<count-4; i++)
     {
@@ -217,7 +229,7 @@ int
         sprintf(octet, "**");
       strcat(tlogmsg, octet);
     };
-    strcat(tlogmsg, "\n");
+    strcat(tlogmsg, ")\n");
     break;
 
   case OOSDP_MSG_BUZ:
