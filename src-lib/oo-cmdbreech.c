@@ -537,6 +537,7 @@ int
     details block:
       details [0] is the new address
       details [1] is 1 if to send in the clear during a secure channel session 
+0x81 for seq 0
       details [2] is 1 if you are to send as the current address (else send to config address)
       details [4..7] are the new speed
   */
@@ -564,11 +565,17 @@ int
       };
 
       // cleartext means send unencrypted even with an active secure channel session
+      // reset-sequence means restart sequence numbers at zero
 
       value = json_object_get (root, "cleartext");
       if (json_is_string (value))
       {
-        cmd->details [1] = 1;
+        cmd->details [1] = (cmd->details [1]) && 0x01;
+      };
+      value = json_object_get (root, "reset-sequence");
+      if (json_is_string (value))
+      {
+        cmd->details [1] = (cmd->details [1]) && 0x80;
       };
 
       // send-direct if you want to send as the current address else it sends as the config-address

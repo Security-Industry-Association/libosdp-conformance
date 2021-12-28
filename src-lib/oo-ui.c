@@ -650,7 +650,8 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
         /*
             details [0] is the new address
-            details [1] is 1 if to send in the clear during a secure channel session 
+            details [1] is 1 if to send in the clear during a secure channel session (else 0)
+                           0x81 to send in the clear and on sequence 0
             details [2] is 1 if you are to send as the current address (else send to config address)
             details [4..7] are the new speed
 
@@ -660,6 +661,9 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         dest_address = OSDP_CONFIGURATION_ADDRESS;
         if (details [2])
           dest_address = p_card.addr;
+        if (details [1] && 0x80)
+          context->next_sequence = 0;
+  
         memcpy (&new_speed, details+4, 4);
         sprintf (context->serial_speed, "%d", new_speed);
         context->new_address = details [0];
@@ -667,7 +671,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         if (context->verbosity > 2)
           fprintf (ctx->log, "Set Comms: addr to %02x speed to %s.\n",
             context->new_address, context->serial_speed);
-        status = send_comset (context, dest_address, context->new_address, context->serial_speed, details [1]);
+        status = send_comset (context, dest_address, context->new_address, context->serial_speed, 0x01 && (details [1]));
 
         // reset protocol to beginning
 
