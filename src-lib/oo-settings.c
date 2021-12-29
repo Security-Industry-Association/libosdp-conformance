@@ -594,8 +594,7 @@ fprintf(stderr, "DEBUG: poll deprecated\n");
     // inter-poll delay time is timer OSDP_TIMER_INTERPOLL (a/k/a "timer 0"), in seconds.
     ctx->timer [OSDP_TIMER_RESPONSE].i_nsec = i;
     ctx->timer [OSDP_TIMER_RESPONSE].i_sec = 0;
-fprintf(stderr, "inter-poll response timer set to %ld. nanoseconds\n",
-  ctx->timer [OSDP_TIMER_RESPONSE].i_nsec);
+//fprintf(stderr, "inter-poll response timer set to %ld. nanoseconds\n", ctx->timer [OSDP_TIMER_RESPONSE].i_nsec);
   }; 
 
   // parameter "verbosity"
@@ -604,8 +603,7 @@ fprintf(stderr, "inter-poll response timer set to %ld. nanoseconds\n",
   {
     found_field = 1;
     strcpy (field, "verbosity");
-fprintf (stderr, "look for %s\n",
-  field);
+//fprintf (stderr, "look for %s\n", field);
     value = json_object_get (root, field);
     if (!json_is_string (value))
       found_field = 0;
@@ -616,8 +614,7 @@ fprintf (stderr, "look for %s\n",
     int i;
     strcpy (vstr, json_string_value (value));
     sscanf (vstr, "%d", &i);
-fprintf (stderr, "processing value %s\n",
-  vstr);
+//fprintf (stderr, "processing value %s\n", vstr);
     ctx->verbosity = i;
   };
 

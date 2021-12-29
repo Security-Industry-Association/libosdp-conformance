@@ -1,7 +1,7 @@
 /*
   oo-util - open osdp utility routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -817,7 +817,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         context->fw_version [1] = *(10+msg->data_payload);
         context->fw_version [2] = *(11+msg->data_payload);
 
-        sprintf(cmd, "/opt/osdp-conformance/ACU-actions/osdp_PDID OUI %02x%02x%02x M-V %d-%d SN %02x%02x%02x%02x FW %d.%d.%d",
+        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_PDID OUI %02x%02x%02x M-V %d-%d SN %02x%02x%02x%02x FW %d.%d.%d",
           context->vendor_code [0], context->vendor_code [1], context->vendor_code [2],
           context->model, context->version,
           context->serial_number [0], context->serial_number [1],
