@@ -158,21 +158,15 @@ void
 
 { /* preserve_current_command */
 
-  char command [4*1024];
-  char preserve [2*1024];
+//  char command [4*1024];
+//  char preserve [2*1024];
 
 
-  sprintf (preserve, "%s_%02d",
-    context.command_path,
-    context.cmd_hist_counter);
-  sprintf (command,
-    "sudo -n chmod 777 %s",
-    context.command_path);
-  system (command);
-  sprintf (command, "sudo -n mv %s %s",
-    context.command_path,
-    preserve);
-  system (command);
+//  sprintf (preserve, "%s_%02d", context.command_path, context.cmd_hist_counter);
+//  sprintf (command, "sudo -n chmod 777 %s", context.command_path);
+//  system (command);
+//  sprintf (command, "sudo -n mv %s %s", context.command_path, preserve);
+//  system (command);
   context.cmd_hist_counter ++;
   if (context.cmd_hist_counter > 99)
     context.cmd_hist_counter = 0;

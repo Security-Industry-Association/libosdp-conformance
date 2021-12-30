@@ -83,10 +83,10 @@ int
   if (status EQUALS ST_OK)
   {
     status_io = tcgetattr (context->fd, &(context->tio));
-fprintf (stderr, "tcgetattr returned %d\n", status_io);
+//fprintf (stderr, "tcgetattr returned %d\n", status_io);
     cfmakeraw (&(context->tio));
     status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
-fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
+//fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
 
 {
   int serial_speed_cfg_value;

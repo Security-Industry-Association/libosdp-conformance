@@ -570,12 +570,12 @@ int
       value = json_object_get (root, "cleartext");
       if (json_is_string (value))
       {
-        cmd->details [1] = (cmd->details [1]) && 0x01;
+        cmd->details [1] = (cmd->details [1]) | 0x01;
       };
       value = json_object_get (root, "reset-sequence");
       if (json_is_string (value))
       {
-        cmd->details [1] = (cmd->details [1]) && 0x80;
+        cmd->details [1] = (cmd->details [1]) | 0x80;
       };
 
       // send-direct if you want to send as the current address else it sends as the config-address

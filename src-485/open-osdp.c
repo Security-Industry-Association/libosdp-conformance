@@ -70,18 +70,19 @@ void
 {
   struct termios
     serial_termios;
-  speed_t
-    speed;
-  int
-    status_io;
+  speed_t speed;
+  int status_io;
 
 
   status_io = tcgetattr (ctx->fd, &serial_termios);
-  fprintf (stderr, "tcgetattr returned %d\n", status_io);
+  if (ctx->verbosity > 3)
+    fprintf (stderr, "tcgetattr returned %d\n", status_io);
   speed = cfgetispeed (&serial_termios);
-  fprintf (stderr, "input speed %d\n", speed);
+  if (ctx->verbosity > 3)
+    fprintf (stderr, "input speed %d\n", speed);
   speed = cfgetospeed (&serial_termios);
-  fprintf (stderr, "output speed %d\n", speed);
+  if (ctx->verbosity > 3)
+    fprintf (stderr, "output speed %d\n", speed);
 
 }
 
@@ -92,8 +93,8 @@ int
 
 { /* initialize */
 
-  char command [2*1024];
-  pid_t my_pid;
+//  char command [2*1024];
+//  pid_t my_pid;
   int status;
 
 
@@ -134,17 +135,16 @@ int
     sprintf (context.command_path,
       "/opt/osdp-conformance/run/%s/open_osdp_command.json", tag);
     // initialize my current pid
-    my_pid = getpid ();
-    sprintf (command, OSPD_LCL_SET_PID_TEMPLATE,
-      tag, my_pid);
-    system (command);
+//    my_pid = getpid ();
+//    sprintf (command, OSPD_LCL_SET_PID_TEMPLATE, tag, my_pid);
+//    system (command);
   };
 
   if (status EQUALS ST_OK)
   {
     status = init_serial (&context, p_card.filename);
   };
-  if (status EQUALS ST_OK)
+  if (0) //(status EQUALS ST_OK)
   {
     if (context.role EQUALS OSDP_ROLE_ACU)
       fprintf (stderr, "Role: ACU\n");
@@ -187,8 +187,7 @@ int
   {
     memset (&last_time_check_ex, 0, sizeof (last_time_check_ex));
     done = 0;
-    fprintf (stderr, "role %02x\n",
-      context.role);
+//    fprintf (stderr, "role %02x\n", context.role);
   };
   if (status != ST_OK)
     done = 1;
