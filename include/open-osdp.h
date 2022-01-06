@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -1076,7 +1076,7 @@ char *osdp_led_color_lookup(unsigned char led_color_number);
 int osdp_log_summary(OSDP_CONTEXT *ctx);
 int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
 char *osdp_pdcap_function(int func);
-void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
+void osdp_quadByte_to_array(unsigned int i, unsigned char a [4]);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
 char *osdp_sec_block_dump (unsigned char *sec_block);

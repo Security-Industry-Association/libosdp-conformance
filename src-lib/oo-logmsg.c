@@ -2,7 +2,7 @@
 
   oo-logmsg.c - prints log messages
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   OSDP Working Group community.
