@@ -161,6 +161,7 @@ int
   msg = NULL;
   oh = NULL;
   memset(hstr, 0, sizeof(hstr));
+  tlogmsg [0] = 0;
 
   // set up the OSDP header structure (if we have something to work with)
   if (aux)
