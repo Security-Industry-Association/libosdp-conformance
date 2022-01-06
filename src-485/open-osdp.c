@@ -2,7 +2,7 @@ extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -48,7 +48,7 @@ OSDP_BUFFER osdp_buf;
 OSDP_INTEROP_ASSESSMENT osdp_conformance;
 OSDP_OUT_CMD current_output_command [16];
 OSDP_PARAMETERS p_card;
-char tag [1024]; // PD or CP as a string
+char tag [16]; // PD or CP as a string
 char trace_in_buffer [4*OSDP_OFFICIAL_MSG_MAX];
 char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
 
