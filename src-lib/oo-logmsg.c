@@ -194,11 +194,10 @@ int
     break;
 
   case OOSDP_MSG_BIOMATCH:
-    sprintf(tlogmsg, "osdp_BIOMATCH details t.b.d.\n");
     sprintf(tlogmsg, "  BIO Match: Rdr %02X Typ %02X Fmt %02X Qual %02X (lth %d.) ",
       msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3],
       (msg->data_payload [5])*256 + msg->data_payload [4]);
-    for (i=0; i<count-4; i++)
+    for (i=0; i<count-6; i++)
     {
       if (context.pii_display)
         sprintf(octet, "%02x", msg->data_payload [4+i]);
