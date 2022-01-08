@@ -147,6 +147,7 @@ int
   unsigned char *payload;
   int payload_size;
   int scb_present;
+  char *score_text;
   char *sec_block;
   char tlogmsg [3*1024];
   char tmps [1024];
@@ -209,8 +210,16 @@ int
     break;
 
   case OOSDP_MSG_BIOMATCHR:
-    sprintf(tlogmsg, "  BIO Match Response: Rdr %02X Stat %02X Score %02X\n",
-      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
+    score_text = "";
+    if (msg->data_payload [2] EQUALS 0)
+      score_text = "(No match)";
+    else
+    {
+      if (msg->data_payload [2] EQUALS 0)
+        score_text = "(Best match)";
+    };
+    sprintf(tlogmsg, "  BIO Match Response: Rdr %02X Stat %02X Score %02X %s\n",
+      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], score_text);
     break;
 
   case OOSDP_MSG_BIOREAD:

@@ -263,7 +263,7 @@ int
 
 
   status = osdp_string_to_buffer(ctx, (char *)(details+6), template_buffer+6, &returned_lth);
-  memcpy((char *)details, (char *)template_buffer, 4);
+  memcpy((char *)template_buffer, (char *)details, 4);
   template_buffer [4] = returned_lth & 0xff;
   template_buffer [5] = returned_lth >> 8;
   send_length = 6 + returned_lth;

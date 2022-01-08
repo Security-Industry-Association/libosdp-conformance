@@ -46,6 +46,7 @@ int
   char command [1024];
   char current_command [1024];
   char current_options [1024];
+  int details_update;
   int i;
   char json_string [16384];
   OSDP_MFG_ARGS *mfg_args;
@@ -187,26 +188,30 @@ int
     };
     cmd->details_length++;
 
+    strcpy((char *)(cmd->details+6), "0000000000000000"); // 8 bytes of hex zeroes as default
+    details_update = 1+strlen((char *)(cmd->details+6));
     value = json_object_get (root, "template");
     if (json_is_string (value))
     {
       if (strlen(json_string_value(value)) > sizeof(cmd->details - (1+cmd->details_length)))
       {
         fprintf(ctx->log, "BIO Template specified too large, using zeros\n");
-        cmd->details_length = cmd->details_length + 8;
+        strcpy((char *)(cmd->details+6), "0000000000000000");
+        details_update = 1+strlen((char *)(cmd->details+6));
       }
       else
       {
         strcpy((char *)(cmd->details+cmd->details_length), (char *)(json_string_value(value)));
-        cmd->details_length = cmd->details_length + strlen(json_string_value(value));
+        details_update = 1 + strlen(json_string_value(value));
       };
     }
     else
     {
       // there wasn't a template argument, use the saved one
       strcpy((char *)(cmd->details+cmd->details_length), (char *)(ctx->saved_bio_template));
-      cmd->details_length = cmd->details_length + strlen(ctx->saved_bio_template);
+      details_update = 1 + strlen(ctx->saved_bio_template);
     };
+    cmd->details_length = cmd->details_length + details_update;
 
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;
