@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2021 Smithee Solutions LLC
+# (C)Copyright 2017-2022 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,5 +14,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-kill -9 `cat /opt/osdp-conformance/run/MON/osdp-pid`
+ROLE=MON
+
+echo "Content-type: text/html"
+echo ""
+
+echo "<HTML><HEAD><TITLE>Stop MON</TITLE>"
+echo "</HEAD>"
+echo "<BODY>"
+echo "<BR>"
+echo "<PRE>"
+date
+OSDP_PATH=/opt/osdp-conformance
+CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/${ROLE}/open_osdp_command.json
+sudo rm -f ${CMDPATH}
+sudo -n echo  >${CMDPATH} "{"
+sudo -n echo >>${CMDPATH} "   \"command\" : \"stop\"",
+sudo -n echo >>${CMDPATH} "  \"#\" : \"created by STOP-MON from UI\""
+sudo -n echo >>${CMDPATH} "}"
+sudo -n cp ${CMDPATH} ${CMDPATHX}
+
+sudo -n ${OSDP_PATH}/bin/HUP-${ROLE}
+
+echo "Stopping ACU..."
+echo "(return to previous screen manually.)"
+
+echo "</PRE></BODY></HTML>"
+
 
