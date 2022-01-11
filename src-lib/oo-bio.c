@@ -217,23 +217,29 @@ int
   FILE *credsf;
   int i;
   char octet [3];
+  int template_length;
   char template_string [3000];
 
 
+  template_length = msg->data_length - 6;
   template_string [0] = 0;
-  for (i=0; i<msg->data_length; i++)
+  for (i=0; i < template_length; i++)
   {
-    sprintf(octet, "%02x", msg->data_payload [3+i]);
+    sprintf(octet, "%02x", msg->data_payload [6+i]);
     strcat(template_string, octet);
   };
   credsf = fopen("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", "w");
   if (credsf != NULL)
   {
-    fprintf(credsf, "{\"bio-template\":\"%s\"}\n", template_string);
+    // in the response type and quality are at 2 and 3.  format is not specified, say it's 0
+
+    fprintf(credsf, "{\"bio-template\":\"%s\", \"bio-format\":\"%02X\", \"bio-quality\":\"%02X\", \"bio-type\":\"%02X\"}\n",
+      template_string,
+      0, msg->data_payload [3], msg->data_payload [2]);
     fclose(credsf);
   };
-  sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOMATCHR %02X %02x %02x %02X %s",
-    ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], template_string);
+  sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOREADR %02X %02X %02X %02X %02X %s",
+    ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3], template_string);
   system(command);
   return(ST_OK);
 
@@ -262,7 +268,7 @@ int
 
 
 
-  status = osdp_string_to_buffer(ctx, (char *)(details+6), template_buffer+6, &returned_lth);
+  status = osdp_string_to_buffer(ctx, (char *)(details+4), template_buffer+6, &returned_lth);
   memcpy((char *)template_buffer, (char *)details, 4);
   template_buffer [4] = returned_lth & 0xff;
   template_buffer [5] = returned_lth >> 8;
@@ -274,6 +280,7 @@ int
       template_buffer [1], template_buffer [2], template_buffer [3], (template_buffer [5] * 256) + template_buffer [4]);
   status = send_message_ex(ctx, OSDP_BIOMATCH, ctx->pd_address,
      &current_length, send_length, template_buffer, OSDP_SEC_SCS_17, 0, NULL);
+fprintf(stderr, "DEBUG: just sent BIOMATCH\n");
   return (status);
 
 } /* send_bio_match_template */

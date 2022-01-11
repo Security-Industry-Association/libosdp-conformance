@@ -487,7 +487,10 @@ typedef struct osdp_context
   int capability_configured_leds;
   int capability_configured_sounder;
   int capability_configured_text;
+  int saved_bio_format;
   char saved_bio_template [8192];
+  int saved_bio_type;
+  int saved_bio_quality;
 
   // OSDP protocol context
   char last_command_sent;

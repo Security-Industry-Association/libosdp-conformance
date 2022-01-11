@@ -46,7 +46,7 @@ OSDP_COMMAND_QUEUE osdp_command_queue [OSDP_COMMAND_QUEUE_SIZE];
 
 int
   init_serial
-    (OSDP_CONTEXT *context,
+    (OSDP_CONTEXT *ctx,
     char *device)
 
 { /* init_serial */
@@ -56,36 +56,38 @@ int
   int status_io;
 
 
-  if (context->verbosity > 3)
+  if (ctx->verbosity > 3)
     printf ("init_serial: command %s\n",
-      context->init_command);
-  if (strlen (context->init_command) > 0)
+      ctx->init_command);
+  if (strlen (ctx->init_command) > 0)
   {
-    fprintf (context->log, "Using init command \"%s\" for device %s\n",
-      context->init_command, device);
-    sprintf (command, context->init_command, device);
+    fprintf (ctx->log, "Using init command \"%s\" for device %s\n",
+      ctx->init_command, device);
+    sprintf (command, ctx->init_command, device);
     system (command);
   };
-  if (context->fd != -1)
+  if (ctx->fd != -1)
   {
-    fprintf (stderr, "Closing %s\n", device);
-    close (context->fd);
+    if (ctx->verbosity > 3)
+      fprintf (stderr, "Closing %s\n", device);
+    close (ctx->fd);
   };
-  context->fd = open (device, O_RDWR | O_NONBLOCK);
-  fprintf (stderr, "Opening %s, fd=%d.\n", device, context->fd);
-  if (context->fd EQUALS -1)
+  ctx->fd = open (device, O_RDWR | O_NONBLOCK);
+  fprintf (stderr, "Opening %s, fd=%d.\n", device, ctx->fd);
+  if (ctx->fd EQUALS -1)
   {
-    fprintf (stderr, "errno at device %s open %d\n", device, errno);
+    if (ctx->verbosity > 3)
+      fprintf (stderr, "errno at device %s open %d\n", device, errno);
     status= ST_SERIAL_OPEN_ERR;
   }
   else
     status = ST_OK;
   if (status EQUALS ST_OK)
   {
-    status_io = tcgetattr (context->fd, &(context->tio));
+    status_io = tcgetattr (ctx->fd, &(ctx->tio));
 //fprintf (stderr, "tcgetattr returned %d\n", status_io);
-    cfmakeraw (&(context->tio));
-    status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
+    cfmakeraw (&(ctx->tio));
+    status_io = tcsetattr (ctx->fd, TCSANOW, &(ctx->tio));
 //fprintf (stderr, "tcsetattr raw returned %d\n", status_io);
 
 {
@@ -95,35 +97,35 @@ int
   known_speed = 1;
   serial_speed_cfg_value = B9600;
   // if speed wasn't set use the default of 9600
-  if (strlen (context->serial_speed) EQUALS 0)
-    strcpy (context->serial_speed, "9600");
+  if (strlen (ctx->serial_speed) EQUALS 0)
+    strcpy (ctx->serial_speed, "9600");
 
-  if (strcmp (context->serial_speed, "9600") EQUALS 0)
+  if (strcmp (ctx->serial_speed, "9600") EQUALS 0)
   {
     serial_speed_cfg_value = B9600;
     known_speed = 1;
   }
-  if (strcmp (context->serial_speed, "19200") EQUALS 0)
+  if (strcmp (ctx->serial_speed, "19200") EQUALS 0)
   {
     serial_speed_cfg_value = B19200;
     known_speed = 1;
   }
-  if (strcmp (context->serial_speed, "38400") EQUALS 0)
+  if (strcmp (ctx->serial_speed, "38400") EQUALS 0)
   {
     serial_speed_cfg_value = B38400;
     known_speed = 1;
   }
-  if (strcmp (context->serial_speed, "57600") EQUALS 0)
+  if (strcmp (ctx->serial_speed, "57600") EQUALS 0)
   {
     serial_speed_cfg_value = B57600;
     known_speed = 1;
   }
-  if (strcmp (context->serial_speed, "115200") EQUALS 0)
+  if (strcmp (ctx->serial_speed, "115200") EQUALS 0)
   {
     serial_speed_cfg_value = B115200;
     known_speed = 1;
   }
-  if (strcmp (context->serial_speed, "230400") EQUALS 0)
+  if (strcmp (ctx->serial_speed, "230400") EQUALS 0)
   {
     serial_speed_cfg_value = B230400;
     known_speed = 1;
@@ -132,16 +134,16 @@ int
   {
     serial_speed_cfg_value = B9600;
     fprintf (stderr, "Unknown speed (%s), using 9600 BPS\n",
-      context->serial_speed);
+      ctx->serial_speed);
   };
-  status_io = cfsetispeed (&(context->tio), serial_speed_cfg_value);
-  if (context->verbosity > 3)
+  status_io = cfsetispeed (&(ctx->tio), serial_speed_cfg_value);
+  if (ctx->verbosity > 3)
     fprintf (stderr, "cfsetispeed returned %d\n", status_io);
-  status_io = cfsetospeed (&(context->tio), serial_speed_cfg_value);
-  if (context->verbosity > 3)
+  status_io = cfsetospeed (&(ctx->tio), serial_speed_cfg_value);
+  if (ctx->verbosity > 3)
     fprintf (stderr, "cfsetospeed returned %d\n", status_io);
-  status_io = tcsetattr (context->fd, TCSANOW, &(context->tio));
-  if (context->verbosity > 3)
+  status_io = tcsetattr (ctx->fd, TCSANOW, &(ctx->tio));
+  if (ctx->verbosity > 3)
     fprintf (stderr, "tcsetattr returned %d\n", status_io);
   if (status_io != 0)
     status = ST_SERIAL_SET_ERR;

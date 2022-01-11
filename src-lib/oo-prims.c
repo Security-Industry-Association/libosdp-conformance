@@ -1,5 +1,5 @@
 /*
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 */
 #include <stdio.h>
 #include <string.h>
@@ -132,7 +132,6 @@ int
   if (ctx->verbosity > 9)
   {
     fprintf(ctx->log, "awaiting: last sq %d lastproc %d\n", ctx->last_sequence_received, ctx->last_was_processed);
-
   };
 
   // assume it is awaiting a response
@@ -146,7 +145,6 @@ int
     if (following_sequence EQUALS 0)
       following_sequence = 1;
   };
-
 
   // if we've processed the response, we're ok to proceed
 
@@ -195,7 +193,8 @@ int
     {
       fprintf(ctx->log, "receive timeout, attempting transmission (%d)\n", ctx->last_sequence_received);
     };
-    ret = 0; // if no response but timeout, call it "not waiting"
+    if (ctx->last_was_processed) // assuming the last was processed...
+      ret = 0; // if no response but timeout, call it "not waiting"
   };
   fflush(ctx->log);
 

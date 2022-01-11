@@ -1,7 +1,7 @@
 /*
   oosdp_files - osdp file io/
 
-  (C)2017-2021 Smithee Solutions LLC
+  (C)2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -290,10 +290,35 @@ fprintf(stderr, "DEBUG: new speed %s\n", new_speed);
 
   // also load saved credentials.
   saved_parameters_root = json_load_file("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", 0, &status_json);
+
+  value = json_object_get(saved_parameters_root, "bio-format");
+  if (json_is_string (value))
+  {
+    int i;
+    sscanf(json_string_value(value), "%x", &i);
+    ctx->saved_bio_format = i;
+  };
+
   value = json_object_get(saved_parameters_root, "bio-template");
   if (json_is_string (value))
   {
     strcpy(ctx->saved_bio_template, json_string_value(value));
+  };
+
+  value = json_object_get(saved_parameters_root, "bio-type");
+  if (json_is_string (value))
+  {
+    int i;
+    sscanf(json_string_value(value), "%x", &i);
+    ctx->saved_bio_type = i;
+  };
+
+  value = json_object_get(saved_parameters_root, "bio-quality");
+  if (json_is_string (value))
+  {
+    int i;
+    sscanf(json_string_value(value), "%x", &i);
+    ctx->saved_bio_quality = i;
   };
 
   return(ST_OK);

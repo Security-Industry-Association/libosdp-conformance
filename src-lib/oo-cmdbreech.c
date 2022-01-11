@@ -147,57 +147,81 @@ int
     break;
 
   case OSDP_CMDB_BIOMATCH:
+
+    // stuff is placed in 'details' in the order it gets sent.
+
     status = ST_OK;
     cmd->command = OSDP_CMDB_BIOMATCH;
     memset(cmd->details, 0, sizeof(cmd->details));
     cmd->details_length = 0;
 
-    cmd->details [0] = 0; // default reader zero
+    cmd->details [cmd->details_length] = 0; // default reader zero
     value = json_object_get (root, "reader");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
-      cmd->details [0] = i;
+      cmd->details [cmd->details_length] = i;
     };
     cmd->details_length++;
 
-    cmd->details [1] = OSDP_BIO_TYPE_LEFT_INDEX_FINGER; // 7
+    cmd->details [cmd->details_length] = OSDP_BIO_TYPE_LEFT_INDEX_FINGER; // 7
     value = json_object_get (root, "type");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
-      cmd->details [1] = i;
+      cmd->details [cmd->details_length] = i;
+    }
+    else
+    {
+      if (strlen(ctx->saved_bio_template) > 0)
+      {
+        cmd->details [cmd->details_length] = ctx->saved_bio_type;
+      };
     };
     cmd->details_length++;
 
-    cmd->details [2] = 2; // default s ANSI/INCITS 378 fingerprint template "49"
+    cmd->details [cmd->details_length] = 2; // default is ANSI/INCITS 378 fingerprint template "49"
     value = json_object_get (root, "format");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
-      cmd->details [2] = i;
+      cmd->details [cmd->details_length] = i;
+    }
+    else
+    {
+      if (strlen(ctx->saved_bio_template) > 0)
+      {
+        cmd->details [cmd->details_length] = ctx->saved_bio_format;
+      };
     };
     cmd->details_length++;
 
-    cmd->details [3] = 0xFF; // quality
+    cmd->details [cmd->details_length] = 0xFF; // quality
     value = json_object_get (root, "quality");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
-      cmd->details [3] = i;
+      cmd->details [cmd->details_length] = i;
+    }
+    else
+    {
+      if (strlen(ctx->saved_bio_template) > 0)
+      {
+        cmd->details [cmd->details_length] = ctx->saved_bio_quality;
+      };
     };
     cmd->details_length++;
 
-    strcpy((char *)(cmd->details+6), "0000000000000000"); // 8 bytes of hex zeroes as default
-    details_update = 1+strlen((char *)(cmd->details+6));
+    strcpy((char *)(cmd->details+cmd->details_length), "0000000000000000"); // 8 bytes of hex zeroes as default
+    details_update = 1+strlen((char *)(cmd->details + cmd->details_length));
     value = json_object_get (root, "template");
     if (json_is_string (value))
     {
       if (strlen(json_string_value(value)) > sizeof(cmd->details - (1+cmd->details_length)))
       {
         fprintf(ctx->log, "BIO Template specified too large, using zeros\n");
-        strcpy((char *)(cmd->details+6), "0000000000000000");
-        details_update = 1+strlen((char *)(cmd->details+6));
+        strcpy((char *)(cmd->details + cmd->details_length), "0000000000000000");
+        details_update = 1+strlen((char *)(cmd->details + cmd->details_length));
       }
       else
       {
@@ -207,9 +231,14 @@ int
     }
     else
     {
-      // there wasn't a template argument, use the saved one
-      strcpy((char *)(cmd->details+cmd->details_length), (char *)(ctx->saved_bio_template));
-      details_update = 1 + strlen(ctx->saved_bio_template);
+      if (strlen(ctx->saved_bio_template) > 0)
+      {
+        // there wasn't a template argument but there is a saved one, use it.
+        // (if there wasn't an argument and there wasn't a saved one use the defaults.)
+
+        strcpy((char *)(cmd->details+cmd->details_length), (char *)(ctx->saved_bio_template));
+        details_update = 1 + strlen(ctx->saved_bio_template);
+      };
     };
     cmd->details_length = cmd->details_length + details_update;
 
