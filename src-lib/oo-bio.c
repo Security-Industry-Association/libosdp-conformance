@@ -115,6 +115,9 @@ int
   char command [1024];
 
 
+  // assuming of course it's sane
+  osdp_test_set_status(OOC_SYMBOL_resp_biomatchr, OCONFORM_EXERCISED);
+
   sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOMATCHR %02X %02x %02x %02X",
     ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
   system(command);
@@ -220,6 +223,9 @@ int
   int template_length;
   char template_string [3000];
 
+
+  // assuming of course it's sane
+  osdp_test_set_status(OOC_SYMBOL_resp_bioreadr, OCONFORM_EXERCISED);
 
   template_length = msg->data_length - 6;
   template_string [0] = 0;

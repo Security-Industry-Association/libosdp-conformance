@@ -1,7 +1,7 @@
 /*
-  oosdp_conformance - conformance reporting routines
+  oo-conformance - conformance reporting routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -64,6 +64,14 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.cmd_acurxsize.test_status),
       0, 0, 0, 0, 0,
                         "Command: osdp_ACURXSIZE"},
+    {         OOC_SYMBOL_cmd_biomatch,
+      &(osdp_conformance.cmd_biomatch.test_status),
+      1, 1, 1, 1, 0,
+                        "Command: BIOMATCH"},
+    {         OOC_SYMBOL_cmd_bioread,
+      &(osdp_conformance.cmd_bioread.test_status),
+      1, 1, 1, 1, 0,
+                        "Command: BIOREAD"},
     {         OOC_SYMBOL_cmd_crauth,
       &(osdp_conformance.cmd_crauth.test_status),
       0, 0, 0, 0, 0,
@@ -376,10 +384,6 @@ OSDP_CONFORMANCE_TEST
       0, 0, 0, 0, 0,
                         "Command: osdp_SCRYPT"},
     { "3-16-1", &(osdp_conformance.cmd_prompt.test_status),
-      0, 0, 0, 0, 0, "---" },
-    { "3-17-1", &(osdp_conformance.cmd_bioread.test_status),
-      0, 0, 0, 0, 0, "---" },
-    { "3-18-1", &(osdp_conformance.cmd_biomatch.test_status),
       0, 0, 0, 0, 0, "---" },
     {         OOC_SYMBOL_cmd_bioread,
       &(osdp_conformance.cmd_bioread.test_status),
