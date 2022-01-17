@@ -1,7 +1,7 @@
 /*
   oo_util2 - more open-osdp util routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -100,8 +100,16 @@ int
   {
     if (osdp_awaiting_response(ctx))
     {
-      send_poll = 0;
-fprintf(stderr, "DEBUG: awaiting response...\n");
+      if (ctx->timeout_retries > 0)
+      {
+        send_poll = 0;
+        ctx->timeout_retries --;
+        if (ctx->timeout_retries EQUALS 0)
+        {
+          fprintf(stderr, "timed out, polling\n");
+          send_poll = 1;
+        };
+      };
     };
   };
 
@@ -489,7 +497,9 @@ int
   int true_dest;
 
 
-  ctx->last_was_processed = 0; //starting fresh on the processing
+  // starting fresh on the processing
+  ctx->last_was_processed = 0;
+  ctx->timeout_retries = OOSDP_TIMEOUT_RETRIES;
 
   if (ctx->verbosity > 9)
   {
