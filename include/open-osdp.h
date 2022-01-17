@@ -42,6 +42,8 @@
 #define OOSDP_DEFAULT_INPUTS (8)
 #define OOSDP_DEFAULT_OUTPUTS (8)
 
+#define OOSDP_TIMEOUT_RETRIES (3)
+
 #define OSDP_PROFILE_PERIPHERAL_TEST_PD (0x0000)
 #define OSDP_PROFILE_PERIPHERAL_TEST_CP (0x1000)
 #define OSDP_PROFILE_BASIC_TEST_PD      (0x0100)
@@ -491,6 +493,8 @@ typedef struct osdp_context
   char saved_bio_template [8192];
   int saved_bio_type;
   int saved_bio_quality;
+
+  int timeout_retries;
 
   // OSDP protocol context
   char last_command_sent;
