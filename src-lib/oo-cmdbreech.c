@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -779,7 +779,7 @@ int
       if (json_is_string(parameter))
       {
         int i;
-        sscanf(json_string_value(parameter), "%d", &i);
+        sscanf(json_string_value(parameter), "%x", &i);
         mfg_args->command_ID = i;
       };
       parameter = json_object_get(root, "command-specific-data");
