@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR ( 8)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (11)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -41,6 +41,8 @@
 
 #define OOSDP_DEFAULT_INPUTS (8)
 #define OOSDP_DEFAULT_OUTPUTS (8)
+
+#define OOSDP_TIMEOUT_RETRIES (3)
 
 #define OSDP_PROFILE_PERIPHERAL_TEST_PD (0x0000)
 #define OSDP_PROFILE_PERIPHERAL_TEST_CP (0x1000)
@@ -487,7 +489,12 @@ typedef struct osdp_context
   int capability_configured_leds;
   int capability_configured_sounder;
   int capability_configured_text;
+  int saved_bio_format;
   char saved_bio_template [8192];
+  int saved_bio_type;
+  int saved_bio_quality;
+
+  int timeout_retries;
 
   // OSDP protocol context
   char last_command_sent;
@@ -1076,7 +1083,7 @@ char *osdp_led_color_lookup(unsigned char led_color_number);
 int osdp_log_summary(OSDP_CONTEXT *ctx);
 int osdp_parse_message (OSDP_CONTEXT *context, int role, OSDP_MSG *m, OSDP_HDR *h);
 char *osdp_pdcap_function(int func);
-void osdp_quadByte_to_array(unsigned int i, unsigned char a [2]);
+void osdp_quadByte_to_array(unsigned int i, unsigned char a [4]);
 void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
 char *osdp_sec_block_dump (unsigned char *sec_block);
@@ -1127,7 +1134,7 @@ int process_osdp_message (OSDP_CONTEXT *context, OSDP_MSG *msg);
 int read_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int read_config (OSDP_CONTEXT *context);
 int send_bio_match_template(OSDP_CONTEXT *ctx, unsigned char *details, int details_length);
-int send_bio_read_template (OSDP_CONTEXT *ctx);
+int send_bio_read_template (OSDP_CONTEXT *ctx, unsigned char *details, int details_length);
 int send_comset(OSDP_CONTEXT *ctx, unsigned char pd_address, unsigned char new_addr, char *speed_string, int send_style);
 int send_message (OSDP_CONTEXT *context, int command, int dest_addr,
   int *current_length, int data_length, unsigned char *data);

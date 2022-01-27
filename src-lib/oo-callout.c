@@ -1,7 +1,7 @@
 /*
   oo-callout - call out to a shell command when certain commands and responses arrive
 
-  (C)Copyright 2021 Smithee Solutions LLC
+  (C)Copyright 2021-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -36,7 +36,7 @@ int
     char *action_command,
     char *details)
 
-{ /* stub */
+{ /* oosdp_callout */
 
   char command [3*1024]; // three 'cause there are three args to the command sprintf
   int status;
@@ -52,5 +52,5 @@ int
   system(command);
   return(status);
 
-} /* stub */
+} /* oosdp_callout */
 

@@ -1,6 +1,6 @@
 # Make file for osdp-ui
 
-#  (C)Copyright 2017-2021 Smithee Solutions LLC
+#  (C)Copyright 2017-2022 Smithee Solutions LLC
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -48,7 +48,7 @@ TLS_PAGES =
 
 SCRIPTS = clean-run do-CP-command \
   do-send-explicit exec-CP485 exec-PD485 \
-  HUP-CP HUP-MON HUP-PD \
+  HUP-ACU HUP-CP HUP-MON HUP-PD \
   STOP-CP STOP-MON STOP-PD \
   set-pid \
   write-osdp-CP-command write-osdp-PD-command \

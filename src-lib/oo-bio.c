@@ -1,7 +1,7 @@
 /*
   oo-bio - biometrics routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -84,7 +84,7 @@ int
     };
   };
 
-  // if enabled for biometrics send the replay.
+  // if enabled for biometrics send the reply.
 
   if (ctx->pd_cap.enable_biometrics EQUALS 1)
   {
@@ -114,6 +114,9 @@ int
 {
   char command [1024];
 
+
+  // assuming of course it's sane
+  osdp_test_set_status(OOC_SYMBOL_resp_biomatchr, OCONFORM_EXERCISED);
 
   sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOMATCHR %02X %02x %02x %02X",
     ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
@@ -217,23 +220,44 @@ int
   FILE *credsf;
   int i;
   char octet [3];
+  int template_length;
   char template_string [3000];
 
 
-  template_string [0] = 0;
-  for (i=0; i<msg->data_length; i++)
+  // assuming of course it's sane
+  osdp_test_set_status(OOC_SYMBOL_resp_bioreadr, OCONFORM_EXERCISED);
+
+  template_length = msg->data_length - 6;
+  if (ctx->verbosity >3)
   {
-    sprintf(octet, "%02x", msg->data_payload [3+i]);
+    fprintf(ctx->log, "osdp_BIOREADR: template length %d.\n", template_length);
+  };
+  template_string [0] = 0;
+  for (i=0; i < template_length; i++)
+  {
+    sprintf(octet, "%02x", msg->data_payload [6+i]);
     strcat(template_string, octet);
   };
   credsf = fopen("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", "w");
   if (credsf != NULL)
   {
-    fprintf(credsf, "{\"bio-template\":\"%s\"}\n", template_string);
+    char credentials_string [4096];
+
+    // in the response type and quality are at 2 and 3.  format is not specified, say it's 0
+
+    sprintf(credentials_string, "{\"bio-template\":\"%s\", \"bio-format\":\"%02X\", \"bio-quality\":\"%02X\", \"bio-type\":\"%02X\"}\n",
+      template_string,
+      0, msg->data_payload [3], msg->data_payload [2]);
+    fprintf(credsf, "%s", credentials_string);
+
+    if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "Template: %s\n", credentials_string);
+    };
     fclose(credsf);
   };
-  sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOMATCHR %02X %02x %02x %02X %s",
-    ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], template_string);
+  sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOREADR %02X %02X %02X %02X %02X %s",
+    ctx->pd_address, msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3], template_string);
   system(command);
   return(ST_OK);
 
@@ -243,27 +267,38 @@ int
 /*
   send_bio_match_template - send an osdp_BIOMATCH command to a PD
 
-  details contains the payload structure in table 26.
+  details contains the payload structure in table 26 except
+  the template is the hex string (so needs conversion)
 */
 int
   send_bio_match_template
-    (OSDP_CONTEXT
-    *ctx,
+    (OSDP_CONTEXT *ctx,
     unsigned char *details,
     int details_length)
 
 { /* send_bio_match_template */
 
   int current_length;
+  unsigned short int returned_lth;
+  int send_length;
   int status;
+  unsigned char template_buffer [2000];
 
+
+
+  status = osdp_string_to_buffer(ctx, (char *)(details+4), template_buffer+6, &returned_lth);
+  memcpy((char *)template_buffer, (char *)details, 4);
+  template_buffer [4] = returned_lth & 0xff;
+  template_buffer [5] = returned_lth >> 8;
+  send_length = 6 + returned_lth;
 
   current_length = 0;
   if (ctx->verbosity > 2)
     fprintf (ctx->log, "biomatch sent t=%02X f=%02X q=%02X l=%d.\n",
-      details [1], details [2], details [3], (details [5] * 256) + details [4]);
+      template_buffer [1], template_buffer [2], template_buffer [3], (template_buffer [5] * 256) + template_buffer [4]);
   status = send_message_ex(ctx, OSDP_BIOMATCH, ctx->pd_address,
-     &current_length, details_length, details, OSDP_SEC_SCS_17, 0, NULL);
+     &current_length, send_length, template_buffer, OSDP_SEC_SCS_17, 0, NULL);
+fprintf(stderr, "DEBUG: just sent BIOMATCH\n");
   return (status);
 
 } /* send_bio_match_template */
@@ -274,8 +309,9 @@ int
 */
 int
   send_bio_read_template
-    (OSDP_CONTEXT
-      *ctx)
+    (OSDP_CONTEXT *ctx,
+    unsigned char *details,
+    int details_length)
 
 { /* send_bio_read_template */
 
@@ -284,10 +320,10 @@ int
   int status;
 
 
-  param [0] = 0; // reader 0
-  param [1] = 0; // default bio type
-  param [2] = 2; // ANSI/INCITS 378 Fingerprint template "49"
-  param [3] = 0xFF; // quality
+  param [0] = details [0];  // reader
+  param [1] = details [1]; // bio type
+  param [2] = details [2]; // format
+  param [3] = details [3]; // quality
 
   current_length = 0;
   if (ctx->verbosity > 2)

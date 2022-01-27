@@ -2,7 +2,7 @@
 
   oo-logmsg.c - prints log messages
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   OSDP Working Group community.
@@ -147,6 +147,7 @@ int
   unsigned char *payload;
   int payload_size;
   int scb_present;
+  char *score_text;
   char *sec_block;
   char tlogmsg [3*1024];
   char tmps [1024];
@@ -161,6 +162,7 @@ int
   msg = NULL;
   oh = NULL;
   memset(hstr, 0, sizeof(hstr));
+  tlogmsg [0] = 0;
 
   // set up the OSDP header structure (if we have something to work with)
   if (aux)
@@ -193,11 +195,10 @@ int
     break;
 
   case OOSDP_MSG_BIOMATCH:
-    sprintf(tlogmsg, "osdp_BIOMATCH details t.b.d.\n");
     sprintf(tlogmsg, "  BIO Match: Rdr %02X Typ %02X Fmt %02X Qual %02X (lth %d.) ",
       msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], msg->data_payload [3],
       (msg->data_payload [5])*256 + msg->data_payload [4]);
-    for (i=0; i<count-4; i++)
+    for (i=0; i<count-6; i++)
     {
       if (context.pii_display)
         sprintf(octet, "%02x", msg->data_payload [4+i]);
@@ -209,8 +210,16 @@ int
     break;
 
   case OOSDP_MSG_BIOMATCHR:
-    sprintf(tlogmsg, "  BIO Match Response: Rdr %02X Stat %02X Score %02X\n",
-      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2]);
+    score_text = "";
+    if (msg->data_payload [2] EQUALS 0)
+      score_text = "(No match)";
+    else
+    {
+      if (msg->data_payload [2] EQUALS 0)
+        score_text = "(Best match)";
+    };
+    sprintf(tlogmsg, "  BIO Match Response: Rdr %02X Stat %02X Score %02X %s\n",
+      msg->data_payload [0], msg->data_payload [1], msg->data_payload [2], score_text);
     break;
 
   case OOSDP_MSG_BIOREAD:

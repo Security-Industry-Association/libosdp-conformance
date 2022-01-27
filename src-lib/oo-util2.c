@@ -1,7 +1,7 @@
 /*
   oo_util2 - more open-osdp util routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -71,7 +71,8 @@ int
     if (ctx->xferctx.total_length EQUALS 0)
     {
       if (ctx->verbosity > 9)
-        fprintf(ctx->log, "background: tl %d. ns %d lsr %d lwp %d response timer %d\n", ctx->xferctx.total_length,
+        fprintf(ctx->log,
+"background: tl %d. ns %d lsr %d lwp %d response timer %d\n", ctx->xferctx.total_length,
           ctx->next_sequence, ctx->last_sequence_received, ctx->last_was_processed,
           ctx->timer [OSDP_TIMER_RESPONSE].status EQUALS OSDP_TIMER_STOPPED);
       if (ctx->secure_channel_use [OO_SCU_ENAB] != OO_SCS_OPERATIONAL)
@@ -99,7 +100,16 @@ int
   {
     if (osdp_awaiting_response(ctx))
     {
-      send_poll = 0;
+      if (ctx->timeout_retries > 0)
+      {
+        send_poll = 0;
+        ctx->timeout_retries --;
+        if (ctx->timeout_retries EQUALS 0)
+        {
+          fprintf(stderr, "timed out, polling\n");
+          send_poll = 1;
+        };
+      };
     };
   };
 
@@ -487,8 +497,9 @@ int
   int true_dest;
 
 
-  ctx->last_was_processed = 0; //starting fresh on the processing
-
+  // starting fresh on the processing
+  ctx->last_was_processed = 0;
+  ctx->timeout_retries = OOSDP_TIMEOUT_RETRIES;
 
   if (ctx->verbosity > 9)
   {

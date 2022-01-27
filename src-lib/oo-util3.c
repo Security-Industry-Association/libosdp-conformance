@@ -509,6 +509,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
 
 #define LP_ON (12) // LED Perm On Color
         osdp_test_set_status(OOC_SYMBOL_cmd_led_any, OCONFORM_EXERCISED);
+fprintf(stderr, "DEBUG: LED detail %02x\n", ctx->test_details [LP_ON]);
         if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_AMBER)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_amber, OCONFORM_EXERCISED);
         if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLACK)

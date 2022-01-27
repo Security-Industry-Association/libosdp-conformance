@@ -1,0 +1,16 @@
+[Unit]
+Description=OSDP ACU Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=no
+User=opsadmin1
+WorkingDirectory=/opt/osdp-conformance/run/ACU
+ExecStart=/opt/osdp-conformance/bin/open-osdp
+
+[Install]
+WantedBy=multi-user.target
+
+

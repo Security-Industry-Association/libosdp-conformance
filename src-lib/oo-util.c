@@ -494,7 +494,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     context->last_was_processed = 1;
 
     if (msg->msg_cmd EQUALS OSDP_BIOREADR)
-      fprintf(stderr, "DEBUG: monitoring bioreader...\n");
+      fprintf(stderr, "DEBUG: monitoring bioreadr...\n");
 
     (void)monitor_osdp_message (context, msg);
 

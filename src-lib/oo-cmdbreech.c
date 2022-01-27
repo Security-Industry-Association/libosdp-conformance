@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -46,6 +46,7 @@ int
   char command [1024];
   char current_command [1024];
   char current_options [1024];
+  int details_update;
   int i;
   char json_string [16384];
   OSDP_MFG_ARGS *mfg_args;
@@ -146,67 +147,74 @@ int
     break;
 
   case OSDP_CMDB_BIOMATCH:
+
+    // stuff is placed in 'details' in the order it gets sent.
+
     status = ST_OK;
     cmd->command = OSDP_CMDB_BIOMATCH;
-    memset(cmd->details, 0, sizeof(cmd->details));
     cmd->details_length = 0;
+    memset(cmd->details, 0, sizeof(cmd->details));
+    // [0] - default reader 0
+    cmd->details [1] = OSDP_BIO_TYPE_LEFT_INDEX_FINGER; // 7
+    cmd->details [2] = 2; // default is ANSI/INCITS 378 fingerprint template "49"
+    cmd->details [3] = 0xFF; // quality
+    strcpy((char *)(cmd->details+4), "0000000000000000"); // 8 bytes of hex zeroes as default
+    cmd->details_length = 13;  // 8 bytes zeroes(hex string) and 4 header
 
-    cmd->details [0] = 0; // default reader zero
+    if (strlen(ctx->saved_bio_template) > 0)
+    {
+      cmd->details_length = 4;
+      cmd->details [0] = 0; // reader 0
+      cmd->details [1] = ctx->saved_bio_type;
+      cmd->details [2] = ctx->saved_bio_format;
+      cmd->details [3] = ctx->saved_bio_quality;
+      strcpy((char *)(cmd->details+cmd->details_length), (char *)(ctx->saved_bio_template));
+      cmd->details_length = 4 + 1 + strlen(ctx->saved_bio_template);
+    };
+
     value = json_object_get (root, "reader");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
       cmd->details [0] = i;
     };
-    cmd->details_length++;
 
-    cmd->details [1] = OSDP_BIO_TYPE_LEFT_INDEX_FINGER; // 7
     value = json_object_get (root, "type");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
       cmd->details [1] = i;
     };
-    cmd->details_length++;
 
-    cmd->details [2] = 2; // default s ANSI/INCITS 378 fingerprint template "49"
     value = json_object_get (root, "format");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
       cmd->details [2] = i;
     };
-    cmd->details_length++;
 
-    cmd->details [3] = 0xFF; // quality
     value = json_object_get (root, "quality");
     if (json_is_string (value))
     {
       sscanf(json_string_value(value), "%d", &i);
       cmd->details [3] = i;
     };
-    cmd->details_length++;
 
+    details_update = 1+strlen((char *)(cmd->details + 4));
     value = json_object_get (root, "template");
     if (json_is_string (value))
     {
-      if (strlen(json_string_value(value)) > sizeof(cmd->details - (1+cmd->details_length)))
+      if (strlen(json_string_value(value)) > sizeof(cmd->details - (1+4)))
       {
         fprintf(ctx->log, "BIO Template specified too large, using zeros\n");
-        cmd->details_length = cmd->details_length + 8;
       }
       else
       {
-        strcpy((char *)(cmd->details+cmd->details_length), (char *)(json_string_value(value)));
-        cmd->details_length = cmd->details_length + strlen(json_string_value(value));
+        strcpy((char *)(cmd->details+4), (char *)(json_string_value(value)));
+        details_update = 1 + strlen(json_string_value(value));
       };
-    }
-    else
-    {
-      // there wasn't a template argument, use the saved one
-      strcpy((char *)(cmd->details+cmd->details_length), (char *)(ctx->saved_bio_template));
-      cmd->details_length = cmd->details_length + strlen(ctx->saved_bio_template);
     };
+    cmd->details_length = cmd->details_length + details_update;
 
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;
@@ -745,7 +753,7 @@ int
       if (json_is_string(parameter))
       {
         int i;
-        sscanf(json_string_value(parameter), "%d", &i);
+        sscanf(json_string_value(parameter), "%x", &i);
         mfg_args->command_ID = i;
       };
       parameter = json_object_get(root, "command-specific-data");

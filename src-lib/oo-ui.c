@@ -1,7 +1,7 @@
 /*
   oo-ui - UI routines for open-osdp
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -110,7 +110,7 @@ context=ctx;
       break;
 
     case OSDP_CMDB_BIOREAD:
-      status = send_bio_read_template (ctx);
+      status = send_bio_read_template (ctx, (unsigned char *)details, details_length);
       break;
 
     case OSDP_CMDB_BIOMATCH:
@@ -397,8 +397,8 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         else
         {
           current_length = 0;
-          status = send_message (context,
-            OSDP_MFG, p_card.addr, &current_length, send_length, data);
+          status = send_message_ex(context, OSDP_MFG, p_card.addr, &current_length, send_length, data,
+          OSDP_SEC_SCS_17, 0, NULL);
         };
         status = ST_OK;
       };
