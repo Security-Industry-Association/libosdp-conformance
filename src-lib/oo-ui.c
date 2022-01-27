@@ -110,7 +110,7 @@ context=ctx;
       break;
 
     case OSDP_CMDB_BIOREAD:
-      status = send_bio_read_template (ctx);
+      status = send_bio_read_template (ctx, (unsigned char *)details, details_length);
       break;
 
     case OSDP_CMDB_BIOMATCH:

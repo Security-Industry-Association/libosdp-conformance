@@ -228,6 +228,10 @@ int
   osdp_test_set_status(OOC_SYMBOL_resp_bioreadr, OCONFORM_EXERCISED);
 
   template_length = msg->data_length - 6;
+  if (ctx->verbosity >3)
+  {
+    fprintf(ctx->log, "osdp_BIOREADR: template length %d.\n", template_length);
+  };
   template_string [0] = 0;
   for (i=0; i < template_length; i++)
   {
@@ -237,11 +241,19 @@ int
   credsf = fopen("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", "w");
   if (credsf != NULL)
   {
+    char credentials_string [4096];
+
     // in the response type and quality are at 2 and 3.  format is not specified, say it's 0
 
-    fprintf(credsf, "{\"bio-template\":\"%s\", \"bio-format\":\"%02X\", \"bio-quality\":\"%02X\", \"bio-type\":\"%02X\"}\n",
+    sprintf(credentials_string, "{\"bio-template\":\"%s\", \"bio-format\":\"%02X\", \"bio-quality\":\"%02X\", \"bio-type\":\"%02X\"}\n",
       template_string,
       0, msg->data_payload [3], msg->data_payload [2]);
+    fprintf(credsf, "%s", credentials_string);
+
+    if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "Template: %s\n", credentials_string);
+    };
     fclose(credsf);
   };
   sprintf(command, "/opt/osdp-conformance/run/ACU-actions/osdp_BIOREADR %02X %02X %02X %02X %02X %s",
@@ -297,8 +309,9 @@ fprintf(stderr, "DEBUG: just sent BIOMATCH\n");
 */
 int
   send_bio_read_template
-    (OSDP_CONTEXT
-      *ctx)
+    (OSDP_CONTEXT *ctx,
+    unsigned char *details,
+    int details_length)
 
 { /* send_bio_read_template */
 
@@ -307,10 +320,10 @@ int
   int status;
 
 
-  param [0] = 0; // reader 0
-  param [1] = 0; // default bio type
-  param [2] = 2; // ANSI/INCITS 378 Fingerprint template "49"
-  param [3] = 0xFF; // quality
+  param [0] = details [0];  // reader
+  param [1] = details [1]; // bio type
+  param [2] = details [2]; // format
+  param [3] = details [3]; // quality
 
   current_length = 0;
   if (ctx->verbosity > 2)
