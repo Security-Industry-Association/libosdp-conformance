@@ -43,7 +43,7 @@ int
 
 
   status = ST_OK;
-  sprintf(command, "%s/run/ACU-actions/%s %02X %s", ctx->service_root, action_command, ctx->pd_address, details);
+  sprintf(command, "%s/ACU-actions/%s %02X %s", ctx->service_root, action_command, ctx->pd_address, details);
   if (ctx->verbosity > 3)
   {
     fprintf(ctx->log, "action: %s\n", command);

@@ -144,7 +144,8 @@ int
 
   case 1: // INID
     status = ST_OSDP_MFG_VENDOR_DETECTED;
-    switch (mrep->mfg_response_status)
+#define RESPONSE_STATUS (*(&(mrep->data)+0))
+    switch (RESPONSE_STATUS)
     {
     case OSDP_REP_MSC_CR_AUTH:
       status = ST_OSDP_MFG_VENDOR_PROCESSED;

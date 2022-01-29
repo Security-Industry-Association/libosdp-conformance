@@ -775,8 +775,8 @@ typedef struct osdp_mfg_command
 typedef struct osdp_mfg_response
 {
   unsigned char vendor_code [3];
-  unsigned char mfg_response_status;
-  unsigned char mfg_response_code;
+  //unsigned char mfg_response_status;
+  //unsigned char mfg_response_code;
   unsigned char data;
 } OSDP_MFGREP_RESPONSE;
 

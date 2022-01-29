@@ -39,6 +39,7 @@ int
   int count;
   int i;
   OSDP_MFGREP_RESPONSE *mfg;
+  unsigned char mfg_command;
   OSDP_HDR *oh;
   char payload [1024];
   int status;
@@ -52,6 +53,7 @@ int
   count = count - msg->check_size;
         
   mfg = (OSDP_MFGREP_RESPONSE *)(msg->data_payload);
+  mfg_command = *(&(mfg->data));
   sprintf (tlogmsg, "OUI %02x%02x%02x response length %d",
     mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], count);
   fprintf (ctx->log, "  Mfg Reply %s\n", tlogmsg);
@@ -60,11 +62,11 @@ int
   payload [0] = 0;
   for (i=0; i<count; i++)
   {
-    sprintf(tmp1, "%02x", msg->data_payload [i]);
+    sprintf(tmp1, "%02x", *(&(mfg->data)+1+i));
     strcat(payload, tmp1);
   };
-  sprintf(cmd, "%02X%02X%02X %s",
-    mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], payload);
+  sprintf(cmd, "%02X%02X%02X %02X %s",
+    mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg_command, payload);
   status = oosdp_callout(ctx, "osdp_MFGREP", cmd);
   if (status EQUALS ST_OK)
     status = osdp_test_set_status_ex(OOC_SYMBOL_resp_mfgrep, OCONFORM_EXERCISED, "");

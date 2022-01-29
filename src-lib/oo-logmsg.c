@@ -711,8 +711,11 @@ int
         status = ST_OK; // ok regardless
       };
 
+      p = (char *)&(mrep->data);
       sprintf(tlogmsg, "MFG Response: OUI:%02x-%02x-%02x",
         mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2]);
+#if 0 
+// only for INID?
       if (count > 3)
       {
         sprintf(tmps, " MFG Response Status: %02x", mrep->mfg_response_status);
@@ -727,6 +730,7 @@ int
           p = (char *)&(mrep->data);
         };
       };
+#endif
 
       strcat(tlogmsg, "\n");
       strcat(tlogmsg, "  Raw:");
