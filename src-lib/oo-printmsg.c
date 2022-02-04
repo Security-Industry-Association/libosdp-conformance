@@ -1,7 +1,7 @@
 /*
   oo-printmsg - open osdp message printing routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -217,12 +217,12 @@ int
     fprintf (identf, "  \"OUI\" : \"%02x-%02x-%02x\",\n",
       *(osdp_msg->data_payload + 0), *(osdp_msg->data_payload + 1),
       *(osdp_msg->data_payload + 2));
-    fprintf (identf, "  \"version\" : \"model-%d-ver-%d\",\n",
+    fprintf (identf, "  \"version\" : \"Model %d V %d\",\n",
       *(osdp_msg->data_payload + 3), *(osdp_msg->data_payload + 4));
     fprintf (identf, "  \"serial\" : \"%02x%02x%02x%02x\",\n",
       *(osdp_msg->data_payload + 5), *(osdp_msg->data_payload + 6),
       *(osdp_msg->data_payload + 7), *(osdp_msg->data_payload + 8));
-    fprintf (identf, "  \"firmware\" : \"%d.%d-build-%d\"\n",
+    fprintf (identf, "  \"firmware\" : \"%d.%d Build %d\"\n",
       *(osdp_msg->data_payload + 9), *(osdp_msg->data_payload + 10),
       *(osdp_msg->data_payload + 11));
     fprintf (identf, "}\n");
