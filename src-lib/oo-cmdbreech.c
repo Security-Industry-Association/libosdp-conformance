@@ -37,7 +37,8 @@ extern OSDP_PARAMETERS p_card;
 int
   read_command
     (OSDP_CONTEXT *ctx,
-    OSDP_COMMAND *cmd)
+    OSDP_COMMAND *cmd,
+    char *socket_command)
 
 { /* read_command */
 
@@ -69,17 +70,33 @@ int
 
   status = ST_CMD_PATH;
   memset(cmd, 0, sizeof(*cmd));
-  cmdf = fopen (ctx->command_path, "r");
-  if (cmdf != NULL)
+  cmdf = NULL;
+  json_string [0] = 0;
+  if (socket_command != NULL)
   {
-    status = ST_OK;
-    memset (json_string, 0, sizeof (json_string));
-    status_io = fread (json_string,
-      sizeof (json_string [0]), sizeof (json_string), cmdf);
-    if (status_io >= sizeof (json_string))
-      status = ST_CMD_OVERFLOW;
-    if (status_io <= 0)
-      status = ST_CMD_UNDERFLOW;
+    if (strlen(socket_command) > 0)
+    {
+      if (socket_command [0] EQUALS '{')
+      {
+        strcpy(json_string, socket_command);
+        status = ST_OK;
+      };
+    };
+  };
+  if (strlen(json_string) EQUALS 0)
+  {
+    cmdf = fopen (ctx->command_path, "r");
+    if (cmdf != NULL)
+    {
+      status = ST_OK;
+      memset (json_string, 0, sizeof (json_string));
+      status_io = fread (json_string,
+        sizeof (json_string [0]), sizeof (json_string), cmdf);
+      if (status_io >= sizeof (json_string))
+        status = ST_CMD_OVERFLOW;
+      if (status_io <= 0)
+        status = ST_CMD_UNDERFLOW;
+    };
   };
   if (status EQUALS ST_OK)
   {

@@ -34,6 +34,7 @@ extern int pending_response_length;
 #include <sys/un.h>
 #include <fcntl.h>
 #include <termios.h>
+#include <sys/stat.h>
 
 
 #include <open-osdp.h>
@@ -219,6 +220,9 @@ int
       {
         status_socket = fcntl (ufd, F_SETFL,
           fcntl (ufd, F_GETFL, 0) | O_NONBLOCK);
+
+        chmod(sn, 0777);
+
         if (status_socket != -1)
           status_socket = listen (ufd, 0);
       };
@@ -315,19 +319,20 @@ int
 
       if (FD_ISSET (ufd, &readfds))
       {
-        char cmdbuf [2];
+        char cmdbuf [8192];
         c1 = accept (ufd, NULL, NULL);
         if (context.verbosity > 9)
           fprintf (stderr, "ufd socket(%d) was selected in READ (new fd %d)\n",
             ufd, c1);
         if (c1 != -1)
         {
+          memset(cmdbuf, 0, sizeof(cmdbuf));
           status_io = read (c1, cmdbuf, sizeof (cmdbuf));
           if (status_io > 0)
           {
             close (c1);
 
-            status = process_current_command(&context);
+            status = process_current_command(&context, cmdbuf);
             if (status EQUALS ST_OK)
               preserve_current_command ();
             check_for_command = 0;

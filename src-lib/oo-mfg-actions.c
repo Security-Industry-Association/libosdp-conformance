@@ -136,8 +136,9 @@ int
   switch(osdp_manufacturer_index)
   {
   default:
-    fprintf(ctx->log, "MFG Reply Action: no action taken. (OUI: %02x:%02x:%02x Command ID %02x value2 %02x, payload was %d. bytes)\n",
-      0, 0, 0,
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "MFG Reply Action: no action taken. (OUI: %02x:%02x:%02x Command ID %02x value2 %02x, payload was %d. bytes)\n",
+      mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
       0, 0,
       0);
     break;

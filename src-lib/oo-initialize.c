@@ -1,7 +1,7 @@
 /*
   oo_initialize - init code for OSDP
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -284,7 +284,7 @@ int
     */
     status = read_config (context);
     if (!(context->keep_results))
-      system("rm -vf /opt/osdp-conformance/results/*");
+      system("rm -f /opt/osdp-conformance/results/*");
 
     if (context->verbosity > 4)
     {
@@ -350,19 +350,14 @@ int
     char tlogmsg [1024];
 
     sprintf (logmsg, "Parameters:");
-    fprintf (stderr, "%s\n", logmsg);
     fprintf (context->log, "%s\n", logmsg);
     sprintf (logmsg, "  Filename: %s", p_card.filename);
-    fprintf (stderr, "%s\n", logmsg);
     fprintf (context->log, "%s\n", logmsg);
     sprintf (logmsg, "  Addr: %02x (%d.)", p_card.addr, p_card.addr);
-    fprintf (stderr, "%s\n", logmsg);
     fprintf (context->log, "%s\n", logmsg);
     sprintf (logmsg, "  Bits: %d", p_card.bits);
-    fprintf (stderr, "%s\n", logmsg);
     fprintf (context->log, "%s\n", logmsg);
     sprintf (logmsg, "  Value (%d. bytes): ", p_card.value_len);
-    fprintf (stderr, "%s", logmsg);
     fprintf (context->log, "%s", logmsg);
     logmsg [0] = 0;
     for (idx=0; idx<p_card.value_len; idx++)

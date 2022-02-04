@@ -1,8 +1,7 @@
 /*
   osdp-tcp-server - TCP-only version of osdp-net-server
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
-  (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -412,7 +411,7 @@ int
                 {
                   close (c1);
 
-                  status = process_current_command (&context);
+                  status = process_current_command (&context, NULL);
                   if (status EQUALS ST_OK)
                     preserve_current_command ();
                   status = ST_OK;

@@ -1,7 +1,7 @@
 /*
   oo-mgmt-actions - action routines for (some) mgmt functions
 
-  (C)Copyright 2021 Smithee Solutions LLC
+  (C)Copyright 2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -65,8 +65,18 @@ int
     sprintf(tmp1, "%02x", *(&(mfg->data)+1+i));
     strcat(payload, tmp1);
   };
-  sprintf(cmd, "%02X%02X%02X %02X %s",
+  sprintf(cmd, "{\"1\":\"%02X\",\"2\":\"%02X%02X%02X\",\"3\":\"%02X\",\"4\":\"%s\"}",
+    ctx->pd_address,
     mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg_command, payload);
+  {
+    FILE *f;
+    f = fopen("/opt/osdp-conformance/run/ACU/osdp-mfg-response.json", "w");
+    if (f != NULL)\
+    {
+      fprintf(f, "%s\n", cmd);
+      fclose(f);
+    };
+  };
   status = oosdp_callout(ctx, "osdp_MFGREP", cmd);
   if (status EQUALS ST_OK)
     status = osdp_test_set_status_ex(OOC_SYMBOL_resp_mfgrep, OCONFORM_EXERCISED, "");

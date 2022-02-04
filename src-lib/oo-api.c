@@ -1,7 +1,7 @@
 /*
   osdp-api - bits to implement HUP-based "API"
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -82,7 +82,8 @@ int
 
 int
   process_current_command
-    (OSDP_CONTEXT *ctx)
+    (OSDP_CONTEXT *ctx,
+    char *socket_command)
 
 { /* process_current_command */
 
@@ -90,7 +91,7 @@ int
   int status;
 
 
-  status = read_command (&context, &cmd);
+  status = read_command (&context, &cmd, socket_command);
   if (status EQUALS ST_OK)
   {
     status = process_command(cmd.command, &context, cmd.details_length, cmd.details_param_1, (char *)cmd.details);

@@ -3,8 +3,7 @@
 
   (because cleaning up the init code for TLS was more work.)
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
-  (C)Copyright 2014-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
