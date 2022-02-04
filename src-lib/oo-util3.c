@@ -1,7 +1,7 @@
 /*
   oo_util3 -more (3)  open osdp utility routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -496,6 +496,8 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
 
       if (ctx->last_command_sent EQUALS OSDP_ACURXSIZE)
         osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
+      if (ctx->last_command_sent EQUALS OSDP_BUZ)
+        osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_GENAUTH)
         osdp_test_set_status(OOC_SYMBOL_cmd_genauth, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_KEEPACTIVE)

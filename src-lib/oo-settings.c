@@ -1,7 +1,7 @@
 /*
   oo-settings - json init file processing
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -463,26 +463,6 @@ int
       ctx->pd_filetransfer_payload = i;
     }; 
   };
-
-  // poll
-
-  if (status EQUALS ST_OK)
-  {
-    found_field = 1;
-    strcpy (field, "poll");
-    value = json_object_get (root, field);
-    if (!json_is_string (value))
-      found_field = 0;
-  };
-  if (found_field)
-  {
-    char vstr [1024];
-    int i;
-    strcpy (vstr, json_string_value (value));
-    sscanf (vstr, "%d", &i);
-fprintf(stderr, "DEBUG: poll deprecated\n");
-//    p_card.poll = i;
-  }; 
 
   // port - port number at the other end of tls or tcp connection
 

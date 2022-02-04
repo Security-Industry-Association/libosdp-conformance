@@ -3,7 +3,7 @@
 /*
   oosdp-secure - open osdp secure channel routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -442,7 +442,8 @@ int
     done = 0;
     found_marker = 0;
     pad_blocksize = 0;
-fprintf(stderr, "DEBUG: initiating padding removal\n");
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "DEBUG: initiating padding removal\n");
     while (!done)
     {
       if (*cptr != 0)
