@@ -95,6 +95,8 @@ int
   if (status EQUALS ST_OK)
   {
     status = process_command(cmd.command, &context, cmd.details_length, cmd.details_param_1, (char *)cmd.details);
+    if (ctx->verbosity > 3)
+      fprintf(stderr, "DEBUG: q %d\n", ctx->q [0].status);
   };
   if (status != ST_OK)
     fprintf (stderr, "process_current_command: status %d\n",
@@ -103,6 +105,10 @@ int
 
 } /*process_current_command */
 
+
+/*
+  the caller knows if this is an ACU or a PD and handles the waiting logic
+*/
 
 int
   process_command_from_queue
@@ -113,10 +119,11 @@ int
   OSDP_COMMAND *cmd;
   OSDP_COMMAND extracted;
   int status;
-  int waiting;
+//  int waiting;
 
 
   status = ST_OK;
+#if 0
   waiting = osdp_awaiting_response(ctx);
 if (waiting)
 {
@@ -124,7 +131,9 @@ if (waiting)
 };
   if (ctx->verbosity > 9)
     fprintf(ctx->log, "process_command_from_queue: top, w=%d\n", waiting);
-  if ((!waiting) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
+#endif
+//  if ((!waiting) && (ctx->q [0].status != 0)) // meaning there's at least one command in the queue
+  if (ctx->q [0].status != 0) // meaning there's at least one command in the queue
   {
 
 fflush(ctx->log);

@@ -1,6 +1,6 @@
 # Make file for libosdp-conformance
 
-#  (C)Copyright 2017-2021 Smithee Solutions LLC
+#  (C)Copyright 2017-2022 Smithee Solutions LLC
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -108,9 +108,8 @@ oo-xpm-actions.o:	oo-xpm-actions.c ../include/open-osdp.h
 oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oo-xwrite.c
 
-# different as it uses source here by inclusion
-oo-conformance.o:	oo-conformance.c oo-SKIP.c
-	${CC} ${CFLAGS} -I. oo-conformance.c
+oo-conformance.o:	oo-conformance.c
+	${CC} ${CFLAGS} oo-conformance.c
 
 oo-capabilities.o:	oo-capabilities.c
 	${CC} ${CFLAGS} oo-capabilities.c

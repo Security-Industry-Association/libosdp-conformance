@@ -107,7 +107,6 @@ int
 
     (void)monitor_osdp_message (context, msg);
 
-fprintf(stderr, "DEBUG: process_osdp_message %02x\n", this_command);
     switch (this_command)
     {
     case OSDP_ACURXSIZE:
