@@ -433,8 +433,26 @@ int
 
     // if we're not waiting for a response and not in mid-receipt of a new message then process the command queue
 
-    if ((!osdp_awaiting_response(&context)) && (osdp_buf.next EQUALS 0))
+if (context.verbosity > 3)
+{
+  int i,j;
+  i = osdp_awaiting_response(&context);
+  j = osdp_buf.next;
+  fprintf(stderr, "DEBUG: awaiting %d next %d\n",
+    i, j);
+};
+    if (context.role EQUALS OSDP_ROLE_ACU)
     {
+      if ((!osdp_awaiting_response(&context)) && (osdp_buf.next EQUALS 0))
+      {
+        status = process_command_from_queue(&context);
+      };
+    }
+    else
+    {
+
+      // for a PD, process commands in the queue
+
       status = process_command_from_queue(&context);
     };
 

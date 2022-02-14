@@ -485,9 +485,6 @@ OSDP_CONFORMANCE_TEST
     { NULL, NULL, 0, 0, 0, 0, 0, "---" }
   };
 
-// code to configure tests to skip
-#include <oo-SKIP.c>
-
 
 char
   *conformance_status
@@ -550,8 +547,6 @@ void
   else
     role_tag = "PD";
   profile_tag = "Basic"; // really should constrain tests to use etc.
-
-  skip_conformance_tests (ctx, oconf);
 
   // fill in results for "minimal message threshhold" case
 

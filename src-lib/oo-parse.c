@@ -155,7 +155,7 @@ int
     msg_sqn = (p->ctrl) & 0x03;
 
     m->sequence = msg_sqn;
-    if (context->verbosity > 3)
+    if (context->verbosity > 9)
     {
       if (m->sequence EQUALS 0)
         fprintf(stderr, "DEBUG: sequence was zero\n");
