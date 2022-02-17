@@ -1,7 +1,0 @@
-changes in 1.06-1
-
-package builds automatically after detecting architecture.  "make package" now makes the whole thing.
-
-Use the amd64 version on a decent speed vm or intel/amd platform if you encounter performance issues
-with the PD implementation.
-

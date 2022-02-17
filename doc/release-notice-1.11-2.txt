@@ -1,0 +1,6 @@
+changes in 1.11-2
+
+added specific example of enabling secure channel in an ACU.
+
+pulled redundant errata doc
+
