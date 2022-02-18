@@ -7,6 +7,7 @@ usermod --groups sudo,tester opsadmin1
 mkdir -p /opt/osdp-conformance/run/ACU
 mkdir -p /opt/osdp-conformance/run/MON
 mkdir -p /opt/osdp-conformance/run/PD
+mkdir -p /opt/osdp-conformance/results
 
 # set up default parameter files 
 
