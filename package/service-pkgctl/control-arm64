@@ -1,4 +1,4 @@
-Package: libosdp-conformance
+Package: osdp-service
 Version: 1.21-1
 Section: custom
 Priority: optional
@@ -6,5 +6,6 @@ Architecture: arm64
 Essential: no
 Installed-Size: 1024
 Maintainer: github@smithee.solutions
-Description: OSDP (SIA 2.2/IEC 60839-11-5) implementation for conformance testing
+Description: systemd service set-up for libosdp-conformance
+Depends: libosdp-conformance
 

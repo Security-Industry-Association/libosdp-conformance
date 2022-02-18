@@ -1,0 +1,15 @@
+load the libosdp-conformance and osdp-service packages onto
+a stock rasbian machine.
+
+assumes you set a static ip
+
+install apache2
+
+dpkg -i the libosdp-conformance package and then the osdp-service package
+
+set the password for opsadmin1
+
+add "enable-secure-channel":"DEFAULT" to /opt/osdp-conformance/run/ACU/open-osdp-params.json
+
+start osdp with "systemctl start osdp"
+

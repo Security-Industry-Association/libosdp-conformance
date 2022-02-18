@@ -36,7 +36,7 @@ CGISCRIPTS = conformance-report \
   do-transfer do-verb-cp do-verb-pd
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
-EXTRA = osdp.conf osdp.service www-data
+EXTRA = osdp.conf service/osdp.service service/install-osdp-service www-data
 
 PROGS = open-osdp-kick osdp-config-print
 TLS_PROGS = 
@@ -76,7 +76,9 @@ build:	all
 	cp ${CGISCRIPTS} ../opt/osdp-conformance/cgi-bin
 	cp ${SCRIPTS} ../opt/osdp-conformance/bin
 	cp ${PROGS} ../opt/osdp-conformance/bin
-	cp osdp.conf www-data osdp.service ../opt/osdp-conformance/etc
+	cp osdp.conf www-data ../opt/osdp-conformance/etc
+	cp service/osdp.service ../opt/osdp-conformance/etc
+	cp service/install-osdp-service ../opt/osdp-conformance/bin
 
 build-tls:	${TLS_CGIPROGS} ${TLS_PAGES} ${TLS_SCRIPTS} ${TLS_PROGS} build
 	# (no TLS pages) cp ${TLS_PAGES} ../opt/osdp-conformance/www
