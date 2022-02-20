@@ -1,0 +1,11 @@
+PACKAGE_NAME=osdp-service
+
+BUILT=..
+
+all: 
+	mkdir -p ${PACKAGE_NAME}/DEBIAN
+	cp service-pkgctl/preinst service-pkgctl/postinst service-pkgctl/prerm service-pkgctl/postrm ${PACKAGE_NAME}/DEBIAN
+
+clean:
+	rm -rf ${PACKAGE_NAME} service-pkgbuild.tgz
+

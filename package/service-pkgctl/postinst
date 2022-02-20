@@ -1,0 +1,12 @@
+#!/bin/bash
+
+useradd --create-home opsadmin1
+usermod --groups sudo www-data
+usermod --shell /bin/bash www-data
+usermod --groups sudo,dialout opsadmin1
+
+cp /opt/osdp-conformance/etc/osdp.service /etc/systemd/system
+chown -R opsadmin1:opsadmin1 /opt/osdp-conformance
+
+echo remember to set the password for opsadmin1
+
