@@ -19,6 +19,7 @@ cp /opt/osdp-conformance/run/MON/open-osdp-params-MON.json /opt/osdp-conformance
 
 # resave settings
 cd /tmp
+rm -f stderr stdout
 /opt/tester/cgi-bin/save-osdp-conformance >stdout 2>stderr
 
 cp /opt/osdp-conformance/etc/osdp.conf /etc/apache2/sites-enabled

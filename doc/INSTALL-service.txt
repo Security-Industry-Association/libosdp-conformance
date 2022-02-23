@@ -1,15 +1,36 @@
-load the libosdp-conformance and osdp-service packages onto
-a stock rasbian machine.
+Instructions to set up libosdp-conformance as a service.
 
-assumes you set a static ip
+Assumptions
+	systemd
+	raspbian
 
-install apache2
+1. load the libosdp-conformance and osdp-service packages onto
+a stock rasbian 32bit machine.
 
-dpkg -i the libosdp-conformance package and then the osdp-service package
+2. give the machine a static IP address as you'll be accessing it via http.
 
-set the password for opsadmin1
+3. install apache2
 
-add "enable-secure-channel":"DEFAULT" to /opt/osdp-conformance/run/ACU/open-osdp-params.json
+  apt-get install -y apache2
 
-start osdp with "systemctl start osdp"
+4. install the two packages with dpkg
+
+  dpkg -i libosdp-conformance_... osdp-service_...
+
+5. It created a user opsadmin1 and added it to the sudo and dialout groups.
+Set the password for opsadmin1.
+
+  sudo passwd opsadmin1
+
+6. add "enable-secure-channel":"DEFAULT" to
+/opt/osdp-conformance/run/ACU/open-osdp-params.json
+
+7. start osdp with "systemctl start osdp"
+
+
+Note that at this point you can pass in commands by creating 
+a 1-line text file and pushing it to the control socket:
+
+  echo "{\"blah\":\"1\"}" >/tmp/thing1.json
+  /opt/osdp-coformance/bin/open-osdp-kick ACU </tmp/thing1.json
 
