@@ -433,7 +433,7 @@ int
 
     // if we're not waiting for a response and not in mid-receipt of a new message then process the command queue
 
-if (context.verbosity > 3)
+if (context.verbosity > 9)
 {
   int i,j;
   i = osdp_awaiting_response(&context);

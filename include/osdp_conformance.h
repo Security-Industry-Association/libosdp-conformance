@@ -1,7 +1,7 @@
 /*
   osdp_conformance.h - conformance metrics per profiles
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -32,6 +32,7 @@ typedef struct osdp_conform
 
 #define OOC_SYMBOL_physical_interface "050-01-01"
 #define OOC_SYMBOL_signalling         "050-02-01"
+#define OOC_SYMBOL_signalling_38400   "050-02-03"
 #define OOC_SYMBOL_multibyte_data_encoding "050-05-01"
 #define OOC_SYMBOL_packet_format      "050-09-01"
 #define OOC_SYMBOL_seq_zero           "050-09-02"
@@ -132,7 +133,8 @@ typedef struct osdp_interop_assessment
   // section 5
 
   OSDP_CONFORM physical_interface;
-  OSDP_CONFORM signalling;
+  OSDP_CONFORM signalling;              // 050-02-01 9600
+  OSDP_CONFORM signalling_38400;        // 050-02-03 38400
   OSDP_CONFORM alt_speed_2;             // 2-2-2
   OSDP_CONFORM alt_speed_3;             // 2-2-3
   OSDP_CONFORM alt_speed_4;             // 2-2-4

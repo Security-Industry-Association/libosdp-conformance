@@ -230,7 +230,11 @@ OSDP_CONFORMANCE_TEST
     {         OOC_SYMBOL_signalling,
       &(osdp_conformance.signalling.test_status),
       1, 0, 0, 0, 0,
-                        "signalling"},
+                        "Signalling: 9600"},
+    {         OOC_SYMBOL_signalling_38400,
+      &(osdp_conformance.signalling_38400.test_status),
+      1, 0, 0, 0, 0,
+                        "Signalling: 38400"},
     {         OOC_SYMBOL_scs_paired,
       &(osdp_conformance.scs_paired.test_status),
       1, 1, 1, 1, 0,
@@ -555,7 +559,8 @@ void
     osdp_test_set_status(OOC_SYMBOL_physical_interface, OCONFORM_EXERCISED);
     if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
       osdp_test_set_status(OOC_SYMBOL_signalling, OCONFORM_EXERCISED);
-      //oconf->signalling.test_status = OCONFORM_EXERCISED;
+    if (0 EQUALS strcmp (ctx->serial_speed, "38400"))
+      osdp_test_set_status(OOC_SYMBOL_signalling_38400, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_SOM, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_packet_format, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_SOM_sent, OCONFORM_EXERCISED);

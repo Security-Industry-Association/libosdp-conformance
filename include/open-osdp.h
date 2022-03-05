@@ -28,7 +28,7 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (21)
+#define OSDP_VERSION_MINOR (22)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
