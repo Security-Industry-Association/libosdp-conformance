@@ -849,11 +849,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     case OSDP_XRD:
       status = action_osdp_XRD(context, msg);
       break;
-#if 0
-      status = oosdp_make_message (OOSDP_MSG_XREAD, tlogmsg, msg);
-      if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-#endif
 
     default:
       if (context->verbosity > 2)

@@ -633,9 +633,14 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
         current_length = 0;
         param [0] = 0;
-        status = send_message_ex (context, OSDP_CAP, p_card.addr,
-          &current_length, sizeof (param), param,
-          OSDP_SEC_SCS_17, 0, NULL);
+        if (details [0] EQUALS 1)
+        {
+          status = send_message_ex (context, OSDP_CAP, p_card.addr, &current_length, sizeof (param), param, OSDP_SEC_STAND_DOWN, 0, NULL);
+        }
+        else
+        {
+          status = send_message_ex (context, OSDP_CAP, p_card.addr, &current_length, sizeof (param), param, OSDP_SEC_SCS_17, 0, NULL);
+        };
         if (context->verbosity > 2)
           fprintf (stderr, "Requesting Capabilities Report\n");
       };

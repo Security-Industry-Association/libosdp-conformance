@@ -746,15 +746,20 @@ int
 
   int status;
   char tlogmsg [1024];
+  int unknown;
 
 
   status = ST_OK;
   memset(tlogmsg, 0, sizeof(tlogmsg));
+  unknown = -1;
 
   if (msg->direction EQUALS 0) // direction 0 is TO the PD
   {
     switch (msg->msg_cmd)
     {
+    default:
+      unknown = msg->direction;
+      break;
     case OSDP_ACURXSIZE:
       status = oosdp_make_message (OOSDP_MSG_ACURXSIZE, tlogmsg, msg);
       if (status == ST_OK)
@@ -820,6 +825,9 @@ int
   {
     switch (msg->msg_cmd)
     {
+    default:
+      unknown = msg->direction;
+      break;
     case OSDP_BIOMATCHR: { status = oosdp_make_message (OOSDP_MSG_BIOMATCHR, tlogmsg, msg);
       if (status == ST_OK) status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg); }; break;
     case OSDP_BIOREADR: { status = oosdp_make_message (OOSDP_MSG_BIOREADR, tlogmsg, msg);
@@ -849,15 +857,6 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
-# if 0
-// action_osdp_FTSTAT already does this.
-
-    case OSDP_FTSTAT:
-      status = oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
-      if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      break;
-#endif
     case OSDP_MFGERRR:
       status = oosdp_make_message (OOSDP_MSG_MFGERRR, tlogmsg, msg);
       if (status == ST_OK)
@@ -872,6 +871,10 @@ int
   };
   switch (msg->msg_cmd)
   {
+  default:
+    if (unknown EQUALS -1)
+     unknown = msg->direction;
+    break;
   case OSDP_BUZ:
     status = oosdp_make_message (OOSDP_MSG_BUZ, tlogmsg, msg);
     if (status == ST_OK)

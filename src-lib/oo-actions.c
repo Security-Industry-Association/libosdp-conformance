@@ -1,7 +1,7 @@
 /*
   oo-actions - open osdp action routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -584,7 +584,7 @@ int
         entry->function_code);
       break;
     case OSDP_CAP_VERSION:
-      fprintf(ctx->log, "PD supports IEC 60839-11-5 dialect.\n");
+      fprintf(ctx->log, "PD supports OSDP version %d\n", entry->function_code);
       break;
     default:
       status = ST_OSDP_UNKNOWN_CAPABILITY;
@@ -599,9 +599,8 @@ int
     osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
   strcat(aux, "\"#\":\"#\"},\n");
   osdp_test_set_status_ex(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED, aux);
-
-  status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
-  fprintf (ctx->log, "%s\n", tlogmsg);
+//  status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
+//  fprintf (ctx->log, "%s\n", tlogmsg);
   return(status);
 
 } /* action_osdp_PDCAP */
