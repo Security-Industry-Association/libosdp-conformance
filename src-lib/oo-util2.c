@@ -83,6 +83,8 @@ int
 
   // for an ACU, considering file transfer, if we're in secure channel
 
+  if ((ctx->role EQUALS OSDP_ROLE_ACU) && (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL))
+    fprintf(stderr, "ACU and secure channel, background\n");
   if (ctx->role EQUALS OSDP_ROLE_ACU)
   {
     if (ctx->xferctx.total_length EQUALS 0)
@@ -115,11 +117,22 @@ int
 
   // if waiting for response to last secure message then do NOT poll
 
-  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+  if (send_secure_poll)
   {
     if (osdp_awaiting_response(ctx))
     {
-      send_secure_poll = 0;
+      if (ctx->timeout_retries > 0)
+      {
+        send_secure_poll = 0;
+        if (ctx->verbosity > 3)
+          fprintf(stderr, "retry %d, now decrementing\n", ctx->timeout_retries);
+        ctx->timeout_retries --;
+        if (ctx->timeout_retries EQUALS 0)
+        {
+          fprintf(stderr, "timed out, polling\n");
+          send_secure_poll = 1;
+        };
+      };
     };
   };
 

@@ -689,10 +689,17 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_FAIL);
         };
-        // if the PD NAK'd a KEEPACTIVE that is ok because those are rare
+
+        // if the PD NAK'd an ACURXSIZE fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
+        if (context->last_command_sent EQUALS OSDP_ACURXSIZE)
+        {
+          osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_FAIL);
+        };
+
+        // if the PD NAK'd a KEEPACTIVE fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
         if (context->last_command_sent EQUALS OSDP_KEEPACTIVE)
         {
-          osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
+          osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_FAIL);
         };
 
         // if the PD NAK'd an RSTAT that is ok because RSTAT/RSTATR are effectively deprecated
