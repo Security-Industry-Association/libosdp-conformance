@@ -193,13 +193,13 @@ void
   ctx->acu_polls = 0;
   ctx->bytes_received = 0;
   ctx->bytes_sent = 0;
-  ctx->card_data_valid = 0;
   ctx->checksum_errs = 0;
   ctx->crc_errs = 0;
-  memset(ctx->credentials_data, 0, sizeof(ctx->credentials_data));
+  memset(ctx->last_raw_read_data, 0, sizeof(ctx->last_raw_read_data));
   ctx->dropped_octets = 0;
   ctx->hash_bad = 0;
   ctx->hash_ok = 0;
+  ctx->last_raw_read_bits = 0;
   ctx->pd_acks = 0;
   ctx->pdus_received = 0;
   ctx->pdus_sent = 0;
