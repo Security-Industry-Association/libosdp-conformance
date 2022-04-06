@@ -1,7 +1,7 @@
 /*
   diag 01 crc checker
 
-  (C)2014-2015 Smithee Spelvin Agnew & Plinge, Inc.
+  (C)2017-2022 Smithee Solutions LLC
 
 to compile in libosdp/test/diag:
 

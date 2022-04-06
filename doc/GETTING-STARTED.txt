@@ -1,4 +1,8 @@
-Instructions to set up libosdp-conformance as a service.
+1. Miscellaneous
+Configuration file examples are in doc/config-examples.
+
+2. OSDP ACU as a (systemd) service
+ Instructions to set up libosdp-conformance as an ACU, as a (systemd) service.
 
 Assumptions
 	systemd
@@ -33,4 +37,5 @@ a 1-line text file and pushing it to the control socket:
 
   echo "{\"blah\":\"1\"}" >/tmp/thing1.json
   /opt/osdp-coformance/bin/open-osdp-kick ACU </tmp/thing1.json
+
 

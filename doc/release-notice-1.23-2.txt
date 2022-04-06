@@ -1,0 +1,8 @@
+changes in 1.23-1
+
+fix retry logic for secure channel commands
+
+you can now create a debian package and install that.  Use "make service" to make packages.
+
+libosdp-conformance can be run as a (systemd) service as an ACU.  See doc/INSTALL-service.txt
+
