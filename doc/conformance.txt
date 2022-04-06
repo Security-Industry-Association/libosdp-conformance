@@ -1,0 +1,2 @@
+see Security-Industry-Association/osdp-verified for details on conformance testing.
+
