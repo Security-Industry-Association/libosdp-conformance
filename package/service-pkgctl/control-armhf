@@ -7,5 +7,4 @@ Essential: no
 Installed-Size: 1024
 Maintainer: github@smithee.solutions
 Description: systemd service set-up for libosdp-conformance
-Depends: libosdp-conformance, apache2 (>= 2.4)
 
