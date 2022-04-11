@@ -6,7 +6,7 @@ extern unsigned char pending_response;
 /*
   oosdp-actions - open osdp action routines
 
-  (C)Copyright 2017-2020 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -146,6 +146,9 @@ int
 
 
   status = ST_OK;
+
+  // got an OSTAT.  Send back an OSTATR. both count as a 'pass'
+
   osdp_test_set_status(OOC_SYMBOL_cmd_ostat, OCONFORM_EXERCISED);
   osdp_test_set_status(OOC_SYMBOL_resp_ostatr, OCONFORM_EXERCISED);
 

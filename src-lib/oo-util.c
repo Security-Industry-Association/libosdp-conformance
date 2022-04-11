@@ -80,12 +80,18 @@ int
       fprintf (context->log, "PD: command %02x\n",
         context->role);
     };
-    if ((oh->ctrl & 0x03) EQUALS 0)
+
+    // if it's for me check the squence
+
+    if (oh->addr EQUALS p_card.addr)
     {
-      fprintf (context->log,
-        "  ACU sent sequence 0 - resetting sequence numbers\n");
-      context->next_sequence = 0;
-      osdp_reset_secure_channel(context);
+      if ((oh->ctrl & 0x03) EQUALS 0)
+      {
+        if (context->verbosity > 3)
+          fprintf (context->log, "  ACU sent sequence 0 - resetting sequence numbers\n");
+        context->next_sequence = 0;
+        osdp_reset_secure_channel(context);
+      };
     };
 
     // if they asked for a NAK mangle the command so we hit the default case of the switch
@@ -702,12 +708,21 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_FAIL);
         };
 
+        // if the PD NAK'd an OSTAT that is a fail.  The initiator of the OSTAT is responsible for only
+        // using it if output support declared.
+
+        if (context->last_command_sent EQUALS OSDP_OSTAT)
+        {
+          osdp_test_set_status(OOC_SYMBOL_cmd_ostat, OCONFORM_FAIL);
+        };
+
         // if the PD NAK'd an RSTAT that is ok because RSTAT/RSTATR are effectively deprecated
 
         if (context->last_command_sent EQUALS OSDP_RSTAT)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
         };
+
       // if the PD NAK'd an ISTAT fail the test.
       if (context->last_command_sent EQUALS OSDP_ISTAT)
       {
