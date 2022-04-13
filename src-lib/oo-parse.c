@@ -1,7 +1,7 @@
 /*
   oo-parse - parse osdp messages
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -103,7 +103,6 @@ int
   {
     if (m->lth >= (m->check_size+sizeof (OSDP_HDR)))
     {
-      //fprintf(stderr, "DEBUG: (osdp_parse_message) length acceptable\n");
       status = ST_OK;
       msg_lth = p->len_lsb + (256*p->len_msb);
       if (msg_lth > OSDP_OFFICIAL_MSG_MAX)
@@ -348,7 +347,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
     };
 
-fprintf(stderr, "DEBUG: osdp_parse_message cmd %02x\n", returned_hdr->command);
     switch (returned_hdr->command)
     {
     default:
