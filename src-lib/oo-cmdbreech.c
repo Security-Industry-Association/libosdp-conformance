@@ -1249,7 +1249,7 @@ int
     };
   }; 
 
-  // present_card - provide card data for osdp_RAW response
+  // present-card - provide card data for osdp_RAW response
 
   if (status EQUALS ST_OK)
   {
