@@ -47,7 +47,7 @@ PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
   Test-ACU.html Test-PD.html
 TLS_PAGES = 
 
-SCRIPTS = clean-run do-ACU-command do-CP-command \
+SCRIPTS = clean-run do-ACU-command do-CP-command do-PD-command \
   do-send-explicit exec-CP485 exec-PD485 \
   HUP-ACU HUP-CP HUP-MON HUP-PD \
   STOP-CP STOP-MON STOP-PD \

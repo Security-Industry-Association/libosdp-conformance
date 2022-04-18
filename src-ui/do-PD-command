@@ -1,0 +1,5 @@
+#!/bin/bash
+/opt/osdp-conformance/bin/write-osdp-PD-command $1
+/opt/osdp-conformance/bin/HUP-PD
+sleep 2
+
