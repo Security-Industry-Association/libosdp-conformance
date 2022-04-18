@@ -1,0 +1,5 @@
+#!/bin/bash
+/opt/osdp-conformance/bin/write-osdp-ACU-command $1
+/opt/osdp-conformance/bin/HUP-ACU
+sleep 2
+
