@@ -296,7 +296,26 @@ int
 
   if (status EQUALS ST_OK)
   {
+    char *current_role;
+    FILE *f;
+
     strcpy (optstring, "");
+
+    // record our current role
+
+    current_role = "";
+    if (context->role EQUALS OSDP_ROLE_CP)
+      current_role = "ACU";
+    if (context->role EQUALS OSDP_ROLE_PD)
+      current_role = "PD";
+    {
+      f = fopen("/opt/osdp-conformance/tmp/current-role", "w");
+      if (f != NULL)
+      {
+        fprintf(f, "%s", current_role);
+        fclose(f);
+      };
+    };    
   }
 
   if (status EQUALS ST_OK)
