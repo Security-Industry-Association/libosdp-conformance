@@ -212,6 +212,7 @@
 #define OSDP_CMDB_SEND_EXPLICIT     (1050)
 #define OSDP_CMDB_SCBK_DEFAULT      (1051)
 #define OSDP_CMDB_RESET_STATS       (1052)
+#define OSDP_CMDB_CONFORM_070_17_01 (1053) // next rmac-i fails...
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -528,8 +529,13 @@ typedef struct osdp_context
   OSDP_TIMER timer [OSDP_TIMER_MAX];
   int last_errno;
   int tamper;
+
+  // test case induction
+
   int next_nak; // nak the next incoming message from the CP
   int next_crc_bad;
+  int conformance_fail_next_rmac_i;
+
   int power_report;
   int tamper_report;
   int card_data_valid; // bits

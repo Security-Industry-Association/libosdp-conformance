@@ -236,6 +236,8 @@ int
       ret_cmd = OSDP_CMDB_BIOREAD;
     if (0 EQUALS strcmp(command, "biomatch"))
       ret_cmd = OSDP_CMDB_BIOMATCH;
+    if (0 EQUALS strcmp(command, "conform-070-17-01"))
+      ret_cmd = OSDP_CMDB_CONFORM_070_17_01;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
     if (0 EQUALS strcmp(command, "identify"))

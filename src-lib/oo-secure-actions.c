@@ -417,6 +417,15 @@ int
     {
       sec_blk [0] = 1; // means server cryptogram was good
 
+      if (ctx->conformance_fail_next_rmac_i)
+      if (ctx->conformance_fail_next_rmac_i)
+      {
+        sec_blk [0] = 0xff; // FAIL
+        ctx->conformance_fail_next_rmac_i = 0;
+        if (ctx->verbosity > 2)
+          fprintf(ctx->log, "Conformance test: RMAC_I responding with error.\n");
+      };
+
       memcpy (message1, msg->data_payload, sizeof (server_cryptogram));
       AES_init_ctx (&aes_context_mac1, ctx->s_mac1);
       AES_init_ctx (&aes_context_mac2, ctx->s_mac2);

@@ -237,6 +237,11 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
+  case OSDP_CMDB_CONFORM_070_17_01:
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   case OSDP_CMDB_FACTORY_DEFAULT:
     status = ST_OK;
     fprintf(ctx->log, "***RESET TO FACTORY DEFAULT***\n");

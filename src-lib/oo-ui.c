@@ -160,6 +160,13 @@ context=ctx;
         fprintf (context->log, "Enqueuing osdp_CRAUTH after next Raw response\n");
       break;
 
+    case OSDP_CMDB_CONFORM_070_17_01:
+      if (context->verbosity > 2)
+        fprintf(context->log, "Conformance test 070-17-01: next RMAC_I response will report failure.\n");
+      context->conformance_fail_next_rmac_i = 1;
+      status = ST_OK;
+      break;
+
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
       osdp_conformance.signalling.test_status = OCONFORM_FAIL;
