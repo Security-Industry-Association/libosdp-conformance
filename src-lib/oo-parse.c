@@ -95,6 +95,8 @@ int
     m->check_size = 2;
 //    m_check = OSDP_CRC;
   };
+  // rememeber the last one in so we answer the same way
+  context->last_checksize_in = m->check_size;
 
   if (m->lth > OSDP_OFFICIAL_MSG_MAX)
     status = ST_MSG_TOO_LONG;

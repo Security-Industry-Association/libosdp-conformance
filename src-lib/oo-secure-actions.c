@@ -1,7 +1,7 @@
 /*
   oosdp_secure_actions - open osdp secure channel action routines
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -249,7 +249,7 @@ int
       // RND.B
       memcpy ((char *)(ctx->rnd_b), "abcdefgh", 8);
       memcpy ((char *)(ccrypt_response.rnd_b), (char *)(ctx->rnd_b), sizeof (ccrypt_response.rnd_b));
-printf ("fixme: RND.B\n");
+//printf ("fixme: RND.B\n");
 
       osdp_create_client_cryptogram (ctx, &ccrypt_response);
 
@@ -460,8 +460,7 @@ int
     status = ST_OSDP_SC_WRONG_STATE;
     osdp_reset_secure_channel (ctx);
   };
-fprintf(stderr, "DEBUG: bottom of SCRYPT last_ %d\n",
-  ctx->last_was_processed);
+  //fprintf(stderr, "DEBUG: bottom of SCRYPT last_ %d\n", ctx->last_was_processed);
   return (status);
 
 } /* action_osdp_SCRYPT */

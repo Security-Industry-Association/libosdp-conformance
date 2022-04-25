@@ -531,15 +531,10 @@ int
       fprintf (stderr, "NAK being sent...%02x\n", *data);
     };
   };
-  status = osdp_build_message
-    (test_blk, // message itself
+  status = osdp_build_message(ctx, test_blk, // message itself
     current_length, // returned message length in bytes
-    command,
-    true_dest,
-    ctx->next_sequence,
-    data_length, // data length to use
-    data,
-    0); // no security
+    command, true_dest, ctx->next_sequence, data_length, // data length to use
+    data, 0); // no security
   if (status EQUALS ST_OK)
   {
     next_sequence(ctx);
@@ -555,29 +550,6 @@ int
 
       m.ptr = test_blk; // marshalled outbound message
       m.lth = *current_length;
-if (0)
-      {
-        int i;
-        char temps [4096];
-        char octet_string [1024];
-        temps[0] = 0;
-        for (i=0; i<*current_length; i++)
-        {
-          sprintf(octet_string, " %02x", *(i+m.ptr));
-          strcat(temps, octet_string);
-        };
-        if (ctx->verbosity > 9)
-          fprintf(stderr, "before send: buffer %s\n", temps);
-        if (context.trace)
-          strcpy(trace_out_buffer, temps);
-
-        // print trace to log if verbose
-
-        if (context.verbosity > 3)
-          osdp_trace_dump(&context, 1);
-        else
-          osdp_trace_dump(&context, 0);
-      };
 
       // parse the message for display.  role to parse is the OTHER guy
       parse_role = OSDP_ROLE_ACU;

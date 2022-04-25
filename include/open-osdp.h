@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (23)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_MINOR (24)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -481,6 +481,7 @@ typedef struct osdp_context
   unsigned char this_message_addr;
   unsigned char MFG_oui [3];
   int last_was_processed;
+  int last_checksize_in;
   int max_message; // max message from PD, if set
   int max_acu_receive;
   int configured_biometrics; // 0 if nothing, do not assume nonzero tells match vs. capture.
@@ -1066,7 +1067,7 @@ int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
 int osdp_awaiting_response(OSDP_CONTEXT *ctx);
-int osdp_build_message (unsigned char *buf, int *updated_length,
+int osdp_build_message (OSDP_CONTEXT *ctx, unsigned char *buf, int *updated_length,
   unsigned char command, int dest_addr, int sequence, int data_length,
   unsigned char *data, int security);
 int osdp_build_secure_message (OSDP_CONTEXT *ctx, unsigned char *buf, int *updated_length,

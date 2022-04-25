@@ -47,7 +47,8 @@ unsigned int web_color_lookup [16] = {
 
 int
   osdp_build_message
-    (unsigned char *buf,
+    (OSDP_CONTEXT *ctx,
+    unsigned char *buf,
     int *updated_length,
     unsigned char command,
     int dest_addr,
@@ -58,20 +59,13 @@ int
 
 { /* osdp_build_mesage */
 
-  int
-    check_size;
-  unsigned char
-    *cmd_ptr;
-  int
-    new_length;
-  unsigned char
-    *next_data;
-  OSDP_HDR
-    *p;
-  int
-    status;
-  int
-    whole_msg_lth;
+  int check_size;
+  unsigned char *cmd_ptr;
+  int new_length;
+  unsigned char *next_data;
+  OSDP_HDR *p;
+  int status;
+  int whole_msg_lth;
 
 
   status = ST_OK;
@@ -79,6 +73,8 @@ int
     check_size = 1;
   else
     check_size = 2;
+  if ((context.role EQUALS OSDP_ROLE_PD) && (ctx->last_checksize_in EQUALS 1))
+    check_size = 1; // use checksum if the last thing in was checksum (for PD)
   new_length = *updated_length;
 
   p = (OSDP_HDR *)buf;
