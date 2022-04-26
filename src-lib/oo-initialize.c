@@ -384,7 +384,6 @@ int
       sprintf (tlogmsg, "%02x", p_card.value [idx]);
       strcat (logmsg, tlogmsg);
     };
-    fprintf (stderr, "%s\n", logmsg);
     fprintf (context->log, "%s\n", logmsg);
 
     memset (&osdp_buf, 0, sizeof (osdp_buf));

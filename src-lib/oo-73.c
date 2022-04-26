@@ -1,7 +1,7 @@
 /*
-  oo-pd73 - PD emulator for extended packet mode (PIV) credential processing.
+  oo-73 - PD emulator for extended packet mode (PIV) credential processing.
 
-  (C)Copyright 2020-2021 Smithee Solutions LLC
+  (C)Copyright 2020-2022 Smithee Solutions LLC
 */
 
 

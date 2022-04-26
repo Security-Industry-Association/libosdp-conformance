@@ -394,8 +394,8 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
 
     case OSDP_PIVDATA:
       status = ST_OSDP_CMDREP_FOUND;
-      m->data_payload = NULL;
-      m->data_length = 0;
+      m->data_payload = m->cmd_payload + 1;
+//      m->data_length = 0;
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PIVDATA");
       break;

@@ -108,7 +108,8 @@ int
         ctx->timeout_retries --;
         if (ctx->timeout_retries EQUALS 0)
         {
-          fprintf(stderr, "timed out, polling\n");
+          if (ctx->verbosity > 3)
+            fprintf(stderr, "timed out, polling\n");
           send_poll = 1;
         };
       };
@@ -129,7 +130,8 @@ int
         ctx->timeout_retries --;
         if (ctx->timeout_retries EQUALS 0)
         {
-          fprintf(stderr, "timed out, polling\n");
+          if (ctx->verbosity > 3)
+            fprintf(stderr, "securere retry-timeou, polling\n");
           send_secure_poll = 1;
         };
       };

@@ -293,7 +293,7 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
-  // getpiv object-id=zzzzzz offset=0000 data-element=qq
+  // pivdata object-id=zzzzzz offset=0000 data-element=qq
 
   case OSDP_CMDB_PIVDATA:
     cmd->command = OSDP_CMDB_PIVDATA;
