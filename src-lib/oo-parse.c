@@ -97,6 +97,7 @@ int
   };
   // rememeber the last one in so we answer the same way
   context->last_checksize_in = m->check_size;
+fprintf(stderr, "DEBUG: last_checkize_in %d\n", context->last_checksize_in);
 
   if (m->lth > OSDP_OFFICIAL_MSG_MAX)
     status = ST_MSG_TOO_LONG;

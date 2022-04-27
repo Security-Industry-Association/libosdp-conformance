@@ -60,6 +60,7 @@ int
 { /* osdp_build_mesage */
 
   int check_size;
+  int check_style;
   unsigned char *cmd_ptr;
   int new_length;
   unsigned char *next_data;
@@ -69,12 +70,16 @@ int
 
 
   status = ST_OK;
+  check_style = m_check;
   if (m_check EQUALS OSDP_CHECKSUM)
     check_size = 1;
   else
     check_size = 2;
   if ((context.role EQUALS OSDP_ROLE_PD) && (ctx->last_checksize_in EQUALS 1))
+  {
+    check_style = OSDP_CHECKSUM;
     check_size = 1; // use checksum if the last thing in was checksum (for PD)
+  };
   new_length = *updated_length;
 
   p = (OSDP_HDR *)buf;
@@ -112,8 +117,8 @@ status = -2;
   p->ctrl = 0;
   p->ctrl = p->ctrl | (0x3 & sequence);
 
-  // set CRC depending on current value of global parameter
-  if (m_check EQUALS OSDP_CRC)
+  // set CRC depending on current style
+  if (check_style EQUALS OSDP_CRC)
     p->ctrl = p->ctrl | 0x04;
 
   new_length ++;
@@ -152,8 +157,9 @@ status = -2;
         data_length, new_length, (unsigned long)next_data);
   };
 
-  // crc
-  if (m_check EQUALS OSDP_CRC)
+  // crc?
+
+  if (check_style EQUALS OSDP_CRC)
 {
   unsigned short int parsed_crc;
   unsigned char *crc_check;
@@ -176,10 +182,10 @@ status = -2;
 }
   else
   {
-    unsigned char
-      cksum;
-    unsigned char *
-      pchecksum;
+    // else use checksum.  size should have been set above.
+
+    unsigned char cksum;
+    unsigned char * pchecksum;
 
     pchecksum = next_data;
     cksum = checksum (buf, new_length);
