@@ -221,7 +221,7 @@ int
     value = json_object_get (root, "template");
     if (json_is_string (value))
     {
-      if (strlen(json_string_value(value)) > sizeof(cmd->details - (1+4)))
+      if (strlen(json_string_value(value)) > (sizeof(cmd->details) - (1+4)))
       {
         fprintf(ctx->log, "BIO Template specified too large, using zeros\n");
       }

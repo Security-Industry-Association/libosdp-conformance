@@ -1,7 +1,7 @@
 /*
   open-osdp-PD-status - display PD status as refreshing HTML page
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -130,7 +130,10 @@ void
   stat_key [0] = 0;
   stat_key_slot [0] = 0;
   stat_retries = 0;
-
+  stat_acu_polls = 0;
+  stat_pd_acks = 0;
+  stat_naks = 0;
+  root = NULL;
 
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   current_time = time (NULL);

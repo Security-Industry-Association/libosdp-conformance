@@ -8,6 +8,7 @@ mkdir -p /opt/osdp-conformance/run/ACU
 mkdir -p /opt/osdp-conformance/run/MON
 mkdir -p /opt/osdp-conformance/run/PD
 mkdir -p /opt/osdp-conformance/results
+mkdir -p /opt/osdp-conformance/log
 
 # set up default parameter files 
 
@@ -22,6 +23,7 @@ cd /tmp
 rm -f stderr stdout
 /opt/tester/cgi-bin/save-osdp-conformance >stdout 2>stderr
 
+ln -s /opt/osdp-conformance/www/index-conformance.html /opt/osdp-conformance/www/index.html
 cp /opt/osdp-conformance/etc/osdp.conf /etc/apache2/sites-enabled
 rm -f /etc/apache2/sites-enabled/000*
 

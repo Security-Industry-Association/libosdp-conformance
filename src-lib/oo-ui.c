@@ -673,7 +673,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         dest_address = OSDP_CONFIGURATION_ADDRESS;
         if (details [2])
           dest_address = p_card.addr;
-        if (details [1] && 0x80)
+        if (details [1] & 0x80)
           context->next_sequence = 0;
   
         memcpy (&new_speed, details+4, 4);
