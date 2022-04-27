@@ -266,8 +266,9 @@ int
     struct timespec resolution;
 
     clock_getres (CLOCK_REALTIME, &resolution);
-    fprintf (stderr, "Clock resolution is %ld seconds/%ld nanoseconds\n",
-      resolution.tv_sec, resolution.tv_nsec);
+    if (context->verbosity > 3)
+      fprintf (stderr, "Clock resolution is %ld seconds/%ld nanoseconds\n",
+        resolution.tv_sec, resolution.tv_nsec);
   };
 
   // logging set-up

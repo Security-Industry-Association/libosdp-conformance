@@ -727,6 +727,13 @@ int
     ctx->pdcap_select = i;
   }; 
 
+  // if checksum only don't do secure channel
+  if (m_check EQUALS OSDP_CHECKSUM)
+  {
+    ctx->enable_secure_channel = OO_SCS_USE_DISABLED;
+    ctx->secure_channel_use [OO_SCU_ENAB] = 0;
+  };
+
   return (status);
 
 } /* oo_parse_config_parameters */
