@@ -1,4 +1,2 @@
 #!/bin/bash
-killall open-osdp
-rm -rf /opt/osdp-conformance/*
 
