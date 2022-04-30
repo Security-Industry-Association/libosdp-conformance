@@ -499,7 +499,7 @@ typedef struct osdp_context
   int timeout_retries;
 
   // OSDP protocol context
-  char last_command_sent;
+  unsigned int last_command_sent;
   char last_nak_error;
   char last_response_received;
   char next_response;

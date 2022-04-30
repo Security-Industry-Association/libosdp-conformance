@@ -703,7 +703,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         };
 
         // if the PD NAK'd a KEEPACTIVE fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
-        if (context->last_command_sent EQUALS OSDP_KEEPACTIVE)
+        if ((unsigned int)(context->last_command_sent) EQUALS (unsigned int)OSDP_KEEPACTIVE)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_FAIL);
         };

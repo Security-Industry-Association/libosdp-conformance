@@ -496,7 +496,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
         osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_BUZ)
         osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);
-      if (ctx->last_command_sent EQUALS OSDP_GENAUTH)
+      if ((unsigned int)(ctx->last_command_sent) EQUALS (unsigned int)OSDP_GENAUTH)
         osdp_test_set_status(OOC_SYMBOL_cmd_genauth, OCONFORM_EXERCISED);
       if (ctx->last_command_sent EQUALS OSDP_KEEPACTIVE)
         osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_EXERCISED);
