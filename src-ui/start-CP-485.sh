@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2020 Smithee Solutions LLC
-# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2017-2022 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,14 +15,14 @@
 # limitations under the License.
 
 OSDPDIR=/opt/osdp-conformance
-sudo rm -f ${OSDPDIR}/tmp/current_role
+sudo rm -f ${OSDPDIR}/tmp/current-role
 cd /opt/osdp-conformance/run/ACU
 sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-CP485
 sudo -n chmod 777 /opt/osdp-conformance/tmp
 sudo -n mkdir -p /opt/osdp-conformance/etc
-sudo -n echo "ACU" >/opt/osdp-conformance/tmp/current_role
-sudo -n cp /opt/osdp-conformance/tmp/current_role /opt/osdp-conformance/etc
+sudo -n echo "ACU" >/opt/osdp-conformance/tmp/current-role
+sudo -n cp /opt/osdp-conformance/tmp/current-role /opt/osdp-conformance/etc
 echo "Content-type: text/html"
 echo ""
 

@@ -623,6 +623,7 @@ typedef struct osdp_context
 #define OSDP_ROLE_CP      (OSDP_ROLE_ACU)
 #define OSDP_ROLE_PD      (1)
 #define OSDP_ROLE_MONITOR (2)
+#define OO_OSDP_ROLE_FILENAME "/opt/osdp-conformance/tmp/current-role"
 
 // note - not same thing as check length which will be 1 or 2
 #define OSDP_CHECKSUM (0)

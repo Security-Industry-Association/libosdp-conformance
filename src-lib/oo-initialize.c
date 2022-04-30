@@ -310,7 +310,7 @@ int
     if (context->role EQUALS OSDP_ROLE_PD)
       current_role = "PD";
     {
-      f = fopen("/opt/osdp-conformance/tmp/current-role", "w");
+      f = fopen(OO_OSDP_ROLE_FILENAME, "w");
       if (f != NULL)
       {
         fprintf(f, "%s", current_role);
