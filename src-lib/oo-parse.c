@@ -703,7 +703,14 @@ fprintf(stderr, "lstat 1000\n");
       parsed_crc = fCrcBlk (m->ptr, msg_lth - 2);
 
       wire_crc = *(1+m->crc_check) << 8 | *(m->crc_check);
-      if (parsed_crc != wire_crc)
+
+      /*
+        wire packet had a CRC.  If we are in CRC mode compare and fail out if mismatch.
+        additionally, if we're here but we only run in Checksum mode consider this packet
+        to contain a "bad" CRC.
+      */
+
+      if ((parsed_crc != wire_crc) || (m_check EQUALS OSDP_CHECKSUM))
       {
         if (context->verbosity > 2)
         {
