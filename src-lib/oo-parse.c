@@ -818,6 +818,8 @@ fprintf(context->log,
 
             fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
             status = ST_OSDP_BAD_SEQUENCE;
+            if (context->verbosity > 3)
+              fprintf(stderr, "nak bad seq: wire addr %d my addr %d %d\n", p->addr, p_card.addr, context->pd_address);
             context->seq_bad++;
 
             // putting this back (0.91-10)

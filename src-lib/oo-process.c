@@ -112,15 +112,13 @@ unsigned short int current_check_value;
 
       if ((last_command_received EQUALS parsed_msg.command) && (last_check_value EQUALS current_check_value))
       {
-int old_s;
-old_s = context.next_sequence;
+        //int old_s; old_s = context.next_sequence;
 if (context.next_sequence EQUALS 1)
   context.next_sequence = 3;
 else
   context.next_sequence --;
 context.retries ++;
-fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n",
-  context.retries, old_s, context.next_sequence);
+//fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n", context.retries, old_s, context.next_sequence);
 fflush(context.log);
 
 send_response = 0;
@@ -147,6 +145,11 @@ status = ST_OK;
         fprintf(context.log, "  NAK: Bad hash, sending NAK %d\n", OO_NAK_ENC_REQ);
         break;
       case ST_OSDP_BAD_SEQUENCE:
+        if (context.verbosity > 3)
+        {
+          fprintf(context.log, "bad sequence ctx addr %d msg addr %d\n", context.pd_address, parsed_msg.addr);
+        };
+
         nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_SEQUENCE;
 
@@ -160,7 +163,7 @@ status = ST_OK;
       {
         char cmd [1024];
         if (context.verbosity > 3)
-          fprintf(context.log, "DEBUG: NAK: %d.\n", osdp_nak_response [0]);
+          fprintf(context.log, "NAK: response %d.\n", osdp_nak_response [0]);
         (void)send_message_ex(&context,
           OSDP_NAK, p_card.addr, &current_length,
           1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
@@ -272,7 +275,6 @@ status = ST_OK;
   // move the existing buffer up to the front if it was unknown, not mine,
   // monitor only, or processed
 
-  //fprintf(stderr, "DEBUG: MOVE MOVE MOVE MOVE status %d\n", status);
   if ((status EQUALS ST_PARSE_UNKNOWN_CMD) || \
     (status EQUALS ST_BAD_CRC) || \
     (status EQUALS ST_OSDP_BAD_SEQUENCE) || \
@@ -284,7 +286,15 @@ status = ST_OK;
   {
     int length;
     length = (parsed_msg.len_msb << 8) + parsed_msg.len_lsb;
-// zzz
+    if (context.verbosity > 3)
+      fprintf(stderr, "skipping %d bytes\n", length);
+    memcpy (temp_buffer.buf, osdp_buf->buf+length, osdp_buf->next-length);
+    temp_buffer.next = osdp_buf->next-length;
+    memcpy (osdp_buf->buf, temp_buffer.buf, temp_buffer.next);
+    osdp_buf->next = temp_buffer.next;
+    if (status != ST_OK)
+      // if we experienced an error we just reset things and continue
+      status = ST_SERIAL_IN;
 {
   int i;
   char new_trace_buffer [3*1024];
@@ -293,19 +303,12 @@ status = ST_OK;
   new_trace_buffer [0] = 0;
   for (i=0; i<length; i++)
   {
-    sprintf(tmps, " %02x", osdp_buf->buf[0]);
+    sprintf(tmps, " %02x", osdp_buf->buf[i]);
     strcat(new_trace_buffer, tmps);
   };
   strcat(new_trace_buffer, "\n");
-  //fprintf(stderr, "DEBUG: new trace buffer %s\n", new_trace_buffer);
+//fprintf(stderr, "DEBUG: new trace buffer %s\n", new_trace_buffer);
 }
-    memcpy (temp_buffer.buf, osdp_buf->buf+length, osdp_buf->next-length);
-    temp_buffer.next = osdp_buf->next-length;
-    memcpy (osdp_buf->buf, temp_buffer.buf, temp_buffer.next);
-    osdp_buf->next = temp_buffer.next;
-    if (status != ST_OK)
-      // if we experienced an error we just reset things and continue
-      status = ST_SERIAL_IN;
   };
   if (0) //(status EQUALS ST_OK)
   {
@@ -368,15 +371,12 @@ fflush(ctx->log);
       {
         sprintf(octet, " %02x", buffer [i]);
         strcat(trace_in_buffer, octet);
-// if (context.verbosity > 9)
-{ fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer); };
+ if (context.verbosity > 9) { fprintf(stderr, "DEBUG: trace in now %s\n", trace_in_buffer); };
       };
 
       status = ST_SERIAL_IN;
-fprintf(stderr, "DEBUG: next before add is %d\n", osdp_buf.next);
       if (osdp_buf.next < sizeof (osdp_buf.buf))
       {
-fprintf(stderr, "DEBUG: storing %02x in buffer[%d]\n", buffer [i], osdp_buf.next);
         osdp_buf.buf [osdp_buf.next] = buffer [i];
         osdp_buf.next ++;
 
