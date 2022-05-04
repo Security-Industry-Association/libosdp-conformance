@@ -244,6 +244,8 @@ int
       ret_cmd = OSDP_CMDB_IDENT;
     if (0 EQUALS strcmp(command, "keyset"))
       ret_cmd = OSDP_CMDB_KEYSET;
+    if (0 EQUALS strcmp(command, "ondemand-lstatr"))
+      ret_cmd = OSDP_CMDB_ONDEMAND_LSTATR;
     if (0 EQUALS strcmp(command, "pivdata"))
       ret_cmd = OSDP_CMDB_PIVDATA;
     if (0 EQUALS strcmp(command, "polling"))

@@ -411,6 +411,15 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       };
       break;
 
+    case OSDP_CMDB_ONDEMAND_LSTATR:
+      context->next_response = OSDP_LSTATR;
+      if (context->verbosity > 2)
+        fprintf (stderr, "Declaring LSTATR on next response\n");
+      status = ST_OK;
+      break;
+
+      break;
+
     case OSDP_CMDB_PIVDATA:
       {
         unsigned char pivdata_buffer [OSDP_OFFICIAL_MSG_MAX];

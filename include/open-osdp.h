@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (24)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -213,6 +213,7 @@
 #define OSDP_CMDB_SCBK_DEFAULT      (1051)
 #define OSDP_CMDB_RESET_STATS       (1052)
 #define OSDP_CMDB_CONFORM_070_17_01 (1053) // next rmac-i fails...
+#define OSDP_CMDB_ONDEMAND_LSTATR   (1054)
 
 #define OSDP_CMD_NOOP         (0)
 

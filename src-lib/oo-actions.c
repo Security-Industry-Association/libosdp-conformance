@@ -669,7 +669,7 @@ int
 
   // if there was a power report or tamper return that.
 
-  if ((ctx->power_report EQUALS 1) || (ctx->tamper))
+  if ((!done) && ((ctx->power_report EQUALS 1) || (ctx->tamper)))
   {
     char details [1024];
     done = 1;
@@ -711,6 +711,28 @@ int
       fprintf (ctx->log, "%s\n", tlogmsg);
     };
   }
+
+  // send an on-demand LSTATR (to clear tamper)
+
+  if (!done)
+  {
+    if (ctx->next_response EQUALS OSDP_LSTATR)
+    {
+      ctx->next_response = 0;
+      done = 1;
+      osdp_lstat_response_data [ 0] = ctx->tamper;
+      osdp_lstat_response_data [ 1] = ctx->power_report;
+
+      current_length = 0;
+      status = send_message_ex (ctx, OSDP_LSTATR, p_card.addr, &current_length,
+        sizeof (osdp_lstat_response_data), osdp_lstat_response_data, OSDP_SEC_NOT_SCS, 0, NULL);
+      if (ctx->verbosity > 2)
+      {
+        sprintf (tlogmsg, "Responding with on-demand osdp_LSTATR (T=%d P=%d)", ctx->tamper, ctx->power_report);
+        fprintf (ctx->log, "%s\n", tlogmsg);
+      };
+    };
+  };
 
   // if there's card data to return, do that.
 
