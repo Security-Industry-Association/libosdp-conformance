@@ -146,7 +146,6 @@ int
           *(msg->data_payload + 2), *(msg->data_payload + 3),
           *(msg->data_payload + 4));
         fprintf (context->log, "%s", logmsg);
-        fprintf (stderr, "%s", logmsg);
         logmsg[0]=0;
       };
       osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);

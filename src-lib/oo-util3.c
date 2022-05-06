@@ -69,6 +69,7 @@ int
   int whole_msg_lth;
 
 
+
   status = ST_OK;
   check_style = m_check;
   if (m_check EQUALS OSDP_CHECKSUM)

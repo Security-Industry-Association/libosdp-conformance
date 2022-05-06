@@ -347,6 +347,14 @@ int
     // low order byte first
     *(crc_check+1) = (0xff00 & parsed_crc) >> 8;
     *(crc_check) = (0x00ff & parsed_crc);
+
+    // if testing corrupt CRC
+    if (ctx->next_crc_bad)
+    {
+      fprintf(ctx->log, "Corrupting SC CRC...\n");
+      (*(crc_check))++;
+      ctx->next_crc_bad = 0;
+    };
     new_length ++;
     new_length ++;
   }
