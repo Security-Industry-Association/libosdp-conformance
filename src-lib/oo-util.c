@@ -427,8 +427,11 @@ int
         &current_length, 2, osdp_lstat_response_data, OSDP_SEC_SCS_18, 0, NULL);
       if (context->verbosity > 2)
       {
-        sprintf (logmsg, "Responding with OSDP_LSTATR (Power)");
+        sprintf (logmsg, "Responding with OSDP_LSTATR (T=%d P=%d)", context->tamper, context->power_report);
         fprintf (context->log, "%s\n", logmsg);
+        // clear tamper and power now reported
+        context->tamper = 0;
+        context->power_report = 0;
       };
     };
     break;
