@@ -1,7 +1,7 @@
 /*
   oo-capabilities - primitives to manage the capabilities list
 
-  (C) 2021 Smithee Solutions LLC
+  (C) 2021-2022 Smithee Solutions LLC
 */
 
 
@@ -70,8 +70,11 @@ int
     status = osdp_add_capability(ctx, capas, 6, 0, 0, capabilities_response_length, sizeof(capas));
   };
 
-  // supports CRC-16
-  status = osdp_add_capability(ctx, capas, 8, 1, 0, capabilities_response_length, sizeof(capas));
+  // supports CRC-16?  use m_check to respond
+  if (m_check EQUALS OSDP_CRC)
+    status = osdp_add_capability(ctx, capas, 8, 1, 0, capabilities_response_length, sizeof(capas));
+  else
+    status = osdp_add_capability(ctx, capas, 8, 0, 0, capabilities_response_length, sizeof(capas));
 
   // supports secure channel, and scbk-d
   if (ctx->enable_secure_channel > 0)
