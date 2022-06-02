@@ -374,7 +374,6 @@ sleep(1);
         omfg->mfg_command_id = oargs->command_ID;
         send_length = sizeof(OSDP_MFG_COMMAND) - 1;
         out_idx = 0;
-fprintf(stderr, "string is >%s<\n", oargs->c_s_d);
         for (idx=0; idx<strlen(oargs->c_s_d); idx=idx+2)
         {
           tmps[2] = 0;
@@ -388,7 +387,6 @@ fprintf(stderr, "string is >%s<\n", oargs->c_s_d);
           send_length ++;
         };
 
-fprintf(stderr,"w:%d (250)\n", context->last_was_processed);
         if (osdp_awaiting_response(context))
         {
           fprintf(stderr, "busy before OSDP_MFG, skipping send\n");

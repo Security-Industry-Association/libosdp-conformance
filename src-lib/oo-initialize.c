@@ -73,7 +73,7 @@ int
     close (ctx->fd);
   };
   ctx->fd = open (device, O_RDWR | O_NONBLOCK);
-  fprintf (stderr, "Opening %s, fd=%d.\n", device, ctx->fd);
+  fprintf (ctx->log, "Opening %s, fd=%d.\n", device, ctx->fd);
   if (ctx->fd EQUALS -1)
   {
     if (ctx->verbosity > 3)
