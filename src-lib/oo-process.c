@@ -5,7 +5,7 @@ extern int leftover_length;
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -36,7 +36,6 @@ extern int leftover_length;
 extern OSDP_CONTEXT context;
 extern unsigned char last_command_received;
 extern unsigned char last_check_value;
-extern unsigned char last_sequence_received;
 extern OSDP_BUFFER osdp_buf;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
@@ -106,19 +105,20 @@ unsigned short int current_check_value;
 
       fprintf(context.log,
         "  NAK: last-cmd %02x last-seq %d last-checkval %04x\n",
-        last_command_received, last_sequence_received, last_check_value);
+        last_command_received, context.last_sequence_received, last_check_value);
 
       // is it a resend?
 
       if ((last_command_received EQUALS parsed_msg.command) && (last_check_value EQUALS current_check_value))
       {
-        //int old_s; old_s = context.next_sequence;
+        int old_s; old_s = context.next_sequence;
 if (context.next_sequence EQUALS 1)
   context.next_sequence = 3;
 else
   context.next_sequence --;
 context.retries ++;
-//fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n", context.retries, old_s, context.next_sequence);
+if (context.verbosity > 3)
+  fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n", context.retries, old_s, context.next_sequence);
 fflush(context.log);
 
 send_response = 0;
