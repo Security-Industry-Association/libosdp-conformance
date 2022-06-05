@@ -5,7 +5,7 @@ extern int leftover_length;
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -286,8 +286,6 @@ status = ST_OK;
   {
     int length;
     length = (parsed_msg.len_msb << 8) + parsed_msg.len_lsb;
-    if (context.verbosity > 3)
-      fprintf(stderr, "skipping %d bytes\n", length);
     memcpy (temp_buffer.buf, osdp_buf->buf+length, osdp_buf->next-length);
     temp_buffer.next = osdp_buf->next-length;
     memcpy (osdp_buf->buf, temp_buffer.buf, temp_buffer.next);
