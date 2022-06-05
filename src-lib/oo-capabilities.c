@@ -37,10 +37,12 @@ int
   *capabilities_response_length = 0;
 
   // inputs
-  status = osdp_add_capability(ctx, capas, 1, 2, ctx->configured_inputs, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 1, 2, ctx->configured_inputs, capabilities_response_length, sizeof(capas));
 
   // outputs
-  status = osdp_add_capability(ctx, capas, 2, 2, ctx->configured_outputs, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 2, 2, ctx->configured_outputs, capabilities_response_length, sizeof(capas));
 
   // 1024 bits max in raw
   status = osdp_add_capability(ctx, capas, 3, 1, 0, capabilities_response_length, sizeof(capas));
@@ -61,7 +63,7 @@ int
   };
 
   // text display, 1 row of 16 if enabled
-  if (ctx->capability_configured_sounder)
+  if (ctx->capability_configured_text)
   {
     status = osdp_add_capability(ctx, capas, 6, 1, 1, capabilities_response_length, sizeof(capas));
   }
@@ -87,31 +89,32 @@ int
   };
 
   // max PDU size
-  status = osdp_add_capability(ctx, capas, 10, 
-    0xff & ctx->capability_max_packet,
-    (0xff00 & ctx->capability_max_packet)>>8,
-    capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 10, 
+      0xff & ctx->capability_max_packet, (0xff00 & ctx->capability_max_packet)>>8, capabilities_response_length, sizeof(capas));
 
   // max assembled message size
-  status = osdp_add_capability(ctx, capas, 11,
-    0xff & ctx->capability_max_packet,
-    (0xff00 & ctx->capability_max_packet)>>8,
-    capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 11, 0xff & ctx->capability_max_packet, (0xff00 & ctx->capability_max_packet)>>8, capabilities_response_length, sizeof(capas));
 
   // no Smartcard
-  status = osdp_add_capability(ctx, capas, 12, 0, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 12, 0, 0, capabilities_response_length, sizeof(capas));
 
   // no Keypad
   status = osdp_add_capability(ctx, capas, 13, 0, 0, capabilities_response_length, sizeof(capas));
 
   // no biometrics
-  status = osdp_add_capability(ctx, capas, 14, 0, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 14, 0, 0, capabilities_response_length, sizeof(capas));
 
   // no SPE (Secure PIN Entry)
-  status = osdp_add_capability(ctx, capas, 15, 0, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 15, 0, 0, capabilities_response_length, sizeof(capas));
 
   // Version "SIA 2.2" of protocol
-  status = osdp_add_capability(ctx, capas, 16, 2, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 16, 2, 0, capabilities_response_length, sizeof(capas));
 
   memcpy(capabilities_list, capas, *capabilities_response_length);
   return(status);

@@ -35,7 +35,7 @@ extern int leftover_length;
 
 extern OSDP_CONTEXT context;
 extern unsigned char last_command_received;
-extern unsigned char last_check_value;
+extern unsigned int last_check_value;
 extern OSDP_BUFFER osdp_buf;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
@@ -49,6 +49,7 @@ int
 
 { /* process_osdp_input */
 
+  unsigned short int current_check_value;
   OSDP_MSG msg;
   int nak_not_msg;
   OSDP_HDR parsed_msg;
@@ -60,10 +61,16 @@ int
   osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
 
   memset (&msg, 0, sizeof (msg));
+  current_check_value = 0;
 
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
+  if (msg.crc_check)
+    current_check_value = *(unsigned short int *)(msg.crc_check);
+  if (context.verbosity > 3)
+    fprintf(context.log, "osdp_parse_message status was %d. last-cmd %02x parsed-cmd %02x last-check %04x current-check %04x\n",
+      status, last_command_received, parsed_msg.command, last_check_value, current_check_value);
   if (status EQUALS ST_OK)
   {
     context.last_sequence_received = msg.sequence;
@@ -96,10 +103,6 @@ int
 
     if (context.role EQUALS OSDP_ROLE_PD)
     {
-unsigned short int current_check_value;
-
-
-      current_check_value = *(unsigned short int *)(msg.crc_check);
       if (msg.check_size EQUALS 1)
         current_check_value = 0xff & current_check_value; // crc is 2 bytes checksum is the low order byte
 
