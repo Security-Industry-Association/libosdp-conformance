@@ -66,7 +66,6 @@ int
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
-fprintf(stderr, "DEBUG: process_osdp_input: osdp_parse_message returned %d.\n", status);
   if (msg.crc_check)
     current_check_value = *(unsigned short int *)(msg.crc_check);
   if (context.verbosity > 3)
