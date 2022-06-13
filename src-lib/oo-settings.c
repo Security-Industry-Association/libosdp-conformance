@@ -574,7 +574,7 @@ int
     // inter-poll delay time is timer OSDP_TIMER_INTERPOLL (a/k/a "timer 0"), in seconds.
     ctx->timer [OSDP_TIMER_RESPONSE].i_nsec = i;
     ctx->timer [OSDP_TIMER_RESPONSE].i_sec = 0;
-//fprintf(stderr, "inter-poll response timer set to %ld. nanoseconds\n", ctx->timer [OSDP_TIMER_RESPONSE].i_nsec);
+    fprintf(ctx->log, "inter-poll response timer set to %ld. nanoseconds\n", ctx->timer [OSDP_TIMER_RESPONSE].i_nsec);
   }; 
 
   // parameter "serial-read-timeout" - nanoseconds.

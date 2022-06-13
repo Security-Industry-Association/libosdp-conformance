@@ -177,13 +177,22 @@ int
 
   status = ST_OK;
   memset (&osdp_conformance, 0, sizeof (osdp_conformance));
-  mfg_rep_sequence = 0;
 
-  // create the lock, exclusively, for just this user
-  context->process_lock = open(OSDP_EXCLUSIVITY_LOCK,
-    O_CREAT | O_WRONLY, S_IRWXU);
-  if (context->process_lock < 0)
-    status = -1;
+  // logging set-up
+
+  context->log = fopen (context->log_path, "w");
+  if (context->log EQUALS NULL)
+    status = ST_LOG_OPEN_ERR;
+  if (status EQUALS ST_OK)
+  {
+    mfg_rep_sequence = 0;
+
+    // create the lock, exclusively, for just this user
+    context->process_lock = open(OSDP_EXCLUSIVITY_LOCK,
+      O_CREAT | O_WRONLY, S_IRWXU);
+    if (context->process_lock < 0)
+      status = -1;
+  };
   if (status EQUALS ST_OK)
   {
     status_io = flock(context->process_lock, LOCK_EX | LOCK_NB);
@@ -259,11 +268,13 @@ int
   context->timer [OSDP_TIMER_STATISTICS].i_nsec = 0;
   context->timer [OSDP_TIMER_RESPONSE].timeout_action = OSDP_TIMER_RESTART_NONE;
   context->timer [OSDP_TIMER_RESPONSE].i_sec = 0;
-  context->timer [OSDP_TIMER_RESPONSE].i_nsec = 200000000l;
+  context->timer [OSDP_TIMER_RESPONSE].i_nsec = 100000000l;
+  fprintf(context->log, "Inter-command poll timeout %ld.\n", context->timer [OSDP_TIMER_RESPONSE].i_nsec);
   context->timer [OSDP_TIMER_SUMMARY].timeout_action = OSDP_TIMER_RESTART_ALWAYS;
   context->timer [OSDP_TIMER_SUMMARY].i_sec = 60;
   context->timer [OSDP_TIMER_SERIAL_READ].status = OSDP_TIMER_STOPPED;
   context->timer [OSDP_TIMER_SERIAL_READ].i_nsec = 100000000;
+  fprintf(context->log, "Serial read timeout %ld.\n", context->timer [OSDP_TIMER_SERIAL_READ].i_nsec);
   { 
     struct timespec resolution;
 
@@ -272,12 +283,6 @@ int
       fprintf (stderr, "Clock resolution is %ld seconds/%ld nanoseconds\n",
         resolution.tv_sec, resolution.tv_nsec);
   };
-
-  // logging set-up
-
-  context->log = fopen (context->log_path, "w");
-  if (context->log EQUALS NULL)
-    status = ST_LOG_OPEN_ERR;
   }; // status ok after lock 
 
   if (status EQUALS ST_OK)
