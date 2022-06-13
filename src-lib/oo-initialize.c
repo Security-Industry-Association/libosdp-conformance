@@ -262,6 +262,8 @@ int
   context->timer [OSDP_TIMER_RESPONSE].i_nsec = 200000000l;
   context->timer [OSDP_TIMER_SUMMARY].timeout_action = OSDP_TIMER_RESTART_ALWAYS;
   context->timer [OSDP_TIMER_SUMMARY].i_sec = 60;
+  context->timer [OSDP_TIMER_SERIAL_READ].status = OSDP_TIMER_STOPPED;
+  context->timer [OSDP_TIMER_SERIAL_READ].i_nsec = 100000000;
   { 
     struct timespec resolution;
 

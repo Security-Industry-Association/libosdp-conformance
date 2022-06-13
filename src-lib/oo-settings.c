@@ -577,6 +577,27 @@ int
 //fprintf(stderr, "inter-poll response timer set to %ld. nanoseconds\n", ctx->timer [OSDP_TIMER_RESPONSE].i_nsec);
   }; 
 
+  // parameter "serial-read-timeout" - nanoseconds.
+  // note this is the pselect timeout waiting for rs485 serial reads
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "serial-read-timeout");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    long i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%ld", &i);
+    ctx->timer [OSDP_TIMER_SERIAL_READ].i_nsec = i;
+    ctx->timer [OSDP_TIMER_RESPONSE].i_sec = 0;
+  }; 
+
   // parameter "verbosity"
 
   if (status EQUALS ST_OK)

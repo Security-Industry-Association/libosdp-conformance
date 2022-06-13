@@ -258,7 +258,9 @@ int
     // todo: switch over to OSDP_TIMER_IO and add a tunable parameter.
 
     timeout.tv_sec = 0;
-    timeout.tv_nsec = 100000000;
+//    timeout.tv_nsec = 100000000;
+    timeout.tv_nsec = context.timer[OSDP_TIMER_SERIAL_READ].i_nsec;
+
     // to slow things way down set the select timeout to e.g. half a second:
 
     status_select = pselect (scount, &readfds, &writefds, &exceptfds,

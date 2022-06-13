@@ -389,13 +389,17 @@ typedef struct osdp_timer
 #define OSDP_TIMER_RESTART_ALWAYS (1)
 #define OSDP_TIMER_RESTART_NONE   (0)
 
-#define OSDP_TIMER_MAX            (6)
+// timer numbers
+
+#define OSDP_TIMER_MAX            (7) 
+
 #define OSDP_TIMER_STATISTICS     (0)
 #define OSDP_TIMER_RESPONSE       (1)
 #define OSDP_TIMER_SUMMARY        (2)
 #define OSDP_TIMER_LED_0_TEMP_ON  (3)
 #define OSDP_TIMER_LED_0_TEMP_OFF (4)
 #define OSDP_TIMER_IO             (5)
+#define OSDP_TIMER_SERIAL_READ    (6)
 
 
 typedef struct osdp_context_filetransfer
