@@ -124,6 +124,29 @@ int
     p_card.bits = i;
   }; 
 
+  // parameter "capability-scbk-dr"
+  // value is 0 for not-supported, 1 for supported.
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "capability-scbk-d");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    if ((i EQUALS 1) || (i EQUALS 0))
+    {
+      ctx->configured_scbk_d = i;
+    };
+  };
+
+
   // parameter "capability-sounder"
   // value is 0 for none, 1 for on/off.  2 (timed) is not supported.
   if (status EQUALS ST_OK)

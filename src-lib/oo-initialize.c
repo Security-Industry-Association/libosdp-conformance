@@ -240,6 +240,10 @@ int
     context->serial_number [3] = 0xed;
     context->capability_configured_sounder = 1; // it's got a beeper
 
+    // we do scbk-d unless otherwise note.
+
+    context->configured_scbk_d = 1;
+
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;
   p_card.value [0] = 0x00; // fc=1 card=1 in 26 bit wiegand

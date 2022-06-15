@@ -26,8 +26,7 @@
 
 typedef struct osdp_conform
 {
-  unsigned char
-    test_status;
+  unsigned char test_status;
 } OSDP_CONFORM;
 
 #define OOC_SYMBOL_physical_interface "050-01-01"

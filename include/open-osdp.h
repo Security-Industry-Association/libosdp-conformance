@@ -492,6 +492,7 @@ typedef struct osdp_context
   int configured_biometrics; // 0 if nothing, do not assume nonzero tells match vs. capture.
   int configured_inputs;
   int configured_outputs;
+  int configured_scbk_d;
   int capability_max_packet;
   int capability_configured_leds;
   int capability_configured_sounder;

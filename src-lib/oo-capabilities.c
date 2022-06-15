@@ -78,10 +78,10 @@ int
   else
     status = osdp_add_capability(ctx, capas, 8, 0, 0, capabilities_response_length, sizeof(capas));
 
-  // supports secure channel, and scbk-d
+  // supports secure channel, and scbk-d as configured.
   if (ctx->enable_secure_channel > 0)
   {
-    status = osdp_add_capability(ctx, capas, 9, 1, 1, capabilities_response_length, sizeof(capas));
+    status = osdp_add_capability(ctx, capas, 9, 1, ctx->configured_scbk_d, capabilities_response_length, sizeof(capas));
   }
   else
   {
