@@ -124,7 +124,7 @@ int
     p_card.bits = i;
   }; 
 
-  // parameter "capability-scbk-dr"
+  // parameter "capability-scbk-d"
   // value is 0 for not-supported, 1 for supported.
 
   if (status EQUALS ST_OK)
