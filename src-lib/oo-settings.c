@@ -149,6 +149,12 @@ int
 
   // parameter "capability-sounder"
   // value is 0 for none, 1 for on/off.  2 (timed) is not supported.
+
+  // our default is that we DO have a sounder.
+
+  if (ctx->role EQUALS OSDP_ROLE_PD)
+    ctx->capability_configured_sounder = 1;
+
   if (status EQUALS ST_OK)
   {
     found_field = 1;

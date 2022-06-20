@@ -618,6 +618,12 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         unsigned char
           buzzer_control [5];
 
+        if (context->capability_configured_sounder EQUALS 0)
+        {
+          fprintf(context->log, "PD reports no sounder capability, skipping osdp_BUZ command\n");
+        }
+        else
+        {
         memset (&buzzer_control, 0, sizeof (buzzer_control));
         /*
           assume reader 0.
@@ -637,6 +643,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         status = send_message_ex (context, OSDP_BUZ, p_card.addr,
           &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control,
           OSDP_SEC_SCS_17, 0, NULL);
+        };
       };
       break;
 
