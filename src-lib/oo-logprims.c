@@ -1,7 +1,7 @@
 /*
   oo-logprims - open osdp logging sub-functions
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -341,12 +341,14 @@ void
   FILE *tf;
 
 
-  fflush(ctx->log);
-if (ctx->verbosity > 9)
-{
-  fprintf(stderr, "DEBUG: penab %d olen %d ilen %d\n",
-    print_enable, (int)strlen(trace_out_buffer), (int)strlen(trace_in_buffer));
-}
+  if (ctx->verbosity > 0)
+  {
+    fflush(ctx->log);
+    if (ctx->verbosity > 9)
+    {
+      fprintf(stderr, "DEBUG: penab %d olen %d ilen %d\n",
+        print_enable, (int)strlen(trace_out_buffer), (int)strlen(trace_in_buffer));
+    }
 
   clock_gettime (CLOCK_REALTIME, &current_time_fine);
   if (ctx->verbosity > 9)
@@ -402,6 +404,7 @@ if (ctx->verbosity > 9)
       fprintf(ctx->log,
 "\n INPUT Trace: %s\n", trace_in_buffer);
     trace_in_buffer [0] = 0;
+  };
   };
 
 } /* osdp_trace_dump */

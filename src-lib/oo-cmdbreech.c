@@ -293,6 +293,13 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
+  // ondemand-lstatr - force an LSTATR response in this PD
+
+  case OSDP_CMDB_ONDEMAND_LSTATR:
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   // pivdata object-id=zzzzzz offset=0000 data-element=qq
 
   case OSDP_CMDB_PIVDATA:

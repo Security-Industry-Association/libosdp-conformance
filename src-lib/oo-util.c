@@ -37,9 +37,6 @@ extern OSDP_CONTEXT context;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 extern OSDP_BUFFER osdp_buf;
-extern unsigned char last_command_received;
-extern unsigned char last_sequence_received;
-extern unsigned char last_check_value;
 extern char trace_in_buffer [];
 
 
@@ -146,7 +143,6 @@ int
           *(msg->data_payload + 2), *(msg->data_payload + 3),
           *(msg->data_payload + 4));
         fprintf (context->log, "%s", logmsg);
-        fprintf (stderr, "%s", logmsg);
         logmsg[0]=0;
       };
       osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);
@@ -161,84 +157,22 @@ int
       {
         unsigned char *response_cap;
         int response_length;
-#ifdef OLD_STYLE_PDCAP
-        unsigned char
-          osdp_cap_response_short [] = {
-            3,1,0, // 1024 bits max
-            4,1,8, // on/off only, 8 LED's
-            5,1,1, // audible annunciator present, claim on/off only
-            6,1,1, // 1 row of 16 characters
-            8,1,0, // supports CRC-16
-            9,1,1, // security
-            };
-        unsigned char
-          osdp_cap_response_data [3*(16-1)] = {
-#define CAP_INDEX_INPUTS (0)
-            1,2,OOSDP_DEFAULT_INPUTS, // on/off/nc/no
-
-#define CAP_INDEX_OUTPUTS (1)
-            2,2,8, // 8 outputs, on/off/drive
-
-            3,1,0, // 1024 bits max
-
-#define CAP_INDEX_LEDS (3)
-            4,1,8, // on/off only, 8 LED's
-
-            5,1,1, // audible annunciator present, claim on/off only
-            6,1,1, // 1 row of 16 characters
-            //7 // assume 7 (time keeping) is deprecated
-            8,1,0, // supports CRC-16
-#define CAP_SCHAN_INDEX (7) // where in the array
-            9,0,0, //no security
-            10,0xff & oo_osdp_max_packet, (0xff00 & oo_osdp_max_packet)>>8, // rec buf max
-            11,0xff & oo_osdp_max_packet, (0xff00 & oo_osdp_max_packet)>>8, // largest msg
-            12,0,0, // no smartcard
-            13,0,0, // no keypad
-            14,0,0, // no biometric
-            15,0,0, // no SPE support (secure pin entry)
-            16,2,0  // SIA 2.2 version
-            };
-#endif
-
         unsigned char new_capas [32*3];
         int new_length;
+
+        status = ST_OK;
         new_length = sizeof(new_capas);
         status = osdp_get_capabilities(context, new_capas, &new_length);
         response_cap = new_capas;
         response_length = new_length;
 
-#ifdef OLD_STYLE_PDCAP
-        response_cap = osdp_cap_response_data;
-         response_length = sizeof(osdp_cap_response_data);
-         if (context->pdcap_select)
-         {
-           response_cap = osdp_cap_response_short;
-           response_length = sizeof(osdp_cap_response_short);
-         };
-
-         // propagate current in and out configuration
-         osdp_cap_response_data [ (3*CAP_INDEX_INPUTS) + 1] = context->configured_inputs;
-         osdp_cap_response_data [ (3*CAP_INDEX_OUTPUTS) + 1] = context->configured_outputs;
-
-         // for any kind of secure channel enablement set the PDCAP values
-         // "we always support SCBK-D"
-
-         if (context->enable_secure_channel > 0)
-         {
-           // if enabled say AES128 support and SCBK-D support
-           osdp_cap_response_data [ (3*CAP_SCHAN_INDEX) + 1] = 1;
-           osdp_cap_response_data [ (3*CAP_SCHAN_INDEX) + 2] = 1;
-         };
-#endif
-
-        status = ST_OK;
         current_length = 0;
 
         // SPECIAL CASE: if osdp_CAP comes in in cleartext, answer it in cleartext
-
         current_security = OSDP_SEC_SCS_18;
         if (msg->security_block_length EQUALS 0)
           current_security = OSDP_SEC_STAND_DOWN;
+
         status = send_message_ex(context,
           OSDP_PDCAP, p_card.addr, &current_length,
             response_length, response_cap,
@@ -428,8 +362,11 @@ int
         &current_length, 2, osdp_lstat_response_data, OSDP_SEC_SCS_18, 0, NULL);
       if (context->verbosity > 2)
       {
-        sprintf (logmsg, "Responding with OSDP_LSTATR (Power)");
+        sprintf (logmsg, "Responding with OSDP_LSTATR (T=%d P=%d)", context->tamper, context->power_report);
         fprintf (context->log, "%s\n", logmsg);
+        // clear tamper and power now reported
+        context->tamper = 0;
+        context->power_report = 0;
       };
     };
     break;

@@ -20,9 +20,8 @@
 # built with gcc.  note it also builds with clang.
 
 CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -Wall -Werror
-#CC=gcc ${CFLAGS}
 CC=gcc
-LINK=gcc
+LINK=${CC}
 LDFLAGS=-g -L /opt/tester/lib -ljansson
 
 CGIPROGS = \

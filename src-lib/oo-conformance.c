@@ -1011,12 +1011,14 @@ int
 
 
   status = ST_OK;
-  idx = 0;
-  done = 0;
-  while (!done)
+  if (context.verbosity > 0)
   {
-    //DEBUG
-    if (0) // (context.verbosity > 9)
+    idx = 0;
+    done = 0;
+    while (!done)
+    {
+      //DEBUG
+      if (0) // (context.verbosity > 9)
     {
       fprintf(context.log, "osdp_test_set_status: checking %d.\n", idx);
       fflush(context.log);
@@ -1061,6 +1063,7 @@ int
     };
     // yes, if we find nothing we'll still return OK
     idx++;
+  };
   };
   return (status);
 

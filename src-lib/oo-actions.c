@@ -485,6 +485,7 @@ int
     case OSDP_CAP_AUDIBLE_OUT:
       fprintf(ctx->log,
 "PD: %d. Annunciators, ", entry->number_of);
+      ctx->capability_configured_sounder = entry->number_of;
       switch(entry->compliance)
       {
       case 1:

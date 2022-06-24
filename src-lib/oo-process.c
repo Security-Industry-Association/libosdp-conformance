@@ -5,7 +5,7 @@ extern int leftover_length;
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2022 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -35,8 +35,7 @@ extern int leftover_length;
 
 extern OSDP_CONTEXT context;
 extern unsigned char last_command_received;
-extern unsigned char last_check_value;
-extern unsigned char last_sequence_received;
+extern unsigned int last_check_value;
 extern OSDP_BUFFER osdp_buf;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
@@ -50,6 +49,7 @@ int
 
 { /* process_osdp_input */
 
+  unsigned short int current_check_value;
   OSDP_MSG msg;
   int nak_not_msg;
   OSDP_HDR parsed_msg;
@@ -61,10 +61,16 @@ int
   osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
 
   memset (&msg, 0, sizeof (msg));
+  current_check_value = 0;
 
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
+  if (msg.crc_check)
+    current_check_value = *(unsigned short int *)(msg.crc_check);
+  if (context.verbosity > 3)
+    fprintf(context.log, "osdp_parse_message status was %d. last-cmd %02x parsed-cmd %02x last-check %04x current-check %04x\n",
+      status, last_command_received, parsed_msg.command, last_check_value, current_check_value);
   if (status EQUALS ST_OK)
   {
     context.last_sequence_received = msg.sequence;
@@ -97,32 +103,33 @@ int
 
     if (context.role EQUALS OSDP_ROLE_PD)
     {
-unsigned short int current_check_value;
-
-
-      current_check_value = *(unsigned short int *)(msg.crc_check);
       if (msg.check_size EQUALS 1)
         current_check_value = 0xff & current_check_value; // crc is 2 bytes checksum is the low order byte
 
       fprintf(context.log,
-        "  NAK: last-cmd %02x last-seq %d last-checkval %04x\n",
-        last_command_received, last_sequence_received, last_check_value);
+        "  NAK: last-cmd %02x last-seq %d last-checkval %04x cur-checkval %04x next seq %d\n",
+        last_command_received, context.last_sequence_received, last_check_value, current_check_value, context.next_sequence);
 
-      // is it a resend?
-
-      if ((last_command_received EQUALS parsed_msg.command) && (last_check_value EQUALS current_check_value))
+      /*
+        is it a resend?
+        if I'm looking for sequence 0 we really need to nak this so the ACU resets things.
+      */
+      if ((last_command_received EQUALS parsed_msg.command) && (last_check_value EQUALS current_check_value) &&
+        (context.next_sequence != 0))
       {
-        //int old_s; old_s = context.next_sequence;
-if (context.next_sequence EQUALS 1)
-  context.next_sequence = 3;
-else
-  context.next_sequence --;
-context.retries ++;
-//fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n", context.retries, old_s, context.next_sequence);
-fflush(context.log);
+        int old_s;
+        old_s = context.next_sequence;
+        if (context.next_sequence EQUALS 1)
+          context.next_sequence = 3;
+        else
+          context.next_sequence --;
+        context.retries ++;
+        if (context.verbosity > 3)
+          fprintf(context.log, "DEBUG: retry %d. in progress, don't NAK it. old s %d s %d\n", context.retries, old_s, context.next_sequence);
+        fflush(context.log);
 
-send_response = 0;
-status = ST_OK;
+        send_response = 0;
+        status = ST_OK;
       }
       if (status != ST_OK) {
         current_length = 0;
@@ -153,6 +160,7 @@ status = ST_OK;
         nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_SEQUENCE;
 
+        osdp_reset_secure_channel(&context);
         // reset the current sequence number to zero (for the NAK)
         context.next_sequence = 0;
         break;
@@ -207,7 +215,7 @@ status = ST_OK;
       {
         fprintf (stderr, " %02x", osdp_buf->buf [i]);
         fflush (stderr);
-       };
+      };
       fprintf (stderr, "\n");
     };
     status = process_osdp_message (&context, &msg);
@@ -286,8 +294,6 @@ status = ST_OK;
   {
     int length;
     length = (parsed_msg.len_msb << 8) + parsed_msg.len_lsb;
-    if (context.verbosity > 3)
-      fprintf(stderr, "skipping %d bytes\n", length);
     memcpy (temp_buffer.buf, osdp_buf->buf+length, osdp_buf->next-length);
     temp_buffer.next = osdp_buf->next-length;
     memcpy (osdp_buf->buf, temp_buffer.buf, temp_buffer.next);

@@ -374,7 +374,6 @@ sleep(1);
         omfg->mfg_command_id = oargs->command_ID;
         send_length = sizeof(OSDP_MFG_COMMAND) - 1;
         out_idx = 0;
-fprintf(stderr, "string is >%s<\n", oargs->c_s_d);
         for (idx=0; idx<strlen(oargs->c_s_d); idx=idx+2)
         {
           tmps[2] = 0;
@@ -388,7 +387,6 @@ fprintf(stderr, "string is >%s<\n", oargs->c_s_d);
           send_length ++;
         };
 
-fprintf(stderr,"w:%d (250)\n", context->last_was_processed);
         if (osdp_awaiting_response(context))
         {
           fprintf(stderr, "busy before OSDP_MFG, skipping send\n");
@@ -620,6 +618,12 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         unsigned char
           buzzer_control [5];
 
+        if (context->capability_configured_sounder EQUALS 0)
+        {
+          fprintf(context->log, "PD reports no sounder capability, skipping osdp_BUZ command\n");
+        }
+        else
+        {
         memset (&buzzer_control, 0, sizeof (buzzer_control));
         /*
           assume reader 0.
@@ -639,6 +643,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         status = send_message_ex (context, OSDP_BUZ, p_card.addr,
           &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control,
           OSDP_SEC_SCS_17, 0, NULL);
+        };
       };
       break;
 

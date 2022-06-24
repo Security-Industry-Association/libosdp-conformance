@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (24)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (25)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -389,13 +389,17 @@ typedef struct osdp_timer
 #define OSDP_TIMER_RESTART_ALWAYS (1)
 #define OSDP_TIMER_RESTART_NONE   (0)
 
-#define OSDP_TIMER_MAX            (6)
+// timer numbers
+
+#define OSDP_TIMER_MAX            (7) 
+
 #define OSDP_TIMER_STATISTICS     (0)
 #define OSDP_TIMER_RESPONSE       (1)
 #define OSDP_TIMER_SUMMARY        (2)
 #define OSDP_TIMER_LED_0_TEMP_ON  (3)
 #define OSDP_TIMER_LED_0_TEMP_OFF (4)
 #define OSDP_TIMER_IO             (5)
+#define OSDP_TIMER_SERIAL_READ    (6)
 
 
 typedef struct osdp_context_filetransfer
@@ -488,6 +492,7 @@ typedef struct osdp_context
   int configured_biometrics; // 0 if nothing, do not assume nonzero tells match vs. capture.
   int configured_inputs;
   int configured_outputs;
+  int configured_scbk_d;
   int capability_max_packet;
   int capability_configured_leds;
   int capability_configured_sounder;

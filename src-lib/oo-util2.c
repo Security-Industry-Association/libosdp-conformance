@@ -84,7 +84,10 @@ int
   // for an ACU, considering file transfer, if we're in secure channel
 
   if ((ctx->role EQUALS OSDP_ROLE_ACU) && (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL))
-    fprintf(stderr, "ACU and secure channel, background\n");
+  {
+    if (ctx->verbosity > 3)
+      fprintf(stderr, "ACU and secure channel, background\n");
+  };
   if (ctx->role EQUALS OSDP_ROLE_ACU)
   {
     if (ctx->xferctx.total_length EQUALS 0)

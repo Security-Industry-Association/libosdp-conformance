@@ -1,7 +1,7 @@
 /*
   oo-capabilities - primitives to manage the capabilities list
 
-  (C) 2021 Smithee Solutions LLC
+  (C) 2021-2022 Smithee Solutions LLC
 */
 
 
@@ -37,10 +37,12 @@ int
   *capabilities_response_length = 0;
 
   // inputs
-  status = osdp_add_capability(ctx, capas, 1, 2, ctx->configured_inputs, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 1, 2, ctx->configured_inputs, capabilities_response_length, sizeof(capas));
 
   // outputs
-  status = osdp_add_capability(ctx, capas, 2, 2, ctx->configured_outputs, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 2, 2, ctx->configured_outputs, capabilities_response_length, sizeof(capas));
 
   // 1024 bits max in raw
   status = osdp_add_capability(ctx, capas, 3, 1, 0, capabilities_response_length, sizeof(capas));
@@ -61,7 +63,7 @@ int
   };
 
   // text display, 1 row of 16 if enabled
-  if (ctx->capability_configured_sounder)
+  if (ctx->capability_configured_text)
   {
     status = osdp_add_capability(ctx, capas, 6, 1, 1, capabilities_response_length, sizeof(capas));
   }
@@ -70,13 +72,16 @@ int
     status = osdp_add_capability(ctx, capas, 6, 0, 0, capabilities_response_length, sizeof(capas));
   };
 
-  // supports CRC-16
-  status = osdp_add_capability(ctx, capas, 8, 1, 0, capabilities_response_length, sizeof(capas));
+  // supports CRC-16?  use m_check to respond
+  if (m_check EQUALS OSDP_CRC)
+    status = osdp_add_capability(ctx, capas, 8, 1, 0, capabilities_response_length, sizeof(capas));
+  else
+    status = osdp_add_capability(ctx, capas, 8, 0, 0, capabilities_response_length, sizeof(capas));
 
-  // supports secure channel, and scbk-d
+  // supports secure channel, and scbk-d as configured.
   if (ctx->enable_secure_channel > 0)
   {
-    status = osdp_add_capability(ctx, capas, 9, 1, 1, capabilities_response_length, sizeof(capas));
+    status = osdp_add_capability(ctx, capas, 9, 1, ctx->configured_scbk_d, capabilities_response_length, sizeof(capas));
   }
   else
   {
@@ -84,31 +89,32 @@ int
   };
 
   // max PDU size
-  status = osdp_add_capability(ctx, capas, 10, 
-    0xff & ctx->capability_max_packet,
-    (0xff00 & ctx->capability_max_packet)>>8,
-    capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 10, 
+      0xff & ctx->capability_max_packet, (0xff00 & ctx->capability_max_packet)>>8, capabilities_response_length, sizeof(capas));
 
   // max assembled message size
-  status = osdp_add_capability(ctx, capas, 11,
-    0xff & ctx->capability_max_packet,
-    (0xff00 & ctx->capability_max_packet)>>8,
-    capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 11, 0xff & ctx->capability_max_packet, (0xff00 & ctx->capability_max_packet)>>8, capabilities_response_length, sizeof(capas));
 
   // no Smartcard
-  status = osdp_add_capability(ctx, capas, 12, 0, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 12, 0, 0, capabilities_response_length, sizeof(capas));
 
   // no Keypad
   status = osdp_add_capability(ctx, capas, 13, 0, 0, capabilities_response_length, sizeof(capas));
 
   // no biometrics
-  status = osdp_add_capability(ctx, capas, 14, 0, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 14, 0, 0, capabilities_response_length, sizeof(capas));
 
   // no SPE (Secure PIN Entry)
-  status = osdp_add_capability(ctx, capas, 15, 0, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 15, 0, 0, capabilities_response_length, sizeof(capas));
 
   // Version "SIA 2.2" of protocol
-  status = osdp_add_capability(ctx, capas, 16, 2, 0, capabilities_response_length, sizeof(capas));
+  if (ctx->pdcap_select EQUALS 0)
+    status = osdp_add_capability(ctx, capas, 16, 2, 0, capabilities_response_length, sizeof(capas));
 
   memcpy(capabilities_list, capas, *capabilities_response_length);
   return(status);
