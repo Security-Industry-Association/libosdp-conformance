@@ -56,6 +56,7 @@ int
   char logmsg [1024];
   char nak_code;
   char nak_data;
+  int new_speed;
   unsigned char osdp_nak_response_data [2];
   OSDP_HDR *oh;
   int oo_osdp_max_packet;
@@ -692,6 +693,16 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     case OSDP_COM:
       status = ST_OK;
       osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
+      new_speed = *(1+msg->data_payload);
+      new_speed = (new_speed << 8) +*(2+msg->data_payload);
+      new_speed = (new_speed << 8) +*(3+msg->data_payload);
+      new_speed = (new_speed << 8) +*(4+msg->data_payload);
+      switch(new_speed)
+      {
+      case 38400:
+        osdp_test_set_status(OOC_SYMBOL_signalling_38400, OCONFORM_EXERCISED);
+        break;
+      };
       if (context->verbosity > 2)
       {
         fprintf (stderr, "osdp_COM: Addr %02x Baud (m->l) %02x %02x %02x %02x\n",
