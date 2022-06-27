@@ -805,7 +805,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         msg->data_payload [3], msg->data_payload [4],
         msg->data_payload [5], msg->data_payload [6], msg->data_payload [7], msg->data_payload [8],
         msg->data_payload [9], msg->data_payload [10], msg->data_payload [11]);
-      osdp_test_set_status_ex(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED, details);
+
+      // if we got a coherent PDID response the current speed must be working, report that.
+      if (strcmp("38400", context->serial_speed) EQUALS 0)
+        osdp_test_set_status(OOC_SYMBOL_signalling_38400, OCONFORM_EXERCISED);
       break;
 
     case OSDP_PIVDATA:
