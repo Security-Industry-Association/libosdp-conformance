@@ -835,8 +835,6 @@ if (ctx->verbosity > 3)
             OSDP_SEC_SCS_15, 0, NULL);
           if (context->verbosity > 3)
             fprintf (stderr, "Requesting Input Status\n");
-          osdp_conformance.cmd_istat.test_status =
-            OCONFORM_EXERCISED;
         };
       };
       status = ST_OK;

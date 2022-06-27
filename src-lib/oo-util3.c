@@ -589,6 +589,7 @@ fprintf(stderr, "DEBUG: LED detail %02x\n", ctx->test_details [LP_ON]);
         strcpy (tlogmsg2, "osdp_ISTATR");
 
       osdp_test_set_status(OOC_SYMBOL_cmd_istat, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
