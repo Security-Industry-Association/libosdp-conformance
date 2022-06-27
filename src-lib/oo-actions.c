@@ -854,9 +854,13 @@ dump_buffer_log(ctx, "card data message(fixed 32)", osdp_raw_data, 32);
     };
   };
 
-  // update status json
+  // update status json.  perhaps every single poll is too often.
+  // TODO add another timer, do this perhaps once a second.
+  // for now kludge it and only do it if in verbose mode
+
   if (status EQUALS ST_OK)
-    status = oo_write_status (ctx);
+    if (ctx->verbosity > 3)
+      status = oo_write_status (ctx);
 
   return (status);
 
