@@ -441,6 +441,8 @@ typedef struct osdp_command_queue
 #define OO_POLL_NEVER   (0) // never poll, sequence stays at 0
 #define OO_POLL_RESUME  (2) // go to normal polling after this message is sent
 
+#define OSDP_LOCK_SPEED (0) // do not lock speed to 9600
+
 typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
