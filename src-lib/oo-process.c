@@ -57,9 +57,6 @@ int
   OSDP_BUFFER temp_buffer;
 
 
-  // assume all incoming commands are ok until we see a bad one.
-  osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
-
   memset (&msg, 0, sizeof (msg));
   current_check_value = 0;
 
@@ -73,6 +70,7 @@ int
       status, last_command_received, parsed_msg.command, last_check_value, current_check_value);
   if (status EQUALS ST_OK)
   {
+    osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
     context.last_sequence_received = msg.sequence;
 
     if (msg.check_size EQUALS 2)
