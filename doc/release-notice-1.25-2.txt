@@ -1,0 +1,20 @@
+changes in 1.25-2
+
+enhanced instrumentation on speed tests
+
+cleanup of test results logic (to use api everywhere)
+
+correction of ghost test results
+
+remove status update on every poll to reduce filesystem io
+
+changes in 1.23-1
+
+fix retry logic for secure channel commands
+
+you can now create a debian package and install that.  Use "make service" to make packages.
+
+libosdp-conformance can be run as a (systemd) service as an ACU.  See doc/INSTALL-service.txt
+
+see Security-Industry-Association/osdp-verified for details on conformance testing.
+
