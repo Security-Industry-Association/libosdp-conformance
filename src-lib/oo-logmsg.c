@@ -316,7 +316,7 @@ int
       speed = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
         (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
 
-      sprintf(tlogmsg, "COMSET Will use New Address %02x New Speed %d.\n",
+      sprintf(tlogmsg, "COMSET will use New Address %02x New Speed %d.\n",
         *(0+msg->data_payload), speed);
     };
     break;
