@@ -65,7 +65,7 @@ int
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
   if (msg.crc_check)
     current_check_value = *(unsigned short int *)(msg.crc_check);
-  if (context.verbosity > 3)
+  if (context.verbosity > 9)
     fprintf(context.log, "osdp_parse_message status was %d. last-cmd %02x parsed-cmd %02x last-check %04x current-check %04x\n",
       status, last_command_received, parsed_msg.command, last_check_value, current_check_value);
   if (status EQUALS ST_OK)
