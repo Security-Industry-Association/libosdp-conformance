@@ -389,6 +389,8 @@ int
             if (!(osdp_buf.buf [0] EQUALS C_SOM))
             {
               char temp_buffer [2048];
+              if (context.verbosity > 0)
+                fflush(context.log);
               osdp_buf.next --;
               if (osdp_buf.next > 1)
               {
