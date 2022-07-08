@@ -29,9 +29,18 @@ typedef struct osdp_conform
   unsigned char test_status;
 } OSDP_CONFORM;
 
+/*
+  NOTE: test numbers of the form nnn-nn-nn are from the conformance test list.
+  test numbers of the form 1nnn-nn-nn are only defined here.
+*/
+
 #define OOC_SYMBOL_physical_interface "050-01-01"
 #define OOC_SYMBOL_signalling         "050-02-01"
+#define OOC_SYMBOL_signalling_19200   "050-02-02"
 #define OOC_SYMBOL_signalling_38400   "050-02-03"
+#define OOC_SYMBOL_signalling_57600   "050-02-05"
+#define OOC_SYMBOL_signalling_115200  "050-02-04" // yes out of order
+#define OOC_SYMBOL_signalling_230400  "050-02-06"
 #define OOC_SYMBOL_multibyte_data_encoding "050-05-01"
 #define OOC_SYMBOL_packet_format      "050-09-01"
 #define OOC_SYMBOL_seq_zero           "050-09-02"
@@ -45,6 +54,8 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_CRC                "050-09-15"
 #define OOC_SYMBOL_CRC_bad_response   "050-09-16"
 #define OOC_SYMBOL_CRC_bad_command    "050-09-17"
+#define OOC_SYMBOL_no_scb             "1050-09-18" // detected no SCB, a valid test case
+#define OOC_SYMBOL_address_config     "1050-09-19" // config address
 
 #define OOC_SYMBOL_cmd_poll           "060-02-01"
 #define OOC_SYMBOL_poll_lstatr        "060-02-02"
@@ -133,7 +144,11 @@ typedef struct osdp_interop_assessment
 
   OSDP_CONFORM physical_interface;
   OSDP_CONFORM signalling;              // 050-02-01 9600
-  OSDP_CONFORM signalling_38400;        // 050-02-03 38400
+  OSDP_CONFORM signalling_19200;
+  OSDP_CONFORM signalling_38400;
+  OSDP_CONFORM signalling_115200;
+  OSDP_CONFORM signalling_57600;
+  OSDP_CONFORM signalling_230400;
   OSDP_CONFORM alt_speed_2;             // 2-2-2
   OSDP_CONFORM alt_speed_3;             // 2-2-3
   OSDP_CONFORM alt_speed_4;             // 2-2-4
@@ -163,7 +178,7 @@ typedef struct osdp_interop_assessment
   OSDP_CONFORM control_2;               // 2-13-2
   OSDP_CONFORM ctl_seq;                 // 2-13-3
   OSDP_CONFORM security_block;          // 2-14-1
-  OSDP_CONFORM scb_absent;              // 2-14-2
+  OSDP_CONFORM no_scb;
   OSDP_CONFORM rogue_secure_poll;       // 2-14-3
   OSDP_CONFORM CMND_REPLY;
   OSDP_CONFORM invalid_command;         // 2-15-2

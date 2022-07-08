@@ -1,0 +1,34 @@
+pi or amd64 with devuan
+
+apt-get instlal build-essential gdb libjansson-dev libgnutls28-dev
+
+"make 2>stderr package" from top level
+confirm no errors
+"sudo dpkg -i <libosdp-conformance...deb>" to install it, the first time
+
+work flow for iterations:
+
+(one screen)
+make build
+cp opt/osdp-conformance/bin/open-osdp /opt/osdp-conformance/bin
+
+(second screen)
+cd /opt/osdp-conformance/run/ACU
+sudo gdb /opt/osdp-conformance/bin/open-osdp
+
+(third screen)
+cd /opt/osdp-conformance/run/ACU
+tail -f osdp.log
+
+----
+
+Note you have to be sudo in order to access the serial port.
+
+
+----
+
+the default environment assumes gcc.  to change compilers
+
+CC=clang make build
+
+

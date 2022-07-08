@@ -509,7 +509,7 @@ int
 
 { /* send_message */
 
-  unsigned char buf [2];
+  unsigned char buf [2];  // note use for spacer so not always 1 byte
   int status;
   unsigned char test_blk [1024];
   int true_dest;
@@ -580,9 +580,15 @@ int
       (void)monitor_osdp_message (ctx, &m);
     };
 
+    // send start-of-message marker (normally one 0xff)
+
     buf [0] = 0xff;
-    // send start-of-message marker (0xff)
+#if SPACER_TEST
+    buf [1] = 0xff;
+    status = send_osdp_data (ctx, buf, 2);
+#else
     status = send_osdp_data (ctx, buf, 1);
+#endif
 
     if (status EQUALS ST_OK)
     {

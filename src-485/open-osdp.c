@@ -358,14 +358,12 @@ int
         {
           if (context.verbosity > 8)
           {
-            if (status_io > 1) fprintf(stderr, "DEBUG: 485 read returned %d. octets\n", status_io);
+            if (status_io > 0)
+              fprintf(context.log, "At the 485 read, input is: %02X\n", (unsigned int)buffer [0]);
           };
 // not working...  status = osdp_stream_read(&context, buffer, status_io);
 
 //#ifdef OLDE_INPUT
-
-
-// zzz
           context.bytes_received++;
           if (context.trace & 1)
           {
@@ -391,6 +389,8 @@ int
             if (!(osdp_buf.buf [0] EQUALS C_SOM))
             {
               char temp_buffer [2048];
+              if (context.verbosity > 0)
+                fflush(context.log);
               osdp_buf.next --;
               if (osdp_buf.next > 1)
               {
