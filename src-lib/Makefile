@@ -1,5 +1,7 @@
 # Make file for libosdp-conformance
 
+# note MORE_COMPILE_SWITCHES in case you want to add options e.g "-D SPACER_TEST"
+
 #  (C)Copyright 2017-2022 Smithee Solutions LLC
 
 #  Support provided by the Security Industry Association
@@ -23,8 +25,9 @@ OUTLIB=libosdp-conformance.a
 # built with gcc.  note it also builds with clang.
 CC=gcc
 #CC=clang
+MORE_COMPILE_SWITCHES=
 CFLAGS=-c -DOSDP_CONFORMANCE -g -I../include -I/opt/osdp-conformance/include \
-  -Wall -Werror
+  -Wall -Werror ${MORE_COMPILE_SWITCHES}
 
 all:	${OUTLIB}
 

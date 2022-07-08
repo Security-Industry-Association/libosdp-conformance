@@ -57,9 +57,6 @@ int
   OSDP_BUFFER temp_buffer;
 
 
-  // assume all incoming commands are ok until we see a bad one.
-  osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
-
   memset (&msg, 0, sizeof (msg));
   current_check_value = 0;
 
@@ -68,11 +65,12 @@ int
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
   if (msg.crc_check)
     current_check_value = *(unsigned short int *)(msg.crc_check);
-  if (context.verbosity > 3)
+  if (context.verbosity > 9)
     fprintf(context.log, "osdp_parse_message status was %d. last-cmd %02x parsed-cmd %02x last-check %04x current-check %04x\n",
       status, last_command_received, parsed_msg.command, last_check_value, current_check_value);
   if (status EQUALS ST_OK)
   {
+    osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
     context.last_sequence_received = msg.sequence;
 
     if (msg.check_size EQUALS 2)
@@ -203,8 +201,7 @@ int
     // the message was good.  update conformance status.
     osdp_test_set_status(OOC_SYMBOL_multibyte_data_encoding, OCONFORM_EXERCISED);
     if (!(parsed_msg.ctrl & 0x08))
-      osdp_conformance.scb_absent.test_status =
-        OCONFORM_EXERCISED;
+      osdp_test_set_status(OOC_SYMBOL_no_scb, OCONFORM_EXERCISED);
 
     if (context.verbosity > 9)
     {
@@ -239,43 +236,51 @@ int
 
   // do special things for tests in progress.
 
-  if (0 EQUALS strcmp (context.test_in_progress, "2-2-1"))
+  if (0 EQUALS strcmp (context.test_in_progress, OOC_SYMBOL_signalling))
   {
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
-      osdp_conformance.signalling.test_status = OCONFORM_EXERCISED;
-      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
-      SET_PASS ((&context), "2-2-1");
+      osdp_test_set_status(OOC_SYMBOL_signalling, OCONFORM_EXERCISED);
       context.test_in_progress [0] = 0;
     };
   };
-  if (0 EQUALS strcmp (context.test_in_progress, "2-2-2"))
+  if (0 EQUALS strcmp (context.test_in_progress, OOC_SYMBOL_signalling_19200))
   {
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
-      osdp_conformance.alt_speed_2.test_status = OCONFORM_EXERCISED;
-      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
-      SET_PASS ((&context), "2-2-2");
+      osdp_test_set_status(OOC_SYMBOL_signalling_19200, OCONFORM_EXERCISED);
       context.test_in_progress [0] = 0;
     };
   };
-  if (0 EQUALS strcmp (context.test_in_progress, "2-2-3"))
+  if (0 EQUALS strcmp (context.test_in_progress, OOC_SYMBOL_signalling_38400))
   {
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
-      osdp_conformance.alt_speed_3.test_status = OCONFORM_EXERCISED;
-      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
-      SET_PASS ((&context), "2-2-3");
+      osdp_test_set_status(OOC_SYMBOL_signalling_38400, OCONFORM_EXERCISED);
       context.test_in_progress [0] = 0;
     };
   };
-  if (0 EQUALS strcmp (context.test_in_progress, "2-2-4"))
+  if (0 EQUALS strcmp (context.test_in_progress, OOC_SYMBOL_signalling_57600))
   {
     if (osdp_conformance.conforming_messages >= PARAM_MMT)
     {
-      osdp_conformance.alt_speed_4.test_status = OCONFORM_EXERCISED;
-      osdp_conformance.address_config.test_status = OCONFORM_EXERCISED;
-      SET_PASS ((&context), "2-2-4");
+      osdp_test_set_status(OOC_SYMBOL_signalling_57600, OCONFORM_EXERCISED);
+      context.test_in_progress [0] = 0;
+    };
+  };
+  if (0 EQUALS strcmp (context.test_in_progress, OOC_SYMBOL_signalling_115200))
+  {
+    if (osdp_conformance.conforming_messages >= PARAM_MMT)
+    {
+      osdp_test_set_status(OOC_SYMBOL_signalling_115200, OCONFORM_EXERCISED);
+      context.test_in_progress [0] = 0;
+    };
+  };
+  if (0 EQUALS strcmp (context.test_in_progress, OOC_SYMBOL_signalling_230400))
+  {
+    if (osdp_conformance.conforming_messages >= PARAM_MMT)
+    {
+      osdp_test_set_status(OOC_SYMBOL_signalling_230400, OCONFORM_EXERCISED);
       context.test_in_progress [0] = 0;
     };
   };

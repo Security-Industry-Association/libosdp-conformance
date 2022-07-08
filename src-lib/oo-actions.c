@@ -55,6 +55,7 @@ int
   int current_length;
   unsigned char from_address;
   int i;
+  unsigned char new_addr;
   unsigned char osdp_com_response_data [5];
   char logmsg [1024];
   OSDP_HDR *p;
@@ -62,7 +63,6 @@ int
 
 
   status = oosdp_callout(ctx, "osdp_COMSET", "");
-//  sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_COMSET"); system(cmd);
   p = (OSDP_HDR *)(msg->ptr);
   from_address = p->addr;
   memset (osdp_com_response_data, 0, sizeof (osdp_com_response_data));
@@ -75,23 +75,23 @@ int
     *(4+msg->data_payload), i, i);
   fprintf(ctx->log, "%s\n", logmsg);
 
-  p_card.addr = *(msg->data_payload); // first byte is new PD addr
+  new_addr = *(msg->data_payload); // first byte is new PD addr
+  if ((new_addr >= 0) && (new_addr <= 0x7E))
+    p_card.addr = new_addr;
   fprintf (ctx->log, "PD Address set to %02x\n", p_card.addr);
 
   osdp_com_response_data [0] = p_card.addr;
-  *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
-  status = ST_OK;
-  current_length = 0;
-        status = send_message_ex (ctx, OSDP_COM, oo_response_address(ctx, from_address),
-          &current_length, sizeof (osdp_com_response_data), osdp_com_response_data,
-          OSDP_SEC_SCS_18, 0, NULL);
+  if (OSDP_LOCK_SPEED)
+    *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
+  else
+    *(unsigned short int *)(osdp_com_response_data+1) = i;
 
-  osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
+  status = ST_OK;
 
   if (ctx->verbosity > 2)
   {
-          sprintf (logmsg, "Responding with OSDP_COM");
-          fprintf (ctx->log, "%s\n", logmsg); logmsg[0]=0;
+    sprintf (logmsg, "Responding with OSDP_COM");
+    fprintf (ctx->log, "%s\n", logmsg); logmsg[0]=0;
   };
   if (status EQUALS ST_OK)
   {
@@ -106,7 +106,16 @@ int
     (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS, NULL);
     status = init_serial (ctx, p_card.filename);
   };
+
+  // send the response to the ACU
+
+  current_length = 0;
+  status = send_message_ex (ctx, OSDP_COM, oo_response_address(ctx, from_address),
+    &current_length, sizeof (osdp_com_response_data), osdp_com_response_data,
+    OSDP_SEC_SCS_18, 0, NULL);
+
   osdp_test_set_status(OOC_SYMBOL_cmd_comset, OCONFORM_EXERCISED);
+  osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
   return (status);
 
 } /* action_osdp_COMSET */
@@ -854,9 +863,13 @@ dump_buffer_log(ctx, "card data message(fixed 32)", osdp_raw_data, 32);
     };
   };
 
-  // update status json
+  // update status json.  perhaps every single poll is too often.
+  // TODO add another timer, do this perhaps once a second.
+  // for now kludge it and only do it if in verbose mode
+
   if (status EQUALS ST_OK)
-    status = oo_write_status (ctx);
+    if (ctx->verbosity > 3)
+      status = oo_write_status (ctx);
 
   return (status);
 

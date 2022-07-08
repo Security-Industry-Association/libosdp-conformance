@@ -28,7 +28,7 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (25)
+#define OSDP_VERSION_MINOR (26)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
@@ -440,6 +440,8 @@ typedef struct osdp_command_queue
 #define OO_POLL_ENABLED (1) // normal polling
 #define OO_POLL_NEVER   (0) // never poll, sequence stays at 0
 #define OO_POLL_RESUME  (2) // go to normal polling after this message is sent
+
+#define OSDP_LOCK_SPEED (0) // do not lock speed to 9600
 
 typedef struct osdp_context
 {

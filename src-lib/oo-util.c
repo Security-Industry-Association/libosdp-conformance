@@ -56,6 +56,7 @@ int
   char logmsg [1024];
   char nak_code;
   char nak_data;
+  int new_speed;
   unsigned char osdp_nak_response_data [2];
   OSDP_HDR *oh;
   int oo_osdp_max_packet;
@@ -692,6 +693,16 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     case OSDP_COM:
       status = ST_OK;
       osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
+      new_speed = *(1+msg->data_payload);
+      new_speed = (new_speed << 8) +*(2+msg->data_payload);
+      new_speed = (new_speed << 8) +*(3+msg->data_payload);
+      new_speed = (new_speed << 8) +*(4+msg->data_payload);
+      switch(new_speed)
+      {
+      case 38400:
+        osdp_test_set_status(OOC_SYMBOL_signalling_38400, OCONFORM_EXERCISED);
+        break;
+      };
       if (context->verbosity > 2)
       {
         fprintf (stderr, "osdp_COM: Addr %02x Baud (m->l) %02x %02x %02x %02x\n",
@@ -794,7 +805,20 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         msg->data_payload [3], msg->data_payload [4],
         msg->data_payload [5], msg->data_payload [6], msg->data_payload [7], msg->data_payload [8],
         msg->data_payload [9], msg->data_payload [10], msg->data_payload [11]);
-      osdp_test_set_status_ex(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED, details);
+
+      // if we got a coherent PDID response the current speed must be working, report that.
+      if (strcmp("9600", context->serial_speed) EQUALS 0)
+        osdp_test_set_status(OOC_SYMBOL_signalling, OCONFORM_EXERCISED);
+      if (strcmp("19200", context->serial_speed) EQUALS 0)
+        osdp_test_set_status(OOC_SYMBOL_signalling_19200, OCONFORM_EXERCISED);
+      if (strcmp("38400", context->serial_speed) EQUALS 0)
+        osdp_test_set_status(OOC_SYMBOL_signalling_38400, OCONFORM_EXERCISED);
+      if (strcmp("57600", context->serial_speed) EQUALS 0)
+        osdp_test_set_status(OOC_SYMBOL_signalling_57600, OCONFORM_EXERCISED);
+      if (strcmp("115200", context->serial_speed) EQUALS 0)
+        osdp_test_set_status(OOC_SYMBOL_signalling_115200, OCONFORM_EXERCISED);
+      if (strcmp("230400", context->serial_speed) EQUALS 0)
+        osdp_test_set_status(OOC_SYMBOL_signalling_230400, OCONFORM_EXERCISED);
       break;
 
     case OSDP_PIVDATA:

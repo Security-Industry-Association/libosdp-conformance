@@ -1,0 +1,4 @@
+See doc/build-info for documentation on how to build this.
+(earlier versions had build info in various places.  a consolidation effort
+is underway.)
+

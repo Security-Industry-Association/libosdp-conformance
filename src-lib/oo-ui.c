@@ -102,10 +102,6 @@ context=ctx;
         status = send_message_ex(context, OSDP_ACURXSIZE, p_card.addr,
           &current_length, 2, value,
           OSDP_SEC_SCS_17, 0, NULL);
-        osdp_conformance.packet_size_from_acu.test_status =
-          OCONFORM_EXERCISED;
-        osdp_conformance.cmd_max_rec.test_status =
-          OCONFORM_EXERCISED;
       };
       break;
 
@@ -169,25 +165,21 @@ context=ctx;
 
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
-      osdp_conformance.signalling.test_status = OCONFORM_FAIL;
       status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "9600", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_2:
       strcpy (context->test_in_progress, "2-2-2");
-      osdp_conformance.alt_speed_2.test_status = OCONFORM_FAIL;
       status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "19200", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_3:
       strcpy (context->test_in_progress, "2-2-3");
-      osdp_conformance.alt_speed_3.test_status = OCONFORM_FAIL;
       status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "38400", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_4:
       strcpy (context->test_in_progress, "2-2-4");
-      osdp_conformance.alt_speed_4.test_status = OCONFORM_FAIL;
       status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "115200", 0);
       break;
 
@@ -209,8 +201,6 @@ context=ctx;
           sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
           (unsigned char *)&otxt,
           OSDP_SEC_SCS_17, 0, NULL);
-        osdp_conformance.packet_size_limits.test_status =
-          OCONFORM_EXERCISED;
         status = ST_OK;
       };
       break;
@@ -845,8 +835,6 @@ if (ctx->verbosity > 3)
             OSDP_SEC_SCS_15, 0, NULL);
           if (context->verbosity > 3)
             fprintf (stderr, "Requesting Input Status\n");
-          osdp_conformance.cmd_istat.test_status =
-            OCONFORM_EXERCISED;
         };
       };
       status = ST_OK;

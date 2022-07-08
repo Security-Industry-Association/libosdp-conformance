@@ -231,10 +231,26 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.signalling.test_status),
       1, 0, 0, 0, 0,
                         "Signalling: 9600"},
+    {         OOC_SYMBOL_signalling_19200,
+      &(osdp_conformance.signalling_19200.test_status),
+      1, 0, 0, 0, 0,
+                        "Signalling: 19200"},
     {         OOC_SYMBOL_signalling_38400,
       &(osdp_conformance.signalling_38400.test_status),
       1, 0, 0, 0, 0,
                         "Signalling: 38400"},
+    {         OOC_SYMBOL_signalling_57600,
+      &(osdp_conformance.signalling_57600.test_status),
+      1, 0, 0, 0, 0,
+                        "Signalling: 57600"},
+    {         OOC_SYMBOL_signalling_115200,
+      &(osdp_conformance.signalling_115200.test_status),
+      1, 0, 0, 0, 0,
+                        "Signalling: 115200"},
+    {         OOC_SYMBOL_signalling_230400,
+      &(osdp_conformance.signalling_230400.test_status),
+      1, 0, 0, 0, 0,
+                        "Signalling: 230400"},
     {         OOC_SYMBOL_scs_paired,
       &(osdp_conformance.scs_paired.test_status),
       1, 1, 1, 1, 0,
@@ -302,8 +318,9 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-11-2", &(osdp_conformance.address_2.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-11-3", &(osdp_conformance.address_config.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
+   {     OOC_SYMBOL_address_config,
+      &(osdp_conformance.address_config.test_status),
+      1, 0, 0, 0, 0, "---" }, 
     {         OOC_SYMBOL_LEN,
       &(osdp_conformance.LEN.test_status),
       1, 0, 0, 0, 0,
@@ -316,8 +333,9 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-13-3", &(osdp_conformance.ctl_seq.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    { "2-14-2", &(osdp_conformance.scb_absent.test_status),
-      1, 0, 0, 0, 0, "---" }, // ??
+    {           OOC_SYMBOL_no_scb,
+      &(osdp_conformance.no_scb.test_status),
+      1, 0, 0, 0, 0, "---" },
     { "2-14-3", &(osdp_conformance.rogue_secure_poll.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     {         OOC_SYMBOL_CMND_REPLY,
@@ -668,9 +686,6 @@ void
   LOG_REPORT ((log_string,
 "2-14-1 Security Block (hdr process only)  %s",
     conformance_status (oconf->security_block.test_status)));
-  LOG_REPORT ((log_string,
-"2-14-2 SCB absent                         %s",
-    conformance_status (oconf->scb_absent.test_status)));
   LOG_REPORT ((log_string,
 "2-14-3 Rogue Secure Poll                  %s",
     conformance_status (oconf->rogue_secure_poll.test_status)));
@@ -1070,6 +1085,13 @@ int
 } /* osdp_test_set_status */
 
 
+/*
+  osdp_test_set_status_ex - set test status with annotation
+
+  test is the test string name
+  test_status is pass fail etc
+  aux is an aux printable string added to the JSON test results file.
+*/
 int
   osdp_test_set_status_ex
     (char *test,
@@ -1084,6 +1106,12 @@ int
   FILE *rf;
   int status;
 
+
+  if (test_status EQUALS OCONFORM_FAIL)
+  {
+    if (context.verbosity > 3)
+      fprintf(context.log, "test %s FAILED\n", test);
+  };
 
   status = ST_OK;
   idx = 0;
@@ -1101,6 +1129,12 @@ int
     {
       if (strcmp (test_control [idx].name, test) EQUALS 0)
       {
+        /*
+          if we already failed and this is a pass, don't report it (log it)
+        */
+// if not failed
+//   do update
+// log anyway
         *(test_control [idx].conformance) = test_status;
         sprintf(results_filename, "/opt/osdp-conformance/results/%s-results.json",
           test);
@@ -1141,5 +1175,5 @@ int
   };
   return (status);
 
-} /* osdp_test_set_status */
+} /* osdp_test_set_status_ex */
 
