@@ -1,3 +1,9 @@
+changes in 1.26-2
+merge in HTML changes
+
+changes in 1.26-1
+improved performance at verbosity zero to support PD actions for a faster ACU
+
 changes in 1.25-2
 
 enhanced instrumentation on speed tests
