@@ -468,7 +468,6 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_pivdatar.test_status),
       0, 0, 0, 0, 0,
                         "Response: osdp_PIVDATAR"},
-
     {         OOC_SYMBOL_rep_device_capas,
       &(osdp_conformance.rep_device_capas.test_status),
       1, 1, 1, 1, 0,

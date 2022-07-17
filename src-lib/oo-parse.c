@@ -598,7 +598,7 @@ fprintf(stderr, "lstat 1000\n");
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PIVDATAR");
-      osdp_test_set_status(OOC_SYMBOL_resp_pivdatar, OCONFORM_EXERCISED);
+//      osdp_test_set_status(OOC_SYMBOL_resp_pivdatar, OCONFORM_EXERCISED);
       break;
 
     case OSDP_RAW:
