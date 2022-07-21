@@ -411,6 +411,7 @@ typedef struct osdp_context_filetransfer
   char filename [1024];
   FILE *xferf;
   int state; // state=0 no transfer state=1 transferring state=2 finishing
+  int file_transfer_type;
 } OSDP_CONTEXT_FILETRANSFER;
 #define OSDP_XFER_STATE_IDLE         (0)
 #define OSDP_XFER_STATE_TRANSFERRING (1)
