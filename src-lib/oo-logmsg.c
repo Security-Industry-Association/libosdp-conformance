@@ -682,6 +682,7 @@ int
     msg = (OSDP_MSG *) aux;
     oh = (OSDP_HDR *)(msg->ptr);
     count = oh->len_lsb + (oh->len_msb << 8);
+    count = count - 8; // assumes cleartext CRC
     sprintf(tlogmsg, "  osdp_MFGERRR (len=%d.) %02x%02x%02x...\n",
       count, (msg->data_payload) [0], (msg->data_payload) [1], (msg->data_payload) [2]);
     dump_buffer_log(&context, "  MFGERRR Details: ", (unsigned char *)(msg->data_payload), count);
