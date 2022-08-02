@@ -70,6 +70,35 @@ char *
 } /* oo_lookup_nak_text */
 
 
+int oo_filetransfer_SDU_offer
+  (OSDP_CONTEXT *ctx)
+
+{ /* oo_filetransfer_SDU_offer */
+
+  int offered_size;
+
+
+  offered_size = ctx->max_message;
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "FTMsgUpdateMax-1 %d.\n", offered_size);
+  if (ctx->max_message > 0)
+  {
+    offered_size = offered_size - 14; // headers and footers, secure channel
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "FTMsgUpdateMax-2 %d.\n", offered_size);
+    offered_size = ((offered_size / OSDP_KEY_OCTETS) * OSDP_KEY_OCTETS) - 1; // fit in cipher blocks with minimal padding
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "FTMsgUpdateMax-3 %d.\n", offered_size);
+    offered_size = offered_size - 11; // less osdp_FILETRANSFER header
+  };
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "FTMsgUpdateMax offered: %d.\n", offered_size);
+
+  return(offered_size);
+
+} /* oo_filetransfer_SDU_offer */
+
+
 unsigned char
   oo_response_address
     (OSDP_CONTEXT *ctx,
@@ -414,42 +443,6 @@ int
 } /* osdp_send_ftstat */
 
 
-/*
-  osdp_string_to_buffer - convert hex character string to bytes
-*/
-
-int osdp_string_to_buffer
-  (OSDP_CONTEXT *ctx,
-  char *instring,
-  unsigned char *buffer,
-  unsigned short int *buffer_length_returned)
-
-{ /* osdp_string_to_buffer */
-
-  int bidx;
-  int i;
-  int idx;
-  int returned_length;
-  char tmps [1024];
-
-
-  returned_length = 0;
-  bidx = 0;
-  for (idx=0; idx<strlen(instring); idx=idx+2)
-  {
-    tmps[2] = 0;
-    memcpy(tmps, (idx)+(instring), 2);
-    sscanf(tmps, "%x", &i);
-    *(buffer+bidx) = i;
-    bidx ++;
-    returned_length ++;
-  };
-  *buffer_length_returned = returned_length;
-  return (0);
-
-} /* osdp_string_to_buffer */
-
-
 // osdp_timer_start - start a timer.  uses preset values
 
 int osdp_timer_start
@@ -520,39 +513,4 @@ int osdp_validate_led_values
   return (status);
 
 } /* osdp_validate_led_values */
-
-
-void dump_buffer_log
-  (OSDP_CONTEXT *ctx,
-  char * tag,
-  unsigned char *b,
-  int l)
-
-{ /* dump_buffer_log */
-
-  int i;
-  int l2;
-
-  l2 = l;
-  fprintf(ctx->log, "%s (L=%d./0x%04x)\n    ", tag, l, l);
-  for (i=0; i<l2; i++)
-  {
-    if (0 != (i % 4))
-      fprintf(ctx->log, " ");
-    else
-    {
-      if (0 != (i % 16))
-        fprintf(ctx->log, "-");
-      else
-        fprintf(ctx->log, " ");
-    };
-    fprintf(ctx->log, "%02x", b [i]);
-    if (15 EQUALS (i % 16))
-      if (i != (l2-1))
-        fprintf(ctx->log, "\n    ");
-  };
-  fprintf(ctx->log, "\n");
-  fflush(ctx->log);
-
-} /* dump_buffer_log */
 

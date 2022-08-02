@@ -208,7 +208,10 @@ delay_nsec = delay_nsec * 1000;
 
     osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &new_size);
     if (new_size != 0)
+    {
       ctx->xferctx.current_send_length = new_size;
+fprintf(stderr,  "DEBUG: updated send to %d.\n", ctx->xferctx.current_send_length);
+    };
   };
   return (status);
 
@@ -416,13 +419,12 @@ int
     }
     else
     {
-    // load data from file starting at msg->FtData
+      // load data from file starting at msg->FtData
 
-    if (ctx->xferctx.current_send_length)
-    {
-      size_to_read = ctx->xferctx.current_send_length;
+      if (ctx->xferctx.current_send_length)
+      {
+        size_to_read = ctx->xferctx.current_send_length;
 fprintf(stderr, "DEBUG: size to read %d.\n", ctx->xferctx.current_send_length);
-size_to_read = 200;
     }
     else
     {

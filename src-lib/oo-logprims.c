@@ -30,6 +30,41 @@ extern char trace_in_buffer [];
 extern char trace_out_buffer [];
 
 
+void dump_buffer_log
+  (OSDP_CONTEXT *ctx,
+  char * tag,
+  unsigned char *b,
+  int l)
+
+{ /* dump_buffer_log */
+
+  int i;
+  int l2;
+
+  l2 = l;
+  fprintf(ctx->log, "%s (L=%d./0x%04x)\n    ", tag, l, l);
+  for (i=0; i<l2; i++)
+  {
+    if (0 != (i % 4))
+      fprintf(ctx->log, " ");
+    else
+    {
+      if (0 != (i % 16))
+        fprintf(ctx->log, "-");
+      else
+        fprintf(ctx->log, " ");
+    };
+    fprintf(ctx->log, "%02x", b [i]);
+    if (15 EQUALS (i % 16))
+      if (i != (l2-1))
+        fprintf(ctx->log, "\n    ");
+  };
+  fprintf(ctx->log, "\n");
+  fflush(ctx->log);
+
+} /* dump_buffer_log */
+
+
 int
   oosdp_message_header_print
   (OSDP_CONTEXT *ctx,
@@ -328,6 +363,42 @@ int
   return (ST_OK);
 
 } /* osdp_log_summary */
+
+
+/*
+  osdp_string_to_buffer - convert hex character string to bytes
+*/
+
+int osdp_string_to_buffer
+  (OSDP_CONTEXT *ctx,
+  char *instring,
+  unsigned char *buffer,
+  unsigned short int *buffer_length_returned)
+
+{ /* osdp_string_to_buffer */
+
+  int bidx;
+  int i;
+  int idx;
+  int returned_length;
+  char tmps [1024];
+
+
+  returned_length = 0;
+  bidx = 0;
+  for (idx=0; idx<strlen(instring); idx=idx+2)
+  {
+    tmps[2] = 0;
+    memcpy(tmps, (idx)+(instring), 2);
+    sscanf(tmps, "%x", &i);
+    *(buffer+bidx) = i;
+    bidx ++;
+    returned_length ++;
+  };
+  *buffer_length_returned = returned_length;
+  return (0);
+
+} /* osdp_string_to_buffer */
 
 
 void

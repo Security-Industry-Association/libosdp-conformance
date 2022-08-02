@@ -356,9 +356,10 @@ int
         }
         else
         {
-          if (context.verbosity > 8)
+          if (context.verbosity > 9)
           {
             if (status_io > 0)
+      
               fprintf(context.log, "At the 485 read, input is: %02X\n", (unsigned int)buffer [0]);
           };
 // not working...  status = osdp_stream_read(&context, buffer, status_io);

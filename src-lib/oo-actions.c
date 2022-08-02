@@ -179,8 +179,12 @@ int
       osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
         response.FtStatusDetail);
       status = osdp_send_ftstat(ctx, &response);
-      if (status EQUALS ST_OK)
-        osdp_wrapup_filetransfer(ctx);
+      if (ctx->verbosity > 3)
+      {
+        if (status != ST_OK)
+          fprintf(ctx->log, "FTSTAT send for abort returned status %d.\n", status);
+      };
+      osdp_wrapup_filetransfer(ctx);
     }
     else
     {
@@ -192,28 +196,42 @@ int
         osdp_doubleByte_to_array(OSDP_FTSTAT_PROCESSED,
           response.FtStatusDetail);
         status = osdp_send_ftstat(ctx, &response);
+        if (ctx->verbosity > 3)
+        {
+          if (status != ST_OK)
+            fprintf(ctx->log, "FTSTAT send at finish returned status %d.\n", status);
+        };
         osdp_wrapup_filetransfer(ctx);
       }
       else
       {
         int offered_size;
 
-        // if the PD offered a new message size note that test result.
-        osdp_test_set_status(OOC_SYMBOL_ftstat_bufsize, OCONFORM_EXERCISED);
+        // offer an updated receive size.
 
-        // offer an updated receive size.  Use 500 to test (assumes max was around 768).
-        // should be careful about checksum/crc and mac or not/scs or not.
-        offered_size = ctx->max_message;
+        offered_size = oo_filetransfer_SDU_offer(ctx);
+
+// was there to deal with buffer overflow issues.
+#if 0
         if (offered_size > 500)
+        {
           offered_size = 500;
+fprintf(stderr, "DEBUG: trimmed offered size to %d.\n", offered_size);
+        };
+#endif
 
         // if there was a configured size, offer that
         if (ctx->pd_filetransfer_payload > 0)
+        {
           offered_size = ctx->pd_filetransfer_payload;
+fprintf(stderr, "DEBUG: trimmed offered size to  pd_filetransfer_payload (%d.)\n", offered_size);
+        };
+        if (ctx->verbosity > 3)
+          fprintf(ctx->log, "osdp_FTSTAT FTMsgUpdateMax will be %d.\n", offered_size);
 
         osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
 
-        fprintf(ctx->log, " FTSTAT Off %d Tot %d Current %d Xmax %d\n",
+        fprintf(ctx->log, " Sending FTSTAT:Offset %d Total %d CurrentSDU %d OfferedSDU %d\n",
           ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
           offered_size);
 

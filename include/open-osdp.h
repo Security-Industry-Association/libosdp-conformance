@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (26)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (27)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -1065,10 +1065,9 @@ int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
 int next_sequence (OSDP_CONTEXT *ctx);
 int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
-int oo_build_genauth(OSDP_CONTEXT *ctx, unsigned char *challenge_payload_buffer, int *payload_length,
-  unsigned char *details, int details_length);
-int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message,
-  int security_block_type, unsigned char *hash, int message_length);
+int oo_build_genauth(OSDP_CONTEXT *ctx, unsigned char *challenge_payload_buffer, int *payload_length, unsigned char *details, int details_length);
+int oo_filetransfer_SDU_offer(OSDP_CONTEXT *ctx);
+int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message, int security_block_type, unsigned char *hash, int message_length);
 int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
 int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
