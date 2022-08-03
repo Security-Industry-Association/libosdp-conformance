@@ -925,14 +925,13 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
                 tstr2);
             };
             break;
-          case 10:
+          case OSDP_CAP_REC_MAX:
             value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
             sprintf (tstr, "  [%02d] %s %d;\n",
               1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
             break;
-          case 11:
+          case OSDP_CAP_MAX_MULTIPART:
             value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
-            context.max_message = value; // SIDE EFFECT (naughty me) - sets value when displaying it.
             sprintf (tstr, "  [%02d] %s %d;\n",
               1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
             break;

@@ -886,7 +886,9 @@ typedef struct __attribute__((packed)) osdp_hdr_ftstat
 
 // codes in FtStatusDetail
 
-#define OSDP_FTSTAT_ABORT_TRANSFER (0xffff)
+#define OSDP_FTSTAT_ABORT_TRANSFER    (0xFFFF)
+#define OSDP_FTSTAT_UNRECOGNIZED      (0xFFFE)
+#define OSDP_FTSTAT_DATA_UNACCEPTABLE (0xFFFD)
 #define OSDP_FTSTAT_OK             (0x0000)
 #define OSDP_FTSTAT_PROCESSED      (0x0001)
 #define OSDP_FTSTAT_FINISHING      (0x0003)

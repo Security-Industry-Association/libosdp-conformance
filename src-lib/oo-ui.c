@@ -509,7 +509,6 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             if (context->max_message EQUALS 0)
             {
               context->max_message = context->pd_cap.rec_max;
-              if (context->max_message >800) context->max_message = 800;
             };
           };
           if (context->max_message EQUALS 0)
@@ -519,6 +518,13 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             context->xferctx.current_send_length = context->max_message;
           };
           size_to_read = context->max_message;
+
+          // wimp out and restrict transfer, got my math wrong somewhere...
+          if (size_to_read > 1000)
+          {
+            fprintf(context->log, "Limiting filetransfer read size to %d (was %d)\n", 1400, size_to_read);
+            size_to_read = 1000;
+          };
 
           // adjust for header, crc
           size_to_read = size_to_read - 6 - 2;

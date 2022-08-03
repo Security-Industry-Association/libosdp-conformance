@@ -179,7 +179,7 @@ delay_nsec = delay_nsec * 1000;
     break;
 
   case OSDP_FTSTAT_PROCESSED:
-    fprintf(stderr, "FTSTAT Detail: %02x (\"processed\")\n", filetransfer_status);
+    fprintf(ctx->log, "FTSTAT Detail: %02x (\"processed\")\n", filetransfer_status);
     ctx->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
 
     if (ctx->xferctx.total_sent EQUALS ctx->xferctx.total_length)
@@ -189,8 +189,26 @@ delay_nsec = delay_nsec * 1000;
     };
     break;
 
+  case OSDP_FTSTAT_ABORT_TRANSFER:
+    fprintf(ctx->log, "PD aborted transfer\n");
+    // stop transfer if there is an error.
+    status = ST_OSDP_FILEXFER_WRAPUP;
+    break;
+
+  case OSDP_FTSTAT_UNRECOGNIZED:
+    fprintf(ctx->log, "PD did not recognize file\n");
+    // stop transfer if there is an error.
+    status = ST_OSDP_FILEXFER_WRAPUP;
+    break;
+
+  case OSDP_FTSTAT_DATA_UNACCEPTABLE:
+    fprintf(ctx->log, "PD reports 'data unacceptable'\n");
+    // stop transfer if there is an error.
+    status = ST_OSDP_FILEXFER_WRAPUP;
+    break;
+
   default:
-    fprintf(stderr, "Unknown FTSTAT Detail: %d\n", filetransfer_status);
+    fprintf(ctx->log, "Unknown FTSTAT Detail: %d\n", filetransfer_status);
     // stop transfer if there is an error.
     status = ST_OSDP_FILEXFER_WRAPUP;
     break;

@@ -216,6 +216,7 @@ int
       fprintf (stderr, "\n");
     };
     status = process_osdp_message (&context, &msg);
+    fflush(context.log);
   };
 
   // if there's a leftover command to send then send it now.  Only get to do one of these.
