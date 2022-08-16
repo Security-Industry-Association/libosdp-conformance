@@ -1,3 +1,8 @@
+changes in 1.27-4
+fix conflation of max message size PD can receive vs. max message size PD can
+reassemble.
+pulled version numbers back in line
+
 changes in 1.27-1
 fix file transfer size calculations
 fix large packet send/receive testing
