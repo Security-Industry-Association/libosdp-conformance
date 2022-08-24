@@ -51,7 +51,7 @@ SCRIPTS = clean-run do-ACU-command do-CP-command do-PD-command \
   HUP-ACU HUP-CP HUP-MON HUP-PD \
   STOP-CP STOP-MON STOP-PD \
   set-pid \
-  write-osdp-CP-command write-osdp-PD-command \
+  write-osdp-ACU-command write-osdp-PD-command \
   3-identify run-address-scan write-params
 TLS_SCRIPTS = exec-CPnetclient exec-CPtcpclient exec-PDnetserver exec-PDtcpserver
 
@@ -73,6 +73,7 @@ build:	all
 	cp ${PAGES} ../opt/osdp-conformance/www
 	cp ${CGIPROGS} ../opt/osdp-conformance/cgi-bin
 	cp ${CGISCRIPTS} ../opt/osdp-conformance/cgi-bin
+	(cd ../opt/osdp-conformance/cgi-bin; ln -s write-osdp-ACU-command write-osdp-CP-command )
 	cp ${SCRIPTS} ../opt/osdp-conformance/bin
 	cp ${PROGS} ../opt/osdp-conformance/bin
 	cp osdp.conf www-data ../opt/osdp-conformance/etc

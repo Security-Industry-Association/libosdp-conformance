@@ -1,6 +1,5 @@
 #!/bin/bash
-set -x
-/opt/osdp-conformance/bin/write-osdp-CP-command $1
+/opt/osdp-conformance/bin/write-osdp-ACU-command $1
 /opt/osdp-conformance/bin/HUP-CP
 sleep 2
 

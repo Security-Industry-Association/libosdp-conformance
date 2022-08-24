@@ -1,4 +1,5 @@
 changes in 1.27-4
+clarified some confusion in command injection shell infrastructure around ACU vs. CP naming.
 fix conflation of max message size PD can receive vs. max message size PD can
 reassemble.
 pulled version numbers back in line

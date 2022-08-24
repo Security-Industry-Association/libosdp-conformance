@@ -1,3 +1,5 @@
+// (C) 2022 Smithee Solutions LLC
+
 int param_verbosity = 0;
 
 #include <stdio.h>
@@ -54,7 +56,7 @@ int
     printf ("<BR><BR><BR><P ALIGN=\"center\">Executing %s command...</P>\n",
       command);
     sprintf (shell_command,
-"sudo -n /opt/osdp-conformance/bin/write-osdp-CP-command %s",
+"sudo -n /opt/osdp-conformance/bin/write-osdp-ACU-command %s",
   command);
     system (shell_command);
     system ("sudo -n /opt/osdp-conformance/bin/HUP-CP");
