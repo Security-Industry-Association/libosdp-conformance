@@ -25,7 +25,7 @@ LINK=${CC}
 LDFLAGS=-g -L /opt/tester/lib -ljansson
 
 CGIPROGS = \
-  ACU-status open-osdp-PD-status send-osdp-command \
+  ACU-status open-osdp-ACU-status open-osdp-PD-status send-osdp-command \
   start-CP-485 start-PD-485 start-MON-485 \
   tail-CP-log tail-CP-stderr tail-MON-log tail-PD-log \
   shutdown-osdp vm-status
@@ -43,7 +43,8 @@ TLS_PROGS =
 PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
   open-osdp-MON.html osdp-conformance-CP.html osdp-conformance-PD.html \
   index-conformance.html \
-  Test-ACU.html Test-PD.html
+  Test-ACU.html Test-ACU-Status.html Test-PD.html
+CSS = picnic.min.css
 TLS_PAGES = 
 
 SCRIPTS = clean-run do-ACU-command do-CP-command do-PD-command \
@@ -55,7 +56,7 @@ SCRIPTS = clean-run do-ACU-command do-CP-command do-PD-command \
   3-identify run-address-scan write-params
 TLS_SCRIPTS = exec-CPnetclient exec-CPtcpclient exec-PDnetserver exec-PDtcpserver
 
-all:	${CGIPROGS} ${PAGES} ${SCRIPTS} ${PROGS} ${EXTRA}
+all:	${CGIPROGS} ${PAGES} ${CSS} ${SCRIPTS} ${PROGS} ${EXTRA}
 
 clean:
 	rm -f core *.o ${CGIPROGS} ${PROGS}
@@ -67,10 +68,12 @@ build:	all
 	mkdir -p ../opt/osdp-conformance/cgi-bin
 	mkdir -p ../opt/osdp-conformance/etc
 	mkdir -p ../opt/osdp-conformance/www
+	mkdir -p ../opt/osdp-conformance/www/css
 	mkdir -p ../opt/osdp-conformance/run/ACU
 	mkdir -p ../opt/osdp-conformance/run/MON
 	mkdir -p ../opt/osdp-conformance/run/PD
 	cp ${PAGES} ../opt/osdp-conformance/www
+	cp ${CSS} ../opt/osdp-conformance/www/css
 	cp ${CGIPROGS} ../opt/osdp-conformance/cgi-bin
 	cp ${CGISCRIPTS} ../opt/osdp-conformance/cgi-bin
 	(cd ../opt/osdp-conformance/cgi-bin; ln -s write-osdp-ACU-command write-osdp-CP-command )
@@ -97,6 +100,10 @@ osdp-config-print.o:	osdp-config-print.c ${INCLUDES}
 
 ACU-status:	open-osdp-CP-status.o Makefile
 	${LINK} -o ACU-status -g open-osdp-CP-status.o -lrt
+
+open-osdp-ACU-status:	open-osdp-ACU-status.o Makefile
+	${LINK} ${LDFLAGS} -o open-osdp-ACU-status open-osdp-ACU-status.o \
+	  -ljansson -lrt
 
 open-osdp-PD-status:	open-osdp-PD-status.o Makefile
 	${LINK} ${LDFLAGS} -o open-osdp-PD-status open-osdp-PD-status.o \
@@ -130,6 +137,10 @@ open-osdp-kick.o:	open-osdp-kick.c
 open-osdp-CP-status.o:	open-osdp-CP-status.c
 	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
 	  open-osdp-CP-status.c
+
+open-osdp-ACU-status.o:	open-osdp-ACU-status.c
+	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \
+	  open-osdp-ACU-status.c
 
 open-osdp-PD-status.o:	open-osdp-PD-status.c
 	${CC} -c -g -I../include -I/tester/current/include -Wall -Werror \

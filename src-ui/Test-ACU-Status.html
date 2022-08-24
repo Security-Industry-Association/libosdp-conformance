@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+    <head>
+        <title>ACU Status</title>
+        <link rel="stylesheet" href="css/picnic.min.css">
+        <style>
+            article {
+                font-family: "Courier 10 Pitch";
+            }
+            section {
+                font-size: small;
+            }
+
+            .osdp-label {
+                font-weight: bold;
+            }
+
+            @keyframes fadeInAndOut {
+                0%   { opacity:0; }
+                50%  { opacity:1; }
+                100% { opacity:0; }
+            }
+            .osdp-is-running {
+                animation: fadeInAndOut 1s infinite;
+            }
+        </style>
+    </head>
+    <body>
+        <div style="margin: 10px">
+            <h1>Controller(ACU) Status</h1>
+
+            <h3 id="is-running"></h3>
+
+            <div class="flex one two-800">
+                <div>
+                    <article class="card">
+                        <header>
+                            <h3>Time</h3>
+                        </header>
+                        <section>
+                            <div class="flex one">
+                                <div class="flex two">
+                                    <span class="fourth osdp-label">Local Current</span>
+                                    <span id="local-current-time" class="three-fourth" ></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="fourth osdp-label">Last Update</span>
+                                    <span id="last-update-time" class="three-fourth"></span>
+                                </div>
+                            </div>
+                        </section>
+                    </article>
+                </div>
+
+                <div>
+                    <article class="card">
+                        <header>
+                            <h3>Communications</h3>
+                        </header>
+                        <section>
+                            <div class="flex one">
+                                <div class="flex two">
+                                    <span class="fourth osdp-label">Address</span>
+                                    <span id="address-communication" class="three-fourth" ></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="fourth osdp-label">Speed</span>
+                                    <span id="speed-communication" class="three-fourth" ></span>
+                                </div>
+                            </div>
+                        </section>
+                    </article>
+                </div>
+
+                <div>
+                    <article class="card">
+                        <header>
+                            <h3>Statistics</h3>
+                        </header>
+                        <section>
+                            <div class="flex one">
+                                <div class="flex two">
+                                    <span class="third osdp-label">ACU Polls</span>
+                                    <span id="acu-polls-statistics" class="two-third" ></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">PD Acks</span>
+                                    <span id="pd-acks-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">PD Naks</span>
+                                    <span id="pd-naks-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">Hash OK</span>
+                                    <span id="hash-ok-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">Hash Bad</span>
+                                    <span id="hash-bad-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">Sequence Errors</span>
+                                    <span id="sequence-errors-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">CRC Errors</span>
+                                    <span id="crc-errors-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">Checksum Errors</span>
+                                    <span id="checksum-errors-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">Buffer Overflows</span>
+                                    <span id="buffer-overflows-statistics" class="two-third"></span>
+                                </div>
+                                <div class="flex two">
+                                    <span class="third osdp-label">Retries</span>
+                                    <span id="retries-statistics" class="two-third"></span>
+                                </div>
+                            </div>
+                        </section>
+                    </article>
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            function updateData() {
+                const xmlhttp = new XMLHttpRequest();
+                xmlhttp.onload = function() {
+                    const statusObj = JSON.parse(this.responseText);
+
+                    // Time
+                    const current = new Date();
+                    const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
+                    document.getElementById("local-current-time").innerText = current.toLocaleDateString("en-US", options) + " " + current.toLocaleTimeString()
+                    const last_update = new Date(parseInt(statusObj.last_update_timeT) * 1000);
+                    document.getElementById("last-update-time").innerText = last_update.toLocaleDateString("en-US", options) + " " + last_update.toLocaleTimeString()
+
+                    // Communication
+                    document.getElementById("address-communication").innerHTML = statusObj.pd_address;
+                    document.getElementById("speed-communication").innerHTML = statusObj.serial_speed;
+
+                    // Statistics
+                    document.getElementById("acu-polls-statistics").innerHTML = statusObj['acu-polls'];
+                    document.getElementById("pd-acks-statistics").innerHTML = statusObj['pd-acks'];
+                    document.getElementById("pd-naks-statistics").innerHTML = statusObj['pd-naks'];
+                    document.getElementById("hash-ok-statistics").innerHTML = statusObj['hash-ok'];
+                    document.getElementById("hash-bad-statistics").innerHTML = statusObj['hash-bad'];
+                    document.getElementById("sequence-errors-statistics").innerHTML = statusObj['seq-bad'];
+                    document.getElementById("crc-errors-statistics").innerHTML = statusObj['crc_errs'];
+                    document.getElementById("checksum-errors-statistics").innerHTML = statusObj['checksum_errs'];
+                    document.getElementById("buffer-overflows-statistics").innerHTML = statusObj['buffer-overflows'];
+                    document.getElementById("retries-statistics").innerHTML = statusObj['retries'];
+
+                    const is_running = current < new Date(last_update.getTime() + 5000);
+                    if (is_running) {
+                        document.getElementById("is-running").innerHTML = "Running";
+                        document.getElementById("is-running").className = "osdp-is-running";
+                    } else {
+                        document.getElementById("is-running").innerHTML = "Stopped";
+                        document.getElementById("is-running").className = "";
+                    }
+
+                    setTimeout(updateData, 3000);
+                };
+                xmlhttp.open("GET", "cgi-bin/open-osdp-ACU-status");
+                xmlhttp.send();
+
+
+            };
+
+            updateData();
+       </script>
+    </body>
+</html>
+
