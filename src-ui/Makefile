@@ -76,7 +76,7 @@ build:	all
 	cp ${CSS} ../opt/osdp-conformance/www/css
 	cp ${CGIPROGS} ../opt/osdp-conformance/cgi-bin
 	cp ${CGISCRIPTS} ../opt/osdp-conformance/cgi-bin
-	(cd ../opt/osdp-conformance/cgi-bin; ln -s write-osdp-ACU-command write-osdp-CP-command )
+	(cd ../opt/osdp-conformance/bin; rm -f write-osdp-CP-command; ln -s write-osdp-ACU-command write-osdp-CP-command )
 	cp ${SCRIPTS} ../opt/osdp-conformance/bin
 	cp ${PROGS} ../opt/osdp-conformance/bin
 	cp osdp.conf www-data ../opt/osdp-conformance/etc
