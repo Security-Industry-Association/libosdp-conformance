@@ -83,7 +83,7 @@ int
       };
     };
   };
-  if (ctx->verbosity > 3) && (strlen(json_string) > 0))
+  if ((ctx->verbosity > 3) && (strlen(json_string) > 0))
   {
     fprintf(ctx->log, "Interprocess command was: %s\n", json_string);
   };
