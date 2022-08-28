@@ -83,6 +83,11 @@ int
       };
     };
   };
+  if (ctx->verbosity > 3) && (strlen(json_string) > 0))
+  {
+    fprintf(ctx->log, "Interprocess command was: %s\n", json_string);
+  };
+
   if (strlen(json_string) EQUALS 0)
   {
     cmdf = fopen (ctx->command_path, "r");
