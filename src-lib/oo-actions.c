@@ -341,6 +341,7 @@ int
 
 { /* action_osdp_MFG */
 
+  char cmd [C_STRING_MX];
   int current_length;
   int i;
   OSDP_MFG_COMMAND *mfg;
@@ -355,11 +356,6 @@ int
   mfg = (OSDP_MFG_COMMAND *)(msg->data_payload);
   mfg_config_guid = (OSDP_CONFIG_GUID *)&(mfg->data);
 
-fprintf (stderr, "osdp_MFG action stub\n");
-fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
-  mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2],
-  mfg->mfg_command_id, mfg->data);
-
   if (0 EQUALS memcmp(mfg->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE)))
   {
     switch (mfg->mfg_command_id)
@@ -368,20 +364,23 @@ fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
       if (0 EQUALS memcmp(mfg_config_guid->guid, ctx->my_guid, sizeof(ctx->my_guid)))
       {
         unknown = 0;
-        p_card.addr = mfg_config_guid->new_address;
+
+        // respond with osdp_COM, referencing the new address/speed, on the old address/speed
+        // "Just like COMSET".
+
         i = *(1+mfg_config_guid->new_speed) + (*(2+mfg_config_guid->new_speed) << 8) +
           (*(3+mfg_config_guid->new_speed) << 16) + (*(4+mfg_config_guid->new_speed) << 24);
-
-        // respond with osdp_COM, then set the speed. Just like COMSET.
-        osdp_com_response_data [0] = p_card.addr;
+        osdp_com_response_data [0] = mfg_config_guid->new_address;
         *(unsigned short int *)(osdp_com_response_data+1) = i;
+
         current_length = 0;
-        status = send_message (ctx,
-          OSDP_COM, p_card.addr, &current_length,
-          sizeof (osdp_com_response_data), osdp_com_response_data);
+        status = send_message (ctx, OSDP_COM, p_card.addr, &current_length,
+          sizeof(osdp_com_response_data), osdp_com_response_data);
 
         // set the speed and address
+        p_card.addr = mfg_config_guid->new_address;
         ctx->new_address = p_card.addr;
+        sprintf(ctx->serial_speed, "%d", i);
         status = init_serial (ctx, p_card.filename);
       };
       break;
@@ -412,6 +411,15 @@ fprintf(stderr, "1:%02x 2:%02x 3:%02x cmd:%02x data:%02x\n",
       };
       break;
     };
+
+    // and after we do whatever we did, call the action script.
+    /*
+      ACTION SCRIPT ARGS: 1=6 hexit OUI 2=MFG command 2 hexit 3=first octet of data 2hexit 4=data payload length
+    */
+
+    sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_MFG %02X%02X%02X %02X %02X %d",
+      mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg->mfg_command_id, mfg->data, msg->data_length);
+    system(cmd);
   };
   if (unknown)
   {
