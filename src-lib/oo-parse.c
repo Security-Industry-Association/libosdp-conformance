@@ -799,7 +799,7 @@ status = ST_OK; // tolerate checksum error and continue
         */
         if ((role EQUALS OSDP_ROLE_ACU) && (rcv_seq != context->next_sequence))
         {
-fprintf(stderr, "DEBUG: detected bad sequence\n");
+          fprintf(context->log, "Detected bad sequence.\n");
           bad = 1;
         };
 
