@@ -646,6 +646,12 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_FAIL);
         };
 
+// assumes test_details is still valid.
+// assumes it was a perm on command
+#define LP_ON (12)
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_blue, OCONFORM_FAIL);
+
         // if the PD NAK'd an OSTAT that is a fail.  The initiator of the OSTAT is responsible for only
         // using it if output support declared.
 

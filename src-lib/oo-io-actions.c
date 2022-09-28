@@ -52,6 +52,7 @@ int
 { /* action_osdp_OUT */
 
   unsigned char buffer [1024];
+  char cmd [1024];
   int current_length;
   int done;
   OSDP_OUT_MSG *outmsg;
@@ -76,6 +77,12 @@ int
     done = 1;
   while (!done)
   {
+    /*
+      ACTION SCRIPT ARGS: 1=output line in HEX 2=1(on)/0(off)
+    */
+
+
+
     outmsg = (OSDP_OUT_MSG *)(msg->data_payload);
     sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x",
       outmsg->output_number, outmsg->control_code,
@@ -91,12 +98,16 @@ int
       case OSDP_OUT_NOP:
         break;
       case OSDP_OUT_OFF_PERM_ABORT:
+        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_OUT %02X %1d", outmsg->output_number, 0);
+        system(cmd);
         ctx->out [outmsg->output_number].current = 0;
         ctx->out [outmsg->output_number].timer = 0;
         break;  
       case OSDP_OUT_ON_PERM_ABORT:
         ctx->out [outmsg->output_number].current = 1;
         ctx->out [outmsg->output_number].timer = 0;
+        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_OUT %02X %1d", outmsg->output_number, 1);
+        system(cmd);
         break;  
       default:
         status = ST_OUT_UNKNOWN;

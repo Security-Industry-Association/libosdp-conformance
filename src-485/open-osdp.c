@@ -283,7 +283,11 @@ int
         fprintf (stderr, "errno at select error %d\n", errno);
       };
     };
-    if (status_select EQUALS 0)
+
+    // if there is no I/O activity or the buffer has not even a partial message then process timeouts
+    // (defend against noise coming in on the line.)
+
+    if ((status_select EQUALS 0) || (osdp_buf.next EQUALS 0))
     {
       status = ST_OK;
       if (osdp_timeout (&context, &last_time_check_ex))
