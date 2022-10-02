@@ -85,7 +85,7 @@ int
 
   if ((ctx->role EQUALS OSDP_ROLE_ACU) && (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL))
   {
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
       fprintf(stderr, "ACU and secure channel, background\n");
   };
   if (ctx->role EQUALS OSDP_ROLE_ACU)
@@ -134,7 +134,7 @@ int
         if (ctx->timeout_retries EQUALS 0)
         {
           if (ctx->verbosity > 3)
-            fprintf(stderr, "securere retry-timeou, polling\n");
+            fprintf(stderr, "securere retry-timeout, polling\n");
           send_secure_poll = 1;
         };
       };

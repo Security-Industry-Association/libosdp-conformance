@@ -397,7 +397,7 @@ int
   int status;
 
 
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
     fprintf(stderr, "DEBUG:osdp_decrypt_payload: top, SCS=%02x\n", msg->security_block_type);
   status = ST_OK;
   memcpy(decrypt_iv, ctx->last_calculated_out_mac, OSDP_KEY_OCTETS);
