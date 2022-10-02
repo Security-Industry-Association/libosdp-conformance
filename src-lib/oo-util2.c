@@ -85,7 +85,7 @@ int
 
   if ((ctx->role EQUALS OSDP_ROLE_ACU) && (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL))
   {
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
       fprintf(stderr, "ACU and secure channel, background\n");
   };
   if (ctx->role EQUALS OSDP_ROLE_ACU)
@@ -128,13 +128,11 @@ int
       if (ctx->timeout_retries > 0)
       {
         send_secure_poll = 0;
-        if (ctx->verbosity > 3)
-          fprintf(stderr, "retry %d, now decrementing\n", ctx->timeout_retries);
+        fprintf(ctx->log, "Background: waiting for response (%d)\n", ctx->timeout_retries);
         ctx->timeout_retries --;
         if (ctx->timeout_retries EQUALS 0)
         {
-          if (ctx->verbosity > 3)
-            fprintf(stderr, "securere retry-timeou, polling\n");
+          fprintf(ctx->log, "Background: timed out waiting for response, polling.\n");
           send_secure_poll = 1;
         };
       };
@@ -639,6 +637,10 @@ int
   status = ST_OK;
   if (ctx->role != OSDP_ROLE_MONITOR)
   {
+    // starting fresh on the processing
+    ctx->last_was_processed = 0;
+    ctx->timeout_retries = OOSDP_TIMEOUT_RETRIES;
+
     // dump trace buffers so in's and out's land in correct order
 
     if (context.verbosity > 3)
