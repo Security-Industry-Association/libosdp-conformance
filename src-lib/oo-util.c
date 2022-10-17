@@ -640,6 +640,12 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_FAIL);
         };
 
+        // if the PD NAK'd a TEXT fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
+        if ((unsigned int)(context->last_command_sent) EQUALS (unsigned int)OSDP_TEXT)
+        {
+          osdp_test_set_status(OOC_SYMBOL_cmd_text, OCONFORM_FAIL);
+        };
+
         // if the PD NAK'd a KEEPACTIVE fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
         if ((unsigned int)(context->last_command_sent) EQUALS (unsigned int)OSDP_KEEPACTIVE)
         {

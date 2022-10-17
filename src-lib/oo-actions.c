@@ -485,7 +485,7 @@ int
 
 
   status = ST_OK;
-  strcpy(aux, "\"capabilities\":{");
+  strcpy(aux, "\"capabilities\":[");
   if (ctx->verbosity > 3)
   {
     fprintf(ctx->log,
@@ -633,10 +633,9 @@ int
   fprintf(ctx->log, "PD Capabilities response processing complete.\n\n");
   if (ctx->last_command_sent EQUALS OSDP_CAP)
     osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
-  strcat(aux, "\"#\":\"#\"},\n");
+  strcat(aux, "{\"function\":\"0\",\"compliance\":\"0\",\"number-of\":\"0\"}],");
+
   osdp_test_set_status_ex(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED, aux);
-//  status = oosdp_make_message (OOSDP_MSG_PD_CAPAS, tlogmsg, msg);
-//  fprintf (ctx->log, "%s\n", tlogmsg);
   return(status);
 
 } /* action_osdp_PDCAP */
