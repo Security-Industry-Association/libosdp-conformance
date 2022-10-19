@@ -133,6 +133,10 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.cmd_ostat.test_status),
       1, 0, 0, 0, 0,
                         "Command: OSTAT"},
+    {         OOC_SYMBOL_cmd_out,
+      &(osdp_conformance.cmd_out.test_status),
+      1, 0, 0, 0, 0,
+                        "Command: OUT" },
     {         OOC_SYMBOL_cmd_poll,
       &(osdp_conformance.cmd_poll.test_status),
       1, 0, 0, 0, 0,
@@ -318,9 +322,6 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-11-2", &(osdp_conformance.address_2.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-   {     OOC_SYMBOL_address_config,
-      &(osdp_conformance.address_config.test_status),
-      1, 0, 0, 0, 0, "---" }, 
     {         OOC_SYMBOL_LEN,
       &(osdp_conformance.LEN.test_status),
       1, 0, 0, 0, 0,
@@ -333,9 +334,6 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---" }, // ??
     { "2-13-3", &(osdp_conformance.ctl_seq.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
-    {           OOC_SYMBOL_no_scb,
-      &(osdp_conformance.no_scb.test_status),
-      1, 0, 0, 0, 0, "---" },
     { "2-14-3", &(osdp_conformance.rogue_secure_poll.test_status),
       1, 0, 0, 0, 0, "---" }, // ??
     {         OOC_SYMBOL_CMND_REPLY,
@@ -382,8 +380,6 @@ OSDP_CONFORMANCE_TEST
     { "3-7-2", &(osdp_conformance.cmd_ostat_ack.test_status),
       1, 0, 0, 0, 0, "---" },
     { "3-8-1", &(osdp_conformance.cmd_rstat.test_status),
-      1, 0, 0, 0, 0, "---" },
-    { "3-9-1", &(osdp_conformance.cmd_out.test_status),
       1, 0, 0, 0, 0, "---" },
     {         OOC_SYMBOL_cmd_buz,
       &(osdp_conformance.cmd_buz.test_status),
@@ -734,9 +730,6 @@ void
   LOG_REPORT ((log_string,
 "3-8-1  Reader Status Report Request       %s",
     conformance_status (oconf->cmd_rstat.test_status)));
-  LOG_REPORT ((log_string,
-"3-9-1  Output Control Command             %s",
-    conformance_status (oconf->cmd_out.test_status)));
   LOG_REPORT ((log_string,
 "3-10-1 LED Test (Red)                     %s",
     conformance_status (oconf->cmd_led_red.test_status)));

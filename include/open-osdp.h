@@ -36,11 +36,12 @@
 #define OSDP_TRACE_FILE       "current.osdpcap"
 
 #define OSDP_OFFICIAL_MSG_MAX (1440)
+#define OSDP_MAX_OUT (16)
 
 // default configuration
 
 #define OOSDP_DEFAULT_INPUTS (8)
-#define OOSDP_DEFAULT_OUTPUTS (8)
+#define OOSDP_DEFAULT_OUTPUTS (OSDP_MAX_OUT)
 
 #define OOSDP_TIMEOUT_RETRIES (3)
 
@@ -358,7 +359,6 @@ typedef struct osdp_out_state
   int
     permanent;
 } OSDP_OUT_STATE;
-#define OSDP_MAX_OUT (16)
 
 typedef struct osdp_led_state
 {

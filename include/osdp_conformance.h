@@ -54,8 +54,6 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_CRC                "050-09-15"
 #define OOC_SYMBOL_CRC_bad_response   "050-09-16"
 #define OOC_SYMBOL_CRC_bad_command    "050-09-17"
-#define OOC_SYMBOL_no_scb             "1050-09-18" // detected no SCB, a valid test case
-#define OOC_SYMBOL_address_config     "1050-09-19" // config address
 
 #define OOC_SYMBOL_cmd_poll           "060-02-01"
 #define OOC_SYMBOL_poll_lstatr        "060-02-02"

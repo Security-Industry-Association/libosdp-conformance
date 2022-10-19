@@ -200,8 +200,6 @@ int
   {
     // the message was good.  update conformance status.
     osdp_test_set_status(OOC_SYMBOL_multibyte_data_encoding, OCONFORM_EXERCISED);
-    if (!(parsed_msg.ctrl & 0x08))
-      osdp_test_set_status(OOC_SYMBOL_no_scb, OCONFORM_EXERCISED);
 
     if (context.verbosity > 9)
     {
