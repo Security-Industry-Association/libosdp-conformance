@@ -572,8 +572,16 @@ void
     osdp_test_set_status(OOC_SYMBOL_physical_interface, OCONFORM_EXERCISED);
     if (0 EQUALS strcmp (ctx->serial_speed, "9600"))
       osdp_test_set_status(OOC_SYMBOL_signalling, OCONFORM_EXERCISED);
+    if (0 EQUALS strcmp (ctx->serial_speed, "19200"))
+      osdp_test_set_status(OOC_SYMBOL_signalling_19200, OCONFORM_EXERCISED);
     if (0 EQUALS strcmp (ctx->serial_speed, "38400"))
       osdp_test_set_status(OOC_SYMBOL_signalling_38400, OCONFORM_EXERCISED);
+    if (0 EQUALS strcmp (ctx->serial_speed, "57600"))
+      osdp_test_set_status(OOC_SYMBOL_signalling_57600, OCONFORM_EXERCISED);
+    if (0 EQUALS strcmp (ctx->serial_speed, "115200"))
+      osdp_test_set_status(OOC_SYMBOL_signalling_115200, OCONFORM_EXERCISED);
+    if (0 EQUALS strcmp (ctx->serial_speed, "230400"))
+      osdp_test_set_status(OOC_SYMBOL_signalling_230400, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_SOM, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_packet_format, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_SOM_sent, OCONFORM_EXERCISED);

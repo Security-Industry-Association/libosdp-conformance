@@ -108,13 +108,13 @@ int
   if (osdp_wire_message->ctrl & 0x08)
   {
     scb_present = 1;
-    sprintf(tmpstr2, " [SCB; ");
+    sprintf(tmpstr2, " [SCB: ");
     strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
   }
   else
   {
     scb_present = 0;
-    sprintf(tmpstr2, " "); //"No Security Control Block; ");
+    sprintf(tmpstr2, " (No SCB) "); // annotated per suggestion from Wiley
     strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
   };
   if (scb_present)
