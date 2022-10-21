@@ -31,7 +31,7 @@
 #define OSDP_VERSION_MINOR (30)
 #define OSDP_VERSION_BUILD ( 1)
 
-#define OSDP_EXCLUSIVITY_LOCK "/opt/osdp-conformance/run/osdp-lock"
+#define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
 #define OSDP_TRACE_FILE       "current.osdpcap"
 
@@ -632,7 +632,7 @@ typedef struct osdp_context
 #define OSDP_ROLE_CP      (OSDP_ROLE_ACU)
 #define OSDP_ROLE_PD      (1)
 #define OSDP_ROLE_MONITOR (2)
-#define OO_OSDP_ROLE_FILENAME "/opt/osdp-conformance/tmp/current-role"
+#define OO_OSDP_ROLE_FILENAME "tmp/current-role"
 
 // note - not same thing as check length which will be 1 or 2
 #define OSDP_CHECKSUM (0)

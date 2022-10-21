@@ -120,7 +120,6 @@ int
     };
     fprintf(stderr, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
 
-    system("mkdir -p /opt/osdp-conformance/results");
     status = initialize_osdp (&context);
   };
 
@@ -203,7 +202,7 @@ int
 
 
     memset (sn, 0, sizeof (1024));
-    sprintf (sn, OSDP_LCL_UNIX_SOCKET, tag);
+    sprintf (sn, OSDP_LCL_UNIX_SOCKET);
 
     ufd = socket (AF_UNIX, SOCK_STREAM, 0);
     if (ufd != -1)

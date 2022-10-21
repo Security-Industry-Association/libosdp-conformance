@@ -302,6 +302,8 @@ int
     status = read_config (context);
     sprintf(command, "mkdir -p %s/results", context->service_root);
     system(command);
+    sprintf(command, "mkdir -p %s/run", context->service_root);
+    system(command);
     if (!(context->keep_results))
     {
       sprintf(command, "rm -f %s/results/*", context->service_root);

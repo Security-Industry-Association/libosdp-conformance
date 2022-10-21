@@ -310,7 +310,7 @@ fprintf(stderr, "DEBUG: new speed %s\n", new_speed);
   };
 
   // also load saved credentials.
-  saved_parameters_root = json_load_file("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", 0, &status_json);
+  saved_parameters_root = json_load_file("osdp-saved-credentials.json", 0, &status_json);
 
   value = json_object_get(saved_parameters_root, "bio-format");
   if (json_is_string (value))
@@ -512,7 +512,7 @@ int
   extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
   extern OSDP_BUFFER osdp_buf;
   FILE *sf;
-  char statfile [2*1024];
+  char statfile [3072];
   int status;
   char tag [1024];
   char val [1024];
@@ -529,8 +529,7 @@ int
     strcpy (tag, "ACU");
   if (ctx->role EQUALS OSDP_ROLE_MONITOR)
     strcpy (tag, "MON");
-  sprintf (statfile, "/opt/osdp-conformance/run/%s/osdp-status.json",
-    tag);
+  sprintf (statfile, "osdp-status.json");
   sf = fopen (statfile, "w");
   if (sf != NULL)
   {

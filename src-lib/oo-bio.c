@@ -238,7 +238,7 @@ int
     sprintf(octet, "%02x", msg->data_payload [6+i]);
     strcat(template_string, octet);
   };
-  credsf = fopen("/opt/osdp-conformance/run/ACU/osdp-saved-credentials.json", "w");
+  credsf = fopen("osdp-saved-credentials.json", "w");
   if (credsf != NULL)
   {
     char credentials_string [4096];

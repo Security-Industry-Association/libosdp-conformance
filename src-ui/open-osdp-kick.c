@@ -25,26 +25,39 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#define EQUALS ==
+
 char socket_path [1024];
 
 int main(int argc, char *argv[]) {
   struct sockaddr_un addr;
   char buf[100];
-  int fd,rc;
-  char
-    *tag;
+  char c;
+  int fd;
+  char *p;
+  int rc;
+  char *tag;
+
 
   tag = "CP";
+  sprintf (socket_path, "%s/run/%s/open-osdp-control", "/opt/osdp-conformance", tag);
   if (argc > 1)
   {
     if (strcmp (argv [1], "MON") == 0)
+    {
       tag = "MON";
+      sprintf (socket_path, "%s/run/%s/open-osdp-control", "/opt/osdp-conformance", tag);
+    };
     if (strcmp (argv [1], "PD") == 0)
+    {
       tag = "PD";
+      sprintf (socket_path, "%s/run/%s/open-osdp-control", "/opt/osdp-conformance", tag);
+    };
+    p = argv [1];
+    c = *p;
+    if (c EQUALS '-')
+      sprintf(socket_path, "%s/open-osdp-control", 1 + argv[1]);
   };
-  sprintf (socket_path,
-    "/opt/osdp-conformance/run/%s/open-osdp-control",
-    tag);
 
   if ( (fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
     perror("socket error");
