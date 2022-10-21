@@ -111,7 +111,7 @@ int
     context.current_menu = OSDP_MENU_TOP;
     strcpy (context.init_parameters_path, "open-osdp-params.json");
     strcpy (context.log_path, "osdp.log");
-    strcpy(context.service_root, "/opt/osdp-conformance/run");
+//    strcpy(context.service_root, "/opt/osdp-conformance/run");
 
     // if there's an argument it is the config file path
     if (argc > 1)

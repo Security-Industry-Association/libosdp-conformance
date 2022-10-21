@@ -552,6 +552,7 @@ void
 { /* dump_conformance */
 
   char *profile_tag;
+  char report_filename [2048];
 
 
   oconf->pass = 0;
@@ -589,7 +590,8 @@ void
     osdp_test_set_status(OOC_SYMBOL_CTRL, OCONFORM_EXERCISED);
   };
 
-  ctx->report = fopen ("/opt/osdp-conformance/results/report.log", "w");
+  sprintf(report_filename, "%s/results/report.log", ctx->service_root);
+  ctx->report = fopen (report_filename, "w");
 
   LOG_REPORT ((log_string, "Conformance Report:"));
   LOG_REPORT ((log_string,
@@ -1021,7 +1023,7 @@ int
   int done;
   int idx;
   FILE *rf;
-  char results_filename [1024];
+  char results_filename [3072];
   int status;
 
 
@@ -1045,8 +1047,8 @@ int
       if (strcmp (test_control [idx].name, test) EQUALS 0)
     {
       *(test_control [idx].conformance) = test_status;
-      sprintf(results_filename, "/opt/osdp-conformance/results/%s-results.json",
-        test);
+      sprintf(results_filename, "%s/results/%s-results.json",
+        context.service_root, test);
       rf = fopen(results_filename, "w");
       if (rf)
       {
@@ -1102,7 +1104,7 @@ int
 
   int done;
   int idx;
-  char results_filename [1024];
+  char results_filename [3072];
   FILE *rf;
   int status;
 
@@ -1136,8 +1138,8 @@ int
 //   do update
 // log anyway
         *(test_control [idx].conformance) = test_status;
-        sprintf(results_filename, "/opt/osdp-conformance/results/%s-results.json",
-          test);
+        sprintf(results_filename, "%s/results/%s-results.json",
+          context.service_root, test);
         rf = fopen(results_filename, "w");
         if (rf)
         {

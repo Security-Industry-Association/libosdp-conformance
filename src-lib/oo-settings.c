@@ -497,7 +497,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    value = json_object_get (root, "poll");
+    value = json_object_get (root, "port");
     if (json_is_string (value))
     {
       int i;
@@ -562,6 +562,18 @@ int
     if (status EQUALS ST_OK)
       memcpy(ctx->serial_number, serial_number, sizeof(ctx->serial_number));
   };
+
+  // parameter "service-root" - where libosdp-conformance runs from
+  // typically this is /opt/osdp-conformance.
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "service-root");
+    if (json_is_string (value))
+      strcpy(ctx->service_root, json_string_value(value));
+  };
+
   // parameter "timeout"
   // note this is timer 0 (zero)
 

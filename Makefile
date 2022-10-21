@@ -72,4 +72,7 @@ build:	all
 	  opt/osdp-conformance/run/PD/
 	(cd test; make build-test; cd ..)
 	(cd package; make)
+	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/ACU/my-root
+	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/PD/my-root
+	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/MON/my-root
 

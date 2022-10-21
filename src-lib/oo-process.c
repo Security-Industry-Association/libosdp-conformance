@@ -167,13 +167,13 @@ int
 
       if (send_response)
       {
-        char cmd [1024];
+        char cmd [3072];
         if (context.verbosity > 3)
           fprintf(context.log, "NAK: response %d.\n", osdp_nak_response [0]);
         (void)send_message_ex(&context,
           OSDP_NAK, p_card.addr, &current_length,
           1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
-        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_NAK transmitted"); system(cmd);
+        sprintf(cmd, "%s/run/ACU-actions/osdp_NAK transmitted", context.service_root); system(cmd);
         context.sent_naks ++;
 
         if (nak_not_msg)

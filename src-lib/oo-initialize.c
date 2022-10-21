@@ -291,13 +291,22 @@ int
 
   if (status EQUALS ST_OK)
   {
+    char command [3072];
+
+    // preset before reading config to set default
+    strcpy(context->service_root, "/opt/osdp-conformance");
+
     /*
       try to get configuration from configuration file open_osdp.cfg
     */
     status = read_config (context);
+    sprintf(command, "mkdir -p %s/results", context->service_root);
+    system(command);
     if (!(context->keep_results))
-      system("rm -f /opt/osdp-conformance/results/*");
-
+    {
+      sprintf(command, "rm -f %s/results/*", context->service_root);
+      system(command);
+    };
     if (context->verbosity > 4)
     {
       m_dump = 1;

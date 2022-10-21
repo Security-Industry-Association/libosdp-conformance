@@ -341,7 +341,7 @@ int
 
 { /* action_osdp_MFG */
 
-  char cmd [C_STRING_MX];
+  char cmd [3072]; //C_STRING_MX];
   int current_length;
   int i;
   OSDP_MFG_COMMAND *mfg;
@@ -417,7 +417,7 @@ int
       ACTION SCRIPT ARGS: 1=6 hexit OUI 2=MFG command 2 hexit 3=first octet of data 2hexit 4=data payload length
     */
 
-    sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_MFG %02X%02X%02X %02X %02X %d",
+    sprintf(cmd, "%s//run/ACU-actions/osdp_MFG %02X%02X%02X %02X %02X %d", ctx->service_root,
       mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg->mfg_command_id, mfg->data, msg->data_length);
     system(cmd);
   };
@@ -479,7 +479,7 @@ int
   int max_multipart;
   int num_entries;
   unsigned char *ptr;
-  char results_filename [1024];
+  char results_filename [3072];
   int status;
   char temp_string [1024];
 
@@ -499,7 +499,7 @@ int
   {
     // create results json files
 
-    sprintf(results_filename, "/opt/osdp-conformance/results/070-05-%02d-results.json", 1+entry->function_code);
+    sprintf(results_filename, "%s/results/070-05-%02d-results.json", ctx->service_root, 1+entry->function_code);
     capf = fopen(results_filename, "w");
     fprintf(capf, "{\"test\":\"070-05-%02d\",\"test-status\":\"1\",\"pdcap-function\":\"%d\",\"pdcap-compliance\":\"%d\",\"pdcap-number\":\"%d\"}\n",
       entry->function_code+1, entry->function_code, entry->compliance, entry->number_of);
@@ -909,7 +909,7 @@ int
 { /* action_osdp_RAW */
 
   int bits;
-  char cmd [2*1024];
+  char cmd [3072];
   OSDP_COMMAND command_for_later;
   char details [1024];
   int display;
@@ -1000,7 +1000,8 @@ int
       // run the action routine with the bytes,bit count,format
 
       sprintf(cmd,
-        "/opt/osdp-conformance/run/ACU-actions/osdp_RAW %s %d %d",
+        "%s/run/ACU-actions/osdp_RAW %s %d %d",
+        ctx->service_root,
         hstr, bits, *(msg->data_payload+1));
       system(cmd);
     }; // not encrypted

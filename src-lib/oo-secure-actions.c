@@ -150,7 +150,7 @@ int
 { /* action_osdp_CHLNG */
 
   OSDP_SC_CCRYPT ccrypt_response;
-  char cmd [1024];
+  char cmd [3072];
   int current_length;
   char details [1024];
   int nak;
@@ -258,7 +258,7 @@ int
       sprintf(details, "RND.A=%02x%02x%02x%02x%02x%02x%02x%02x",
          ctx->rnd_a [0], ctx->rnd_a [1], ctx->rnd_a [2], ctx->rnd_a [3], ctx->rnd_a [4], ctx->rnd_a [5], ctx->rnd_a [6], ctx->rnd_a [7]);
 
-      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_CHLNG"); system(cmd);
+      sprintf(cmd, "%s/run/ACU-actions/osdp_CHLNG", ctx->service_root); system(cmd);
 
       status = send_secure_message (ctx,
         OSDP_CCRYPT, p_card.addr, &current_length, 
