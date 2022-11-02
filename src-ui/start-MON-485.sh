@@ -15,6 +15,9 @@ set -x
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+rm -f /opt/osdp-conformance/etc/current_role
+echo "MON" >/opt/osdp-conformance/etc/current_role
+
 cd /opt/open-osdp/run/MON
 echo "Content-type: text/html"
 echo ""

@@ -17,6 +17,8 @@
 OSDPDIR=/opt/osdp-conformance
 sudo rm -f ${OSDPDIR}/tmp/current-role
 cd /opt/osdp-conformance/run/ACU
+rm -f /opt/osdp-conformance/etc/current_role
+echo "ACU" >/opt/osdp-conformance/etc/current_role
 sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-CP485
 sudo -n chmod 777 /opt/osdp-conformance/tmp

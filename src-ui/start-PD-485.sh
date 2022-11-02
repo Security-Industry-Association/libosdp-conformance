@@ -14,6 +14,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+rm -f /opt/osdp-conformance/etc/current_role
+echo "PD" >/opt/osdp-conformance/etc/current_role
+
 cd /opt/osdp-conformance/run/PD
 sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-PD485

@@ -861,6 +861,7 @@ if (ctx->verbosity > 3)
     case OSDP_CMDB_KEYPAD:
       {
         char keypad_message [1+1+9+1]; // built for 9 digits
+        int i;
 
         memset (&keypad_message, 0, sizeof (keypad_message));
         /*
@@ -869,6 +870,27 @@ if (ctx->verbosity > 3)
         keypad_message [0] = 0;
         strcpy (keypad_message+2, details); // made to be 9 or less by input mechanism
         keypad_message [1] = strlen (keypad_message+2);
+
+        // map the characters
+        for (i=0; i<keypad_message [1]; i++)
+        {
+          if ((keypad_message [2+i] >= '0') && (keypad_message [2+i] <= '9'))
+          {
+            if (ctx->verbosity > 3)
+              fprintf(ctx->log, "PD Sending keypad: char %d is 0x%02X\n", i, (unsigned int)(keypad_message [2+i]));
+          }
+          else
+          {
+            if (keypad_message [2+i] EQUALS '#') keypad_message [2+i] = 0x0d;
+            else
+              if (keypad_message [2+i] EQUALS '*') keypad_message [2+i] = 0x7f;
+              else
+                keypad_message [2+i] = 0x7f;
+
+            if (ctx->verbosity > 3)
+              fprintf(ctx->log, "PD Sending keypad: char %d mapped to 0x%02X\n", i, keypad_message [2+i]);
+          }
+        };
 
         pending_response_length = 2 + strlen(details);
         memcpy(pending_response_data, keypad_message, pending_response_length);
