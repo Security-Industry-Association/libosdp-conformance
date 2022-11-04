@@ -28,12 +28,13 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (30)
+#define OSDP_VERSION_MINOR (31)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
 #define OSDP_TRACE_FILE       "current.osdpcap"
+#define OSDP_STAT_FILE        "osdp-status.json"
 
 #define OSDP_OFFICIAL_MSG_MAX (1440)
 #define OSDP_MAX_OUT (16)

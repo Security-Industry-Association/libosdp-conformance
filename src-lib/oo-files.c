@@ -529,7 +529,7 @@ int
     strcpy (tag, "ACU");
   if (ctx->role EQUALS OSDP_ROLE_MONITOR)
     strcpy (tag, "MON");
-  sprintf (statfile, "osdp-status.json");
+  sprintf (statfile, OSDP_STAT_FILE);
   sf = fopen (statfile, "w");
   if (sf != NULL)
   {

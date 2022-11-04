@@ -161,6 +161,7 @@ int
 
 { /* initialize */
 
+  char command [1024];
   extern unsigned char *creds_buffer_a;
   extern int creds_buffer_a_lth;
   extern int creds_buffer_a_next;
@@ -185,6 +186,9 @@ int
     status = ST_LOG_OPEN_ERR;
   if (status EQUALS ST_OK)
   {
+    // clear out old status
+    sprintf(command, "rm -f %s", OSDP_STAT_FILE);
+
     mfg_rep_sequence = 0;
 
     // create the lock, exclusively, for just this user

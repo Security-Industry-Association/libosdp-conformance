@@ -94,12 +94,13 @@ int
 
 { /* initialize */
 
-//  char command [2*1024];
+  char command [3*1024];
 //  pid_t my_pid;
   int status;
 
 
   status = ST_OK;
+  sprintf (command, "rm -f %s", OSDP_LCL_UNIX_SOCKET); system(command); // kill socket for starters
   trace_in_buffer [0] = 0;
   trace_out_buffer [0] = 0;
   check_for_command = 0;

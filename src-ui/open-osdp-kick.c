@@ -31,12 +31,12 @@ char socket_path [1024];
 
 int main(int argc, char *argv[]) {
   struct sockaddr_un addr;
-  char buf[100];
   char c;
   int fd;
   char *p;
   int rc;
   char *tag;
+  char buf [100];
 
 
   tag = "CP";
