@@ -826,6 +826,8 @@ int
       {
         strcpy (ctx->text, json_string_value (value));
         cmd->command = OSDP_CMDB_TEXT;
+        status = enqueue_command(ctx, cmd);
+        cmd->command = OSDP_CMD_NOOP;
       };
     };
   };
