@@ -206,10 +206,13 @@ context=ctx;
       break;
 
     case OSDP_CMDB_CONFORM_2_11_3:
+
       // request ID but do it on the "all stations" PD address.
 
       {
         unsigned char param [1];
+
+fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead.\n");
 
         strcpy (context->test_in_progress, "2_11_3");
         param [0] = 0;
@@ -710,10 +713,13 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
       status = ST_OK;
       break;
 
+    // send osdp_ID
+    // if details_param_1 is 0x7F then use the config address else use the current configured address.
+
     case OSDP_CMDB_IDENT:
       {
-        unsigned char
-          param [1];
+        int dest_address;
+        unsigned char param [1];
 
         fprintf(ctx->log, "Identify requested\n");
 
@@ -726,8 +732,8 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         current_length = 0;
         if (osdp_awaiting_response(context))
         {
-          fprintf(stderr, "busy before OSDP_ID, skipping send\n");
-          fflush(stderr); fflush(context->log);
+          fprintf(context->log, "Transmitter busy before OSDP_ID, skipping send\n");
+          fflush(context->log);
           leftover_command = OSDP_ID;
           memcpy(leftover_data, param, sizeof(param));
           leftover_length = sizeof(param);
@@ -740,16 +746,19 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
             fprintf(context->log, "    osdp_ID, L=%u V=%02x CLEAR=%d\n",
               (unsigned)sizeof(param), param [0], details [0]);
           };
+          dest_address = p_card.addr;
+          if (details_param_1 EQUALS 0x7F)
+            dest_address = 0x7F;
           // if cleartext was requested just send it in the clear
           if (details [0] EQUALS 1)
           {
-            status = send_message_ex (context, OSDP_ID, p_card.addr,
+            status = send_message_ex (context, OSDP_ID, dest_address,
               &current_length, sizeof (param), param,
               OSDP_SEC_STAND_DOWN, 0, NULL);
           }
           else
           {
-            status = send_message_ex (context, OSDP_ID, p_card.addr,
+            status = send_message_ex (context, OSDP_ID, dest_address,
               &current_length, sizeof (param), param,
               OSDP_SEC_SCS_17, 0, NULL);
           };

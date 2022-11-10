@@ -205,9 +205,7 @@ int
   };
   if ((osdp_msg->security_block_length EQUALS 0) || (osdp_msg->payload_decrypted))
   {
-    sprintf (filename, 
-      "%s/run/CP/ident_from_PD%02x.json",
-      ctx->service_root, (0x7f&oh->addr));
+    sprintf (filename, "ident_from_PD%02x.json", (0x7f&oh->addr));
     identf = fopen (filename, "w");
   if (identf != NULL)
   {

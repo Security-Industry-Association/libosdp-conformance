@@ -261,7 +261,14 @@ int
       cmd->details [0] = 1;
     };
 
-    fprintf(ctx->log, "Command IDENT (%d) submitted.\n", cmd->details [0]);
+    cmd->details_param_1 = 0;
+    value = json_object_get (root, "config-address");
+    if (json_is_string (value))
+    {
+      cmd->details_param_1 = 0x7F;
+    };
+
+    fprintf(ctx->log, "Command IDENT %x (%d) submitted.\n", cmd->details_param_1, cmd->details [0]);
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;
     break;
