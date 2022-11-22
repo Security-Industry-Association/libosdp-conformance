@@ -749,8 +749,13 @@ int
   // command induce-NAK
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "induce-NAK")) {
-      cmd->command = OSDP_CMDB_INDUCE_NAK; }; };
+    if (0 EQUALS strcmp (current_command, "induce-NAK"))
+    {
+      cmd->command = OSDP_CMDB_INDUCE_NAK;
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+    };
+  };
 
   // command keep-active
   // argument is time in milliseconds "milliseconds".  default is 7000;
