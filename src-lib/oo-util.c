@@ -96,7 +96,10 @@ int
 
     this_command = msg->msg_cmd;
     if (context->next_nak)
+    {
       this_command = OSDP_BOGUS;
+      // next_nak is reset at the processing of command OSDP_BOGUS
+    };
     if (oh->addr EQUALS OSDP_CONFIGURATION_ADDRESS)
     {
       if ((this_command != OSDP_ID) && (this_command != OSDP_CAP) && (this_command != OSDP_COMSET))
@@ -417,6 +420,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           osdp_nak_response_data [0] = 0xff;
           osdp_nak_response_data [1] = 0xee;
           nak_length = 2;
+          context->next_nak = 0;
         };
 
         status = send_message (context,

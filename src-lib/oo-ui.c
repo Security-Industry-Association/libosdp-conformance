@@ -299,14 +299,26 @@ if (command EQUALS OSDP_CMDB_WITNESS)
       };
       break;
 
+    /*
+      Induce a NAK.  To test an ACU send a garbage command.  To test a PD, NAK the next
+      command that comes in the door.
+    */
     case OSDP_CMDB_INDUCE_NAK:
       {
         unsigned char nothing;
 
-        strcpy (context->test_in_progress, "4_2_1");
-        current_length = 0;
-        status = send_message (context,
-          OSDP_UNDEF, p_card.addr, &current_length, 0, &nothing);
+        if (context ->role EQUALS OSDP_ROLE_ACU)
+        {
+          strcpy (context->test_in_progress, "induce-NAK");
+          current_length = 0;
+          status = send_message (context,
+            OSDP_UNDEF, p_card.addr, &current_length, 0, &nothing);
+        }
+        else
+        {
+          ctx->next_nak = 1;
+          status = ST_OK;
+        };
       };
       break;
 
