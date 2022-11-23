@@ -3,7 +3,7 @@
 <TITLE>Test PD: check ACU</TITLE>
 </HEAD>
 <BODY>
-<H3>Exerciser: Test PD - Check ACU conformance (1.31 Build 1)</H3>
+<H3>Exerciser: Test PD - Check ACU conformance (1.31 Build 2)</H3>
 
 <P>
 Generate
@@ -263,65 +263,7 @@ Recent PD
   </TR>
 
 </TABLE>
-<TABLE>
-<CAPTION><B>Test Group 3 Commands [2]</B></CAPTION>
-<COL WIDTH="75"> <COL WIDTH="200">
-<COL WIDTH="75"> <COL WIDTH="200">
-<COL WIDTH="75"> <COL WIDTH="200">
-<COL WIDTH="75"> <COL WIDTH="200">
-<TR>
-<TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH>
-<TH>ID</TH> <TH>Description</TH> <TH>ID</TH> <TH>Description</TH>
-</TR>
-<TR>
-  <TD ALIGN="CENTER">3-1-2</TD>
-    <TD>
-    Raw response to poll [4]</SPAN>
-    </TD>
-  <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=PD-reset_power">
-    3-1-3</A></TD>
-    <TD>
-    Lstatr response to poll
-    </TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-1-4</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    tbd Poll response 4</SPAN></TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-4-1</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Diagnostic Function</SPAN>
-    </TD>
-  <TD ALIGN="center">
-    3-5-1</TD>
-    <TD>
-    Local Status Request [4]</TD>
-</TR>
-<TR>
-  <TD ALIGN="center">
-    3-6-1</TD>
-    <TD>Request Input Status [4]
-    </TD>
-  <TD ALIGN="CENTER">
-    3-7-1</TD>
-    <TD>Request Output Status [4]
-    </TD>
-  <TD ALIGN="CENTER"><SPAN STYLE="background-color: #C0C0C0">3-7-2</SPAN></TD>
-    <TD><SPAN STYLE="background-color: #C0C0C0">
-    Output Status Ack-only</SPAN>
-    </TD>
-  <TD ALIGN="CENTER">
-    3-8-1</TD>
-    <TD>Req Aux Rdr Stat [4]
-    </TD>
-</TR>
-<TR>
-  <TD ALIGN="CENTER">
-    3-9-1</TD>
-    <TD>Output test [4]
-    </TD>
-</TR>
-</TABLE>
+
 <TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
     <COL WIDTH="75"> <COL WIDTH="75"> <COL WIDTH="230">
@@ -335,50 +277,7 @@ Recent PD
     <TD ALIGN="CENTER">070-03-01</TD>
     <TD ALIGN="CENTER">
       <A HREF="/cgi-bin/send-osdp-command?cmd=PD-induce-NAK"><EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER">Rsp: NAK</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-05-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Inputs</TD>
-
-    <TD ALIGN="CENTER">070-05-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Outputs</TD>
-
-    <TD ALIGN="CENTER">070-05-05</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: LED</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-05-06</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Audible</TD>
-
-    <TD ALIGN="CENTER">070-05-07</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Text</TD>
-
-    <TD ALIGN="CENTER">070-05-10</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Secure Channel</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-05-11</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Rcv Buf</TD>
-
-    <TD ALIGN="CENTER">070-05-13</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Smartcard</TD>
-    <TD ALIGN="CENTER">070-05-14</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>PDCAP: Num Rdrs</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-06-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rsp: osdp_LSTATR</TD>
+    <TD>Rsp: NAK</TD>
 
     <TD ALIGN="CENTER">070-06-02</TD>
       <TD ALIGN="CENTER">
@@ -396,31 +295,12 @@ Recent PD
     <TD ALIGN="CENTER">070-10-01</TD>
     <TD ALIGN="CENTER">
       <A HREF="/cgi-bin/send-osdp-command?cmd=PD-present-card"> <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER">Rsp: RAW</TD>
+    <TD>Rsp: RAW</TD>
 
     <TD ALIGN="CENTER">070-12-01</TD>
     <TD ALIGN="CENTER">
       <A HREF="/cgi-bin/do-keypad?1234"> <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER">Rsp: KEYPAD</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-14-01</TD>
-      <TD ALIGN="CENTER">t.b.d.</TD>
-    <TD>Rsp: osdp_BIOREADR</TD>
-
-    <TD ALIGN="CENTER">070-15-01</TD>
-      <TD ALIGN="CENTER">t.b.d.</TD>
-    <TD>Rsp: osdp_BIOMATCHR</TD>
-  </TR>
-
-  <TR>
-    <TD ALIGN="CENTER">070-16-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rsp: osdp_CCRYPT</TD>
-
-    <TD ALIGN="CENTER">070-17-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rsp: osdp_RMAC_I</TD>
+    <TD>Rsp: KEYPAD</TD>
 
     <TD ALIGN="CENTER">070-19-01</TD>
       <TD ALIGN="CENTER">
