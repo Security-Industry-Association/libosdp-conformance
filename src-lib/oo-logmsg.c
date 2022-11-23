@@ -149,7 +149,7 @@ int
   int scb_present;
   char *score_text;
   char *sec_block;
-  char tlogmsg [3*1024];
+  char tlogmsg [30000];
   char tmps [1024];
   char tmpstr [2*1024];
   char tmpstr2 [3*1024];

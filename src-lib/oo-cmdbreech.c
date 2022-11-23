@@ -715,6 +715,18 @@ int
     };
   };
 
+  // command conform_050_06_02 (large msg pd to acu)
+
+  if (status EQUALS ST_OK)
+  {
+    if (0 EQUALS strcmp (current_command, "conform_050_06_02"))
+    {
+      cmd->command = OSDP_CMDB_CONFORM_050_06_02;
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMDB_NOOP;
+    };
+  };
+
   // command conform_5_9_16 - corrupt CRC in (command or) response
 
   if (status EQUALS ST_OK)

@@ -120,6 +120,17 @@ context=ctx;
       status = ST_OK;
       break;
 
+    case OSDP_CMDB_CONFORM_050_06_02:
+      {
+        unsigned char value [2048];
+
+        memset (value, 0, sizeof(value));
+        current_length = 0;
+        status = send_message_ex(context, OSDP_ISTATR, p_card.addr, &current_length, 1300, value,
+          OSDP_SEC_SCS_17, 0, NULL);
+      };
+      break;
+
     case OSDP_CMDB_CONFORM_060_24_02:
       status = ST_OK;
       strcpy (context->test_in_progress, "060-24-02"); // genauth-after-raw

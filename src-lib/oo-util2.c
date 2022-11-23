@@ -509,7 +509,7 @@ int
 
   unsigned char buf [2];  // note use for spacer so not always 1 byte
   int status;
-  unsigned char test_blk [1024];
+  unsigned char test_blk [1600];
   int true_dest;
 
 

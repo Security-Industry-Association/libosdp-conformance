@@ -216,6 +216,7 @@
 #define OSDP_CMDB_RESET_STATS       (1052)
 #define OSDP_CMDB_CONFORM_070_17_01 (1053) // next rmac-i fails...
 #define OSDP_CMDB_ONDEMAND_LSTATR   (1054)
+#define OSDP_CMDB_CONFORM_050_06_02 (1055)
 
 #define OSDP_CMD_NOOP         (0)
 

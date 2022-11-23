@@ -742,7 +742,7 @@ int
 { /* monitor_osdp_message */
 
   int status;
-  char tlogmsg [1024];
+  char tlogmsg [30000];
   int unknown;
 
 
