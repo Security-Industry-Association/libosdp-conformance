@@ -327,7 +327,25 @@ if (command EQUALS OSDP_CMDB_WITNESS)
         }
         else
         {
-          ctx->next_nak = 1;
+          // we're the PD.  nak the next command.
+          // 0x030000 for default; 0x010000 for reason specified; 0x020000 for reason+detail specified
+
+          // third byte is 0x03 if using defaults
+          // third byte is 0x01 if using just a reason
+          // third byte is 0x02 if using reason and detail
+
+          ctx->next_nak = 0x030000;
+          if (details [2] EQUALS 1)
+            ctx->next_nak = 0x010000 | details [0];
+          if (details [2] EQUALS 2)
+          {
+            int octet;
+
+            octet = details [1];
+            octet = octet * 256;
+            ctx->next_nak = 0x020000 | details [0];
+            ctx->next_nak = ctx->next_nak | octet;
+          };
           status = ST_OK;
         };
       };

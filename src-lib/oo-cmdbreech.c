@@ -759,10 +759,32 @@ int
       cmd->command = OSDP_CMDB_CONFORM_3_20_1; }; };
 
   // command induce-NAK
+  // if using defaults details[2] is 0
+  // if using just a reason details[2] is a 1
+  // if using a reason and detail details[2] is a 2
 
   if (status EQUALS ST_OK) {
     if (0 EQUALS strcmp (current_command, "induce-NAK"))
     {
+      int i;
+      json_t *value;
+
+      // if there's a reason use it.  encoded in second byte, first byte is 1 to indicate there's a reason
+
+      value = json_object_get (root, "reason");
+      if (json_is_string (value))
+      {
+        sscanf(json_string_value(value), "%d", &i);
+        cmd->details [0] = (0xff & i);
+        cmd->details [2] = 1;
+      };
+      value = json_object_get (root, "detail");
+      if (json_is_string (value))
+      {
+        sscanf(json_string_value(value), "%d", &i);
+        cmd->details [1] = (0xff & i);
+        cmd->details [2] = 2;
+      };
       cmd->command = OSDP_CMDB_INDUCE_NAK;
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;

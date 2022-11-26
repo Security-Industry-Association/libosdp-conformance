@@ -408,8 +408,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         int nak_length;
         unsigned char osdp_nak_response_data [2];
 
-        nak_length = 1;
         current_length = 0;
+
         osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
         osdp_nak_response_data [1] = 0xff;
         nak_length = 2;
@@ -417,9 +417,28 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         // if it was an induced NAK then call it error code 0xff and detail 0xee
         if (context->next_nak)
         {
-          osdp_nak_response_data [0] = 0xff;
-          osdp_nak_response_data [1] = 0xee;
-          nak_length = 2;
+          if (0x30000 EQUALS (0xFF0000 & context->next_nak))
+          {
+            // default NAK response
+
+            osdp_nak_response_data [0] = 0xff;
+            osdp_nak_response_data [1] = 0xee;
+            nak_length = 2;
+          };
+          if (0x10000 EQUALS (0xFF0000 & context->next_nak))
+          {
+            // reason specified
+            osdp_nak_response_data [0] = 0xff & context->next_nak;
+            nak_length = 1;
+          };
+          if (0x20000 EQUALS (0xFF0000 & context->next_nak))
+          {
+            // reason and detail specified
+            osdp_nak_response_data [0] = 0xff & context->next_nak;
+            osdp_nak_response_data [1] = (0xff00 & context->next_nak) >> 8;
+            nak_length = 2;
+          };
+
           context->next_nak = 0;
         };
 
@@ -429,7 +448,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
-          fprintf (stderr, "CMD %02x Unknown\n", msg->msg_cmd);
+          fprintf(context->log, "CMD %02x declared invalid or unknown\n", msg->msg_cmd);
         };
       };
       break;
