@@ -623,6 +623,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         };
       };
       osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+      if (nak_code EQUALS 3) 
+        osdp_test_set_status(OOC_SYMBOL_resp_nak_3, OCONFORM_EXERCISED);
+      if (nak_code EQUALS 5) 
+        osdp_test_set_status(OOC_SYMBOL_resp_nak_5, OCONFORM_EXERCISED);
 
       // collateral effects of a NAK...
 
