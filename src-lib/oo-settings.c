@@ -146,7 +146,6 @@ int
     };
   };
 
-
   // parameter "capability-sounder"
   // value is 0 for none, 1 for on/off.  2 (timed) is not supported.
 
