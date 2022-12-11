@@ -325,7 +325,7 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
           if ((context->next_sequence > 1) ||
             ((context->next_sequence EQUALS 1) && (context->last_sequence_received > 0)))
           {
-            fprintf(context->log, "Sequence restarted.  Resettinng ACU to sequence 0.\n");
+            fprintf(context->log, "Sequence restarted.  Reseting ACU to sequence 0.\n");
             context->next_sequence = 0;
             if (context->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
             {
