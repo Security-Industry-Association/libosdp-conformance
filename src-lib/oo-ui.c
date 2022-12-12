@@ -1037,15 +1037,16 @@ if (ctx->verbosity > 3)
 
     case OSDP_CMDB_OUT:
       {
-        OSDP_OUT_MSG
-          osdp_out_msg [16];
-        int
-          out_lth;
+        OSDP_OUT_MSG osdp_out_msg [16];
+        int out_lth;
 
         current_length = 0;
         if (context->verbosity > 3)
           fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
             current_output_command [0].output_number);
+// details_param_1 is number of items
+// for i 0 to details_param_1 copy 3 bytes into output number, control_code, timer_msb, timer_lsb
+// out_lth is details_param_1 times sizeof(OSDP_OUT_MSG);
         osdp_out_msg [0].output_number =
           current_output_command [0].output_number;
         osdp_out_msg [0].control_code = current_output_command [0].control_code;

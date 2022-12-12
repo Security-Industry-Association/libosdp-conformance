@@ -40,8 +40,8 @@ clean:
 
 ${OUTLIB}:	\
 	oo-actions.o oo-api.o \
-	oo-bio.o oo-callout.o oo-capabilities.o oo-conformance.o oo-crc.o \
-	  oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
+	oo-bio.o oo-callout.o oo-capabilities.o oo-commands2.o oo-conformance.o oo-crc.o \
+	oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
 	oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o oo-parse.o \
 	  oo-printmsg.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
@@ -50,7 +50,7 @@ ${OUTLIB}:	\
 	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
 	ar r ${OUTLIB} \
 	  oo-actions.o oo-api.o oo-bio.o oo-capabilities.o oo-callout.o \
-	  oo-cmdbreech.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
+	  oo-cmdbreech.o oo-commands2.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
 	  oo-parse.o oo-printmsg.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oo-crc.o oo-files.o \
@@ -71,6 +71,9 @@ oo-callout.o:	oo-callout.c ../include/open-osdp.h
 
 oo-cmdbreech.o:	oo-cmdbreech.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-cmdbreech.c
+
+oo-commands2.o:	oo-commands2.c ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-commands2.c
 
 oo-initialize.o:	oo-initialize.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-initialize.c
