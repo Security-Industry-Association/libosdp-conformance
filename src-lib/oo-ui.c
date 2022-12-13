@@ -565,17 +565,23 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
           // wimp out and restrict transfer, got my math wrong somewhere...
           if (size_to_read > 1000)
           {
-            fprintf(context->log, "Limiting filetransfer read size to %d (was %d)\n", 1400, size_to_read);
+            fprintf(context->log, "Limiting filetransfer read size to %d (was %d)\n", 1000, size_to_read);
             size_to_read = 1000;
           };
 
-          // adjust for header, crc
+          // adjust for header, crc, secure channel
+
           size_to_read = size_to_read - 6 - 2;
-          // if it's checsum use -1 not -2.  if it's secure, add in 4 bytes of mac and 2 for the SCS header
+
+// if it's checksum use -1 not -2.
+
+          if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+            size_to_read = size_to_read - 2 - 4; //scs header, mac
 
           size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
-fprintf(stderr, "Reading %d. from file to start.\n", size_to_read);
-memset(&(file_transfer->FtData), 0, size_to_read);
+          if (ctx->verbosity > 3)
+            fprintf(ctx->log, "Reading %d. from file to start.\n", size_to_read);
+          memset(&(file_transfer->FtData), 0, size_to_read);
           status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, context->xferctx.xferf);
 
           // if what's left is less than allowed size, adjust
@@ -1036,23 +1042,37 @@ if (ctx->verbosity > 3)
 
     case OSDP_CMDB_OUT:
       {
+        int i;
         OSDP_OUT_MSG osdp_out_msg [16];
         int out_lth;
 
+        out_lth = 0;
         current_length = 0;
         if (context->verbosity > 3)
-          fprintf(stderr, "DEBUG: at OSDP_CMDB_OUT: output number is %d.\n",
+          fprintf(context->log, "OUT command: %d first output number %d.\n", details_param_1,
             current_output_command [0].output_number);
+        if (details_param_1 > 0)
+        {
+          for (i=0; i<details_param_1; i++)
+          {
+            osdp_out_msg [i].output_number = details [0+4*i];
+            osdp_out_msg [i].control_code = details [1+4*i];
+            osdp_out_msg [i].timer_lsb = details [2+4*i];
+            osdp_out_msg [i].timer_msb = details [3+4*i];
+            out_lth = out_lth + sizeof (osdp_out_msg [0]);
+          };
+        };
 // details_param_1 is number of items
 // for i 0 to details_param_1 copy 3 bytes into output number, control_code, timer_msb, timer_lsb
 // out_lth is details_param_1 times sizeof(OSDP_OUT_MSG);
-        osdp_out_msg [0].output_number =
-          current_output_command [0].output_number;
-        osdp_out_msg [0].control_code = current_output_command [0].control_code;
-        osdp_out_msg [0].timer_lsb = current_output_command [0].timer & 0xff;
-        osdp_out_msg [0].timer_msb =
-          (current_output_command [0].timer > 8) & 0xff;
-        out_lth = sizeof (osdp_out_msg [0]);
+        if (details_param_1 EQUALS 0)
+        {
+          osdp_out_msg [0].output_number = current_output_command [0].output_number;
+          osdp_out_msg [0].control_code = current_output_command [0].control_code;
+          osdp_out_msg [0].timer_lsb = current_output_command [0].timer & 0xff;
+          osdp_out_msg [0].timer_msb = (current_output_command [0].timer > 8) & 0xff;
+          out_lth = sizeof (osdp_out_msg [0]);
+        };
         status = send_message_ex (context,
           OSDP_OUT, p_card.addr, &current_length,
           out_lth, (unsigned char *)osdp_out_msg, OSDP_SEC_SCS_17, 0, NULL);

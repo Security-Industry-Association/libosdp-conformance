@@ -1248,11 +1248,12 @@ int
 
   if (status EQUALS ST_OK)
   {
-    int
-      i;
-    char
-      vstr [1024];
+    int i;
+    int uses_list;
+    char vstr [1024];
 
+
+    uses_list = 0;
     test_command = "output";
     if (0 EQUALS strcmp (current_command, test_command))
     {
@@ -1261,6 +1262,15 @@ int
         fprintf (stderr, "command was %s\n",
           this_command);
 
+      status = oo_command_setup_out(ctx, root, cmd);
+      if (status != ST_OK)
+      {
+        if (ctx->verbosity > 3)
+          fprintf(ctx->log, "Using single instance OUT command.\n");
+        status = ST_OK;
+      };
+      if (!uses_list)
+      {
       // default values in case some are missing
 
       current_output_command [0].output_number = 0;
@@ -1289,6 +1299,7 @@ int
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         current_output_command [0].timer = i;
+      };
       };
 
       status = enqueue_command(ctx, cmd);

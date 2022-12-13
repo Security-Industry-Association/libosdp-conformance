@@ -56,6 +56,7 @@ int
   int current_length;
   int done;
   OSDP_OUT_MSG *outmsg;
+  int remaining_payload;
   int status;
   int to_send;
 
@@ -75,19 +76,14 @@ int
   done = 0;
   if (status != ST_OK)
     done = 1;
+  outmsg = (OSDP_OUT_MSG *)(msg->data_payload);
+  remaining_payload = msg->data_length;
   while (!done)
   {
     /*
       ACTION SCRIPT ARGS: 1=output line in HEX 2=1(on)/0(off)
     */
-
-
-
-    outmsg = (OSDP_OUT_MSG *)(msg->data_payload);
-    sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x",
-      outmsg->output_number, outmsg->control_code,
-      outmsg->timer_lsb, outmsg->timer_msb);
-    fprintf (ctx->log, "%s\n", tlogmsg);
+//    sprintf (tlogmsg, "  Out: Line %02x Ctl %02x LSB %02x MSB %02x", outmsg->output_number, outmsg->control_code, outmsg->timer_lsb, outmsg->timer_msb); fprintf (ctx->log, "%s\n", tlogmsg);
     if ((outmsg->output_number < 0) ||
       (outmsg->output_number > (OSDP_MAX_OUT-1)))
       status = ST_OUT_TOO_MANY;
@@ -117,7 +113,10 @@ int
     else
       done = 1;
 
-done = 1; // just first one for now.
+    outmsg++;
+    remaining_payload = remaining_payload - sizeof(*outmsg);
+    if (remaining_payload < 1)
+      done = 1;
   };
 
   // return osdp_OSTATR with now-current output state

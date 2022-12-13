@@ -451,7 +451,10 @@ fprintf(stderr, "DEBUG: size to read %d.\n", ctx->xferctx.current_send_length);
 
     // adjust for header, crc
     size_to_read = size_to_read - 6 - 2;
-    // if it's checksum use -1 not -2.  if it's secure, add in 4 bytes of mac and 2 for the SCS header
+// if it's checksum use -1 not -2.
+
+    if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+      size_to_read = size_to_read - 2 - 4; //scs header, mac
 
     size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
     status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,
