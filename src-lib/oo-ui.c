@@ -495,7 +495,6 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         int transfer_send_size;
         static unsigned char xfer_buffer [OSDP_BUF_MAX];
 
-
         status = ST_OK;
 
         // find and open file

@@ -1026,6 +1026,12 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_BAD_INPUT_COUNT          ( 93)
 #define ST_OSDP_TOO_MANY_CAPAS           ( 94)
 #define ST_OSDP_UNKNOWN_BIO_ACTION       ( 95)
+#define ST_OSDP_CMD_OUT_BAD_1            ( 96)
+#define ST_OSDP_CMD_OUT_BAD_2            ( 97)
+#define ST_OSDP_CMD_OUT_BAD_3            ( 98)
+#define ST_OSDP_CMD_OUT_BAD_4            ( 99)
+#define ST_OSDP_CMD_OUT_BAD_5            (100)
+#define ST_OSDP_CMD_OUT_BAD_6            (101)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
