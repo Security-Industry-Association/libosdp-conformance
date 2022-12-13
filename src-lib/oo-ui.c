@@ -1132,16 +1132,17 @@ if (ctx->verbosity > 3)
 
     case OSDP_CMDB_TEXT:
       {
-        OSDP_TEXT_HEADER
-          otxt;
+        OSDP_TEXT_HEADER otxt;
 
-        otxt.reader = 0;
-        otxt.tc = 2;
-        otxt.tsec = 0;
-        otxt.row = 1;
-        otxt.col = 1;
-        otxt.length = strlen (context->text);
-        memcpy (otxt.text, context->text, 1024);
+        // "command":"text","reader":"0","text-command":"2","row":1","column":1","text":"this is a test"
+        memset(&otxt, 0, sizeof(otxt));
+        otxt.reader = details [0];
+        otxt.tc = details [1];
+        otxt.tsec = details [2];;
+        otxt.row = details [3];
+        otxt.col = details [4];
+        otxt.length = strlen(&(details [5]));
+        strcpy(otxt.text, &(details [5]));
         current_length = 0;
         status = send_message_ex(context, OSDP_TEXT, p_card.addr,
           &current_length, 

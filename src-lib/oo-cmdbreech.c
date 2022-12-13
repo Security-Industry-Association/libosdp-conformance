@@ -857,22 +857,67 @@ int
   };
 
   // command text
+  // "command":"text","reader":"0","text-command":"2","row":1","column":1","text":"this is a test"
+
+  // details are:  reader, text cmd, temp-time, row, column.  length is inferred from null-terminated string 
+  // starting at offset 5
 
   if (status EQUALS ST_OK)
   {
     if (0 EQUALS strcmp (current_command, "text"))
     {
-      char
-        field [1024];
-      json_t
-        *value;
+      char field [1024];
+      json_t *value;
+
+      memset(cmd->details, 0, sizeof(cmd->details));
+      cmd->details [0] = 0; // default reader zero
+      cmd->details [1] = 2; // default text command is "permanent on"
+      cmd->details [2] = 0; // default temp time is 0 (not used)
+      cmd->details [3] = 1; // default starting row is 1
+      cmd->details [4] = 1; // default starting column is 1
+      cmd->details [5] = '?'; // so there's SOME text there.
+
+      value = json_object_get (root, "reader");
+      if (json_is_string (value))
+      {
+        sscanf(json_string_value(value), "%d", &i);
+        cmd->details [0] = i;
+      };
+      value = json_object_get (root, "text-command");
+      if (json_is_string (value))
+      {
+        sscanf(json_string_value(value), "%d", &i);
+        cmd->details [1] = i;
+      };
+      value = json_object_get (root, "temp-time");
+      if (json_is_string (value))
+      {
+        sscanf(json_string_value(value), "%d", &i);
+        cmd->details [2] = i;
+      };
+      value = json_object_get (root, "row");
+      if (json_is_string (value))
+      {
+        sscanf(json_string_value(value), "%d", &i);
+        cmd->details [3] = i;
+      };
+      value = json_object_get (root, "column");
+      if (json_is_string (value))
+      {
+        sscanf(json_string_value(value), "%d", &i);
+        cmd->details [4] = i;
+      };
       strcpy (field, "message");
       value = json_object_get (root, field);
       if (json_is_string (value))
       {
         strcpy (ctx->text, json_string_value (value));
-        cmd->command = OSDP_CMDB_TEXT;
+        memcpy(cmd->details+5, ctx->text, strlen(ctx->text));
       };
+
+      cmd->command = OSDP_CMDB_TEXT;
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   };
 
@@ -1263,6 +1308,8 @@ int
           this_command);
 
       status = oo_command_setup_out(ctx, root, cmd);
+      if (status EQUALS ST_OK)
+        uses_list = 1;
       if (status != ST_OK)
       {
         if (ctx->verbosity > 3)
