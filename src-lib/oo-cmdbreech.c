@@ -1079,8 +1079,9 @@ int
     {
       cmd->command = OSDP_CMDB_ISTAT;
       if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
+        fprintf(ctx->log, "input_status command enqueued.\n");
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 
