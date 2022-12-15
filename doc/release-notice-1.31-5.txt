@@ -1,3 +1,8 @@
+changes in 1.31-5
+input_status command properly queued (so it is not sometimes dropped.)
+tune file transfer size calc to accomodate secure channel.
+added new "outputs" option to output command (supports up to 16 outputs.)
+
 changes in 1.27-4
 clarified some confusion in command injection shell infrastructure around ACU vs. CP naming.
 fix conflation of max message size PD can receive vs. max message size PD can
