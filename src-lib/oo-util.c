@@ -784,8 +784,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       if (context->last_command_sent EQUALS OSDP_OSTAT)
         osdp_test_set_status(OOC_SYMBOL_cmd_ostat, OCONFORM_EXERCISED);
 
-      status = oosdp_make_message (OOSDP_MSG_OUT_STATUS, tlogmsg, msg);
-      fprintf (context->log, "%s\n", tlogmsg);
       break;
 
     case OSDP_PDCAP:
