@@ -311,8 +311,10 @@ int
             if (led_ctl->perm_control EQUALS OSDP_LED_SET)
             {
               context->led [led_ctl->led].state = OSDP_LED_ACTIVATED;
-              context->led [led_ctl->led].web_color =
-                web_color_lookup [led_ctl->perm_on_color];
+              if (led_ctl->perm_on_time > 0)
+                context->led [led_ctl->led].web_color = web_color_lookup [led_ctl->perm_on_color];
+              else
+                context->led [led_ctl->led].web_color = web_color_lookup [led_ctl->perm_off_color];
 
               // for conformance tests 3-10-1/3-10-2 we specifically look for LED 0 Color 1 (Red) or Color 2 (Green)
 
