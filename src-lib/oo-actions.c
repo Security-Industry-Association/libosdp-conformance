@@ -292,7 +292,6 @@ int
   ftstat_message = (OSDP_HDR_FTSTAT *)(msg->data_payload);
 
   status = osdp_ftstat_validate(ctx, ftstat_message);
-  (void)oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
   if (status EQUALS ST_OSDP_FILEXFER_FINISHING)
   {
