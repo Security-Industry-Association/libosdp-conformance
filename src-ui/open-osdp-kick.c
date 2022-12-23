@@ -68,8 +68,8 @@ int main(int argc, char *argv[]) {
   addr.sun_family = AF_UNIX;
   strncpy(addr.sun_path, socket_path, sizeof(addr.sun_path)-1);
 
-  if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1) {
-    perror("connect error");
+  if (connect(fd, (struct sockaddr*)&addr, sizeof(addr)) == -1)
+  {
     exit(-1);
   }
 
