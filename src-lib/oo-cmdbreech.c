@@ -299,6 +299,43 @@ int
     };
     break;
 
+  // command MFG.  Arguments are OUI, command-id, command-specific-data.
+  // c-s-d is is 2-hexit bytes, length inferred.
+
+  case OSDP_CMDB_MFGREP:
+    {
+      int found_oui;
+
+      found_oui = 0;
+      mfg_args = (OSDP_MFG_ARGS *)(cmd->details);
+      memset(mfg_args, 0, sizeof (*mfg_args));
+      parameter = json_object_get(root, "response-id");
+      if (json_is_string(parameter))
+      {
+        int i;
+        sscanf(json_string_value(parameter), "%x", &i);
+        mfg_args->command_ID = i;
+      };
+      parameter = json_object_get(root, "response-specific-data");
+      if (json_is_string(parameter))
+      {
+        strcpy(mfg_args->c_s_d, json_string_value(parameter));
+      };
+      parameter = json_object_get(root, "oui");
+      if (json_is_string(parameter))
+      {
+        found_oui = 1;
+        strcpy(mfg_args->oui, json_string_value(parameter));
+      };
+      if (!found_oui)
+      {
+        sprintf(mfg_args->oui, "%02x%02x%02x", ctx->vendor_code [0], ctx->vendor_code [1], ctx->vendor_code [2]);
+      };
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+    };
+    break;
+
   case OSDP_CMDB_NOOP:
     status = ST_OK;
     // command parser no-op so OK command no-op
@@ -816,7 +853,6 @@ int
       cmd->command = OSDP_CMD_NOOP;
     };
   };
-
 
   // command MFG.  Arguments are OUI, command-id, command-specific-data.
   // c-s-d is is 2-hexit bytes, length inferred.

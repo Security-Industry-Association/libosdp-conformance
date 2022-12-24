@@ -443,6 +443,67 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       };
       break;
 
+    case OSDP_CMDB_MFGREP:
+    {
+      unsigned char data [1024];
+      int i;
+      int idx;
+      OSDP_MFG_ARGS *oargs;
+      OSDP_MFG_COMMAND *omfg;
+      int out_idx;
+      int send_length;
+      char tmps [3];
+
+      oargs = (OSDP_MFG_ARGS *)details;
+      omfg = (OSDP_MFG_COMMAND *)data;
+      tmps[2] = 0;
+      memcpy(tmps, oargs->oui+0, 2);
+      sscanf(tmps, "%x", &i);
+      omfg->vendor_code [0] = i;
+      memcpy(tmps, oargs->oui+2, 2);
+      sscanf(tmps, "%x", &i);
+      omfg->vendor_code [1] = i;
+      memcpy(tmps, oargs->oui+4, 2);
+      sscanf(tmps, "%x", &i);
+      omfg->vendor_code [2] = i;
+      omfg->mfg_command_id = oargs->command_ID;
+      send_length = sizeof(OSDP_MFG_COMMAND) - 1;
+      out_idx = 0;
+      for (idx=0; idx<strlen(oargs->c_s_d); idx=idx+2)
+      {
+        tmps[2] = 0;
+        memcpy(tmps, (idx)+(oargs->c_s_d), 2);
+        sscanf(tmps, "%x", &i);
+        *(&(omfg->data)+out_idx) = i;
+        if (context->verbosity > 3)
+          fprintf(stderr, "mfg data %d. s %s hex value 0x%x\n",
+            out_idx, tmps, i);
+        out_idx ++;
+        send_length ++;
+      };
+
+      if (osdp_awaiting_response(context))
+      {
+        fprintf(stderr, "busy before OSDP_MFGREP, skipping send\n");
+        fflush(stderr); fflush(context->log);
+fprintf(stderr, "490 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
+  OSDP_MFG, data [0], data [1], data [2], send_length);
+
+        leftover_command = OSDP_MFG;
+        memcpy(leftover_data, data, send_length);
+        leftover_length = send_length;
+        context->left_to_send = leftover_length;
+      }
+      else
+      {
+        current_length = 0;
+        status = send_message_ex(context, OSDP_MFGREP, p_card.addr, &current_length, send_length, data,
+        OSDP_SEC_SCS_17, 0, NULL);
+      };
+      status = ST_OK;
+    };
+    break;
+
     case OSDP_CMDB_ONDEMAND_LSTATR:
       context->next_response = OSDP_LSTATR;
       if (context->verbosity > 2)
