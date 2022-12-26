@@ -477,13 +477,13 @@ int
     cmd->command = OSDP_CMDB_SEND_EXPLICIT;
     {
       int i;
-      char raw_bytes [1024];
+      char raw_bytes [8192];
 
       cmd->details_length = 0; // until we know there's something there
       parameter = json_object_get(root, "data");
       if (json_is_string(parameter))
       {
-        if (strlen(json_string_value(parameter)) <= 128)
+        if (strlen(json_string_value(parameter)) <= sizeof(raw_bytes))
         {
           strcpy(raw_bytes, json_string_value(parameter));
           cmd->details_length = strlen(raw_bytes)/2;

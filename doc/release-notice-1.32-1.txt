@@ -1,4 +1,6 @@
 changes in 1.32-1
+updated send-explicit to work with max size commands
+
 added mfg-response directive to allow PD to send a response.
 
 changes in 1.31-5

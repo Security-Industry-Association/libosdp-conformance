@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
   char *p;
   int rc;
   char *tag;
-  char buf [100];
+  char buf [16384];
 
 
   tag = "CP";
