@@ -527,6 +527,7 @@ fprintf(stderr, "490 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       break;
 
     case OSDP_CMDB_SEND_EXPLICIT:
+      osdp_trace_dump(context, 0);
       if (details_param_1 > 0)
       {
         current_length = 0;
@@ -536,9 +537,23 @@ fprintf(stderr, "490 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       }
       else
       {
-        // really raw
+        if (ctx->last_was_processed)
+        {
+          // really raw
 
-        status = send_osdp_data (ctx, (unsigned char *)details, details_length);
+          ctx->last_was_processed = 0;
+          status = send_osdp_data (ctx, (unsigned char *)details, details_length);
+        }
+        else
+        {
+          OSDP_COMMAND repeated_command;
+          memset(&repeated_command, 0, sizeof(repeated_command));
+          repeated_command.command = OSDP_CMDB_SEND_EXPLICIT;
+          repeated_command.details_param_1 = details_param_1;
+          repeated_command.details_length = details_length;
+          memcpy(repeated_command.details, details, details_length);
+          status = enqueue_command(ctx, &repeated_command);
+        };
       };
       break;
 
