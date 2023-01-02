@@ -112,7 +112,16 @@ int
     context->pdus_received ++;
 //TODO pdus_received v.s packets_received
 
-    (void)monitor_osdp_message (context, msg);
+    // if it's for me or it's a broadcast command then trace it
+
+    if (!(0x80 & oh->addr)) // it's a command
+    {
+      if ((oh->addr EQUALS p_card.addr)  || // it's for me
+        (oh->addr EQUALS OSDP_CONFIGURATION_ADDRESS)) // it's a configuration command
+      {
+        (void)monitor_osdp_message (context, msg);
+      }
+    };
 
     switch (this_command)
     {
