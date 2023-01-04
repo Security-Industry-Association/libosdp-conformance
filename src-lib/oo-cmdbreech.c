@@ -254,6 +254,10 @@ int
     system(command);
     break;
 
+  // command identify cleartext=1
+  // cleartext sets details 0
+  // new-sequence send on sequence zero sets details 1
+
   case OSDP_CMDB_IDENT:
     value = json_object_get (root, "cleartext");
     if (json_is_string (value))
@@ -267,6 +271,14 @@ int
     {
       cmd->details_param_1 = 0x7F;
     };
+
+    value = json_object_get (root, "new-sequence");
+    if (json_is_string (value))
+    {
+      cmd->details [1] = 1;
+    };
+
+
 
     fprintf(ctx->log, "Command IDENT %x (%d) submitted.\n", cmd->details_param_1, cmd->details [0]);
     status = enqueue_command(ctx, cmd);

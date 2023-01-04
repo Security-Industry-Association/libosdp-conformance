@@ -278,6 +278,15 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       };
     };
 
+    if (role EQUALS OSDP_ROLE_MONITOR)
+      display = 0;
+    if (display)
+    {
+      if (p->addr != p_card.addr)
+        display = 0;
+      if (p->addr EQUALS OSDP_CONFIGURATION_ADDRESS)
+        display = 1;
+    };
     if (display)
     {
       char dirtag [1024];

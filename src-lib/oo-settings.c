@@ -85,7 +85,7 @@ int
   }; 
 
   // parameter "address"
-  // this is the PD address.
+  // this is the PD address in DECIMAL.
 
   if (status EQUALS ST_OK)
   {

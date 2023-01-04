@@ -871,6 +871,11 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
           dest_address = p_card.addr;
           if (details_param_1 EQUALS 0x7F)
             dest_address = 0x7F;
+
+          // if new sequence was requested start at zero again
+          if (details [1] EQUALS 1)
+            context->next_sequence = 0;
+
           // if cleartext was requested just send it in the clear
           if (details [0] EQUALS 1)
           {
