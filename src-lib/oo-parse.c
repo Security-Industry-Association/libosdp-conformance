@@ -1,7 +1,7 @@
 /*
   oo-parse - parse osdp messages
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -224,6 +224,12 @@ int
     // extract the command
     returned_hdr -> command = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->command;
+if ((m->msg_cmd EQUALS OSDP_PDID) || (m->msg_cmd EQUALS OSDP_ID))
+{
+fflush(context->log);
+fprintf(stderr, "DEBUG: osdp_parse_message whole-message %02X\n", m->msg_cmd);
+};
+
     m->direction = 0x80 & p->addr;
     m->data_payload = m->cmd_payload + 1;
 
@@ -278,15 +284,17 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       };
     };
 
+/// 2 #ifdef ZZZ1
     if (role EQUALS OSDP_ROLE_MONITOR)
       display = 0;
     if (display)
     {
-      if (p->addr != p_card.addr)
+      if ((0x7F & p->addr) != p_card.addr)
         display = 0;
       if (p->addr EQUALS OSDP_CONFIGURATION_ADDRESS)
         display = 1;
     };
+/// 2 #endif
     if (display)
     {
       char dirtag [1024];
@@ -1001,6 +1009,7 @@ fprintf(context->log,
         "Message input parsing failed, status %d\n", status);
     };
   };
+fprintf(stderr, "DEBUG: osdp_parse_message BOTTOM\n");
   return (status);
 
 } /* osdp_parse_message */

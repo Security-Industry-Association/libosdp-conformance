@@ -288,6 +288,24 @@ int
 
 
 int
+  oosdp_print_message_POLL
+  (OSDP_CONTEXT *ctx,
+  OSDP_MSG *osdp_msg,
+  char *tlogmsg)
+
+{ /* oosdp_print_message_POLL */
+
+  int status;
+
+
+  status = ST_OK;
+  strcpy(tlogmsg, "  POLL");
+  return(status);
+
+} /* oosdp_print_message_PIVDATA */
+
+
+int
   oosdp_print_message_RAW
   (OSDP_CONTEXT *ctx,
   OSDP_MSG *osdp_msg,

@@ -1,7 +1,7 @@
 /*
   oo_util3 -more (3)  open osdp utility routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -806,6 +806,13 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+#ifdef ZZZ1
+    case OSDP_POLL:
+      status = oosdp_make_message(OOSDP_MSG_OUT, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
+#endif
     case OSDP_SCRYPT:
       status = oosdp_make_message(OOSDP_MSG_SCRYPT, tlogmsg, msg);
       if (status == ST_OK)

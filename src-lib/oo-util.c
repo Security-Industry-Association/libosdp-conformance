@@ -1,7 +1,7 @@
 /*
   oo-util - open osdp utility routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -112,6 +112,12 @@ int
     context->pdus_received ++;
 //TODO pdus_received v.s packets_received
 
+(void)monitor_osdp_message (context, msg);
+  if (context -> role EQUALS OSDP_ROLE_MONITOR)
+    (void)monitor_osdp_message (context, msg);
+  else
+  {
+/// 1  #ifdef ZZZ1
     // if it's for me or it's a broadcast command then trace it
 
     if (!(0x80 & oh->addr)) // it's a command
@@ -122,6 +128,8 @@ int
         (void)monitor_osdp_message (context, msg);
       }
     };
+/// #endif
+  };
 
     switch (this_command)
     {

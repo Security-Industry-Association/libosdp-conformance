@@ -1,7 +1,7 @@
 /*
   oo-logprims - open osdp logging sub-functions
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -174,6 +174,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     strcat(tlogmsg, "]");
   };
 
+  fflush(ctx->log);
   return(status);
 
 } /* osdp_message_header_print */

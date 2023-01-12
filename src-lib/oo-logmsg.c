@@ -967,6 +967,11 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     status = oosdp_print_message_PIVDATAR(&context, msg, tlogmsg);
     break;
 
+  case OOSDP_MSG_POLL:
+    msg = (OSDP_MSG *)aux;
+    status = oosdp_print_message_POLL(&context, msg, tlogmsg);
+    break;
+
   case OOSDP_MSG_RAW:
     msg = (OSDP_MSG *) aux;
     status = oosdp_print_message_RAW(&context, msg, tlogmsg);
@@ -1012,12 +1017,9 @@ int
   oosdp_log
     (OSDP_CONTEXT
       *context,
-    int
-      logtype,
-    int
-      level,
-    char
-      *message)
+    int logtype,
+    int level,
+    char *message)
 
 { /* oosdp_log */
 
