@@ -806,13 +806,6 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
-#ifdef ZZZ1
-    case OSDP_POLL:
-      status = oosdp_make_message(OOSDP_MSG_OUT, tlogmsg, msg);
-      if (status == ST_OK)
-        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      break;
-#endif
     case OSDP_SCRYPT:
       status = oosdp_make_message(OOSDP_MSG_SCRYPT, tlogmsg, msg);
       if (status == ST_OK)

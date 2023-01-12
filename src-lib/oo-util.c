@@ -117,7 +117,6 @@ int
     (void)monitor_osdp_message (context, msg);
   else
   {
-/// 1  #ifdef ZZZ1
     // if it's for me or it's a broadcast command then trace it
 
     if (!(0x80 & oh->addr)) // it's a command
@@ -128,7 +127,6 @@ int
         (void)monitor_osdp_message (context, msg);
       }
     };
-/// #endif
   };
 
     switch (this_command)

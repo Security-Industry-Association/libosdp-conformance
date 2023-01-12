@@ -284,17 +284,26 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       };
     };
 
-/// 2 #ifdef ZZZ1
+    /*
+      in monitor mode suppress polls and acks unless verbosity is above 3
+    */
     if (role EQUALS OSDP_ROLE_MONITOR)
-      display = 0;
-    if (display)
     {
-      if ((0x7F & p->addr) != p_card.addr)
-        display = 0;
-      if (p->addr EQUALS OSDP_CONFIGURATION_ADDRESS)
+      if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
+        display = 1;
+      if (context->verbosity > 3)
         display = 1;
     };
-/// 2 #endif
+    if (display)
+    {
+      if (role != OSDP_ROLE_MONITOR)
+      {
+        if ((0x7F & p->addr) != p_card.addr)
+          display = 0;
+        if (p->addr EQUALS OSDP_CONFIGURATION_ADDRESS)
+          display = 1;
+      };
+    };
     if (display)
     {
       char dirtag [1024];

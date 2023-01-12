@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -711,6 +711,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_PD_IDENT     (1)
 #define OOSDP_MSG_PIVDATA      (1304)
 #define OOSDP_MSG_PIVDATAR     (1305)
+#define OOSDP_MSG_POLL         (1604)
 #define OOSDP_MSG_RAW          (25)
 #define OOSDP_MSG_RMAC_I       (102)
 #define OOSDP_MSG_SCRYPT       (101)
@@ -1144,6 +1145,7 @@ int oosdp_print_message_LED(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg
 int oosdp_print_message_PD_IDENT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_PIVDATA(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_PIVDATAR(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
+int oosdp_print_message_POLL(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_RAW(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_RMAC_I(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
 int oosdp_print_message_SCRYPT(OSDP_CONTEXT *ctx, OSDP_MSG *osdp_msg, char *tlogmsg);
