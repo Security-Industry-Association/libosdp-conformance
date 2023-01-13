@@ -227,7 +227,7 @@ int
 if ((m->msg_cmd EQUALS OSDP_PDID) || (m->msg_cmd EQUALS OSDP_ID))
 {
 fflush(context->log);
-fprintf(stderr, "DEBUG: osdp_parse_message whole-message %02X\n", m->msg_cmd);
+//fprintf(stderr, "DEBUG: osdp_parse_message whole-message %02X\n", m->msg_cmd);
 };
 
     m->direction = 0x80 & p->addr;
@@ -1018,7 +1018,6 @@ fprintf(context->log,
         "Message input parsing failed, status %d\n", status);
     };
   };
-fprintf(stderr, "DEBUG: osdp_parse_message BOTTOM\n");
   return (status);
 
 } /* osdp_parse_message */
