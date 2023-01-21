@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -546,6 +546,8 @@ int
     if (0 EQUALS strcmp(current_command, "acurxsize"))
     {
       cmd->command = OSDP_CMDB_ACURXSIZE;
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   };
 
@@ -556,6 +558,8 @@ int
     if (0 EQUALS strcmp (current_command, "busy"))
     {
       cmd->command = OSDP_CMDB_BUSY;
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
     };
   };
 
