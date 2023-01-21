@@ -623,28 +623,20 @@ int
     memset (val, 0, sizeof (val));
     fprintf (sf, "  \"raw_data_bits\" : \"%d\",\n",
       ctx->last_raw_read_bits);
+
+    fprintf(sf, "\"current_offset\" : \"%d\",\n", ctx->xferctx.current_offset);
+    fprintf(sf, "\"current_send_length\" : \"%d\",\n", ctx->xferctx.current_send_length);
+    fprintf(sf, "\"last_update_timeT\" : \"%ld\",\n", current_time);
     for (i=0; i<(7+ctx->last_raw_read_bits)/8; i++)
     {
       sprintf (val+(2*i), "%02x", ctx->last_raw_read_data [i]);
     };
-    fprintf (sf, "  \"raw_data\" : \"%s\",\n",
-      val);
-
-    fprintf(sf,
-" \"current_offset\" : \"%d\", ",
-      ctx->xferctx.current_offset);
-    fprintf(sf,
-"\"total_length\" : \"%d\", ",
-      ctx->xferctx.total_length);
-    fprintf(sf,
-"\"current_send_length\" : \"%d\", ",
-      ctx->xferctx.current_send_length);
-
-    fprintf(sf,
-"\"last_update_timeT\" : \"%ld\", ", current_time);
-
+    fprintf(sf, "\"raw_data\" : \"%s\",\n", val);
+    fprintf(sf, "\"serial_number\":\"%02X%02X%02X%02X\",\n",
+      ctx->serial_number [0], ctx->serial_number [1], ctx->serial_number [2], ctx->serial_number [3]);
+    fprintf(sf, "\"total_length\" : \"%d\",\n", ctx->xferctx.total_length);
     fprintf(sf, "\"_#\" : \"_end\" ");
-    fprintf (sf, "}\n");
+    fprintf(sf, "}\n");
 
     fclose (sf);
   }
