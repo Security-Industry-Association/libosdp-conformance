@@ -560,6 +560,8 @@ int
     status = osdp_string_to_buffer(ctx, (char *)json_string_value(value), serial_number, &serial_number_length);
     if (status EQUALS ST_OK)
       memcpy(ctx->serial_number, serial_number, sizeof(ctx->serial_number));
+fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
+  ctx->serial_number [0], ctx->serial_number [1], ctx->serial_number [2], ctx->serial_number [3]);
   };
 
   // parameter "service-root" - where libosdp-conformance runs from
