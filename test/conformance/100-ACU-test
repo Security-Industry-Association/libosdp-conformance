@@ -1,0 +1,69 @@
+#!/bin/bash
+set -x
+# updated from 100-cp-test to use new command mechanism
+
+OSDP_HOME=/opt/osdp-conformance
+CMDPATH=/tmp/libosdp-conformance-command.json
+rm -vf /$OSDP_HOME}/log/report.log
+echo start ACU NOW (waiting 5 seconds...)
+sleep 5
+# todo: change out for modern test cases
+echo executing test 2-6-1
+bash /$OSDP_HOME}/bin/do-CP-command conform_2_6_1
+echo executing test 3-2-1
+bash /$OSDP_HOME}/bin/do-CP-command identify
+echo executing test 3-3-1
+bash /$OSDP_HOME}/bin/do-CP-command capabilities
+echo executing test 3-5-1
+/$OSDP_HOME}/bin/do-CP-command local_status
+echo executing test 3-6-1
+/$OSDP_HOME}/bin/do-CP-command input_status
+echo executing test 3-7-1
+/$OSDP_HOME}/bin/do-CP-command output_status
+echo executing test 3-8-1
+/$OSDP_HOME}/bin/do-CP-command reader_status
+echo executing test 3-9-1
+/$OSDP_HOME}/bin/do-CP-command conform_3_9_1
+echo executing test 3-10-1
+
+echo  >${CMDPATH} "{\"command\":\"led\",\"perm_on_color\" : \"1\"}"
+echo Command `cat ${CMDPATH}`
+${OSDP_HOME}/open-osdp-kick ACU <${CMDPATH}
+sleep 3
+echo executing test 3-10-2
+echo  >${CMDPATH} "{\"command\":\"led\",\"perm_on_color\":\"2\"}"
+${OSDP_HOME}/open-osdp-kick ACU <${CMDPATH}
+sleep 3
+echo executing test 3-11-1
+echo  >${CMDPATH} "{\"command\" : \"buzz\",  \"on_time\" : \"1\",  \"off_time\" : \"1\",  \"repeat\" : \"3\",  \"#\" : \"created by 100-test-all in test\"}"
+${OSDP_HOME}/open-osdp-kick ACU <${CMDPATH}
+sleep 3
+echo executing test 3-12-1
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"text\""
+echo >>${CMDPATH} "  ,\"message\" : \"TEST_3-12-1\""
+echo >>${CMDPATH} "}"
+/$OSDP_HOME}/bin/HUP-CP
+sleep 2
+echo request test 4-5-2
+echo request test 4-5-2
+/$OSDP_HOME}/bin/do-CP-command output_status
+echo request test 4-5-2
+/$OSDP_HOME}/request-exercise-PD 4-5-2
+echo request test 4-5-3
+/$OSDP_HOME}/request-exercise-PD 4-5-3
+echo requesting test 4-6-1
+/$OSDP_HOME}/request-exercise-PD 4-6-1
+echo executing test 4-7-1
+/$OSDP_HOME}/bin/do-CP-command outstat
+echo request test 4-7-2
+/$OSDP_HOME}/request-exercise-PD 4-7-2
+echo request test 4-8-1
+/$OSDP_HOME}/request-exercise-PD 4-8-1
+echo  >${CMDPATH} "{"
+echo >>${CMDPATH} "   \"command\" : \"text\""
+echo >>${CMDPATH} "  ,\"message\" : \"Conformance_Test.Complete..!!!\""
+echo >>${CMDPATH} "}"
+/$OSDP_HOME}/bin/HUP-CP
+sleep 2
+
