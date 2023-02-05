@@ -1,3 +1,5 @@
+started to change 100-ACU-test to use new style commands and test numbers
+
 changes in 1.32-1
 updated send-explicit to work with max size commands
 

@@ -1,5 +1,5 @@
 Package: osdp-service
-Version: 1.32-3
+Version: 1.32-4
 Section: custom
 Priority: optional
 Architecture: amd64
