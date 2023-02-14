@@ -1,9 +1,25 @@
 /*
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  oo-prims - primitives for OSDP processing
+
+  (C)Copyright 2017-2023 Smithee Solutions LLC
+
+  Support provided by the Security Industry Association
+  http://www.securityindustry.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 #include <stdio.h>
 #include <string.h>
-//#include <time.h>
 
 #include <osdp-tls.h>
 #include <open-osdp.h>
@@ -17,7 +33,8 @@ void
   dump_buffer_stderr
     (char * tag, unsigned char *b, int l)
 
-{
+{ /* dump_buffer_stderr */
+
   int i;
   int l2;
 
@@ -224,6 +241,14 @@ int
     };
     if (ctx->last_was_processed) // assuming the last was processed...
       ret = 0; // if no response but timeout, call it "not waiting"
+{
+  if (!(ctx->last_was_processed))
+  {
+fprintf(stderr, "DEBUG: timeout with no response\n");
+    if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
+      ctx->enable_poll = OO_POLL_NEVER;
+  };
+}
   };
   fflush(ctx->log);
 

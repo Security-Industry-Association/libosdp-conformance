@@ -1,7 +1,7 @@
 /*
   oosdp_files - osdp file io/
 
-  (C)2017-2022 Smithee Solutions LLC
+  (C)2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -160,6 +160,8 @@ delay_nsec = delay_nsec * 1000;
     {
       ctx->xferctx.state = OSDP_XFER_STATE_FINISHING;
       status = ST_OSDP_FILEXFER_WRAPUP;
+      if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
+        ctx->enable_poll = OO_POLL_NEVER;
     };
 
     // if there's nothing there treat it like we're finishing

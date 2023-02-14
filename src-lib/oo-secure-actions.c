@@ -1,7 +1,7 @@
 /*
   oosdp_secure_actions - open osdp secure channel action routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -347,6 +347,12 @@ int
     if (memcmp(ctx->current_scbk, ctx->current_default_scbk, sizeof(ctx->current_scbk)) != 0)
       (void)osdp_test_set_status(OOC_SYMBOL_scs_paired, OCONFORM_EXERCISED);
 
+    if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
+    {
+      fprintf(ctx->log, "===> PAUSE at osdp_RMAC_I reception <===\n");
+      fflush(ctx->log);
+      ctx->enable_poll = OO_POLL_NEVER;
+    };
   }
   else
   {

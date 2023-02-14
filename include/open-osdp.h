@@ -447,6 +447,9 @@ typedef struct osdp_command_queue
 
 #define OSDP_LOCK_SPEED (0) // do not lock speed to 9600
 
+#define OO_POSTCOMMAND_CONTINUE (0)
+#define OO_POSTCOMMAND_SINGLESTEP (1)
+
 typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
@@ -456,6 +459,7 @@ typedef struct osdp_context
   int disable_certificate_checking;
   int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled
   int enable_poll; // usuall 1 for enable, 0=disable
+  int post_command_action; // for stop-after-filetransfer or stop-after-timeout
   int pdcap_select; // 0 for normal 1 for short
   char fqdn [1024];
   char log_path [1024];
