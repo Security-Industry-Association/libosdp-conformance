@@ -1,7 +1,7 @@
 /*
   oo-mgmt-actions - action routines for (some) mgmt functions
 
-  (C)Copyright 2022 Smithee Solutions LLC
+  (C)Copyright 2022-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -54,10 +54,6 @@ int
         
   mfg = (OSDP_MFGREP_RESPONSE *)(msg->data_payload);
   mfg_command = *(&(mfg->data));
-  sprintf (tlogmsg, "OUI %02x%02x%02x response length %d",
-    mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], count);
-  fprintf (ctx->log, "  Mfg Reply %s\n", tlogmsg);
-  dump_buffer_log(ctx, "MFGREP: ", msg->data_payload, count);
 
   payload [0] = 0;
   for (i=0; i<count; i++)

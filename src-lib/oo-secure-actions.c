@@ -349,8 +349,7 @@ int
 
     if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
     {
-      fprintf(ctx->log, "===> PAUSE at osdp_RMAC_I reception <===\n");
-      fflush(ctx->log);
+      fprintf(ctx->log, "===> PAUSE at osdp_RMAC_I reception <===\n"); fflush(ctx->log);
       ctx->enable_poll = OO_POLL_NEVER;
     };
   }

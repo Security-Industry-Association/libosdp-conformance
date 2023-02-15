@@ -408,10 +408,16 @@ int
 
   case OSDP_CMDB_POLLING:
     {
+      int has_action;
+      int has_post_action;
+      has_action = 0;
+      has_post_action = 0;
+
       parameter = json_object_get(root, "action");
       status = ST_OK;
       if (json_is_string(parameter))
       {
+        has_action = 1;
         if (0 EQUALS strcmp("reset", json_string_value(parameter)))
         {
           fprintf(ctx->log, "Polling: resetting sequence number to 0\n");
@@ -422,9 +428,25 @@ int
         {
           fprintf(ctx->log, "Polling: resuming sequence numbering\n");
           ctx->enable_poll = OO_POLL_RESUME;
+          ctx->post_command_action = OO_POSTCOMMAND_CONTINUE;
         };
-      }
-      else
+      };
+
+      // if setting up single step trigger, assume we're (leaving) polling enabled.
+
+      parameter = json_object_get(root, "post-command-action");
+      if (json_is_string(parameter))
+      {
+        has_post_action = 1;
+        if (0 EQUALS strcmp("single-step", json_string_value(parameter)))
+        {
+          ctx->enable_poll = OO_POLL_ENABLED;
+          ctx->post_command_action = OO_POSTCOMMAND_SINGLESTEP;
+
+          fprintf(ctx->log, "Post-command single-step ENABLED\n"); fflush(ctx->log);
+        };
+      };
+      if (!has_action && !has_post_action)
       {
         // toggle it (used to be just 1 and 0)
 

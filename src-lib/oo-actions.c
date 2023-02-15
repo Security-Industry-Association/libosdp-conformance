@@ -1,7 +1,7 @@
 /*
   oo-actions - open osdp action routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -310,8 +310,8 @@ int
   {
     // if more send more
 
-fprintf(stderr, "t=%d o=%d\n",
-  ctx->xferctx.total_length, ctx->xferctx.current_offset);
+    if (ctx->verbosity > 3)
+      fprintf(stderr, "t=%d o=%d\n", ctx->xferctx.total_length, ctx->xferctx.current_offset);
 
     if ((ctx->xferctx.total_length > 0) && (ctx->xferctx.total_length > ctx->xferctx.current_offset))
     {

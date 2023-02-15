@@ -1,7 +1,7 @@
 /*
   oo_util2 - more open-osdp util routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -112,8 +112,14 @@ int
         if (ctx->timeout_retries EQUALS 0)
         {
           if (ctx->verbosity > 3)
-            fprintf(stderr, "timed out, polling\n");
+            fprintf(ctx->log, "Timeout while polling, retries (%d) exceeded.)\n", OOSDP_TIMEOUT_RETRIES);
           send_poll = 1;
+          if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
+          {
+            fprintf(ctx->log, "---> Disabled Polling by request at poll timeout <---\n");
+            ctx->enable_poll = OO_POLL_NEVER;
+            send_poll = 0;
+          };
         };
       };
     };

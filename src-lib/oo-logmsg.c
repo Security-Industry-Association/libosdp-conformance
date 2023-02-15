@@ -352,6 +352,7 @@ int
     filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
     tlogmsg[0] = 0;
     osdp_array_to_quadByte(filetransfer_message->FtSizeTotal, &utmp);
+    osdp_array_to_doubleByte(filetransfer_message->FtFragmentSize, &ustmp);
     sprintf(tmpstr,
 "File Transfer: Type %02x\n",
       filetransfer_message->FtType);
@@ -369,15 +370,15 @@ int
       filetransfer_message->FtOffset [2], filetransfer_message->FtOffset [3],
       utmp);
     strcat(tlogmsg, tmpstr);
-    osdp_array_to_doubleByte(filetransfer_message->FtFragmentSize, &ustmp);
     sprintf(tmpstr,
 "  File transfer: Fragment Size 0x%02x Data[0] %02x\n",
       ustmp, filetransfer_message->FtData);
     strcat(tlogmsg, tmpstr);
-    sprintf(tmpstr,
-"  File transfer: Cur Off %8d. Tot Lth %8d. Cur Snd %d. Handle %lx\n",
-      context.xferctx.current_offset, context.xferctx.total_length, context.xferctx.current_send_length,
-      (unsigned long)(context.xferctx.xferf));
+
+    sprintf(tmpstr, "  Current: Send %4d. Offset %8d.(of %8d) Fragment 0x%04x First octet %02x\n",
+      context.xferctx.current_send_length,
+      context.xferctx.current_offset, context.xferctx.total_length,
+      ustmp, filetransfer_message->FtData);
     strcat(tlogmsg, tmpstr);
     break;
 
@@ -599,7 +600,7 @@ int
       if (!process_as_special)
       {
         sprintf(tlogmsg,
-"(General) MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
+"  (General) MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
           mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
           mrep->mfg_command_id);
       };
@@ -703,7 +704,7 @@ int
       count = oh->len_lsb + (oh->len_msb << 8);
       count = count - 6; // assumes cleartext
       dumpcount = count - msg->check_size;
-      dumpcount = dumpcount - 3; // for OUI
+      dumpcount = dumpcount - 4; // for OUI and response code
       mrep = (OSDP_MFGREP_RESPONSE *)(msg->data_payload);
 
       if (context.role EQUALS OSDP_ROLE_ACU)
@@ -713,28 +714,12 @@ int
       };
 
       p = (char *)&(mrep->data);
-      sprintf(tlogmsg, "MFG Response: OUI:%02x-%02x-%02x",
-        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2]);
-#if 0 
-// only for INID?
-      if (count > 3)
-      {
-        sprintf(tmps, " MFG Response Status: %02x", mrep->mfg_response_status);
-        strcat(tlogmsg, tmps);
-        dumpcount --;
-        p = (char *)&(mrep->mfg_response_code);
-        if (count > 4)
-        {
-          sprintf(tmps, " Code: %02x", mrep->mfg_response_code);
-          strcat(tlogmsg, tmps);
-          dumpcount --;
-          p = (char *)&(mrep->data);
-        };
-      };
-#endif
+      p++; // skip return code
+      sprintf(tlogmsg, "  MFG Response: OUI:%02x-%02x-%02x RCMD %02X followed by 0x%02x octets",
+        mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2], mrep->data, dumpcount);
 
       strcat(tlogmsg, "\n");
-      strcat(tlogmsg, "  Raw:");
+      strcat(tlogmsg, "    Contents:");
       for (idx=0; idx < dumpcount; idx++)
       {
         sprintf(tmps, " %02x", *(p+idx));

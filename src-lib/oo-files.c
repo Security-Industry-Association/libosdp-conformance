@@ -173,8 +173,20 @@ delay_nsec = delay_nsec * 1000;
     };
     break;
 
+  case OSDP_FTSTAT_ABORT_TRANSFER:
+    fprintf(ctx->log, "PD aborted transfer\n");
+    // stop transfer if there is an error.
+    status = ST_OSDP_FILEXFER_WRAPUP;
+    break;
+
+  case OSDP_FTSTAT_DATA_UNACCEPTABLE:
+    fprintf(ctx->log, "PD reports 'data unacceptable'\n");
+    // stop transfer if there is an error.
+    status = ST_OSDP_FILEXFER_WRAPUP;
+    break;
+
   case OSDP_FTSTAT_FINISHING:
-// wavelynx sends status 3 at the end
+    // wavelynx sends status 3 at the end
     status = ST_OSDP_FILEXFER_FINISHING;
     ctx->xferctx.state = OSDP_XFER_STATE_FINISHING;
     osdp_test_set_status(OOC_SYMBOL_ftstat_dly_final, OCONFORM_EXERCISED);
@@ -191,20 +203,18 @@ delay_nsec = delay_nsec * 1000;
     };
     break;
 
-  case OSDP_FTSTAT_ABORT_TRANSFER:
-    fprintf(ctx->log, "PD aborted transfer\n");
-    // stop transfer if there is an error.
+  case OSDP_FTSTAT_REBOOTING:
+    fprintf(ctx->log, "PD is rebooting.\n");
     status = ST_OSDP_FILEXFER_WRAPUP;
+    if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
+    {
+      fprintf(ctx->log, "--> Polling disabled by request <---\n");
+      ctx->enable_poll = OO_POLL_NEVER;
+    };
     break;
 
   case OSDP_FTSTAT_UNRECOGNIZED:
     fprintf(ctx->log, "PD did not recognize file\n");
-    // stop transfer if there is an error.
-    status = ST_OSDP_FILEXFER_WRAPUP;
-    break;
-
-  case OSDP_FTSTAT_DATA_UNACCEPTABLE:
-    fprintf(ctx->log, "PD reports 'data unacceptable'\n");
     // stop transfer if there is an error.
     status = ST_OSDP_FILEXFER_WRAPUP;
     break;
@@ -230,7 +240,8 @@ delay_nsec = delay_nsec * 1000;
     if (new_size != 0)
     {
       ctx->xferctx.current_send_length = new_size;
-fprintf(stderr,  "DEBUG: updated send to %d.\n", ctx->xferctx.current_send_length);
+      if (ctx->verbosity > 3)
+        fprintf(ctx->log,  "DEBUG: updated send to %d.\n", ctx->xferctx.current_send_length);
     };
   };
   return (status);
@@ -444,12 +455,12 @@ int
       if (ctx->xferctx.current_send_length)
       {
         size_to_read = ctx->xferctx.current_send_length;
-fprintf(stderr, "DEBUG: size to read %d.\n", ctx->xferctx.current_send_length);
-    }
-    else
-    {
-      size_to_read = ctx->max_message;
-    };
+        //fprintf(stderr, "DEBUG: size to read %d.\n", ctx->xferctx.current_send_length);
+      }
+      else
+      {
+        size_to_read = ctx->max_message;
+      };
 
     // adjust for header, crc
     size_to_read = size_to_read - 6 - 2;

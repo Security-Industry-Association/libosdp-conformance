@@ -241,14 +241,6 @@ int
     };
     if (ctx->last_was_processed) // assuming the last was processed...
       ret = 0; // if no response but timeout, call it "not waiting"
-{
-  if (!(ctx->last_was_processed))
-  {
-fprintf(stderr, "DEBUG: timeout with no response\n");
-    if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
-      ctx->enable_poll = OO_POLL_NEVER;
-  };
-}
   };
   fflush(ctx->log);
 
