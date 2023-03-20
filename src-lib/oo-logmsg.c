@@ -1,8 +1,7 @@
 /*
-
   oo-logmsg.c - prints log messages
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   OSDP Working Group community.
@@ -394,14 +393,17 @@ int
     osdp_array_to_doubleByte(ftstat->FtDelay, &newdelay);
     osdp_array_to_doubleByte(ftstat->FtUpdateMsgMax, &newmax);
     {
-      short int i;
+      unsigned short int i;
       i = (ftstat->FtStatusDetail[1] << 8) + ftstat->FtStatusDetail [0];
       switch (i)
       {
-      case OSDP_FILETRANSFER_STATUS_OK:
+      case OSDP_FTSTAT_OK:
         sprintf(file_transfer_status_detail, "%d (OK to proceed)", i);
         break;
-      case OSDP_FILETRANSFER_STATUS_UNACCEPTABLE:
+      case OSDP_FTSTAT_REBOOTING:
+        sprintf(file_transfer_status_detail, "%d (PD is rebooting)", i);
+        break;
+      case OSDP_FTSTAT_DATA_UNACCEPTABLE:
         sprintf(file_transfer_status_detail, "%d (file data unacceptable or malformed)", i);
         break;
       default:

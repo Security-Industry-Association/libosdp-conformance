@@ -73,7 +73,9 @@ int
       fclose(f);
     };
   };
+
   status = oosdp_callout(ctx, "osdp_MFGREP", cmd);
+
   if (status EQUALS ST_OK)
     status = osdp_test_set_status_ex(OOC_SYMBOL_resp_mfgrep, OCONFORM_EXERCISED, "");
 

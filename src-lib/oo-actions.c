@@ -310,7 +310,7 @@ int
   {
     // if more send more
 
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
       fprintf(stderr, "t=%d o=%d\n", ctx->xferctx.total_length, ctx->xferctx.current_offset);
 
     if ((ctx->xferctx.total_length > 0) && (ctx->xferctx.total_length > ctx->xferctx.current_offset))

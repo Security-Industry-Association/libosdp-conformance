@@ -47,7 +47,7 @@ int
 
 { /* process_osdp_message */
 
-  char cmd [1024];
+  char cmd [3*1024];
   int count;
   int current_length;
   int current_security;
@@ -785,6 +785,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);
       if (*(msg->data_payload + 1) > 0)
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_power, OCONFORM_EXERCISED);
+
+      sprintf(cmd, "%s//run/ACU-actions/osdp_LSTATR %d %d", context->service_root,
+        *(msg->data_payload + 0), *(msg->data_payload + 1));
+      system(cmd);
       break;
 
     case OSDP_MFGERRR:
