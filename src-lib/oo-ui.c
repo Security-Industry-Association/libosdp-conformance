@@ -167,7 +167,7 @@ context=ctx;
         fprintf (context->log, "Enqueuing osdp_CRAUTH after next Raw response\n");
       break;
 
-    case OSDP_CMDB_CONFORM_070_17_01:
+    case OSDP_CMDB_CONFORM_070_17_02:
       if (context->verbosity > 2)
         fprintf(context->log, "Conformance test 070-17-01: next RMAC_I response will report failure.\n");
       context->conformance_fail_next_rmac_i = 1;

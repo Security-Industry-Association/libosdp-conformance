@@ -1,7 +1,7 @@
 /*
   osdp_conformance.h - conformance metrics per profiles
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -120,6 +120,7 @@ typedef struct osdp_conform
 #define OOC_SYMBOL_resp_biomatchr     "070-15-01"
 #define OOC_SYMBOL_resp_ccrypt        "070-16-01"
 #define OOC_SYMBOL_resp_rmac_i        "070-17-01"
+#define OOC_SYMBOL_resp_rmac_i_bad    "070-17-02"
 #define OOC_SYMBOL_resp_mfgrep        "070-18-01"
 #define OOC_SYMBOL_resp_busy          "070-19-01"
 #define OOC_SYMBOL_resp_pivdatar      "070-20-01"

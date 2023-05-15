@@ -242,7 +242,7 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
-  case OSDP_CMDB_CONFORM_070_17_01:
+  case OSDP_CMDB_CONFORM_070_17_02:
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;
     break;
