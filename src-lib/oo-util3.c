@@ -810,6 +810,7 @@ int
       status = oosdp_make_message(OOSDP_MSG_SCRYPT, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      tlogmsg [0] = 0;
       break;
     case OSDP_XWR:
       status = oosdp_make_message(OOSDP_MSG_XWRITE, tlogmsg, msg);

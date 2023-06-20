@@ -112,7 +112,8 @@ int
     context->pdus_received ++;
 //TODO pdus_received v.s packets_received
 
-(void)monitor_osdp_message (context, msg);
+//(void)monitor_osdp_message (context, msg);
+
   if (context -> role EQUALS OSDP_ROLE_MONITOR)
     (void)monitor_osdp_message (context, msg);
   else
@@ -241,8 +242,6 @@ int
 
         if (msg->security_block_length EQUALS 0)
           current_security = OSDP_SEC_STAND_DOWN;
-fprintf(stderr, "DEBUG: PDID at send sn %02X %02X %02X %02X\n",
-  osdp_pdid_response_data [ 5], osdp_pdid_response_data [ 6], osdp_pdid_response_data [ 7], osdp_pdid_response_data [ 5]);
         status = send_message_ex(context, OSDP_PDID, oo_response_address(context, oh->addr),
           &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
         osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);

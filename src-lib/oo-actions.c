@@ -785,13 +785,11 @@ int
 
       osdp_raw_data [ 0] = 0; // one reader, reader 0
       osdp_raw_data [ 1] = ctx->card_format; 
-      osdp_raw_data [ 2] = ctx->card_data_valid;
-      osdp_raw_data [ 3] = 0;
+      osdp_raw_data [ 2] = (0xff & ctx->card_data_valid);
+      osdp_raw_data [ 3] = (0xff00 & ctx->card_data_valid) >> 8;
       raw_lth = 4+ctx->creds_a_avail;
       memcpy (osdp_raw_data+4, ctx->credentials_data, ctx->creds_a_avail);
       current_length = 0;
-fprintf(stderr, "DEBUG: card %d. bits bytes %d.\n",
-  ctx->card_data_valid, ctx->creds_a_avail);
 
       dump_buffer_log(ctx, "card data", (unsigned char *)(ctx->credentials_data), ctx->creds_a_avail);
       status = send_message_ex (ctx,

@@ -1,7 +1,7 @@
 /*
   oo-ui - UI routines for open-osdp
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -169,7 +169,7 @@ context=ctx;
 
     case OSDP_CMDB_CONFORM_070_17_02:
       if (context->verbosity > 2)
-        fprintf(context->log, "Conformance test 070-17-01: next RMAC_I response will report failure.\n");
+        fprintf(context->log, "Conformance test 070-17-02: next RMAC_I response will report failure.\n");
       context->conformance_fail_next_rmac_i = 1;
       status = ST_OK;
       break;
