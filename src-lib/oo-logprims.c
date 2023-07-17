@@ -413,7 +413,9 @@ void
   FILE *tf;
 
 
-  if (ctx->verbosity > 0)
+  // if verbosity is not 'quiet' OR tracing was explicitly enabled
+
+  if ((ctx->verbosity > 0) || (ctx->trace))
   {
     fflush(ctx->log);
     if (ctx->verbosity > 9)
@@ -422,24 +424,24 @@ void
         print_enable, (int)strlen(trace_out_buffer), (int)strlen(trace_in_buffer));
     }
 
-  clock_gettime (CLOCK_REALTIME, &current_time_fine);
-  if (ctx->verbosity > 9)
-  {
-    fprintf(ctx->log, "DEBUG: osdp_trace_dump fetched current time ol=%d il=%d\n",
-      (int)strlen(trace_out_buffer), (int)strlen(trace_in_buffer));
-    fflush(ctx->log);
-  };
-  tf = fopen(OSDP_TRACE_FILE, "a+");
-  if (tf)
-  {
-    char *tag;
+    clock_gettime (CLOCK_REALTIME, &current_time_fine);
+    if (ctx->verbosity > 9)
+    {
+      fprintf(ctx->log, "DEBUG: osdp_trace_dump fetched current time ol=%d il=%d\n",
+        (int)strlen(trace_out_buffer), (int)strlen(trace_in_buffer));
+      fflush(ctx->log);
+    };
+    tf = fopen(OSDP_TRACE_FILE, "a+");
+    if (tf)
+    {
+      char *tag;
 
-    tag = "in";
-    if (ctx->role EQUALS OSDP_ROLE_MONITOR)
-      tag = "trace";
+      tag = "in";
+      if (ctx->role EQUALS OSDP_ROLE_MONITOR)
+        tag = "trace";
 
-    if (strlen(trace_out_buffer) > 0)
-      fprintf(tf,
+      if (strlen(trace_out_buffer) > 0)
+        fprintf(tf,
 "{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
         OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
         OSDPCAP_TAG_TIME_NSEC, current_time_fine.tv_nsec,
@@ -447,36 +449,36 @@ void
         OSDPCAP_TAG_DATA, trace_out_buffer,
         OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
         OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
-    fflush(tf);
+      fflush(tf);
+      if (strlen(trace_in_buffer) > 0)
+      {
+        fprintf(tf,
+"{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
+          OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
+          OSDPCAP_TAG_TIME_NSEC, current_time_fine.tv_nsec,
+          OSDPCAP_TAG_INPUT_OUTPUT, tag,
+          OSDPCAP_TAG_DATA, trace_in_buffer,
+          OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
+          OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
+      }
+      fflush(tf);
+      fclose(tf);
+    };
+
+    if (strlen(trace_out_buffer) > 0)
+    {
+      if (print_enable)
+        fprintf(ctx->log,
+"\nOUTPUT Trace: %s\n", trace_out_buffer);
+      trace_out_buffer [0] = 0;
+    };
     if (strlen(trace_in_buffer) > 0)
     {
-      fprintf(tf,
-"{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
-        OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
-        OSDPCAP_TAG_TIME_NSEC, current_time_fine.tv_nsec,
-        OSDPCAP_TAG_INPUT_OUTPUT, tag,
-        OSDPCAP_TAG_DATA, trace_in_buffer,
-        OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
-        OSDPCAP_TAG_OSDP_SOURCE, OSDP_VERSION_MAJOR, OSDP_VERSION_MINOR, OSDP_VERSION_BUILD);
-    }
-    fflush(tf);
-    fclose(tf);
-  };
-
-  if (strlen(trace_out_buffer) > 0)
-  {
-    if (print_enable)
-      fprintf(ctx->log,
-"\nOUTPUT Trace: %s\n", trace_out_buffer);
-    trace_out_buffer [0] = 0;
-  };
-  if (strlen(trace_in_buffer) > 0)
-  {
-    if (print_enable)
-      fprintf(ctx->log,
+      if (print_enable)
+        fprintf(ctx->log,
 "\n INPUT Trace: %s\n", trace_in_buffer);
-    trace_in_buffer [0] = 0;
-  };
+      trace_in_buffer [0] = 0;
+    };
   };
 
 } /* osdp_trace_dump */
