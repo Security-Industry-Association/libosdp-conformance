@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   char buf [16384];
 
 
-  tag = "CP";
+  tag = "ACU";
   sprintf (socket_path, "%s/run/%s/open-osdp-control", "/opt/osdp-conformance", tag);
   if (argc > 1)
   {

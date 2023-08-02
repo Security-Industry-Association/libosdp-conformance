@@ -46,8 +46,10 @@ int
   struct AES_ctx aes_context_s_enc;
   OSDP_SC_CCRYPT *ccrypt_payload;
   unsigned char *client_cryptogram;
+  char cmd [3072];
   int current_length;
   unsigned char iv [16];
+  char logging_args [1024];
   unsigned char message [16];
   unsigned char sec_blk [1];
   OSDP_SECURE_MESSAGE *secure_message;
@@ -104,6 +106,13 @@ if (ctx->verbosity > 8)
       // client crytogram looks ok, save RND.B
 
       memcpy (ctx->rnd_b, message + sizeof (ctx->rnd_a), sizeof (ctx->rnd_b));
+
+      // if it was a sane CCRYPT log it
+
+      memset(logging_args, 0, sizeof (logging_args));
+      sprintf(logging_args, "%02X%02X%02X%02X%02X%02X",
+        ctx->rnd_b [0], ctx->rnd_b [1], ctx->rnd_b [2], ctx->rnd_b [3], ctx->rnd_b [4], ctx->rnd_b [5]);
+      sprintf(cmd, "%s/run/ACU-actions/osdp_CCRYPT %s", ctx->service_root, logging_args); system(cmd);
 
       memcpy (message, ctx->rnd_b, sizeof (ctx->rnd_b));
       memcpy (message+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a));
