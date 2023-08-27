@@ -1,0 +1,2 @@
+{ "timeSec" : "1693167786", "timeNano" : "033907099", "io" : "in", "data" : " ff 53 00 08 00 04 60 eb aa", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "036554064", "io" : "out", "data" : " ff 53 80 0a 00 04 48 00 01 0f a1", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }

@@ -1,0 +1,16 @@
+{ "timeSec" : "1693167786", "timeNano" : "033907099", "io" : "in", "data" : " ff 53 00 08 00 04 60 eb aa", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "036554064", "io" : "out", "data" : " ff 53 80 0a 00 04 48 00 01 0f a1", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "129793611", "io" : "in", "data" : " ff 53 00 08 00 05 60 da 99", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "137544402", "io" : "out", "data" : " ff 53 80 08 00 05 40 68 9f", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "225694446", "io" : "in", "data" : " ff 53 00 08 00 06 60 89 cc", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "234128463", "io" : "out", "data" : " ff 53 80 08 00 06 40 3b ca", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "321372261", "io" : "in", "data" : " ff 53 00 08 00 07 60 b8 ff", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "329738310", "io" : "out", "data" : " ff 53 80 08 00 07 40 0a f9", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "433321447", "io" : "in", "data" : " ff 53 00 08 00 05 60 da 99", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "441561089", "io" : "out", "data" : " ff 53 80 08 00 05 40 68 9f", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "529234729", "io" : "in", "data" : " ff 53 00 08 00 06 60 89 cc", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "538105358", "io" : "out", "data" : " ff 53 80 08 00 06 40 3b ca", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "736886209", "io" : "in", "data" : " ff 53 00 08 00 07 60 b8 ff", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "745296580", "io" : "out", "data" : " ff 53 80 08 00 07 40 0a f9", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "832760221", "io" : "in", "data" : " ff 53 00 08 00 05 60 da 99", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
+{ "timeSec" : "1693167786", "timeNano" : "841033614", "io" : "out", "data" : " ff 53 80 08 00 05 40 68 9f", "osdpTraceVersion":"1", "osdpSource":"libosdp-conformance 1.33-2" }
