@@ -128,7 +128,7 @@ int
     if (status != ST_MSG_TOO_SHORT)
     {
       fprintf (context->log,
-        "parse_message did not clear the header.  msg_data_length %d. msg_check_type 0x%x m->check_size %d. m->lth %d. msg_lth %d status %d.\n",
+        "parse_message did not clear the header.  check header contents.  msg_data_length %d. msg_check_type 0x%x m->check_size %d. m->lth %d. msg_lth %d status %d.\n",
         msg_data_length, msg_check_type, m->check_size, m->lth, msg_lth,
         status);
       fflush (context->log);
