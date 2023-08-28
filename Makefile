@@ -37,6 +37,12 @@ osdp-tls:	build
 
 package:	osdp-tls
 	(cd package; make package)
+	echo ---
+	echo *** to make the documentation do "make documentation" ***
+	echo ---
+
+documentation:
+	(cd doc; make; cp *pdf ../opt/osdp-conformance/etc)
 
 service:	osdp-tls
 	(cd package; make service)
