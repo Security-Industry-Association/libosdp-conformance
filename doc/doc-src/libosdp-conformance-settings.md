@@ -4,12 +4,12 @@ Settings File Parameters
 Parameters
 ----------
 
-- address
+- address.  Set to a decimal address value in the range 0 to 126.
 - bits
 - capability-scbk-d
 - capability-sounder
 - capability-text
-- check
+- check.  Set to "CHECK" or "CHECKSUM".  Default CHECK.
 - disable_checking
 - enable-biometrics
 - enable-poll.  Set to 0 to cause the ACU to not poll upon startup.  Default 1.
