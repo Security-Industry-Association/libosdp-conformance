@@ -278,8 +278,9 @@ int
     value = json_object_get (root, "enable-poll");
     if (value != NULL)
     {
+      poll_value = -1;
       sscanf(json_string_value(value), "%d", &poll_value);
-      if (value EQUALS 0)
+      if (poll_value EQUALS 0)
       {
         ctx->enable_poll = OO_POLL_NEVER;
         fprintf(ctx->log, "Initial polling disabled.\n");
