@@ -267,6 +267,27 @@ int
   {
     ctx->secure_channel_use [OO_SCU_INST] = OO_SECURE_INSTALL;
   }; 
+
+  // parameter "enable-poll"
+
+  // set to 0 to start ACU but not start polling.
+  if (status EQUALS ST_OK)
+  {
+    int poll_value;
+
+    value = json_object_get (root, "enable-poll");
+    if (value != NULL)
+    {
+      poll_value = -1;
+      sscanf(json_string_value(value), "%d", &poll_value);
+      if (poll_value EQUALS 0)
+      {
+        ctx->enable_poll = OO_POLL_NEVER;
+        fprintf(ctx->log, "Initial polling disabled.\n");
+      };
+    };
+  };
+
   // parameter "enable-secure-channel"
 
   if (status EQUALS ST_OK)
@@ -818,7 +839,6 @@ int
   ctx->cparm_v = PARMV_NONE;
 
   status = oo_parse_config_parameters(ctx);
-//  status = parse_xml (test_buffer, sizeof (test_buffer));
 
   if (p_card.value_len EQUALS 26)
   {
