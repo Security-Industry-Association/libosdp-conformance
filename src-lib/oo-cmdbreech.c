@@ -1485,7 +1485,10 @@ int
         cmd->details_param_1 = i;
       };
 
-      // format can be specified (raw or p/data/p)
+      ctx->card_format = 0; // default
+
+      // format can be specified (raw or p/data/p) - use a hex value for others.
+
       option = json_object_get (root, "format");
       if (json_is_string (option))
       {
@@ -1493,7 +1496,12 @@ int
         if (0 EQUALS strcmp(vstr, "p-data-p"))
           ctx->card_format = 1;
         else
-          ctx->card_format = 0;
+        {
+          int fmt;
+
+          sscanf(vstr, "%x", &fmt);
+          ctx->card_format = 0xff & fmt;
+        };
       };
 
       if (ctx->verbosity > 3)
