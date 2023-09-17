@@ -1,0 +1,36 @@
+---
+title: Testing osdp_CRAUTH
+---
+
+Introduction
+============
+
+This document describes how to test CRAUTH and CRAUTHR with multi-part message fragments.
+
+Testing osdp_CRAUTH
+===================
+
+send a genauth command.  no keepactive, no acurxsize, no cap/pdcap so acu thinks the pd supports minimum
+size packets and that is all.
+
+{ "command":"genauth","template":"challenge","keyref":8E","algoref":"07","payload":"0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"}
+
+confirm calc of SDU is correct
+
+confirm monitor got it and dumped it properly
+
+with verbosity 9 confirm PD accepted it.
+
+confirm PD saved the fragment
+
+send an ack back (check this)
+
+when the ack comes back know there's a multi-part message in process and
+continue the CRAUTH.
+
+repeat until done.
+
+for now don't ask the PD to process it.
+
+also in secure channel
+

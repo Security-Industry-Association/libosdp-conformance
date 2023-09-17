@@ -1,7 +1,5 @@
 ---
 title: OSDP Capture Format
-author: Rodney Thayer
-date: August 27, 2023
 ---
 
 Introduction

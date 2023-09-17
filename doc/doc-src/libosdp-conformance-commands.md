@@ -43,6 +43,26 @@ There are no defaults.
 | send-direct    | 1 to send on the current PD id else sends on 0x7F       |
 |                |                                                         |
 
+Command genauth
+---------------
+
+This command sends an osdp_CRAUTH to the PD.
+
+There are no defaults.
+
+| Argument | Value                    |
+| -------- | -----                    |
+|          |                          |
+| command  | genauth                  |
+|          |                          |
+| template | "witness" or "challenge" |
+|          |                          |
+| keyref   | "8E" for card auth key.  See SP800-73-4 Part 1 Page 19 Table 4b.) |
+|          |                                                                                       |
+| algoref  | "07" for RSA, 11 fo ECC P-256 or 14 for ECC P-384.  See SP800-78-4 Table 6-2 page 12. |
+|          |                                                                                       |
+| payload  | "(hex bytes)", a well-formed Dynamic Authentication Template.                          |
+
 Command present-card
 --------------------
 
