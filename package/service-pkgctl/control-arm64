@@ -1,5 +1,5 @@
 Package: osdp-service
-Version: 1.35-4
+Version: 1.36-1
 Section: custom
 Priority: optional
 Architecture: arm64

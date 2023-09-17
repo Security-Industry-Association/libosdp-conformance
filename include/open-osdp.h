@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (35)
-#define OSDP_VERSION_BUILD ( 4)
+#define OSDP_VERSION_MINOR (36)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -455,6 +455,7 @@ typedef struct osdp_context
   int process_lock; // file handle to exclusivity lock
   int keep_results; // 0 for normal results flush; nonzero to flush results
   // configuration
+  int m_check; // OSDP_CHECKSUM or OSDP_CRC
   int privacy; // 1 to not display PII
   int disable_certificate_checking;
   int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled
@@ -1039,6 +1040,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_CMD_OUT_BAD_4            ( 99)
 #define ST_OSDP_CMD_OUT_BAD_5            (100)
 #define ST_OSDP_CMD_OUT_BAD_6            (101)
+#define ST_OSDP_CRC_REQUIRED             (102)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

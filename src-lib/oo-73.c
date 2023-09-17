@@ -1,7 +1,22 @@
 /*
   oo-73 - PD emulator for extended packet mode (PIV) credential processing.
 
-  (C)Copyright 2020-2022 Smithee Solutions LLC
+  (C)Copyright 2020-2023 Smithee Solutions LLC
+
+  Support provided by the Security Industry Association
+  http://www.securityindustry.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 
 
@@ -234,10 +249,40 @@ int
 { /* oo_build_genauth */
 
   OSDP_MULTI_HDR_IEC *challenge_hdr;
+  int max_in_secure;
+  int sdu_data_length;
   int status;
 
 
   status = ST_OK;
+
+  // calculate SDU for the first message.
+  // subtract standard header
+  // subtract CRC
+  // subtract SCS header and MAC if in secure channel
+
+  sdu_data_length = 128; // default max size;
+
+  sdu_data_length = sdu_data_length - (1+1+2+1+2); // less SOM, Addr, Len1, Len2, CTL, CRC
+
+  /*
+    if we are in secure channel the max SDU size must be small enough that 2 AES-128 cipherblocks
+    fit in the payload.
+  */
+  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+  {
+    sdu_data_length = sdu_data_length - (2+4);
+
+    max_in_secure = sdu_data_length + sizeof(OSDP_MULTI_HDR_IEC) - 1;
+    max_in_secure = (max_in_secure / OSDP_KEY_OCTETS) * OSDP_KEY_OCTETS;
+    sdu_data_length = max_in_secure - (sizeof(OSDP_MULTI_HDR_IEC) - 1);
+  };
+
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "SDU 0x%X details_length %d. official max %d.\n",
+      sdu_data_length, details_length, OSDP_OFFICIAL_MSG_MAX);
+  };
   if (details_length > OSDP_OFFICIAL_MSG_MAX)
     status = ST_OSDP_UNSUPPORTED_AUTH_PAYLOAD;
   if (status EQUALS ST_OK)
@@ -247,8 +292,11 @@ int
     challenge_hdr->total_msb = (details_length & 0xff00) >> 8;
     challenge_hdr->offset_lsb = 0;
     challenge_hdr->offset_msb = 0;
-    challenge_hdr->data_len_lsb = challenge_hdr->total_lsb;
-    challenge_hdr->data_len_msb = challenge_hdr->total_msb;
+
+    // only send a chunk at this time (if it all fits this matches the total)
+    challenge_hdr->data_len_lsb = 0xFF & sdu_data_length;
+    challenge_hdr->data_len_msb = (0xFF00 & sdu_data_length) >> 8;
+
     if (*payload_length > (sizeof(*challenge_hdr)-1+details_length))
     {
       *payload_length = sizeof(*challenge_hdr) - 1 + details_length;
