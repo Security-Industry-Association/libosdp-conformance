@@ -25,6 +25,8 @@
 
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+extern OSDP_PARAMETERS p_card;
+extern char multipart_message_buffer_1 [64*1024];
 
 
 int
@@ -38,6 +40,9 @@ int
   char *crauth_payload;
   int current_length;
   int current_security;
+  int inbound_fragment_length;
+  int inbound_offset;
+  int inbound_total_length;
   OSDP_MULTI_HDR_IEC *resp_hdr;
   int response_length;
   unsigned char response_payload [2048];
@@ -62,6 +67,26 @@ int
     crauth_header->algo_payload,
     *(crauth_payload), *(1+crauth_payload), *(2+crauth_payload));
 
+  inbound_offset = crauth_header->offset_msb*256 + crauth_header->offset_lsb;
+  inbound_fragment_length = crauth_header->data_len_msb*256 + crauth_header->data_len_lsb;
+  inbound_total_length = crauth_header->total_msb*256 + crauth_header->total_lsb;
+  if (inbound_offset EQUALS 0)
+  {
+    fprintf(ctx->log, "  CRAUTH: new request (offset zero)\n");
+  };
+  if (ctx->next_in < inbound_total_length)
+  {
+    memcpy(ctx->mmsgbuf+ctx->next_in, &(crauth_header->algo_payload), inbound_fragment_length);
+    ctx->next_in = ctx->next_in + inbound_fragment_length;
+    fprintf(ctx->log, "  CRAUTH: accumulating input, now %d. of %d.\n",
+      ctx->next_in, ctx->total_inbound_multipart);
+  };
+  if (ctx->next_in < inbound_total_length)
+    status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
+  else
+  {
+// zzz else process it.
+// OLD CODE
   memset(response_payload, 0, sizeof(response_payload));
   resp_hdr = (OSDP_MULTI_HDR_IEC *)&(response_payload [0]);
 rlth=256;
@@ -77,6 +102,7 @@ rlth=256;
   status = send_message_ex(ctx, OSDP_CRAUTHR, ctx->pd_address, &current_length,
     response_length, response_payload, current_security, 0, NULL);
 fprintf(stderr, "DEBUG: CRAUTHR sent\n");
+  };
 
   return(status);
 
@@ -256,6 +282,10 @@ int
 
   status = ST_OK;
 
+  // save away the message
+
+  memcpy(multipart_message_buffer_1, details, details_length);
+
   // calculate SDU for the first message.
   // subtract standard header
   // subtract CRC
@@ -276,6 +306,7 @@ int
     max_in_secure = sdu_data_length + sizeof(OSDP_MULTI_HDR_IEC) - 1;
     max_in_secure = (max_in_secure / OSDP_KEY_OCTETS) * OSDP_KEY_OCTETS;
     sdu_data_length = max_in_secure - (sizeof(OSDP_MULTI_HDR_IEC) - 1);
+    ctx->current_sdu_length = sdu_data_length;
   };
 
   if (ctx->verbosity > 3)
@@ -309,4 +340,53 @@ int
   return(status);
 
 } /* oo_build_genauth */
+
+
+/*
+
+  this sends the next fragment.  it pulls it out of multipart_message_buffer_1
+
+*/
+
+int oo_send_next_genauth_fragment
+  (OSDP_CONTEXT *ctx)
+
+{ /* oo_send_next_genauth_fragment */
+
+  OSDP_MULTI_HDR_IEC *challenge_hdr;
+  int current_length;
+  unsigned char request_payload [2048];
+  int status;
+  int total_size;
+
+
+  status = ST_OK;
+  memset(request_payload, 0, sizeof(request_payload));
+
+  // calculate how much is left.  adjust the current_sdu_length if we are near the end.
+  if ((ctx->next_out + ctx->current_sdu_length) > ctx->total_outbound_multipart)
+    ctx->current_sdu_length = ctx->total_outbound_multipart - ctx->next_out;
+
+  challenge_hdr = (OSDP_MULTI_HDR_IEC *)request_payload;
+  challenge_hdr->total_lsb = ctx->total_outbound_multipart & 0xff;
+  challenge_hdr->total_msb = (ctx->total_outbound_multipart & 0xff00) >> 8;
+  challenge_hdr->offset_lsb = ctx->next_out & 0xff;
+  challenge_hdr->offset_msb = (ctx->next_out & 0xff00) >> 8;
+  challenge_hdr->data_len_lsb = 0xFF & ctx->current_sdu_length;
+  challenge_hdr->data_len_msb = (0xFF00 & ctx->current_sdu_length) >> 8;
+
+  // copy in the next chunk
+
+  memcpy(&(challenge_hdr->algo_payload), multipart_message_buffer_1+ctx->next_out, ctx->current_sdu_length);
+  ctx->next_out = ctx->next_out + ctx->current_sdu_length;
+
+  // send it.
+
+  total_size = sizeof(OSDP_MULTI_HDR_IEC) - 1 + ctx->current_sdu_length;
+  current_length = 0;
+  status = send_message_ex(ctx, OSDP_CRAUTH, p_card.addr,
+    &current_length, total_size, (unsigned char *)challenge_hdr, OSDP_SEC_SCS_17, 0, NULL);
+  return(status);
+
+} /* oo_send_next_genauth_fragment */
 

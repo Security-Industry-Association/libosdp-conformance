@@ -586,14 +586,24 @@ typedef struct osdp_context
 
   // for multipart messages, in or out
   char *mmsgbuf;
-  unsigned short int total_len;
+
+  // for inbound
+  unsigned short int next_in;
+  unsigned short int total_inbound_multipart;
+
+  // for outbound
+  unsigned short int next_out;
+  unsigned short int total_outbound_multipart;
+  int current_sdu_length;
+
+//  unsigned short int total_len;
 
   // for assembling multipart message.  assumes one context structure
   // per PD we talk to
-  unsigned short int next_in;
 
   // for transmitting multi-part
-  unsigned short int next_out;
+//  unsigned short int next_out;
+
   int authenticated;
   char command_path [1024];
   int cmd_hist_counter;
@@ -1093,6 +1103,7 @@ char * oo_lookup_nak_text(int nak_code);
 int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
+int oo_send_next_genauth_fragment(OSDP_CONTEXT *ctx);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
