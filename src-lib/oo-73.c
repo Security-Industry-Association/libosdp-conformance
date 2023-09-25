@@ -285,6 +285,7 @@ int
   // save away the message
 
   memcpy(multipart_message_buffer_1, details, details_length);
+  ctx->total_outbound_multipart = details_length;
 
   // calculate SDU for the first message.
   // subtract standard header
@@ -328,14 +329,12 @@ int
     challenge_hdr->data_len_lsb = 0xFF & sdu_data_length;
     challenge_hdr->data_len_msb = (0xFF00 & sdu_data_length) >> 8;
 
-    if (*payload_length > (sizeof(*challenge_hdr)-1+details_length))
-    {
-      *payload_length = sizeof(*challenge_hdr) - 1 + details_length;
-      memcpy(&(challenge_hdr->algo_payload), details, details_length);
-      dump_buffer_log(ctx, "oo_build_genauth: ", challenge_payload_buffer, *payload_length);
-    }
-    else
-      status = ST_OSDP_PAYLOAD_TOO_SHORT;
+    // copy in the first chunk.
+
+    *payload_length = sizeof(*challenge_hdr) - 1 + sdu_data_length;
+    memcpy(&(challenge_hdr->algo_payload), multipart_message_buffer_1, sdu_data_length);
+
+    ctx->next_out = sdu_data_length;
   };
   return(status);
 

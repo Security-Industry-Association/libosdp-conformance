@@ -67,6 +67,7 @@ int
   extern unsigned int web_color_lookup [];
 
 
+fprintf(stderr, "process_osdp_message: top\n");
   status = ST_MSG_UNKNOWN;
   oo_osdp_max_packet = 768; // less than the 1K in some of the buffer routines
   context->capability_max_packet = oo_osdp_max_packet;
@@ -487,6 +488,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     switch (msg->msg_cmd)
     {
     case OSDP_ACK:
+fprintf(stderr, "DEBUG: ack check multi next_out %d total_outbound_multipart %d\n", context->next_out,
+  context->total_outbound_multipart);
       status = ST_OK;
 
       /*

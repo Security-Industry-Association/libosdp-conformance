@@ -274,11 +274,8 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
     case OSDP_CMDB_WITNESS:
       {
         unsigned char challenge_command [OSDP_OFFICIAL_MSG_MAX];
-        OSDP_MULTI_HDR_IEC *challenge_hdr;
         int challenge_payload_size;
-        int challenge_size;
         unsigned char osdp_command;
-        int total_size;
 
         status = ST_OK;
         if (ctx->verbosity > 3)
@@ -290,11 +287,9 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
         if (status EQUALS ST_OK)
         {
         osdp_command = OSDP_GENAUTH;
-        challenge_size = details_length;
         challenge_payload_size = sizeof(challenge_command);
         strcpy (context->test_in_progress, "x-challenge");
         memset (&challenge_command, 0, sizeof (challenge_command));
-        total_size = challenge_size + sizeof(*challenge_hdr) - 1; // hdr has 1 byte of data
 
         status = oo_build_genauth(ctx, (unsigned char *)challenge_command, &challenge_payload_size,
           (unsigned char *)details, details_length);
@@ -303,12 +298,11 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
           fprintf(ctx->log, "  cmd %02X challenge payload size %d. (status from oo_build_genauth %d.)\n",
             osdp_command, challenge_payload_size, status);
         };
-        details_length = total_size;
         if (command EQUALS OSDP_CMDB_CHALLENGE)
           osdp_command = OSDP_CRAUTH;
         current_length = 0;
         status = send_message_ex(context, osdp_command, p_card.addr,
-          &current_length, total_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);
+          &current_length, challenge_payload_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);
 
 // if it was a witness, sleep a while in case it takes a while for the ACK to get back.
 if (command EQUALS OSDP_CMDB_WITNESS)
