@@ -1,5 +1,5 @@
 /*
-  oosdp_files - osdp file io/
+  oosdp_files - osdp filetransfer management and io/
 
   (C)2017-2023 Smithee Solutions LLC
 
@@ -131,6 +131,67 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
   return(status);
 
 } /* oo_filetransfer_initiate */
+
+
+int oo_filetransfer_SDU_offer
+  (OSDP_CONTEXT *ctx)
+
+{ /* oo_filetransfer_SDU_offer */
+
+  int offered_size;
+
+
+  offered_size = ctx->max_message;
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "FTMsgUpdateMax-1 %d.\n", offered_size);
+  if (ctx->max_message > 0)
+  {
+    offered_size = offered_size - 14; // headers and footers, secure channel
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "FTMsgUpdateMax-2 %d.\n", offered_size);
+    offered_size = ((offered_size / OSDP_KEY_OCTETS) * OSDP_KEY_OCTETS) - 1; // fit in cipher blocks with minimal padding
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "FTMsgUpdateMax-3 %d.\n", offered_size);
+    offered_size = offered_size - 11; // less osdp_FILETRANSFER header
+  };
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "FTMsgUpdateMax offered: %d.\n", offered_size);
+
+  return(offered_size);
+
+} /* oo_filetransfer_SDU_offer */
+
+
+/*
+  oo_send_ftstat - PD response sent during file transfer.
+
+  May happen inside a secure channel in which case this is an SCS-18.
+*/
+int oo_send_ftstat
+    (OSDP_CONTEXT *ctx,
+    OSDP_HDR_FTSTAT *response)
+
+{ /* oo_send_ftstat */
+
+  int current_length;
+  int status;
+  int to_send;
+
+
+  status = ST_OK;
+  osdp_test_set_status(OOC_SYMBOL_cmd_filetransfer, OCONFORM_EXERCISED);
+  osdp_test_set_status(OOC_SYMBOL_resp_ftstat, OCONFORM_EXERCISED);
+
+  to_send = sizeof(*response);
+  current_length = 0;
+//  status = send_message (ctx, OSDP_FTSTAT, p_card.addr, &current_length, to_send, (unsigned char *)response);
+  status = send_message_ex(ctx, OSDP_FTSTAT, p_card.addr,
+    &current_length, to_send, (unsigned char *)response,
+    OSDP_SEC_SCS_18, 0, NULL);
+  return(status);
+
+} /* oo_send_ftstat */
+
 
 // function osdp_filetransfer_validate:
 // validates values, returns counters explicitly and in context

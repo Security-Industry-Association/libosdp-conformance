@@ -87,7 +87,7 @@ char *
 } /* oo_lookup_nak_text */
 
 
-int oo_filetransfer_SDU_offer
+int ZZoo_filetransfer_SDU_offer
   (OSDP_CONTEXT *ctx)
 
 { /* oo_filetransfer_SDU_offer */
@@ -438,7 +438,7 @@ void
 
 
 int
-  osdp_send_ftstat
+  ZZZosdp_send_ftstat
     (OSDP_CONTEXT *ctx,
     OSDP_HDR_FTSTAT *response)
 

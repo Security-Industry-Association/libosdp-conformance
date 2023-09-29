@@ -1103,6 +1103,7 @@ char * oo_lookup_nak_text(int nak_code);
 int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
+int oo_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int oo_send_next_genauth_fragment(OSDP_CONTEXT *ctx);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
@@ -1136,7 +1137,6 @@ void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
 char *osdp_sec_block_dump (unsigned char *sec_block);
 int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
-int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_stream_read(OSDP_CONTEXT *ctx, char *buffer, int buffer_input_length);
 
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

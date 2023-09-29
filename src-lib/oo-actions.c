@@ -163,7 +163,7 @@ int
 
         osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
           response.FtStatusDetail);
-        status = osdp_send_ftstat(ctx, &response);
+        status = oo_send_ftstat(ctx, &response);
         (void) osdp_wrapup_filetransfer(ctx);
       };
     };
@@ -178,7 +178,7 @@ int
 
       osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
         response.FtStatusDetail);
-      status = osdp_send_ftstat(ctx, &response);
+      status = oo_send_ftstat(ctx, &response);
       if (ctx->verbosity > 3)
       {
         if (status != ST_OK)
@@ -195,7 +195,7 @@ int
       {
         osdp_doubleByte_to_array(OSDP_FTSTAT_PROCESSED,
           response.FtStatusDetail);
-        status = osdp_send_ftstat(ctx, &response);
+        status = oo_send_ftstat(ctx, &response);
         if (ctx->verbosity > 3)
         {
           if (status != ST_OK)
@@ -244,7 +244,7 @@ fprintf(stderr, "DEBUG: trimmed offered size to  pd_filetransfer_payload (%d.)\n
             response.FtUpdateMsgMax [0], response.FtUpdateMsgMax [1]);
         };
         osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
-        status = osdp_send_ftstat(ctx, &response);
+        status = oo_send_ftstat(ctx, &response);
       };
     };
   };
@@ -254,7 +254,7 @@ fprintf(stderr, "DEBUG: trimmed offered size to  pd_filetransfer_payload (%d.)\n
 
     osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
       response.FtStatusDetail);
-    status = osdp_send_ftstat(ctx, &response);
+    status = oo_send_ftstat(ctx, &response);
     if (status EQUALS ST_OK)
       osdp_wrapup_filetransfer(ctx);
 
@@ -322,7 +322,7 @@ int
     {
       fflush(ctx->log);
       osdp_wrapup_filetransfer(ctx);
-// make sure removing this doesn't break wavelynx...      status = osdp_send_filetransfer(ctx); // will send benign msg
+// make sure removing this doesn't break wavelynx...      status = oo_send_filetransfer(ctx); // will send benign msg
     };
   };
   };
@@ -619,7 +619,7 @@ int
         entry->function_code);
       break;
     case OSDP_CAP_VERSION:
-      fprintf(ctx->log, "PD supports OSDP version %d\n", entry->function_code);
+      fprintf(ctx->log, "PD supports OSDP version %d\n", entry->compliance);
       break;
     default:
       status = ST_OSDP_UNKNOWN_CAPABILITY;
