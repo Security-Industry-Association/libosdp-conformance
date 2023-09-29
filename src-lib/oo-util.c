@@ -67,7 +67,6 @@ int
   extern unsigned int web_color_lookup [];
 
 
-fprintf(stderr, "process_osdp_message: top\n");
   status = ST_MSG_UNKNOWN;
   oo_osdp_max_packet = 768; // less than the 1K in some of the buffer routines
   context->capability_max_packet = oo_osdp_max_packet;
