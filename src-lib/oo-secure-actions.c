@@ -179,7 +179,9 @@ int
 
   if (OO_SCS_USE_ENABLED != ctx->secure_channel_use[OO_SCU_ENAB])
   {
-    fprintf(ctx->log, "osdp_CHLNG received but secure_channel_use is 0x%x\n",
+    if (ctx->secure_channel_use [OO_SCU_ENAB] & 0x80)
+      fprintf(ctx->log, "=== secure channel last SCS was %02X, not available to start set-up.\n", 0x7F & (ctx->secure_channel_use [OO_SCU_ENAB]));
+    fprintf(ctx->log, "=== secure channel state %X\n",
       ctx->secure_channel_use[OO_SCU_ENAB]);
     nak = 1;
   };
