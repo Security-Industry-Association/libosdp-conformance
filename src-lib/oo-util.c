@@ -487,7 +487,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     switch (msg->msg_cmd)
     {
     case OSDP_ACK:
-fprintf(stderr, "DEBUG: ack check multi next_out %d total_outbound_multipart %d\n", context->next_out,
+      if (context->verbosity > 3)
+        fprintf(stderr, "DEBUG: ack check multi next_out %d total_outbound_multipart %d\n", context->next_out,
   context->total_outbound_multipart);
       status = ST_OK;
 
