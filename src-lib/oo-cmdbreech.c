@@ -311,7 +311,7 @@ int
     };
     break;
 
-  // command MFG.  Arguments are OUI, command-id, command-specific-data.
+  // command MFGREP.  Arguments are OUI, command-id, command-specific-data.
   // c-s-d is is 2-hexit bytes, length inferred.
 
   case OSDP_CMDB_MFGREP:
