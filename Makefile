@@ -55,6 +55,7 @@ clean:
 	(cd src-ui; make clean; cd ..)
 	(cd src-tools; make clean; cd ..)
 	(cd test; make clean; cd ..)
+	(cd doc; make clean; )
 	(cd package; make clean)
 	rm -f release-osdp-conformance.tgz *.deb
 	rm -rf opt

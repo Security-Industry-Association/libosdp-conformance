@@ -1,7 +1,22 @@
 /*
   oo-73 - PD emulator for extended packet mode (PIV) credential processing.
 
-  (C)Copyright 2020-2022 Smithee Solutions LLC
+  (C)Copyright 2020-2023 Smithee Solutions LLC
+
+  Support provided by the Security Industry Association
+  http://www.securityindustry.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 */
 
 
@@ -10,6 +25,8 @@
 
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+extern OSDP_PARAMETERS p_card;
+extern char multipart_message_buffer_1 [64*1024];
 
 
 int
@@ -23,6 +40,9 @@ int
   char *crauth_payload;
   int current_length;
   int current_security;
+  int inbound_fragment_length;
+  int inbound_offset;
+  int inbound_total_length;
   OSDP_MULTI_HDR_IEC *resp_hdr;
   int response_length;
   unsigned char response_payload [2048];
@@ -47,6 +67,26 @@ int
     crauth_header->algo_payload,
     *(crauth_payload), *(1+crauth_payload), *(2+crauth_payload));
 
+  inbound_offset = crauth_header->offset_msb*256 + crauth_header->offset_lsb;
+  inbound_fragment_length = crauth_header->data_len_msb*256 + crauth_header->data_len_lsb;
+  inbound_total_length = crauth_header->total_msb*256 + crauth_header->total_lsb;
+  if (inbound_offset EQUALS 0)
+  {
+    fprintf(ctx->log, "  CRAUTH: new request (offset zero)\n");
+  };
+  if (ctx->next_in < inbound_total_length)
+  {
+    memcpy(ctx->mmsgbuf+ctx->next_in, &(crauth_header->algo_payload), inbound_fragment_length);
+    ctx->next_in = ctx->next_in + inbound_fragment_length;
+    fprintf(ctx->log, "  CRAUTH: accumulating input, now %d. of %d.\n",
+      ctx->next_in, ctx->total_inbound_multipart);
+  };
+  if (ctx->next_in < inbound_total_length)
+    status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
+  else
+  {
+// zzz else process it.
+// OLD CODE
   memset(response_payload, 0, sizeof(response_payload));
   resp_hdr = (OSDP_MULTI_HDR_IEC *)&(response_payload [0]);
 rlth=256;
@@ -62,6 +102,7 @@ rlth=256;
   status = send_message_ex(ctx, OSDP_CRAUTHR, ctx->pd_address, &current_length,
     response_length, response_payload, current_security, 0, NULL);
 fprintf(stderr, "DEBUG: CRAUTHR sent\n");
+  };
 
   return(status);
 
@@ -234,10 +275,46 @@ int
 { /* oo_build_genauth */
 
   OSDP_MULTI_HDR_IEC *challenge_hdr;
+  int max_in_secure;
+  int sdu_data_length;
   int status;
 
 
   status = ST_OK;
+
+  // save away the message
+
+  memcpy(multipart_message_buffer_1, details, details_length);
+  ctx->total_outbound_multipart = details_length;
+
+  // calculate SDU for the first message.
+  // subtract standard header
+  // subtract CRC
+  // subtract SCS header and MAC if in secure channel
+
+  sdu_data_length = 128; // default max size;
+
+  sdu_data_length = sdu_data_length - (1+1+2+1+2); // less SOM, Addr, Len1, Len2, CTL, CRC
+
+  /*
+    if we are in secure channel the max SDU size must be small enough that 2 AES-128 cipherblocks
+    fit in the payload.
+  */
+  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+  {
+    sdu_data_length = sdu_data_length - (2+4);
+
+    max_in_secure = sdu_data_length + sizeof(OSDP_MULTI_HDR_IEC) - 1;
+    max_in_secure = (max_in_secure / OSDP_KEY_OCTETS) * OSDP_KEY_OCTETS;
+    sdu_data_length = max_in_secure - (sizeof(OSDP_MULTI_HDR_IEC) - 1);
+    ctx->current_sdu_length = sdu_data_length;
+  };
+
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "SDU 0x%X details_length %d. official max %d.\n",
+      sdu_data_length, details_length, OSDP_OFFICIAL_MSG_MAX);
+  };
   if (details_length > OSDP_OFFICIAL_MSG_MAX)
     status = ST_OSDP_UNSUPPORTED_AUTH_PAYLOAD;
   if (status EQUALS ST_OK)
@@ -247,18 +324,68 @@ int
     challenge_hdr->total_msb = (details_length & 0xff00) >> 8;
     challenge_hdr->offset_lsb = 0;
     challenge_hdr->offset_msb = 0;
-    challenge_hdr->data_len_lsb = challenge_hdr->total_lsb;
-    challenge_hdr->data_len_msb = challenge_hdr->total_msb;
-    if (*payload_length > (sizeof(*challenge_hdr)-1+details_length))
-    {
-      *payload_length = sizeof(*challenge_hdr) - 1 + details_length;
-      memcpy(&(challenge_hdr->algo_payload), details, details_length);
-      dump_buffer_log(ctx, "oo_build_genauth: ", challenge_payload_buffer, *payload_length);
-    }
-    else
-      status = ST_OSDP_PAYLOAD_TOO_SHORT;
+
+    // only send a chunk at this time (if it all fits this matches the total)
+    challenge_hdr->data_len_lsb = 0xFF & sdu_data_length;
+    challenge_hdr->data_len_msb = (0xFF00 & sdu_data_length) >> 8;
+
+    // copy in the first chunk.
+
+    *payload_length = sizeof(*challenge_hdr) - 1 + sdu_data_length;
+    memcpy(&(challenge_hdr->algo_payload), multipart_message_buffer_1, sdu_data_length);
+
+    ctx->next_out = sdu_data_length;
   };
   return(status);
 
 } /* oo_build_genauth */
+
+
+/*
+
+  this sends the next fragment.  it pulls it out of multipart_message_buffer_1
+
+*/
+
+int oo_send_next_genauth_fragment
+  (OSDP_CONTEXT *ctx)
+
+{ /* oo_send_next_genauth_fragment */
+
+  OSDP_MULTI_HDR_IEC *challenge_hdr;
+  int current_length;
+  unsigned char request_payload [2048];
+  int status;
+  int total_size;
+
+
+  status = ST_OK;
+  memset(request_payload, 0, sizeof(request_payload));
+
+  // calculate how much is left.  adjust the current_sdu_length if we are near the end.
+  if ((ctx->next_out + ctx->current_sdu_length) > ctx->total_outbound_multipart)
+    ctx->current_sdu_length = ctx->total_outbound_multipart - ctx->next_out;
+
+  challenge_hdr = (OSDP_MULTI_HDR_IEC *)request_payload;
+  challenge_hdr->total_lsb = ctx->total_outbound_multipart & 0xff;
+  challenge_hdr->total_msb = (ctx->total_outbound_multipart & 0xff00) >> 8;
+  challenge_hdr->offset_lsb = ctx->next_out & 0xff;
+  challenge_hdr->offset_msb = (ctx->next_out & 0xff00) >> 8;
+  challenge_hdr->data_len_lsb = 0xFF & ctx->current_sdu_length;
+  challenge_hdr->data_len_msb = (0xFF00 & ctx->current_sdu_length) >> 8;
+
+  // copy in the next chunk
+
+  memcpy(&(challenge_hdr->algo_payload), multipart_message_buffer_1+ctx->next_out, ctx->current_sdu_length);
+  ctx->next_out = ctx->next_out + ctx->current_sdu_length;
+
+  // send it.
+
+  total_size = sizeof(OSDP_MULTI_HDR_IEC) - 1 + ctx->current_sdu_length;
+  current_length = 0;
+  status = send_message_ex(ctx, OSDP_CRAUTH, p_card.addr,
+    &current_length, total_size, (unsigned char *)challenge_hdr, OSDP_SEC_SCS_17, 0, NULL);
+  return(status);
+
+} /* oo_send_next_genauth_fragment */
 

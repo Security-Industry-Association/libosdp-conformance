@@ -1,7 +1,7 @@
 /*
   oo-printmsg - open osdp message printing routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -320,6 +320,7 @@ int
   int i;
   OSDP_HDR *oh;
   char raw_fmt [1024];
+  unsigned long long raw_number;
   int status;
   char tstr [2*1024];
 
@@ -353,25 +354,37 @@ int
   }
   else
   {
-    strcpy(raw_fmt, "unspecified");
-    if (*(osdp_msg->data_payload+1) EQUALS 1)
+    switch(*(osdp_msg->data_payload+1))
+    {
+    case 0:
+      strcpy(raw_fmt, "unspecified");
+      break;
+    case 1:
       strcpy(raw_fmt, "P/data/P");
-    if (*(osdp_msg->data_payload+1) > 1)
+      break;
+    case 0x80:
+      strcpy(raw_fmt, "private");
+      break;
+    default:
       sprintf(raw_fmt, "unknown(%d)", *(osdp_msg->data_payload+1));
+      break;
+    };
 
     bits = *(osdp_msg->data_payload+2) + ((*(osdp_msg->data_payload+3))<<8);
     sprintf(tlogmsg,
       "  Raw card: Format %s (Reader %d) %d bits (%d bytes in payload)\n",
       raw_fmt, *(osdp_msg->data_payload+0), bits, count);
 
+    raw_number = 0L;
     hstr [0] = 0;
     for (i=0; i<count; i++)
     {
       d = *(unsigned char *)(osdp_msg->data_payload+4+i);
+      raw_number = raw_number*256 + d;
       sprintf(tstr, "%02x", d);
       strcat(hstr, tstr);
     };
-    sprintf(tstr, "  Card data: %s\n", hstr);
+    sprintf(tstr, "  Card data: %s\n  in decimal: %lld\n", hstr, raw_number);
     strcat(tlogmsg, tstr);
   };
 

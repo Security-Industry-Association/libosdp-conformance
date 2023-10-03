@@ -487,7 +487,18 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     switch (msg->msg_cmd)
     {
     case OSDP_ACK:
+      if (context->verbosity > 3)
+        fprintf(stderr, "DEBUG: ack check multi next_out %d total_outbound_multipart %d\n", context->next_out,
+  context->total_outbound_multipart);
       status = ST_OK;
+
+      /*
+        if we were in the middle of sending a CRAUTH send the next fragment
+      */
+      if (context->next_out < context->total_outbound_multipart)
+      {
+        status= oo_send_next_genauth_fragment(context);
+      };
 
       // for the moment receiving an ACK is considered processing.
       // really should be more fine-grained

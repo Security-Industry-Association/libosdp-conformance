@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (35)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_MINOR (36)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -455,6 +455,7 @@ typedef struct osdp_context
   int process_lock; // file handle to exclusivity lock
   int keep_results; // 0 for normal results flush; nonzero to flush results
   // configuration
+  int m_check; // OSDP_CHECKSUM or OSDP_CRC
   int privacy; // 1 to not display PII
   int disable_certificate_checking;
   int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled
@@ -585,14 +586,24 @@ typedef struct osdp_context
 
   // for multipart messages, in or out
   char *mmsgbuf;
-  unsigned short int total_len;
+
+  // for inbound
+  unsigned short int next_in;
+  unsigned short int total_inbound_multipart;
+
+  // for outbound
+  unsigned short int next_out;
+  unsigned short int total_outbound_multipart;
+  int current_sdu_length;
+
+//  unsigned short int total_len;
 
   // for assembling multipart message.  assumes one context structure
   // per PD we talk to
-  unsigned short int next_in;
 
   // for transmitting multi-part
-  unsigned short int next_out;
+//  unsigned short int next_out;
+
   int authenticated;
   char command_path [1024];
   int cmd_hist_counter;
@@ -1039,6 +1050,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_CMD_OUT_BAD_4            ( 99)
 #define ST_OSDP_CMD_OUT_BAD_5            (100)
 #define ST_OSDP_CMD_OUT_BAD_6            (101)
+#define ST_OSDP_CRC_REQUIRED             (102)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
@@ -1091,6 +1103,8 @@ char * oo_lookup_nak_text(int nak_code);
 int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
+int oo_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
+int oo_send_next_genauth_fragment(OSDP_CONTEXT *ctx);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);
@@ -1123,7 +1137,6 @@ void osdp_reset_background_timer (OSDP_CONTEXT *ctx);
 void osdp_reset_secure_channel (OSDP_CONTEXT *ctx);
 char *osdp_sec_block_dump (unsigned char *sec_block);
 int osdp_send_filetransfer (OSDP_CONTEXT *ctx);
-int osdp_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int osdp_stream_read(OSDP_CONTEXT *ctx, char *buffer, int buffer_input_length);
 
 int osdp_setup_scbk (OSDP_CONTEXT *ctx, OSDP_MSG *msg);

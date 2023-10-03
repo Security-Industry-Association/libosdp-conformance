@@ -874,6 +874,8 @@ int
       parity1, facility, parity2, cardholder);
   };
 
+  ctx->m_check = m_check;  // context field mimics old "m_check" global
+
   return (status);
 
 } /* read_config */

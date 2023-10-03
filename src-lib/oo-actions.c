@@ -163,7 +163,7 @@ int
 
         osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
           response.FtStatusDetail);
-        status = osdp_send_ftstat(ctx, &response);
+        status = oo_send_ftstat(ctx, &response);
         (void) osdp_wrapup_filetransfer(ctx);
       };
     };
@@ -178,7 +178,7 @@ int
 
       osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
         response.FtStatusDetail);
-      status = osdp_send_ftstat(ctx, &response);
+      status = oo_send_ftstat(ctx, &response);
       if (ctx->verbosity > 3)
       {
         if (status != ST_OK)
@@ -195,7 +195,7 @@ int
       {
         osdp_doubleByte_to_array(OSDP_FTSTAT_PROCESSED,
           response.FtStatusDetail);
-        status = osdp_send_ftstat(ctx, &response);
+        status = oo_send_ftstat(ctx, &response);
         if (ctx->verbosity > 3)
         {
           if (status != ST_OK)
@@ -244,7 +244,7 @@ fprintf(stderr, "DEBUG: trimmed offered size to  pd_filetransfer_payload (%d.)\n
             response.FtUpdateMsgMax [0], response.FtUpdateMsgMax [1]);
         };
         osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
-        status = osdp_send_ftstat(ctx, &response);
+        status = oo_send_ftstat(ctx, &response);
       };
     };
   };
@@ -254,7 +254,7 @@ fprintf(stderr, "DEBUG: trimmed offered size to  pd_filetransfer_payload (%d.)\n
 
     osdp_doubleByte_to_array(OSDP_FTSTAT_ABORT_TRANSFER,
       response.FtStatusDetail);
-    status = osdp_send_ftstat(ctx, &response);
+    status = oo_send_ftstat(ctx, &response);
     if (status EQUALS ST_OK)
       osdp_wrapup_filetransfer(ctx);
 
@@ -322,7 +322,7 @@ int
     {
       fflush(ctx->log);
       osdp_wrapup_filetransfer(ctx);
-// make sure removing this doesn't break wavelynx...      status = osdp_send_filetransfer(ctx); // will send benign msg
+// make sure removing this doesn't break wavelynx...      status = oo_send_filetransfer(ctx); // will send benign msg
     };
   };
   };
@@ -619,7 +619,7 @@ int
         entry->function_code);
       break;
     case OSDP_CAP_VERSION:
-      fprintf(ctx->log, "PD supports OSDP version %d\n", entry->function_code);
+      fprintf(ctx->log, "PD supports OSDP version %d\n", entry->compliance);
       break;
     default:
       status = ST_OSDP_UNKNOWN_CAPABILITY;
@@ -905,10 +905,11 @@ int
 { /* action_osdp_RAW */
 
   int bits;
-  char cmd [3072];
+  char cmd [16384]; // bigger than hex_details
   OSDP_COMMAND command_for_later;
   char details [1024];
   int display;
+  char hex_details [4096];
   char hstr [1024]; // hex string of raw card data payload
   unsigned char *raw_data;
   int status;
@@ -984,21 +985,23 @@ int
         int i;
         char octet [3];
 
+        hex_details [0] = 0;
         strcpy(details, "\"payload\":\"");
         for (i=0; i<msg->data_length; i++)
         {
           sprintf(octet, "%02x", *(msg->data_payload+i));
           strcat(details, octet);
+          strcat(hex_details, octet);
         };
         strcat(details, "\",");
       };
 
-      // run the action routine with the bytes,bit count,format
+      // run the action routine with the bytes,bit count,format, details
 
       sprintf(cmd,
-        "%s/run/ACU-actions/osdp_RAW %s %d %d",
+        "%s/run/ACU-actions/osdp_RAW %s %d %d %s",
         ctx->service_root,
-        hstr, bits, *(msg->data_payload+1));
+        hstr, bits, *(msg->data_payload+1), hex_details);
       system(cmd);
     }; // not encrypted
 
