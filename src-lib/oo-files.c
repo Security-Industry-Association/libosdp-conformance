@@ -477,9 +477,12 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
   value = json_object_get(saved_parameters_root, "serial-speed");
   if (json_is_string(value))
   {
-    char new_speed [1024];
-    strcpy(new_speed, json_string_value(value));
-fprintf(stderr, "DEBUG: new speed %s\n", new_speed);
+fprintf(stderr, "DEBUG: new speed would be %s\n", json_string_value(value));
+  };
+  value = json_object_get(saved_parameters_root, "pd-address");
+  if (json_is_string(value))
+  {
+fprintf(stderr, "DEBUG: new PD address would be %s\n", json_string_value(value));
   };
 
   // also load saved credentials.
@@ -556,8 +559,8 @@ int
       fprintf(pf, "%02x", scbk_to_save [i]);
     };
 
-    fprintf(pf, "\",\n  \"serial-speed\" : \"%s\",\n",
-      ctx->serial_speed);
+    fprintf(pf, "\",\n  \"serial-speed\" : \"%s\",\n", ctx->serial_speed);
+    fprintf(pf, "\",\n  \"pd-address\" : \"%X\",\n", ctx->pd_address);
 
     fprintf(pf, "\n  \"_#\" : \"-\"\n");
     fprintf(pf, "}\n");

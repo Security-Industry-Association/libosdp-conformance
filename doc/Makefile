@@ -5,6 +5,10 @@ all:	${DOCUMENTS}
 clean:
 	rm -f ${DOCUMENTS}
 
+build:	all
+	mkdir -p ../opt/osdp-conformance/etc
+	cp ${DOCUMENTS} ../opt/osdp-conformance/etc
+
 libosdp-conformance-settings.pdf:	doc-src/libosdp-conformance-settings.md
 	pandoc --toc -o libosdp-conformance-settings.pdf doc-src/libosdp-conformance-settings.md
 
