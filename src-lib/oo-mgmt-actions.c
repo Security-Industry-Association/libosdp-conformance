@@ -50,7 +50,11 @@ int
   oh = (OSDP_HDR *)(msg->ptr);
   count = oh->len_lsb + (oh->len_msb << 8);
   count = count - 6; // assumes no SCS header
+  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+    count = count - 2; // for SCS 18
   count = count - msg->check_size;
+
+  count = count - 4; // 3 for OUI, 1 for command
         
   mfg = (OSDP_MFGREP_RESPONSE *)(msg->data_payload);
   mfg_command = *(&(mfg->data));
@@ -61,7 +65,7 @@ int
     sprintf(tmp1, "%02x", *(&(mfg->data)+1+i));
     strcat(payload, tmp1);
   };
-  sprintf(cmd, "{\"1\":\"%02X\",\"2\":\"%02X%02X%02X\",\"3\":\"%02X\",\"4\":\"%s\"}",
+  sprintf(cmd, "{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%02X\\\",\\\"4\\\":\\\"%s\\\"}",
     ctx->pd_address,
     mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg_command, payload);
   {
