@@ -486,26 +486,16 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         send_length ++;
       };
 
-      if (osdp_awaiting_response(context))
-      {
-        fprintf(stderr, "busy before OSDP_MFGREP, skipping send\n");
-        fflush(stderr); fflush(context->log);
-fprintf(stderr, "490 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
-  OSDP_MFG, data [0], data [1], data [2], send_length);
+      pending_response_length = send_length;
+      memcpy(pending_response_data, data, pending_response_length);
+      pending_response = OSDP_MFGREP;
 
-        leftover_command = OSDP_MFG;
-        memcpy(leftover_data, data, send_length);
-        leftover_length = send_length;
-        context->left_to_send = leftover_length;
-      }
-      else
-      {
-        current_length = 0;
-        status = send_message_ex(context, OSDP_MFGREP, p_card.addr, &current_length, send_length, data,
-        OSDP_SEC_SCS_17, 0, NULL);
-      };
       status = ST_OK;
     };
+
+
+
+
     break;
 
     case OSDP_CMDB_ONDEMAND_LSTATR:

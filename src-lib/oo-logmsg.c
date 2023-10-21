@@ -695,7 +695,7 @@ int
     {
       int dumpcount;
       OSDP_MFGREP_RESPONSE *mrep;
-      char *p;
+      unsigned char *p;
 
 
       dumpcount = 0;
@@ -715,7 +715,7 @@ int
         status = ST_OK; // ok regardless
       };
 
-      p = (char *)&(mrep->data);
+      p = (unsigned char *)&(mrep->data);
       p++; // skip return code
       sprintf(tlogmsg, "  MFG Response: OUI:%02x-%02x-%02x RCMD %02X followed by 0x%02x octets",
         mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2], mrep->data, dumpcount);
@@ -724,7 +724,7 @@ int
       strcat(tlogmsg, "    Contents:");
       for (idx=0; idx < dumpcount; idx++)
       {
-        sprintf(tmps, " %02x", *(p+idx));
+        sprintf(tmps, " %02X", *(p+idx));
         strcat(tlogmsg, tmps);
       };
       strcat(tlogmsg, "\n");
