@@ -65,7 +65,7 @@ int
     sprintf(tmp1, "%02x", *(&(mfg->data)+1+i));
     strcat(payload, tmp1);
   };
-  sprintf(cmd, "{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%02X\\\",\\\"4\\\":\\\"%s\\\"}",
+  sprintf(cmd, "\"{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%02X\\\",\\\"4\\\":\\\"%s\\\"}\"",
     ctx->pd_address,
     mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg_command, payload);
   {
