@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (36)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_BUILD ( 3)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -523,6 +523,7 @@ typedef struct osdp_context
   int next_sequence;
   int last_sequence_received;
   int left_to_send;
+  unsigned char left_to_send_destination;
 
   // secure channel
   int current_key_slot; // -1 or OSDP_SCBK_D or OSDP_SCBK
@@ -797,6 +798,7 @@ typedef struct osdp_rdr_led_ctl
 
 typedef struct osdp_mfg_args
 {
+  unsigned char pd_address;
   unsigned char command_ID;
   char oui [1024];
   char c_s_d [2*1024]; // command-specific details

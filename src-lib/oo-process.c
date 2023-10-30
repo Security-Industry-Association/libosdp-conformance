@@ -1,11 +1,7 @@
-extern unsigned char leftover_command;
-extern unsigned char leftover_data [4*1024];
-extern int leftover_length;
-
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -41,6 +37,10 @@ extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 extern int saved_next;
 extern char trace_in_buffer [];
+extern unsigned char leftover_destination;
+extern unsigned char leftover_command;
+extern unsigned char leftover_data [4*1024];
+extern int leftover_length;
 
 
 int
@@ -224,11 +224,27 @@ int
     if (context.left_to_send > 0)
     {
       int current_length; 
+      int current_security;
 
       current_length = 0;
-      status = send_message (&context, leftover_command,
-        p_card.addr, &current_length, leftover_length, leftover_data);
+
+      // if it was for the config address it's definitely not a secure channel message.
+      if (context.left_to_send_destination EQUALS OSDP_CONFIGURATION_ADDRESS)
+      {
+        status = send_message_ex(&context, leftover_command, OSDP_CONFIGURATION_ADDRESS,
+          &current_length, leftover_length, leftover_data, OSDP_SEC_STAND_DOWN, 0, NULL);
+      }
+      else
+      {
+        current_security = OSDP_SEC_SCS_15;
+        if (leftover_length > 0)
+          current_security = OSDP_SEC_SCS_17;
+        status = send_message_ex(&context, leftover_command, p_card.addr,
+          &current_length, leftover_length, leftover_data, current_security, 0, NULL);
+      };
+
       context.left_to_send = 0;
+      context.left_to_send_destination = 0x00;
       leftover_length = 0;
     };
   };

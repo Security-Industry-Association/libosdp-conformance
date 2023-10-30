@@ -27,6 +27,7 @@ char file_transfer_buffer [2048];
 unsigned char leftover_command;
 unsigned char leftover_data [4*1024];
 int leftover_length;
+unsigned char leftover_args [1024];
 
 
 #include <stdio.h>
@@ -398,7 +399,10 @@ sleep(1);
         char tmps [3];
 
         oargs = (OSDP_MFG_ARGS *)details;
+        context->left_to_send_destination = p_card.addr;
         omfg = (OSDP_MFG_COMMAND *)data;
+        if (details_param_1 EQUALS OSDP_CONFIGURATION_ADDRESS)
+          context->left_to_send_destination = OSDP_CONFIGURATION_ADDRESS;
         tmps[2] = 0;
         memcpy(tmps, oargs->oui+0, 2);
         sscanf(tmps, "%x", &i);
@@ -436,11 +440,13 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
           memcpy(leftover_data, data, send_length);
           leftover_length = send_length;
           context->left_to_send = leftover_length;
+
+          memcpy(leftover_args, oargs, 1024); // kludge copy just the first 1k
         }
         else
         {
           current_length = 0;
-          status = send_message_ex(context, OSDP_MFG, p_card.addr, &current_length, send_length, data,
+          status = send_message_ex(context, OSDP_MFG, context->left_to_send_destination, &current_length, send_length, data,
           OSDP_SEC_SCS_17, 0, NULL);
         };
         status = ST_OK;
@@ -839,6 +845,9 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
 
         fprintf(ctx->log, "Identify requested\n");
 
+        if (details_param_1 EQUALS 0x7F)
+          dest_address = 0x7F;
+
         current_length = 0;
         /*
           osdp_ID takes one argment, a one byte value of 0 indicating
@@ -851,6 +860,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
           fprintf(context->log, "Transmitter busy before OSDP_ID, skipping send\n");
           fflush(context->log);
           leftover_command = OSDP_ID;
+          context->left_to_send_destination = dest_address;
           memcpy(leftover_data, param, sizeof(param));
           leftover_length = sizeof(param);
           context->left_to_send = leftover_length;

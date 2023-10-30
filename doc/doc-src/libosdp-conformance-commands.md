@@ -63,6 +63,24 @@ There are no defaults.
 |          |                                                                                       |
 | payload  | "(hex bytes)", a well-formed Dynamic Authentication Template.                          |
 
+Command identify
+----------------
+
+This command sends an osdp_ID to the PD.
+
+Default behavior is to send to the currently-configured PD address on the current session (secure or unencrypted.)
+
+| Argument | Value                    |
+| -------- | -----                    |
+|          |                          |
+| command  | identify                 |
+|          |                          |
+| cleartext | "1" to send unencrypted. |
+|          |                          |
+| config-address | "1" to send to 0x7F, unencrypted. |
+|          |                          |
+| new-sequence | "1" to reset sequence number to zero. |
+
 Command present-card
 --------------------
 
@@ -111,7 +129,6 @@ Other Commands
 - conform_6_10_2
 - conform_6_10_2
 - factory-default
-- identify
 - induce-NAK
 - keep-active
 - keyset

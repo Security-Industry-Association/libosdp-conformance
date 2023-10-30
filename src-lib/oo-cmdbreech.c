@@ -255,8 +255,9 @@ int
     break;
 
   // command identify cleartext=1
-  // cleartext sets details 0
-  // new-sequence send on sequence zero sets details 1
+  // to send cleartext sets details [0] to 1
+  // to send on sequence zero sets details [1] 1
+  // to send on config address sets details_param_1 to 7F
 
   case OSDP_CMDB_IDENT:
     value = json_object_get (root, "cleartext");
@@ -277,8 +278,6 @@ int
     {
       cmd->details [1] = 1;
     };
-
-
 
     fprintf(ctx->log, "Command IDENT %x (%d) submitted.\n", cmd->details_param_1, cmd->details [0]);
     status = enqueue_command(ctx, cmd);
@@ -892,7 +891,7 @@ int
     };
   };
 
-  // command MFG.  Arguments are OUI, command-id, command-specific-data.
+  // command MFG.  Arguments are OUI, command-id, command-specific-data, config-address.
   // c-s-d is is 2-hexit bytes, length inferred.
 
   if (status EQUALS ST_OK) {
@@ -901,8 +900,14 @@ int
 
       found_oui = 0;
       cmd->command = OSDP_CMDB_MFG; 
+      cmd->details_param_1 = 0;
       mfg_args = (OSDP_MFG_ARGS *)(cmd->details);
       memset(mfg_args, 0, sizeof (*mfg_args));
+      parameter = json_object_get(root, "config-address");
+      if (json_is_string(parameter))
+      {
+        cmd->details_param_1 = OSDP_CONFIGURATION_ADDRESS;
+      };
       parameter = json_object_get(root, "command-id");
       if (json_is_string(parameter))
       {
