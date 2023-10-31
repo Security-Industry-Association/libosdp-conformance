@@ -236,11 +236,6 @@ fflush(context->log);
     // if it wasn't a poll or an ack report the secure header if there is one
     if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
       fprintf (context->log, "%s", tlogmsg);
-    if ((context->verbosity > 2) || (m->msg_cmd != OSDP_ACK))
-    {
-      sprintf (tlogmsg2, " Cmd %02x", returned_hdr->command);
-      strcat (tlogmsg, tlogmsg2);
-    };
 
     // display it.  Unless it's a poll/ack or filetransfer/ftstat.  or verbosity is high enough.
 

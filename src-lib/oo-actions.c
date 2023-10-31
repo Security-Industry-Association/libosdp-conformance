@@ -145,7 +145,11 @@ int
     status = osdp_filetransfer_validate(ctx, filetransfer_message,
       &fragment_size, &offset);
   (void)oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
-  fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
+  if (ctx->verbosity > 0)
+  {
+    fprintf(ctx->log, "%s\n", tlogmsg);
+    fflush(ctx->log);
+  };
 // check FtType
 // check FtFragmentSize sane
 
