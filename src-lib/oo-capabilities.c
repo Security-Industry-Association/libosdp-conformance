@@ -1,7 +1,7 @@
 /*
   oo-capabilities - primitives to manage the capabilities list
 
-  (C) 2021-2022 Smithee Solutions LLC
+  (C) 2021-2023 Smithee Solutions LLC
 */
 
 
@@ -65,6 +65,8 @@ int
   // text display, 1 row of 16 if enabled
   if (ctx->capability_configured_text)
   {
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "Enabling capability: Text output, 1 line of 16\n");
     status = osdp_add_capability(ctx, capas, 6, 1, 1, capabilities_response_length, sizeof(capas));
   }
   else

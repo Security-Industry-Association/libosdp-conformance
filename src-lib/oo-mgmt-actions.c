@@ -109,7 +109,7 @@ int
   status = send_message_ex(ctx, OSDP_RSTATR, p_card.addr, &current_length, sizeof (osdp_rstat_response_data), osdp_rstat_response_data, OSDP_SEC_SCS_18, 0, NULL);
   if (ctx->verbosity > 2)
   {
-    sprintf (tlogmsg, "Responding with OSDP_RSTATR (Ext Tamper)");
+    sprintf (tlogmsg, "Responding with OSDP_RSTATR");
     fprintf (ctx->log, "%s\n", tlogmsg); tlogmsg[0]=0;
   };
 
