@@ -1,4 +1,21 @@
-# make file for osdp-dump
+# make file for tools
+
+# (C)Copyright 2017-2023 Smithee Solutions LLC
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#   http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# Support provided by the Security Industry Association
+# http://www.securityindustry.org
 
 PROGS=osdp-dump osdp-sc-calc
 CGI_PROGS=osdp-decode osdp-packet-decode
@@ -27,7 +44,8 @@ build:	all
 	mkdir -p ${OSDPBUILD}/cgi-bin
 	cp ${CGI_PROGS} ${OSDPBUILD}/cgi-bin
 	mkdir -p ${OSDPBUILD}/run/ACU-actions
-	(cd actions; cp ${ACTIONS} ../${OSDPBUILD}/run/ACU-actions)
+	(cd actions; tar czvf /tmp/osdp-actions.tgz *;cp ${ACTIONS} ../${OSDPBUILD}/run/ACU-actions)
+	cp /tmp/osdp-actions.tgz ${OSDPBUILD}/etc
 
 osdp-decode:	osdp-decode.o Makefile 
 	${LINK} -o osdp-decode osdp-decode.c ${LDFLAGS}
