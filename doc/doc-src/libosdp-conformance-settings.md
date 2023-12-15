@@ -1,8 +1,8 @@
-Settings File Parameters
-========================
+# Start-up Settings #
 
-Parameters
-----------
+These are set in open-osdp-params.json in the current directory when open-ospd starts.
+
+## Settings ##
 
 - address.  Set to a decimal address value in the range 0 to 126.
 - bits
@@ -13,14 +13,18 @@ Parameters
 - disable_checking
 - enable-biometrics
 - enable-poll.  Set to 0 to cause the ACU to not poll upon startup.  Default 1.
+- enable-secure-channel - set this to enable use of secure channel by the PD. Values are "DEFAULT" or a specific SCBK value in hex.
 - pdcap-format
 - raw_value
+- RND.A - sets the value to use as an ACU in secure channel operations.  Value is hex.  Default "303132333435363738".
+- RND.B - sets the value to use as a PD in secure channel operations. Value is hex.  Default is "6162636465666768"
 - serial_device
 - serial_speed
 
+## Other settings ##
 
+``
   // parameter "enable-install"
-  // parameter "enable-secure-channel"
   // parameter "enable-trace"
   // parameter "fqdn"
   // parameter "init_command"
@@ -40,5 +44,5 @@ Parameters
   // parameter "serial-read-timeout" - nanoseconds.
   // parameter "verbosity"
   // parameter "role"
-  
+``
 
