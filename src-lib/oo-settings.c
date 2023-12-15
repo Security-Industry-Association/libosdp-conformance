@@ -565,39 +565,33 @@ int
     value = json_object_get (root, "RND.A");
     if (json_is_string (value))
     {
-      value = json_object_get (root, field);
-      if (found_field)
-      {
-        char rnd_string [1024];
+      char rnd_string [1024];
 
-        strcpy (rnd_string, json_string_value (value));
-        if (strlen (rnd_string) EQUALS 16)
+      strcpy (rnd_string, json_string_value (value));
+      if (strlen (rnd_string) EQUALS 16)
+      {
+        int byte;
+        int i;
+        char octetstring [3];
+        for (i=0; i<16; i++)
         {
-          int byte;
-          int i;
-          char octetstring [3];
-          for (i=0; i<16; i++)
-          {
-            memcpy (octetstring, rnd_string+(2*i), 2);
-            octetstring [2] = 0;
-            sscanf (octetstring, "%x", &byte);
-            ctx->rnd_a [i] = byte;
-          };
-          fprintf(ctx->log, "RND.A configured: %s\n", rnd_string);
+          memcpy (octetstring, rnd_string+(2*i), 2);
+          octetstring [2] = 0;
+          sscanf (octetstring, "%x", &byte);
+          ctx->rnd_a [i] = byte;
         };
+        fprintf(ctx->log, "RND.A configured: %s\n", rnd_string);
       };
     };
   };
 
-  // rnd.b - value to use for my RND.B for the PD
+  // RND.B - value to use for my RND.B for the PD
 
   if (status EQUALS ST_OK)
   {
     value = json_object_get (root, "RND.B");
     if (json_is_string (value))
     {
-      value = json_object_get (root, field);
-      if (found_field)
       {
         char rnd_b_string [1024];
 
