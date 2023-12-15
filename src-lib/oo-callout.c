@@ -1,7 +1,7 @@
 /*
   oo-callout - call out to a shell command when certain commands and responses arrive
 
-  (C)Copyright 2021-2022 Smithee Solutions LLC
+  (C)Copyright 2021-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -20,14 +20,7 @@
 */
 
 
-//#include <stdio.h>
-//#include <string.h>
-//#include <stdlib.h>
-
-
 #include <open-osdp.h>
-//#include <iec-xwrite.h>
-//extern OSDP_PARAMETERS p_card;
 
 
 int

@@ -796,6 +796,9 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       if (*(msg->data_payload + 1) > 0)
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_power, OCONFORM_EXERCISED);
 
+      /*
+        ACTION SCRIPT ARGS: 1=1 if tamper 0 if not, 2=1 if poweron 0 if not
+      */
       sprintf(cmd, "%s//run/ACU-actions/osdp_LSTATR %d %d", context->service_root,
         *(msg->data_payload + 0), *(msg->data_payload + 1));
       system(cmd);

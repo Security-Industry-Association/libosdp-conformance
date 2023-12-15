@@ -3,7 +3,7 @@
 /*
   oosdp-secure - open osdp secure channel routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -795,13 +795,15 @@ void
   // back to the beginning.
 
   if (ctx->verbosity > 3)
+  {
     fprintf (ctx->log, "  Resetting Secure Channel\n");
-
-  // refresh rnd.a
-  memcpy (ctx->rnd_a, "12345678", 8);
-
-  // refresh rnd.b
-  memcpy (ctx->rnd_b, "abcdefgh", 8);
+    fprintf (ctx->log, "  RND.A is %02X%02X%02X%02x %02X%02X%02X%02X\n",
+      ctx->rnd_a [0], ctx->rnd_a [1], ctx->rnd_a [2], ctx->rnd_a [3],
+      ctx->rnd_a [4], ctx->rnd_a [5], ctx->rnd_a [6], ctx->rnd_a [7]);
+    fprintf (ctx->log, "  RND.B is %02X%02X%02X%02x %02X%02X%02X%02X\n",
+      ctx->rnd_b [0], ctx->rnd_b [1], ctx->rnd_b [2], ctx->rnd_b [3],
+      ctx->rnd_b [4], ctx->rnd_b [5], ctx->rnd_b [6], ctx->rnd_b [7]);
+  };
 
   memset(ctx->rmac_i, 0, sizeof(ctx->rmac_i));
   memset (ctx->last_calculated_in_mac, 0, sizeof (ctx->last_calculated_in_mac));

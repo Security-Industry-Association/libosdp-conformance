@@ -248,6 +248,10 @@ int
 
     context->configured_scbk_d = 1;
 
+    // use fixed RND.A and RND.B unless otherwise configued 
+    memcpy (context->rnd_a, "12345678", 8);
+    memcpy (context->rnd_b, "abcdefgh", 8);
+
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;
   p_card.value [0] = 0x00; // fc=1 card=1 in 26 bit wiegand
