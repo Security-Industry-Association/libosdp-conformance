@@ -1,6 +1,6 @@
 # Start-up Settings #
 
-These are set in open-osdp-params.json in the current directory when open-ospd starts.
+These are set in open-osdp-params.json in the current directory when open-osdp starts.
 
 ## Settings ##
 
@@ -14,6 +14,10 @@ These are set in open-osdp-params.json in the current directory when open-ospd s
 - enable-biometrics
 - enable-poll.  Set to 0 to cause the ACU to not poll upon startup.  Default 1.
 - enable-secure-channel - set this to enable use of secure channel by the PD. Values are "DEFAULT" or a specific SCBK value in hex.
+- enable-trace - set to to enable osdpcap trace output
+- model-version - model and version number (as 2-octet hex string.)
+- oui - Organizational Unit Indicator.  3 octet hex value.  Default is 0A0017 (which is legitimate
+because bit 1 of the first octet is a 1 meaning a private value.)
 - pdcap-format
 - raw_value
 - RND.A - sets the value to use as an ACU in secure channel operations.  Value is hex.  Default "303132333435363738".
@@ -23,9 +27,8 @@ These are set in open-osdp-params.json in the current directory when open-ospd s
 
 ## Other settings ##
 
-``
+```
   // parameter "enable-install"
-  // parameter "enable-trace"
   // parameter "fqdn"
   // parameter "init_command"
   // parameter "inputs" (value must be in range 0 - OOSDP_DEFAULT_INPUTS)
@@ -44,5 +47,5 @@ These are set in open-osdp-params.json in the current directory when open-ospd s
   // parameter "serial-read-timeout" - nanoseconds.
   // parameter "verbosity"
   // parameter "role"
-``
+```
 
