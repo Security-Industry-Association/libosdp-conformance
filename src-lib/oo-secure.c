@@ -575,6 +575,12 @@ void
   memset (iv, 0, sizeof (iv));
   memcpy (message, ctx->rnd_a, 8);
   memcpy (message+8, ctx->rnd_b, 8);
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "  Creating client cryptogram: RND.A %02X%02X%02X%02X %02X%02X%02X%02X RND.B %02X%02X%02X%02X %02X%02X%02X%02X\n",
+    ctx->rnd_a [0], ctx->rnd_a [1], ctx->rnd_a [2], ctx->rnd_a [3], ctx->rnd_a [4], ctx->rnd_a [5], ctx->rnd_a [6], ctx->rnd_a [7],
+    ctx->rnd_b [0], ctx->rnd_b [1], ctx->rnd_b [2], ctx->rnd_b [3], ctx->rnd_b [4], ctx->rnd_b [5], ctx->rnd_b [6], ctx->rnd_b [7]);
+  };
 
   AES_init_ctx(&aes_context_s_enc, ctx->s_enc);
   AES_ctx_set_iv(&aes_context_s_enc, iv);

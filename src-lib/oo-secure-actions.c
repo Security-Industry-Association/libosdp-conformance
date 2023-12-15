@@ -258,7 +258,6 @@ int
 #endif
 
       // RND.B
-      memcpy ((char *)(ctx->rnd_b), "abcdefgh", 8);
       memcpy ((char *)(ccrypt_response.rnd_b), (char *)(ctx->rnd_b), sizeof (ccrypt_response.rnd_b));
 //printf ("fixme: RND.B\n");
 

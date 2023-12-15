@@ -431,6 +431,27 @@ int
     ctx->max_message = i;
   };
 
+  // parameter "model-version"
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "model-version");
+    if (json_is_string (value))
+    {
+      int byte;
+      char octetstring [3];
+
+      memcpy (octetstring, json_string_value(value), 2);
+      octetstring [2] = 0;
+      sscanf (octetstring, "%x", &byte);
+      ctx->model = byte;
+      memcpy (octetstring, 2+json_string_value(value), 2);
+      octetstring [2] = 0;
+      sscanf (octetstring, "%x", &byte);
+      ctx->version = byte;
+    };
+  };
+
+
   // parameter "network_address"
   // this is the other end of the TLS connection
 
@@ -606,7 +627,7 @@ int
             memcpy (octetstring, rnd_b_string+(2*i), 2);
             octetstring [2] = 0;
             sscanf (octetstring, "%x", &byte);
-            ctx->rnd_a [i] = byte;
+            ctx->rnd_b [i] = byte;
           };
           fprintf(ctx->log, "RND.B configured: %s\n", rnd_b_string);
         };

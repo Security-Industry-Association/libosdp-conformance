@@ -1,7 +1,7 @@
 /*
   oo_initialize - init code for OSDP
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2023 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -230,8 +230,8 @@ int
 
     m_version_minor = OSDP_VERSION_MINOR;
     m_build = OSDP_VERSION_BUILD;
-    context->model = 2;
-    context->version = 2;
+    context->model = 3;
+    context->version = 0;
     context->fw_version [0] = OSDP_VERSION_MAJOR;
     context->fw_version [1] = m_version_minor;
     context->fw_version [2] = m_build;
