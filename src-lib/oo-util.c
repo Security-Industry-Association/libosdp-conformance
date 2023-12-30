@@ -1,7 +1,7 @@
 /*
   oo-util - open osdp utility routines
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -799,8 +799,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       /*
         ACTION SCRIPT ARGS: 1=1 if tamper 0 if not, 2=1 if poweron 0 if not
       */
-      sprintf(cmd, "%s//run/ACU-actions/osdp_LSTATR %d %d", context->service_root,
-        *(msg->data_payload + 0), *(msg->data_payload + 1));
+      sprintf(cmd, "%s/run/ACU-actions/osdp_LSTATR %d %d %d", context->service_root,
+        *(msg->data_payload + 0), *(msg->data_payload + 1), (oh->addr & 0x7f));
       system(cmd);
       break;
 

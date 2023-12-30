@@ -18,8 +18,7 @@ SERVER_CRYPTOGRAM="7a fc 6c d5 40 24 42 b0 11 e3 2c a5 2b f8 0b c8"
 
 ./osdp-sc-calc "${CHLNG_PAYLOAD}" "${CLIENT_CRYPTOGRAM}" "${SERVER_CRYPTOGRAM}"
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org

@@ -3,8 +3,7 @@
 
   paints a form and calls osdp-packet-decode to do the actual decoding.
 
-  (C)Copyright 2017-2018 Smithee Solutions LLC
-  (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+  (C)Copyright 2015-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
