@@ -1,7 +1,7 @@
 /*
   oo-settings - json init file processing
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -152,7 +152,11 @@ int
   // our default is that we DO have a sounder.
 
   if (ctx->role EQUALS OSDP_ROLE_PD)
+  {
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "Enabling sounder.\n");
     ctx->capability_configured_sounder = 1;
+  };
 
   if (status EQUALS ST_OK)
   {

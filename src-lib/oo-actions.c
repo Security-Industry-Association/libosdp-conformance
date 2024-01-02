@@ -1,7 +1,7 @@
 /*
   oo-actions - open osdp action routines
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -521,9 +521,8 @@ int
     switch (entry->function_code)
     {
     case OSDP_CAP_AUDIBLE_OUT:
-      fprintf(ctx->log,
-"PD: %d. Annunciators, ", entry->number_of);
-      ctx->capability_configured_sounder = entry->number_of;
+      fprintf(ctx->log, "PD: Annunciator present. ");
+      ctx->capability_configured_sounder = 1; // only one per spec
       switch(entry->compliance)
       {
       case 1:
