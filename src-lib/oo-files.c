@@ -1,7 +1,7 @@
 /*
   oosdp_files - osdp filetransfer management and io/
 
-  (C)2017-2023 Smithee Solutions LLC
+  (C)2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -467,7 +467,10 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
     status = osdp_string_to_buffer(ctx,
       new_key, ctx->current_scbk, &new_key_length);
     if (status EQUALS ST_OK)
+    {
+      fprintf(ctx->log, "Saved key %s loaded.\n", new_key);
       ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
+    }
     else
     {
       fprintf(ctx->log, "failed to load key from saved parameters\n");
@@ -560,7 +563,7 @@ int
     };
 
     fprintf(pf, "\",\n  \"serial-speed\" : \"%s\",\n", ctx->serial_speed);
-    fprintf(pf, "\",\n  \"pd-address\" : \"%X\",\n", ctx->pd_address);
+    fprintf(pf, "  \"pd-address\" : \"%X\",\n", ctx->pd_address);
 
     fprintf(pf, "\n  \"_#\" : \"-\"\n");
     fprintf(pf, "}\n");
