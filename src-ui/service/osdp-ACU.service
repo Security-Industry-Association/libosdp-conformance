@@ -6,7 +6,7 @@ StartLimitIntervalSec=0
 [Service]
 Type=simple
 Restart=no
-User=opsadmin1
+User=root
 WorkingDirectory=/opt/osdp-conformance/run/ACU
 ExecStart=/opt/osdp-conformance/bin/open-osdp
 

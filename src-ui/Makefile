@@ -1,6 +1,6 @@
 # Make file for osdp-ui
 
-#  (C)Copyright 2017-2022 Smithee Solutions LLC
+#  (C)Copyright 2017-2024 Smithee Solutions LLC
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -35,7 +35,9 @@ CGISCRIPTS = conformance-report \
   do-transfer do-verb-cp do-verb-pd
 TLS_CGIPROGS = start-CP-net-client start-CP-tcp-client \
   start-PD-net-server start-PD-tcp-server
-EXTRA = osdp.conf service/osdp.service service/install-osdp-service www-data
+EXTRA = osdp.conf service/install-osdp-service \
+  service/osdp-ACU.service service/osdp-MONITOR.service service/osdp-PD.service \
+  www-data
 
 PROGS = open-osdp-kick osdp-config-print
 TLS_PROGS = 
@@ -80,7 +82,7 @@ build:	all
 	cp ${SCRIPTS} ../opt/osdp-conformance/bin
 	cp ${PROGS} ../opt/osdp-conformance/bin
 	cp osdp.conf www-data ../opt/osdp-conformance/etc
-	cp service/osdp.service ../opt/osdp-conformance/etc
+	cp service/osdp*.service ../opt/osdp-conformance/etc
 	cp service/install-osdp-service ../opt/osdp-conformance/bin
 
 build-tls:	${TLS_CGIPROGS} ${TLS_PAGES} ${TLS_SCRIPTS} ${TLS_PROGS} build

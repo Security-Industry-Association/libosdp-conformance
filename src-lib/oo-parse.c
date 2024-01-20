@@ -1,7 +1,7 @@
 /*
   oo-parse - parse osdp messages
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -530,16 +530,6 @@ fprintf(stderr, "lstat 1000\n");
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_LSTATR");
       break;
-
-#if 0
-    case OSDP_MFG:
-      m->data_payload = m->cmd_payload + 1;
-      msg_data_length = p->len_lsb + (p->len_msb << 8);
-      msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      if (context->verbosity > 2)
-        strcpy (tlogmsg2, "osdp_MFG");
-      break;
-#endif
 
     case OSDP_MFGERRR:
       m->data_payload = m->cmd_payload + 1;

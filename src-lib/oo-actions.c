@@ -407,6 +407,7 @@ int
         unsigned char mfg_response [500];
 
         memset(mfg_response, 0xff, sizeof(mfg_response));
+// ERRR allow a payload
         current_length = 0;
         status = send_message_ex (ctx, OSDP_MFGERRR, ctx->pd_address,
           &current_length, sizeof (mfg_response), mfg_response,
@@ -452,14 +453,53 @@ int
 
 { /* action_osdp_MFGERRR */
 
-  char cmd [2*1024];
+  char cmd [2*8192];
+  int count;
+  FILE *f;
+  int i;
+  OSDP_HDR *oh;
+  char payload [8192];
   int status;
+  char tmp1 [8192];
 
 
   status = ST_OK;
   fprintf(ctx->log, "MFGERRR received\n");
 
-  sprintf(cmd, "%02X %d.", *(msg->data_payload), msg->data_length);
+  // calculate length of payload
+
+  oh = (OSDP_HDR *)(msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 6; // assumes no SCS header
+  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+    count = count - 2; // for SCS 18
+  count = count - msg->check_size;
+
+  // the callout creates osdp-mfg-error.json.  It includes the (current known) OUI
+  // for convienience, that was not in the message.
+  // arg 1 is the PD address
+  // arg 2 is the OUI
+  // arg 3 the hex string version of the payload
+  // infer arg 3's length from strlen(arg 3)/2
+
+  payload [0] = 0;
+  for (i=0; i<count; i++)
+  {
+    sprintf(tmp1, "%02x", msg->data_payload [i]);
+    strcat(payload, tmp1);
+  };
+  sprintf(cmd, "\"{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%s\\\"}\"",
+    ctx->pd_address,
+    ctx->MFG_oui [0], ctx->MFG_oui [1], ctx->MFG_oui [2], payload);
+  {
+    f = fopen("/opt/osdp-conformance/run/ACU/osdp-mfg-error.json", "w");
+    if (f != NULL)\
+    {
+      fprintf(f, "%s\n", cmd);
+      fclose(f);
+    };
+  };
+//  sprintf(cmd, "%02X %d.", *(msg->data_payload), msg->data_length);
   status = oosdp_callout(ctx, "osdp_MFGERRR", cmd);
 
   osdp_test_set_status(OOC_SYMBOL_resp_mfgerrr, OCONFORM_EXERCISED);

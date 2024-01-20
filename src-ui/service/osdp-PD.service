@@ -1,0 +1,17 @@
+[Unit]
+Description=OSDP PD Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=no
+User=root
+WorkingDirectory=/opt/osdp-conformance/run/PD
+ExecStart=/opt/osdp-conformance/bin/open-osdp
+
+[Install]
+WantedBy=multi-user.target
+
+
+

@@ -3,5 +3,5 @@ set -x
 apt-get install -y apache2
 dpkg -i $1
 chown -R opsadmin1:opsadmin1 /opt/osdp-conformance
-cp /opt/osdp-conformance/etc/osdp.service /etc/systemd/system
+cp /opt/osdp-conformance/etc/osdp*.service /etc/systemd/system
 

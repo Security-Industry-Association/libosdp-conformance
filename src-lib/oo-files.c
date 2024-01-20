@@ -270,6 +270,8 @@ int
 
   filetransfer_delay = 0;
   osdp_array_to_doubleByte(ftstat->FtDelay, &filetransfer_delay);
+  delay_sec = 0;
+  delay_nsec = 0;
 
   /*
     per the spec, positive status numbers are advisory, negative mean
@@ -281,7 +283,6 @@ int
 
     // if it's ok and there's a delay then pause right here.
 
-    delay_sec = 0;
 
 // DEBUG: fixme: MS_IN_NS blew up.  1000l*1000l maybe?
 
@@ -304,7 +305,7 @@ delay_nsec = delay_nsec * 1000;
 
       delay_time.tv_sec = delay_sec;
       delay_time.tv_nsec = delay_nsec;
-      fprintf(ctx->log, "  filetransfer sleep delay %ld %ld\n", delay_time.tv_sec, delay_time.tv_nsec);
+      fprintf(ctx->log, "  Filetransfer: FTSTAT is `OK`, sleep delay %ld %ld\n", delay_time.tv_sec, delay_time.tv_nsec);
       (void) nanosleep(&delay_time, NULL);
     };
 
@@ -364,7 +365,16 @@ delay_nsec = delay_nsec * 1000;
     break;
 
   case OSDP_FTSTAT_REBOOTING:
+    // gritty 'cause compiler objected.
+
+    delay_nsec = filetransfer_delay;
+    delay_nsec = delay_nsec * 1000;
+    delay_nsec = delay_nsec * 1000;
+    delay_time.tv_sec = delay_sec;
+    delay_time.tv_nsec = delay_nsec;
+    fprintf(ctx->log, "  Filetransfer: FTSTAT is `Rebooting`, sleep delay %ld %ld\n", delay_time.tv_sec, delay_time.tv_nsec);
     fprintf(ctx->log, "PD is rebooting.\n");
+    (void) nanosleep(&delay_time, NULL);
     status = ST_OSDP_FILEXFER_WRAPUP;
     if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
     {
