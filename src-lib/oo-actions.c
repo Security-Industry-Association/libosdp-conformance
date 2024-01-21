@@ -346,10 +346,7 @@ int
 
   char cmd [3072]; //C_STRING_MX];
   int current_length;
-  int i;
   OSDP_MFG_COMMAND *mfg;
-  OSDP_CONFIG_GUID *mfg_config_guid;
-  unsigned char osdp_com_response_data [5];
   int status;
   int unknown;
 
@@ -357,36 +354,11 @@ int
   status = ST_OK;
   unknown = 1;
   mfg = (OSDP_MFG_COMMAND *)(msg->data_payload);
-  mfg_config_guid = (OSDP_CONFIG_GUID *)&(mfg->data);
 
   if (0 EQUALS memcmp(mfg->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE)))
   {
     switch (mfg->mfg_command_id)
     {
-    case OOSDP_MFG_CONFIG_GUID:
-      if (0 EQUALS memcmp(mfg_config_guid->guid, ctx->my_guid, sizeof(ctx->my_guid)))
-      {
-        unknown = 0;
-
-        // respond with osdp_COM, referencing the new address/speed, on the old address/speed
-        // "Just like COMSET".
-
-        i = *(1+mfg_config_guid->new_speed) + (*(2+mfg_config_guid->new_speed) << 8) +
-          (*(3+mfg_config_guid->new_speed) << 16) + (*(4+mfg_config_guid->new_speed) << 24);
-        osdp_com_response_data [0] = mfg_config_guid->new_address;
-        *(unsigned short int *)(osdp_com_response_data+1) = i;
-
-        current_length = 0;
-        status = send_message (ctx, OSDP_COM, p_card.addr, &current_length,
-          sizeof(osdp_com_response_data), osdp_com_response_data);
-
-        // set the speed and address
-        p_card.addr = mfg_config_guid->new_address;
-        ctx->new_address = p_card.addr;
-        sprintf(ctx->serial_speed, "%d", i);
-        status = init_serial (ctx, p_card.filename);
-      };
-      break;
     case OOSDP_MFG_PING:
       {
         unsigned char mfg_response [sizeof(struct osdp_mfg_command) + 4];
@@ -406,8 +378,8 @@ int
       {
         unsigned char mfg_response [500];
 
-        memset(mfg_response, 0xff, sizeof(mfg_response));
-// ERRR allow a payload
+        memset(mfg_response, 0, sizeof(mfg_response));
+        memcpy(mfg_response, &(mfg->data), msg->data_length);
         current_length = 0;
         status = send_message_ex (ctx, OSDP_MFGERRR, ctx->pd_address,
           &current_length, sizeof (mfg_response), mfg_response,

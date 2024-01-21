@@ -819,15 +819,6 @@ typedef struct osdp_mfg_response
   unsigned char data;
 } OSDP_MFGREP_RESPONSE;
 
-typedef struct osdp_config_guid
-{
-  unsigned char gfmt;
-  unsigned short int guid_length;
-  unsigned guid [128/8];
-  unsigned char new_address;
-  unsigned int new_speed [4];
-} OSDP_CONFIG_GUID;
-
 #ifdef _OO_INITIALIZE_
 unsigned char OOSDP_MFG_VENDOR_CODE [3] = {0x0A, 0x00, 0x17 };
 char tlogmsg [2*1024];
@@ -852,12 +843,6 @@ extern time_t previous_time;
 #endif
 
 #define OOSDP_MFG_PING (1) // sent for testing, expects an MFG-PING-ACK
-#define OOSDP_MFG_CONFIG_GUID (2)
-	// data is 00=format-guid (01-FF RFU)
-	//         xxxx=guid length in octets (16. for 128 bits)
-        //         guid
-        //         COMSET parameters (1 byte addr, 4 bytes baud rate)
-	// ...a total of 22 bytes
 #define OOSDP_MFG_PIRATE (3)
 
 
