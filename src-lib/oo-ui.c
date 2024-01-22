@@ -256,9 +256,9 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
 
         strcpy (context->test_in_progress, "3_20_1");
         // send the tester's vendor code
-        omfg.vendor_code [0] = context->MFG_oui [0];
-        omfg.vendor_code [1] = context->MFG_oui [1];
-        omfg.vendor_code [2] = context->MFG_oui [2];
+        omfg.vendor_code [0] = context->vendor_code [0];
+        omfg.vendor_code [1] = context->vendor_code [1];
+        omfg.vendor_code [2] = context->vendor_code [2];
         omfg.mfg_command_id = 1;
         omfg.data = 0xff;
         current_length = 0;

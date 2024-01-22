@@ -393,6 +393,11 @@ int
         response_payload_length = count - 4; // payload length includes OUI, command
         memcpy(mfg_response, &(mfg->data), msg->data_length);
         current_length = 0;
+if (ctx->verbosity > 3)
+{
+  fprintf(ctx->log, "DEBUG: Authenticate like a pirate - unknown %d response payload length %d first payload octet 0x%02X\n",
+    unknown, response_payload_length, mfg->data);
+};
         status = send_message_ex (ctx, OSDP_MFGERRR, ctx->pd_address,
           &current_length, response_payload_length, mfg_response,
           OSDP_SEC_SCS_18, 0, NULL);
@@ -474,7 +479,7 @@ int
   };
   sprintf(cmd, "\"{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%s\\\"}\"",
     ctx->pd_address,
-    ctx->MFG_oui [0], ctx->MFG_oui [1], ctx->MFG_oui [2], payload);
+    ctx->vendor_code [0], ctx->vendor_code [1], ctx->vendor_code [2], payload);
   {
     f = fopen("/opt/osdp-conformance/run/ACU/osdp-mfg-error.json", "w");
     if (f != NULL)\

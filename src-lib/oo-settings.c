@@ -499,7 +499,6 @@ int
       memcpy(hexbyte, vstr, 2); sscanf(hexbyte, "%2x", &i); ctx->vendor_code [0] = 0xff & i;
       memcpy(hexbyte, vstr+2, 2); sscanf(hexbyte, "%2x", &i); ctx->vendor_code [1] = 0xff & i;
       memcpy(hexbyte, vstr+4, 2); sscanf(hexbyte, "%2x", &i); ctx->vendor_code [2] = 0xff & i;
-      memcpy(ctx->MFG_oui, ctx->vendor_code, sizeof(ctx->MFG_oui));
     };
   };
 
