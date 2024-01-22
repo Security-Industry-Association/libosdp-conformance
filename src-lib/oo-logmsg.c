@@ -1,7 +1,7 @@
 /*
   oo-logmsg.c - prints log messages
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   OSDP Working Group community.
@@ -19,16 +19,7 @@
   limitations under the License.
 */
 
-#define OSDP_CMD_MSC_GETPIV  (0x10)
-#define OSDP_CMD_MSC_KP_ACT  (0x13)
-#define OSDP_CMD_MSC_CR_AUTH (0x14)
-#define OSDP_REP_MSC_PIVDATA (0x10)
-#define OSDP_REP_MSC_CR_AUTH (0x14)
-#define OSDP_REP_MSC_STAT    (0xFD)
-
-static char OSDP_VENDOR_INID [] = { 0x00, 0x75, 0x32 };
-static char OSDP_VENDOR_WAVELYNX [] = { 0x5C, 0x26, 0x23 };
-
+#if 0
 typedef struct __attribute__((packed)) osdp_msc_crauth
 {
   char vendor_code [3];
@@ -95,6 +86,7 @@ typedef struct __attribute__((packed)) osdp_msc_status
   char status;
   char info [2];
 } OSDP_MSC_STATUS;
+#endif
 
 #include <stdio.h>
 #include <time.h>
@@ -124,14 +116,12 @@ int
   OSDP_SC_CCRYPT *ccrypt_payload; int count;
   OSDP_MULTI_HDR_IEC *crauth_msg;
   OSDP_MULTI_HDR_IEC *crauthr_msg;
-  OSDP_MSC_CR_AUTH *cr_auth;
   int d;
   OSDP_HDR_FILETRANSFER *filetransfer_message;
   char file_transfer_status_detail [1024];
   OSDP_HDR_FTSTAT *ftstat;
   OSDP_MULTI_HDR_IEC *genauth_msg;
   OSDP_MULTI_HDR_IEC *genauthr_msg;
-  OSDP_MSC_GETPIV *get_piv;
   OSDP_HDR *hdr;
   char hstr [1024];
   int i;
@@ -491,55 +481,8 @@ int
     break;
 
   case OOSDP_MSG_KEYPAD:
-    {
-      int
-        i;
-      int
-        keycount;
-
-      msg = (OSDP_MSG *) aux;
-
-      if (msg->security_block_length > 0)
-      {
-        strcat(tlogmsg, "  (KEYPAD message contents encrypted)\n");
-      };
-      if (msg->security_block_length EQUALS 0)
-      {
-        char character [8];
-        char tstring [1024];
-
-        keycount = *(msg->data_payload+1);
-        memset (tmpstr, 0, sizeof (tmpstr));
-        tstring [0] = 0;
-        memcpy (tmpstr, msg->data_payload+2, *(msg->data_payload+1));
-        for (i=0; i<keycount; i++)
-        {
-          memset(character, 0, sizeof(character));
-          character [0] = tmpstr[i];
-
-          // asterisk is DEL (0x7F)
-
-          if (tmpstr [i] EQUALS 0x7F)
-            character [0] = '*';
-
-          // octothorpe is CR (0x0D)
-
-          if (tmpstr [i] EQUALS 0x0D)
-            character [0] = '#';
-
-          // if not printable ascii and not already found character
-
-          if ((tmpstr [i] < 0x20) ||
-            (tmpstr [i] > 0x7e))
-              if (character [0] != 0)
-                sprintf(tmpstr, "<%02x>", tmpstr [i]);
-          strcat(tstring, character);
-        };
-        sprintf (tlogmsg,
-"Keypad Input Rdr %d, %d digits: %s\n",
-          *(msg->data_payload+0), keycount, tstring);
-      };
-    };
+    msg = (OSDP_MSG *) aux;
+    status = oosdp_print_message_KEYPAD(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_KEYSET:
@@ -572,113 +515,8 @@ int
     break;
 
   case OOSDP_MSG_MFG:
-    {
-      OSDP_MFG_COMMAND *mrep;
-      int process_as_special;
-
-      if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
-      {
-        memset(tlogmsg, 0, sizeof(tlogmsg));
-        process_as_special = 0;
-        msg = (OSDP_MSG *) aux;
-      oh = (OSDP_HDR *)(msg->ptr);
-      count = oh->len_lsb + (oh->len_msb << 8);
-      count = count - sizeof(*oh);
-      if (oh->ctrl & 0x04)
-        count = count - 2;
-      else
-        count = count - 1;
-
-      mrep = (OSDP_MFG_COMMAND *)(msg->data_payload);
-      process_as_special = 0;
-      if (0 EQUALS
-        memcmp(mrep->vendor_code, OSDP_VENDOR_INID,
-          sizeof(OSDP_VENDOR_INID)))
-        process_as_special = 1;
-      if (0 EQUALS
-        memcmp(mrep->vendor_code, OSDP_VENDOR_WAVELYNX,
-          sizeof(OSDP_VENDOR_WAVELYNX)))
-        process_as_special = 1;
-      if (!process_as_special)
-      {
-        sprintf(tlogmsg,
-"  (General) MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
-          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-          mrep->mfg_command_id);
-      };
-      if (process_as_special)
-      {
-        sprintf(tlogmsg,
-          "  MFG Request: OUI:%02x-%02x-%02x Command: %02x\n",
-          mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-          mrep->mfg_command_id);
-        switch (mrep->mfg_command_id)
-        {
-        case OSDP_CMD_MSC_CR_AUTH:
-          {
-            cr_auth = (OSDP_MSC_CR_AUTH *)(msg->data_payload);
-
-            sprintf(tmps,
-"MSC CRAUTH\n  TotSize:%d. Offset:%d FragSize: %d",
-              cr_auth->mpd_size_total, cr_auth->mpd_offset,
-              cr_auth->mpd_fragment_size);
-            strcat(tlogmsg, tmps);
-            if (cr_auth->mpd_offset EQUALS 0)
-            {
-              sprintf(tmps, " AlgRef %02x KeyRef %02x",
-                cr_auth->data[0], cr_auth->data[1]);
-              strcat(tlogmsg, tmps);
-            };
-            strcat(tlogmsg, "\n");
-          };
-          break;
-        case OSDP_CMD_MSC_GETPIV:
-          {
-            get_piv = (OSDP_MSC_GETPIV *)(msg->data_payload);
-            sprintf(tmps,
-"MSC PIVDATAGET\n  PIV-Object:%02x %02x %02x Element: %02x Offset: %02x %02x",
-              get_piv->piv_object [0], get_piv->piv_object [1],
-              get_piv->piv_object [2],
-              get_piv->piv_element,
-              get_piv->piv_offset [0], get_piv->piv_offset [1]);
-            strcat(tlogmsg, tmps);
-            strcat(tlogmsg, "\n");
-            count = sizeof(*get_piv) - sizeof(get_piv->vendor_code)
-              - sizeof(get_piv->command_id);
-          };
-          break;
-        case OSDP_CMD_MSC_KP_ACT:
-          {
-            OSDP_MSC_KP_ACT *keep_active;
-            keep_active = (OSDP_MSC_KP_ACT *)(msg->data_payload);
-            sprintf(tmps,
-"MSC KP_ACT\n  KP_ACT_TIME %d. ms\n",
-              keep_active->kp_act_time);
-            strcat(tlogmsg, tmps);
-            count = sizeof(*keep_active) - sizeof(keep_active->vendor_code)
-              - sizeof(keep_active->command_id);
-          };
-          break;
-        default:
-          sprintf(tlogmsg,
-"MSC (MFG) Request: OUI:%02x-%02x-%02x Command: %02x\n",
-            mrep->vendor_code [0], mrep->vendor_code [1], mrep->vendor_code [2],
-            mrep->mfg_command_id);
-          break;
-        };
-      }; 
-      count = count - 4; // less OUI (3) and command (1)
-      if (count > 0)
-      {
-        dump_buffer_log(&context, "  Raw(MFG): ", &(mrep->data), count);
-      };
-      }
-      else
-      {
-        sprintf(tlogmsg,
-          "  (MFG message contents encrypted)\n");
-      };
-    };
+    msg = (OSDP_MSG *) aux;
+    status = oosdp_print_message_MFG(&context, msg, tlogmsg);
     break;
 
   case OOSDP_MSG_MFGERRR:

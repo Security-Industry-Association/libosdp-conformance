@@ -345,14 +345,23 @@ int
 { /* action_osdp_MFG */
 
   char cmd [3072]; //C_STRING_MX];
+  int count;
   int current_length;
   OSDP_MFG_COMMAND *mfg;
+  OSDP_HDR *oh;
   int status;
   int unknown;
 
 
   status = ST_OK;
   unknown = 1;
+  oh = (OSDP_HDR *)(msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 6; // assumes no SCS header
+  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+    count = count - 2; // for SCS 18
+  count = count - msg->check_size;
+
   mfg = (OSDP_MFG_COMMAND *)(msg->data_payload);
 
   if (0 EQUALS memcmp(mfg->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE)))
@@ -377,12 +386,15 @@ int
     case OOSDP_MFG_PIRATE:
       {
         unsigned char mfg_response [500];
+        int response_payload_length;
 
+        unknown = 0; // we known this guy
         memset(mfg_response, 0, sizeof(mfg_response));
+        response_payload_length = count - 4; // payload length includes OUI, command
         memcpy(mfg_response, &(mfg->data), msg->data_length);
         current_length = 0;
         status = send_message_ex (ctx, OSDP_MFGERRR, ctx->pd_address,
-          &current_length, sizeof (mfg_response), mfg_response,
+          &current_length, response_payload_length, mfg_response,
           OSDP_SEC_SCS_18, 0, NULL);
       };
       break;

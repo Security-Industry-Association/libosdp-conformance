@@ -43,7 +43,7 @@ ${OUTLIB}:	\
 	oo-bio.o oo-callout.o oo-capabilities.o oo-commands2.o oo-conformance.o oo-crc.o \
 	oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
 	oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o oo-parse.o \
-	  oo-printmsg.o oo-process.o \
+	  oo-printmsg.o oo-printmsg2.o oo-process.o \
 	  oo-util.o oo-util2.o oo-util3.o \
 	  oo-xpm-actions.o oo-xwrite.o \
 	  oo-files.o oo-logmsg.o oo-prims.o \
@@ -51,7 +51,7 @@ ${OUTLIB}:	\
 	ar r ${OUTLIB} \
 	  oo-actions.o oo-api.o oo-bio.o oo-capabilities.o oo-callout.o \
 	  oo-cmdbreech.o oo-commands2.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
-	  oo-parse.o oo-printmsg.o oo-process.o oo-util.o oo-util2.o \
+	  oo-parse.o oo-printmsg.o oo-printmsg2.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-xpm-actions.o oo-xwrite.o \
 	  oo-conformance.o oo-crc.o oo-files.o \
 	  oo-logmsg.o oo-prims.o oo-secure.o \
@@ -69,11 +69,17 @@ oo-bio.o:	oo-bio.c ../include/osdp-tls.h ../include/open-osdp.h
 oo-callout.o:	oo-callout.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-callout.c
 
+oo-capabilities.o:	oo-capabilities.c
+	${CC} ${CFLAGS} oo-capabilities.c
+
 oo-cmdbreech.o:	oo-cmdbreech.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-cmdbreech.c
 
 oo-commands2.o:	oo-commands2.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-commands2.c
+
+oo-conformance.o:	oo-conformance.c
+	${CC} ${CFLAGS} oo-conformance.c
 
 oo-initialize.o:	oo-initialize.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-initialize.c
@@ -90,6 +96,12 @@ oo-mgmt-actions.o:	oo-mgmt-actions.c ../include/open-osdp.h
 oo-parse.o:	oo-parse.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-parse.c
 
+oo-printmsg.o:	oo-printmsg.c ../include/open-osdp.h
+	${CC} ${CFLAGS} oo-printmsg.c
+
+oo-printmsg2.o:	oo-printmsg2.c ../include/open-osdp.h ../include/osdp-800-53.h
+	${CC} ${CFLAGS} oo-printmsg2.c
+
 oo-process.o:	oo-process.c ../include/open-osdp.h ../include/iec-nak.h
 	${CC} ${CFLAGS} oo-process.c
 
@@ -105,20 +117,11 @@ oo-util3.o:	oo-util3.c ../include/open-osdp.h
 oo-logprims.o:	oo-logprims.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-logprims.c
 
-oo-printmsg.o:	oo-printmsg.c ../include/open-osdp.h
-	${CC} ${CFLAGS} oo-printmsg.c
-
 oo-xpm-actions.o:	oo-xpm-actions.c ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-xpm-actions.c
 
 oo-xwrite.o:	oo-xwrite.c ../include/open-osdp.h ../include/iec-xwrite.h
 	${CC} ${CFLAGS} oo-xwrite.c
-
-oo-conformance.o:	oo-conformance.c
-	${CC} ${CFLAGS} oo-conformance.c
-
-oo-capabilities.o:	oo-capabilities.c
-	${CC} ${CFLAGS} oo-capabilities.c
 
 oo-crc.o:	oo-crc.c
 	${CC} ${CFLAGS} oo-crc.c
