@@ -39,7 +39,7 @@ extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
 extern char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
-extern unsigned char *last_message_sent;
+extern unsigned char last_message_sent [2048];
 extern int last_message_sent_length;
 
 
