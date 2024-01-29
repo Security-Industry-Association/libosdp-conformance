@@ -494,7 +494,7 @@ typedef struct osdp_context
   int role;
   char text [OSDP_OFFICIAL_MSG_MAX];
   unsigned char this_message_addr;
-  unsigned char MFG_oui [3];
+//  unsigned char MFG_oui [3];
   int last_was_processed;
   int last_checksize_in;
   int max_message; // max message from PD, if set
