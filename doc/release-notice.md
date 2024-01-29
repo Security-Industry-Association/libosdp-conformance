@@ -8,6 +8,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
 
+### updates in 1.38 build 4 ###
+
+expand max size packet sent with text command
+
 ### updates in 1.38 build 3 ###
 
 add OUI to osdp_MFGERRR

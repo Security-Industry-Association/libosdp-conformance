@@ -1164,7 +1164,7 @@ int
     OSDP_HDR returned_hdr;
     int status_monitor;
 
-    next_sequence(ctx);
+    oo_next_sequence(ctx);
 
     memset (&m, 0, sizeof (m));
     m.ptr = test_blk; // marshalled outbound message

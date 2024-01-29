@@ -1,7 +1,7 @@
 /*
   oo_util2 - more open-osdp util routines
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -39,7 +39,29 @@ extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
 extern char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
+extern unsigned char *last_message_sent;
+extern int last_message_sent_length;
 
+
+/// retry
+
+void do_retry
+  (OSDP_CONTEXT *ctx)
+
+{ /* do_retry */
+
+  unsigned char buf [2];  // note use for spacer so not always 1 byte
+  int status;
+
+    buf [0] = 0xff;
+    status = send_osdp_data (ctx, buf, 1);
+    if (status EQUALS ST_OK)
+    {
+      status = send_osdp_data (ctx, last_message_sent, last_message_sent_length);
+    };
+    last_message_sent_length = 0;
+    ctx->do_retry = 0;
+}
 
 /*
   under idle conditions send a poll (possibly securely)
@@ -293,10 +315,10 @@ z64 = (0xff & (unsigned int)*(p+9));
 
 
 int
-  next_sequence
+  oo_next_sequence
     (OSDP_CONTEXT *ctx)
 
-{ /* next_sequence */
+{ /* oo_next_sequence */
 
   static int current_sequence;
   int do_increment;
@@ -348,7 +370,7 @@ int
   };
   return (current_sequence);
 
-} /* next_sequence */
+} /* oo_next_sequence */
 
 
 int
@@ -546,7 +568,7 @@ int
     data, 0); // no security
   if (status EQUALS ST_OK)
   {
-    next_sequence(ctx);
+    oo_next_sequence(ctx);
 
     // if (context->verbosity > 3)
     {
@@ -596,6 +618,8 @@ int
 
     if (status EQUALS ST_OK)
     {
+      memcpy(last_message_sent, test_blk, *current_length);
+      last_message_sent_length = *current_length;
       status = send_osdp_data (ctx, test_blk, *current_length);
 
       // and after we sent the whole PDU bump the counter

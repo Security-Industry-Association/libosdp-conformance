@@ -1,10 +1,7 @@
 /*
   oo_initialize - init code for OSDP
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
-
-  Support provided by the Security Industry Association
-  http://www.securityindustry.org
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -41,6 +38,8 @@
 char multipart_message_buffer_1 [64*1024];
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
+extern unsigned char *last_message_sent;
+extern int last_message_sent_length;
 
 OSDP_COMMAND_QUEUE osdp_command_queue [OSDP_COMMAND_QUEUE_SIZE];
 
@@ -295,6 +294,9 @@ int
       fprintf (stderr, "Clock resolution is %ld seconds/%ld nanoseconds\n",
         resolution.tv_sec, resolution.tv_nsec);
   };
+
+    last_message_sent_length = 0;
+
   }; // status ok after lock 
 
   if (status EQUALS ST_OK)

@@ -39,6 +39,8 @@ OSDP_INTEROP_ASSESSMENT osdp_conformance;
 OSDP_PARAMETERS p_card;
 char trace_in_buffer [4*1024];
 char trace_out_buffer [1024];
+  unsigned char last_message_sent [2048];
+  int last_message_sent_length;
 
 
 void

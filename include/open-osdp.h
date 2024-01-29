@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (38)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_BUILD ( 4)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -461,7 +461,6 @@ typedef struct osdp_context
   int enable_secure_channel; // 1=yes, 2=yes and use default, 0=disabled
   int enable_poll; // usuall 1 for enable, 0=disable
   int post_command_action; // for stop-after-filetransfer or stop-after-timeout
-  int pdcap_select; // 0 for normal 1 for short
   char fqdn [1024];
   char log_path [1024];
   char serial_speed [1024];
@@ -493,7 +492,7 @@ typedef struct osdp_context
   OSDP_LED_STATE led [OSDP_MAX_LED];
   int pd_address; // the pd to whom we are speaking
   int role;
-  char text [1024];
+  char text [OSDP_OFFICIAL_MSG_MAX];
   unsigned char this_message_addr;
   unsigned char MFG_oui [3];
   int last_was_processed;
@@ -549,11 +548,6 @@ typedef struct osdp_context
   int last_errno;
   int tamper;
 
-  // test case induction
-
-  int next_nak; // nak the next incoming message from the CP
-  int next_crc_bad;
-  int conformance_fail_next_rmac_i;
 
   int power_report;
   int tamper_report;
@@ -618,6 +612,15 @@ typedef struct osdp_context
   char last_keyboard_data [8];
 
   OSDP_CONTEXT_FILETRANSFER xferctx;
+
+  // conformance manipulation
+
+  int conformance_fail_next_rmac_i;
+  int do_retry;
+  int next_crc_bad;
+  int next_nak; // nak the next incoming message from the CP
+  int pdcap_select; // 0 for normal 1 for short
+
 } OSDP_CONTEXT;
 
 // four different details maintained about a secure channel connection,
@@ -1079,7 +1082,6 @@ int enqueue_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int fasc_n_75_to_string (char * s, long int *sample_1);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
-int next_sequence (OSDP_CONTEXT *ctx);
 int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int oo_build_genauth(OSDP_CONTEXT *ctx, unsigned char *challenge_payload_buffer, int *payload_length, unsigned char *details, int details_length);
 int oo_command_setup_out(OSDP_CONTEXT *ctx, json_t *output_command, OSDP_COMMAND *cmd);
@@ -1088,6 +1090,7 @@ int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message, int security_block
 int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
 int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
+int oo_next_sequence (OSDP_CONTEXT *ctx);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);

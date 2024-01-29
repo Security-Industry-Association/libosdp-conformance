@@ -42,6 +42,8 @@
 #include <open-osdp.h>
 #include <osdp_conformance.h>
 #include <osdp-local-config.h>
+  unsigned char last_message_sent [2048];
+  int last_message_sent_length;
 
 
 int

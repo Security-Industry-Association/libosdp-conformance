@@ -52,6 +52,8 @@ OSDP_PARAMETERS p_card;
 char tag [16]; // PD or CP as a string
 char trace_in_buffer [4*OSDP_OFFICIAL_MSG_MAX];
 char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
+  unsigned char last_message_sent [2048];
+  int last_message_sent_length;
 
 
 unsigned char

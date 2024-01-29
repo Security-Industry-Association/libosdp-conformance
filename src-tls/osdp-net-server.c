@@ -45,6 +45,8 @@
 #include <osdp-local-config.h>
 char trace_in_buffer [1024];
 char trace_out_buffer [1024];
+  unsigned char last_message_sent [2048];
+  int last_message_sent_length;
 
 
 int _verify_certificate_callback(gnutls_session_t session);

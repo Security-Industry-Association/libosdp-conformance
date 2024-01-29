@@ -950,7 +950,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       };
       break;
     };
-  } /* role CP */
+  } /* role ACU */
 
   if (status EQUALS ST_MSG_UNKNOWN)
     osdp_conformance.last_unknown_command = msg->msg_cmd;
