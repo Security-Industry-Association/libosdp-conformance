@@ -432,7 +432,6 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       m->data_payload = m->cmd_payload + 1;
       msg_data_length = p->len_lsb + (p->len_msb << 8);
       msg_data_length = msg_data_length - 6 - 2; // less hdr,cmnd, crc/chk
-      context->sent_naks ++;
       if (context->verbosity > 2)
         strcpy (tlogmsg2, "osdp_NAK");
       break;

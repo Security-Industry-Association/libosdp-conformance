@@ -7,6 +7,12 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### updates in 1.39 build 0 ###
+
+fix double reporting of naks received.
+
+tune osdp-status.json so it is more convienient to tail.
+
 
 ### updates in 1.38 build 4 ###
 

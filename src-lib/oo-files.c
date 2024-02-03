@@ -730,7 +730,6 @@ int
     current_date_string [strlen (current_date_string)-1] = 0;
 
     fprintf(sf, "{");
-    fprintf(sf, "\"last_update\" : \"%s\",", current_date_string);
     fprintf(sf, "\"mmt\" : \"%d\",", osdp_conformance.conforming_messages);
     fprintf(sf, "\"retries\" : \"%d\",", ctx->retries);
     fprintf(sf, "\"role\" : \"%d\",", ctx->role);
@@ -751,18 +750,10 @@ int
     fprintf(sf,
 "\"max_pd_send\" : \"%d\",\n",
       ctx->max_message);
-    fprintf(sf, "\"acu-polls\" : \"%d\",", ctx->acu_polls);
-    fprintf(sf, " \"pd-acks\" : \"%d\",", ctx->pd_acks);
-    fprintf(sf, " \"pdus-received\" : \"%d\", \"pdus-sent\" : \"%d\",\n",
-      ctx->pdus_received, ctx->pdus_sent);
-    fprintf(sf,
-"\"pd-naks\" : \"%d\",", ctx->sent_naks);
     fprintf(sf,
 "\"dropped\" : \"%d\",\"octets-received\":\"%d\",\"octets-sent\":\"%d\",",
       ctx->dropped_octets, ctx->bytes_received, ctx->bytes_sent);
     fprintf(sf, "\"seq-bad\" : \"%d\",", ctx->seq_bad);
-    fprintf (sf,
-"\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
     fprintf (sf,
 "\"crc_errs\" : \"%d\",", ctx->crc_errs);
     fprintf (sf,
@@ -824,6 +815,21 @@ int
     fprintf(sf, "\"serial_number\":\"%02X%02X%02X%02X\",\n",
       ctx->serial_number [0], ctx->serial_number [1], ctx->serial_number [2], ctx->serial_number [3]);
     fprintf(sf, "\"total_length\" : \"%d\",\n", ctx->xferctx.total_length);
+
+    fprintf(sf,
+" \"acu-polls\" : \"%d\",", ctx->acu_polls);
+    fprintf(sf, 
+" \"pd-acks\" : \"%d\",", ctx->pd_acks);
+    fprintf(sf,
+" \"pdus-received\" : \"%d\", \"pdus-sent\" : \"%d\",\n",
+      ctx->pdus_received, ctx->pdus_sent);
+    fprintf(sf,
+" \"last_update\" : \"%s\",", current_date_string);
+    fprintf(sf, "\n");
+    fprintf(sf,
+" \"pd-naks\" : \"%d\",", ctx->sent_naks);
+    fprintf (sf,
+"\"hash-ok\" : \"%d\", \"hash-bad\" : \"%d\",\n", ctx->hash_ok, ctx->hash_bad);
     fprintf(sf, "\"_#\" : \"_end\" ");
     fprintf(sf, "}\n");
 
