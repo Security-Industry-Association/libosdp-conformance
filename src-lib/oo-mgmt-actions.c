@@ -1,7 +1,7 @@
 /*
   oo-mgmt-actions - action routines for (some) mgmt functions
 
-  (C)Copyright 2022-2023 Smithee Solutions LLC
+  (C)Copyright 2022-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -106,8 +106,8 @@ int
 
   status = ST_OK;
   oh = (OSDP_HDR *)(msg->ptr);
-      ctx->sent_naks ++;
-      ctx->last_nak_error = *(0+msg->data_payload);
+  ctx->sent_naks ++;
+  ctx->last_nak_error = *(0+msg->data_payload);
 
       if (ctx->verbosity > 2)
       {

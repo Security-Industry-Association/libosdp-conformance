@@ -593,7 +593,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 
     case OSDP_NAK:
       status = ST_OK;
-      context->sent_naks ++;
+//      context->sent_naks ++;
       context->last_nak_error = *(0+msg->data_payload);
 
       if (context->verbosity > 2)
@@ -778,7 +778,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       };
       if (context->verbosity > 2)
       {
-        fprintf (stderr, "osdp_COM: Addr %02x Baud (m->l) %02x %02x %02x %02x\n",
+        fprintf (context->log, "osdp_COM: Addr %02x Baud (m->l) %02x %02x %02x %02x\n",
           *(0+msg->data_payload), *(1+msg->data_payload), *(2+msg->data_payload),
           *(3+msg->data_payload), *(4+msg->data_payload));
       };
