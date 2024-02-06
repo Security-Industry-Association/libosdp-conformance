@@ -733,6 +733,25 @@ int
     };
   };
 
+  // if there was an input status requested return that.
+
+  if ((!done) && (ctx->next_istatr EQUALS 1))
+  {
+    unsigned char osdp_istat_response_data [OOSDP_DEFAULT_INPUTS];
+
+    // hard code to show first input active, all others inactive
+
+    memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
+    osdp_istat_response_data [0] = 1; // input 0 is active
+    osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
+
+    current_length = 0;
+    status = send_message_ex(ctx, OSDP_ISTATR, p_card.addr,
+      &current_length, sizeof(osdp_istat_response_data), osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
+    ctx->next_istatr = 0;
+    done = 1;
+  };
+
   // if there was a power report or tamper return that.
 
   if ((!done) && ((ctx->power_report EQUALS 1) || (ctx->tamper)))

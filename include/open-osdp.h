@@ -520,6 +520,7 @@ typedef struct osdp_context
   char last_nak_error;
   char last_response_received;
   char next_response;
+  int next_istatr;
   int next_sequence;
   int last_sequence_received;
   int left_to_send;
