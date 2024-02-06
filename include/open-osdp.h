@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (39)
-#define OSDP_VERSION_BUILD ( 0)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -194,13 +194,13 @@
 #define OSDP_CMDB_CONFORM_2_11_3 (1030)
 #define OSDP_CMDB_STOP           (1031)
 #define OSDP_CMDB_WITNESS        (1032) // GENAUTH
-#define OSDP_CMDB_CHALLENGE      (1033) // CRAUTH
-#define OSDP_CMDB_XWRITE         (1034)
-#define OSDP_CMDB_KEEPACTIVE     (1035)
-#define OSDP_CMDB_BIOREAD        (1036)
-#define OSDP_CMDB_POLLING        (1037)
-#define OSDP_CMDB_RESET          (1038)
-//#define OSDP_CMDB_BIOREADER      (1039)
+#define OSDP_CMDB_CHALLENGE         (1033) // CRAUTH
+#define OSDP_CMDB_XWRITE            (1034)
+#define OSDP_CMDB_KEEPACTIVE        (1035)
+#define OSDP_CMDB_BIOREAD           (1036)
+#define OSDP_CMDB_POLLING           (1037)
+#define OSDP_CMDB_RESET             (1038)
+// deprecated                       (1039)
 #define OSDP_CMDB_ACURXSIZE         (1040)
 #define OSDP_CMDB_FACTORY_DEFAULT   (1041)
 #define OSDP_CMDB_KEYSET            (1042)
@@ -218,6 +218,7 @@
 #define OSDP_CMDB_ONDEMAND_LSTATR   (1054)
 #define OSDP_CMDB_CONFORM_050_06_02 (1055)
 #define OSDP_CMDB_MFGREP            (1056)
+#define OSDP_CMDB_INPUT_STATUS      (1057)
 
 #define OSDP_CMD_NOOP         (0)
 

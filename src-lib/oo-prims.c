@@ -249,6 +249,12 @@ int
 } /* osdp_awaiting_response */
 
 
+/*
+  osdp_command_match - match command string to command value
+
+  processes "command" field of json command.
+*/
+
 int
   osdp_command_match
     (OSDP_CONTEXT *ctx,
@@ -288,6 +294,8 @@ int
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
     if (0 EQUALS strcmp(command, "identify"))
       ret_cmd = OSDP_CMDB_IDENT;
+    if (0 EQUALS strcmp(command, "input-status"))
+      ret_cmd = OSDP_CMDB_INPUT_STATUS;
     if (0 EQUALS strcmp(command, "keyset"))
       ret_cmd = OSDP_CMDB_KEYSET;
     if (0 EQUALS strcmp(command, "mfg-response"))
@@ -306,6 +314,8 @@ int
       ret_cmd = OSDP_CMDB_SCBK_DEFAULT;
     if (0 EQUALS strcmp(command, "send-explicit"))
       ret_cmd = OSDP_CMDB_SEND_EXPLICIT;
+    if (0 EQUALS strcmp(command, "tamper"))
+      ret_cmd = OSDP_CMDB_TAMPER;
     if (0 EQUALS strcmp(command, "trace"))
       ret_cmd = OSDP_CMDB_TRACE;
     if (ret_cmd != -1)

@@ -1,7 +1,7 @@
 /*
   oo-ui - UI routines for open-osdp
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -354,6 +354,22 @@ if (command EQUALS OSDP_CMDB_WITNESS)
           status = ST_OK;
         };
       };
+      break;
+
+    case OSDP_CMDB_INPUT_STATUS:
+      {
+        unsigned char osdp_istat_response_data [OOSDP_DEFAULT_INPUTS];
+
+        // hard code to show first input active, all others inactive
+
+        memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
+        osdp_istat_response_data [0] = 1; // input 0 is active
+        osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
+
+        current_length = 0;
+        status = send_message_ex(context, OSDP_ISTATR, p_card.addr,
+          &current_length, sizeof(osdp_istat_response_data), osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
+      }
       break;
 
     case OSDP_CMDB_KEYSET:

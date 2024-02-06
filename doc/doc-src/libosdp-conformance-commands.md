@@ -81,6 +81,16 @@ Default behavior is to send to the currently-configured PD address on the curren
 |          |                          |
 | new-sequence | "1" to reset sequence number to zero. |
 
+Command input-status
+--------------------
+
+This response sends an osdp_ISTATR to the ACU.  It is hard-coded to indicate input zero (the first one) is active.
+
+| Argument | Value                    |
+| -------- | -----                    |
+|          |                          |
+| command  | input-status             |
+
 Command present-card
 --------------------
 
