@@ -761,7 +761,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
         buzzer_control [3] = details [1]; // 15x100 ms off
         buzzer_control [4] = details [2];  // repeat 3 times
         if (context->verbosity > 3)
-          fprintf (stderr,
+          fprintf (context->log,
 "Requesting Buzz: tone %d on %d(x100ms) off %d(x100ms) repeat %d\n",
             buzzer_control [1], buzzer_control [2],
             buzzer_control [3], buzzer_control [4]);
@@ -789,7 +789,7 @@ fprintf(stderr, "xfer size %d.\n", transfer_send_size);
           status = send_message_ex (context, OSDP_CAP, p_card.addr, &current_length, sizeof (param), param, OSDP_SEC_SCS_17, 0, NULL);
         };
         if (context->verbosity > 2)
-          fprintf (stderr, "Requesting Capabilities Report\n");
+          fprintf (context->log, "Requesting Capabilities Report\n");
       };
       status = ST_OK;
       break;
@@ -985,7 +985,7 @@ if (ctx->verbosity > 3)
             &current_length, 0, NULL,
             OSDP_SEC_SCS_15, 0, NULL);
           if (context->verbosity > 3)
-            fprintf (stderr, "Requesting Input Status\n");
+            fprintf (context->log, "Requesting Input Status\n");
         };
       };
       status = ST_OK;
@@ -1125,7 +1125,7 @@ if (ctx->verbosity > 3)
         status = send_message_ex (context,
           OSDP_OSTAT, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
         if (context->verbosity > 3)
-          fprintf (stderr, "Requesting Output Status\n");
+          fprintf (context->log, "Requesting Output Status\n");
       };
       status = ST_OK;
       break;
@@ -1203,7 +1203,7 @@ if (ctx->verbosity > 3)
       status = send_message_ex (context,
         OSDP_RSTAT, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
       if (context->verbosity > 2)
-        fprintf (stderr, "Requesting (External) Reader (Tamper) Status\n");
+        fprintf (context->log, "Requesting (External) Reader (Tamper) Status\n");
       break;
 
     case OSDP_CMDB_SEND_POLL:
