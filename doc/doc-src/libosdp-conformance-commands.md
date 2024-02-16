@@ -10,14 +10,31 @@ be sent to libosdp-conformance.  There is a Unix socket created
 at startup called open-osdp-control.  A utility is provided
 to inject the commands, open-osdp-kick.
 
+## How to send commands ##
+
+1. create a one-line json file
+
+
+```
+  echo >"led.json" "{\"command\":\"led\"}"
+```
+
+2. send it to the OSDP control socket.  Note it must be superuser to do this.  Assuming this is an ACU sending commands to a PD:
+
+```
+  sudo /opt/osdp-conformance/bin/open-osdp-kick ACU <led.json
+```
+
 Command Usage
 =============
 
 Commands
 ========
 
-(this is partial.  the markdonw file
+(this is partial.  the markdown file
 is a work in progress.)
+
+\newpage{}
 
 Command comset
 --------------
@@ -43,6 +60,8 @@ There are no defaults.
 | send-direct    | 1 to send on the current PD id else sends on 0x7F       |
 |                |                                                         |
 
+\newpage {}
+
 Command genauth
 ---------------
 
@@ -63,6 +82,8 @@ There are no defaults.
 |          |                                                                                       |
 | payload  | "(hex bytes)", a well-formed Dynamic Authentication Template.                          |
 
+\newpage{}
+
 Command identify
 ----------------
 
@@ -81,6 +102,8 @@ Default behavior is to send to the currently-configured PD address on the curren
 |          |                          |
 | new-sequence | "1" to reset sequence number to zero. |
 
+\newpage {}
+
 Command input-status
 --------------------
 
@@ -90,6 +113,108 @@ This response sends an osdp_ISTATR to the ACU.  It is hard-coded to indicate inp
 | -------- | -----                    |
 |          |                          |
 | command  | input-status             |
+
+\newpage {}
+
+## Command led ##
+
+This command sends LED directives to the PD.
+
+### Defaults ###
+
+LED 0
+Perm Off Time 0
+Perm Off Color Black
+Perm On Color Green
+Perm On Time 30
+Reader 0
+Temp Control NOP
+Temp Timer LSB=30 MSB=0
+Temp Off 3
+Temp Off Color Green
+Temp On 3
+Temp On Color Red
+
+
+### Arguments ###
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| command-id  | mfg |
+|             |                                            |
+| led-number | LED number (in decimal, range 0-255) |
+|             |                                            |
+| perm-control | Perm command code (in decimal) |
+|             |                                            |
+| perm-off-time | Perm off time (in decimal) |
+
+perm-off-color
+
+perm-on-time
+
+perm-on-color
+
+perm-on-color
+
+temp-off-color
+
+temp-off-time
+
+temp-on-time
+
+temp-on-color
+
+temp-timer
+
+temp-control
+
+\newpage{}
+
+Command mfg
+-----------
+
+This command causes the ACU to send an osdp_MFG command.
+
+Defaults
+t.b.d.
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| command-id  | mfg |
+|             |                                            |
+| oui | 3-byte organizational unit identifier |
+|             |                                            |
+| command-id | command number, in hex |
+|             |                                            |
+| command-specific-data | data, as hex string |
+|             |                                            |
+
+\newpage{}
+
+## Command mfg-response ##
+
+This response causes the PD to send an osdp_MFGREP response.
+
+Defaults
+t.b.d.
+
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| response-id  | mfg-response |
+|             |                                            |
+| oui | 3-byte organizational unit identifier |
+|             |                                            |
+| command-id | command number, in hex |
+|             |                                            |
+| response-specific-data | data, as hex string |
+|             |                                            |
+
+
+\newpage{}
 
 Command present-card
 --------------------
@@ -114,6 +239,26 @@ Defaults
 |             |                                            |
 | raw            | hexadecimal raw value.                                  |
 |                |                                                         |
+
+\newpage{}
+
+## Command transfer ##
+
+This command causes the ACU to initiate a file transfer.
+
+Defaults
+
+- the default file to be transfered is /opt/osdp-conformance/run/ACU/osdp_data_file
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| command        | identify |
+|             |                                            |
+| file         | fully path of file to be transferred. |
+|             |                                            |
+
+\newpage{}
 
 Other Commands
 --------------
@@ -142,8 +287,6 @@ Other Commands
 - induce-NAK
 - keep-active
 - keyset
-- mfg
-- mfg-response
 - ondemand-lstatr
 - pivdata
 - polling
