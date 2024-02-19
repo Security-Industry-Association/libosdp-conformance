@@ -118,56 +118,45 @@ This response sends an osdp_ISTATR to the ACU.  It is hard-coded to indicate inp
 
 ## Command led ##
 
-This command sends LED directives to the PD.
-
-### Defaults ###
-
-LED 0
-Perm Off Time 0
-Perm Off Color Black
-Perm On Color Green
-Perm On Time 30
-Reader 0
-Temp Control NOP
-Temp Timer LSB=30 MSB=0
-Temp Off 3
-Temp Off Color Green
-Temp On 3
-Temp On Color Red
-
+This command sends LED directives to the PD.  All arguments are decimal numbers, see OSDP spec for values.
+Times are in units of 100 milliseconds.  Reader number is hard-coded to zero.
 
 ### Arguments ###
 
 | Argument | Value |
 | -------- | ----- |
 |          |       |
-| command-id  | mfg |
-|             |                                            |
+| command-id  | led |
 | led-number | LED number (in decimal, range 0-255) |
-|             |                                            |
 | perm-control | Perm command code (in decimal) |
-|             |                                            |
+| perm-off-color | Perm off color (in decimal) |
 | perm-off-time | Perm off time (in decimal) |
+| perm-on-color | Perm on color (in decimal) |
+| perm-on-time | Perm on time (in decimal) |
+} temp-control | Perm command code (in decimal) |
+| temp-off-color | Temporary off color (in decimal) |
+| temp-off-time | Temp off time (in decimal) |
+| temp-on-color | Temporary on color (in decimal) |
+| temp-on-time | Temp on time (in decimal) |
+| temp-timer | Temporary timer duration (in decimal) |
 
-perm-off-color
+### Defaults ###
 
-perm-on-time
-
-perm-on-color
-
-perm-on-color
-
-temp-off-color
-
-temp-off-time
-
-temp-on-time
-
-temp-on-color
-
-temp-timer
-
-temp-control
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| led-number | 0 |
+| perm-control | 1 (set) |
+| perm-off-color | 0  (black) |
+| perm-off-time | 0 |
+| perm-on-color | 2 (green) |
+| perm-on-time | 30 (x100ms) |
+| temp-control | 0 (no-op) |
+| temp-off-color | 2 (green) |
+| temp-off-time | 3 (x100ms) |
+| temp-on-color | 1 (red) |
+| temp-on-time | 3 (x100ms) |
+| temp-timer | 30 (x100ms) |
 
 \newpage{}
 

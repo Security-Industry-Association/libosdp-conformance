@@ -9,6 +9,12 @@ clean:
 	rm -f ${DOCUMENTS}
 
 build:	all
+	echo RUNNING BUILD RULE
+	echo RUNNING BUILD RULE
+	echo RUNNING BUILD RULE
+	echo RUNNING BUILD RULE
+	echo RUNNING BUILD RULE
+	echo RUNNING BUILD RULE
 	mkdir -p ../opt/osdp-conformance/etc
 	cp ${DOCUMENTS} ../opt/osdp-conformance/etc
 

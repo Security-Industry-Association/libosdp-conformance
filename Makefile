@@ -3,7 +3,7 @@
 # This makes the RS-485 version.  To make the TLS version,
 # you need to explicitly do "make osdp-tls"
 
-#  (C)Copyright 2017-2022 Smithee Solutions LLC
+#  (C)Copyright 2017-2024 Smithee Solutions LLC
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -35,14 +35,12 @@ osdp-tls:	build
 	(cd src-tls; make build; cd ..)
 	(cd src-ui; make build-tls; cd ..)
 
-package:	osdp-tls
+package:	osdp-tls 
+	(cd doc; make build)
 	(cd package; make package)
-	echo ---
-	echo *** to make the documentation do "make documentation" ***
-	echo ---
 
 documentation:
-	(cd doc; make; cp *pdf ../opt/osdp-conformance/etc)
+	(cd doc; make build;)
 
 service:	osdp-tls
 	(cd package; make service)
@@ -72,6 +70,7 @@ build:	all
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)
 	(cd src-tools; make build; cd ..)
+	(cd doc; make build)
 	cp doc/config-examples/open-osdp-params-ACU.json \
 	  opt/osdp-conformance/run/ACU/
 	cp doc/config-examples/open-osdp-params-MON.json \
