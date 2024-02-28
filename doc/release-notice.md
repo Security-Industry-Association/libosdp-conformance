@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+updated osdpcap doc in root directory
+
+added 460800 and 921600 speeds
+
 ### updates in 1.39 build 1 ###
 
 add command to induce istatr

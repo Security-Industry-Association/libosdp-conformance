@@ -93,11 +93,15 @@ int
   int serial_speed_cfg_value;
   int known_speed;
 
-  known_speed = 1;
-  serial_speed_cfg_value = B9600;
+  known_speed = 0;
+
   // if speed wasn't set use the default of 9600
   if (strlen (ctx->serial_speed) EQUALS 0)
+  {
     strcpy (ctx->serial_speed, "9600");
+    serial_speed_cfg_value = B9600;
+    known_speed = 1;
+  };
 
   if (strcmp (ctx->serial_speed, "9600") EQUALS 0)
   {
@@ -127,6 +131,16 @@ int
   if (strcmp (ctx->serial_speed, "230400") EQUALS 0)
   {
     serial_speed_cfg_value = B230400;
+    known_speed = 1;
+  }
+  if (strcmp (ctx->serial_speed, "460800") EQUALS 0)
+  {
+    serial_speed_cfg_value = B460800;
+    known_speed = 1;
+  }
+  if (strcmp (ctx->serial_speed, "921600") EQUALS 0)
+  {
+    serial_speed_cfg_value = B921600;
     known_speed = 1;
   }
   if (!known_speed)
