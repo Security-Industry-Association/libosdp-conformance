@@ -20,43 +20,16 @@
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
 
+#	(cd src-lib; make all; cd ..)
+
 all:	lib
-	(cd include; make all; cd ..)
-	(cd src-lib; make all; cd ..)
 	(cd src-485; make all; cd ..)
 	(cd src-ui; make all; cd ..)
 	(cd src-tools; make all; cd ..)
 
 lib:
-	(cd src-lib; make all; cd ..)
-
-osdp-tls:	build
-	(cd src-tls; make all; cd ..)
-	(cd src-tls; make build; cd ..)
-	(cd src-ui; make build-tls; cd ..)
-
-package:	osdp-tls 
-	(cd doc; make build)
-	(cd package; make package)
-
-documentation:
-	(cd doc; make build;)
-
-service:	osdp-tls
-	(cd package; make service)
-
-clean:
-	(cd include; make clean; cd ..)
-	(cd src-lib; make clean; cd ..)
-	(cd src-485; make clean; cd ..)
-	(cd src-tls; make clean; cd ..)
-	(cd src-ui; make clean; cd ..)
-	(cd src-tools; make clean; cd ..)
-	(cd test; make clean; cd ..)
-	(cd doc; make clean; )
-	(cd package; make clean)
-	rm -f release-osdp-conformance.tgz *.deb
-	rm -rf opt
+	(cd include; make all; cd ..)
+	(cd src-lib; make all)
 
 build:	all
 	mkdir -p opt/osdp-conformance/run/ACU
@@ -70,7 +43,6 @@ build:	all
 	(cd src-485; make build; cd ..)
 	(cd src-ui; make build; cd ..)
 	(cd src-tools; make build; cd ..)
-	(cd doc; make build)
 	cp doc/config-examples/open-osdp-params-ACU.json \
 	  opt/osdp-conformance/run/ACU/
 	cp doc/config-examples/open-osdp-params-MON.json \
@@ -82,4 +54,30 @@ build:	all
 	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/ACU/my-root
 	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/PD/my-root
 	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/MON/my-root
+
+osdp-tls:	build
+	(cd src-tls; make all; cd ..)
+	(cd src-tls; make build; cd ..)
+	(cd src-ui; make build-tls; cd ..)
+
+service:	osdp-tls
+	(cd package; make service)
+
+package:	osdp-tls 
+	(cd package; make package)
+
+documentation:	service
+	(cd doc; make build;)
+clean:
+	(cd include; make clean; cd ..)
+	(cd src-lib; make clean; cd ..)
+	(cd src-485; make clean; cd ..)
+	(cd src-tls; make clean; cd ..)
+	(cd src-ui; make clean; cd ..)
+	(cd src-tools; make clean; cd ..)
+	(cd test; make clean; cd ..)
+	(cd doc; make clean; )
+	(cd package; make clean)
+	rm -f release-osdp-conformance.tgz *.deb
+	rm -rf opt
 
