@@ -1,5 +1,5 @@
 Package: libosdp-conformance
-Version: 1.39-2
+Version: 1.39-3
 Section: custom
 Priority: optional
 Architecture: amd64

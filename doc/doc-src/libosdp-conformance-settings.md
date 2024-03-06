@@ -20,10 +20,13 @@ These are set in open-osdp-params.json in the current directory when open-osdp s
 because bit 1 of the first octet is a 1 meaning a private value.)
 - pdcap-format
 - raw_value
+- role - PD or ACU or MON
 - RND.A - sets the value to use as an ACU in secure channel operations.  Value is hex.  Default "303132333435363738".
 - RND.B - sets the value to use as a PD in secure channel operations. Value is hex.  Default is "6162636465666768"
 - serial_device
 - serial_speed
+- verbosity - level of logging.  0 for quiet, 3 for normal, 9 for debug.
+- version - version number to return if not '2'.  must be postive decimal number.
 
 ## Other settings ##
 
@@ -35,7 +38,6 @@ because bit 1 of the first octet is a 1 meaning a private value.)
   // parameter  "key" ("DEFAULT" or a 16-byte hex value)
   // parameter "max-send"
   // parameter "network_address"
-  // parameter "oui"
   // parameter "outputs" (value must be in range 0 - OOSDP_DEFAULT_OUTPUTS)
   // parameter "pd-filetransfer-recsize" is bytes to ask for in osdp_FTSTAT response (for a PD)
   // port - port number at the other end of tls or tcp connection
@@ -45,7 +47,5 @@ because bit 1 of the first octet is a 1 meaning a private value.)
   // parameter "timeout"
   // parameter "timeout-nsec" - timeout in nanoseconds.
   // parameter "serial-read-timeout" - nanoseconds.
-  // parameter "verbosity"
-  // parameter "role"
 ```
 

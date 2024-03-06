@@ -744,7 +744,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
               if (compliance == 2) strcpy (tstr2, "Timed");
               if (compliance == 3) strcpy (tstr2, "Timed, Bi-color");
               if (compliance == 4) strcpy (tstr2, "Timed, Tri-color");
-              sprintf (tstr, "  [%02d] %s %d LED's Compliance:%s;\n",
+              sprintf (tstr, "  Capability Entry %02d. %s %d LED's Compliance:%s;\n",
                 1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), 
                 *(i+2+msg->data_payload),
                 tstr2);
@@ -752,16 +752,16 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
             break;
           case OSDP_CAP_REC_MAX:
             value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
-            sprintf (tstr, "  [%02d] %s %d;\n",
+            sprintf (tstr, "  Capability Entry %02d. %s %d;\n",
               1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
             break;
           case OSDP_CAP_MAX_MULTIPART:
             value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
-            sprintf (tstr, "  [%02d] %s %d;\n",
+            sprintf (tstr, "  Capability Entry %02d. %s %d;\n",
               1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
             break;
           default:
-            sprintf (tstr, "  [%02d] %s %02x %02x;\n",
+            sprintf (tstr, "  Capability Entry %02d. %s %02x %02x;\n",
               1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), *(i+1+msg->data_payload), *(i+2+msg->data_payload));
             break;
           };

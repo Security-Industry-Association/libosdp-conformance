@@ -1,7 +1,7 @@
 /*
   oo-capabilities - primitives to manage the capabilities list
 
-  (C) 2021-2023 Smithee Solutions LLC
+  (C) 2021-2024 Smithee Solutions LLC
 */
 
 
@@ -114,9 +114,16 @@ int
   if (ctx->pdcap_select EQUALS 0)
     status = osdp_add_capability(ctx, capas, 15, 0, 0, capabilities_response_length, sizeof(capas));
 
-  // Version "SIA 2.2" of protocol
+  // Version "SIA 2.2" of protocol (unless spoofed)
   if (ctx->pdcap_select EQUALS 0)
-    status = osdp_add_capability(ctx, capas, 16, 2, 0, capabilities_response_length, sizeof(capas));
+  {
+    int my_version;
+
+    my_version = 2;
+    if (ctx->capability_version != -1)
+      my_version = ctx->capability_version;
+    status = osdp_add_capability(ctx, capas, 16, my_version, 0, capabilities_response_length, sizeof(capas));
+  };
 
   memcpy(capabilities_list, capas, *capabilities_response_length);
   return(status);

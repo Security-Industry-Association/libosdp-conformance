@@ -891,6 +891,25 @@ fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
     ctx->pdcap_select = i;
   }; 
 
+  // parameter "version"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    strcpy (field, "version");
+    value = json_object_get (root, field);
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    char vstr [1024];
+    int i;
+    strcpy (vstr, json_string_value (value));
+    sscanf (vstr, "%d", &i);
+    ctx->capability_version = i;
+  };
+
   // if checksum only don't do secure channel
   if (m_check EQUALS OSDP_CHECKSUM)
   {

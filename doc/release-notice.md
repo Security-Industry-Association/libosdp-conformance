@@ -7,6 +7,15 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### updates in 1.39 build 3 ###
+
+added a "version" setting so you can spoof you OSPD capability report.
+
+changed PDCAL output list to make it clearer that is a numbered list not the capabilities
+number field.
+
+### updates in 1.39 build 2 ###
+
 updated osdpcap doc in root directory
 
 added 460800 and 921600 speeds
