@@ -246,6 +246,7 @@ Defaults
 |             |                                            |
 | file         | fully path of file to be transferred. |
 |             |                                            |
+| file-type | (optional) file type to use.  Hex, must be nonzero. |
 
 \newpage{}
 

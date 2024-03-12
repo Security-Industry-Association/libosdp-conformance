@@ -11,8 +11,10 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 added a "version" setting so you can spoof you OSPD capability report.
 
-changed PDCAL output list to make it clearer that is a numbered list not the capabilities
+changed PDCAP output list to make it clearer that is a numbered list not the capabilities
 number field.
+
+add file-type option to file transfer command.
 
 ### updates in 1.39 build 2 ###
 

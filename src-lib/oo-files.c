@@ -24,6 +24,7 @@
 #include <string.h>
 #include <time.h>
 #include <sys/stat.h>
+#include <errno.h>
 
 
 #include <osdp-tls.h>
@@ -34,8 +35,156 @@
 extern OSDP_PARAMETERS p_card;
 
 
+/*
+  oo_filetransfer_initiate - start a file transfer operation in the ACU.
+
+  details is from the command queue.
+  first octet is file type
+  2-nth octets are filename
+*/
 int
-  oo_filetransfer_initate
+  oo_filetransfer_initiate
+  (OSDP_CONTEXT *context,
+  char *details)
+
+{ /* oo_filetransfer_initiate */
+
+  int current_length;
+  OSDP_HDR_FILETRANSFER *file_transfer;
+  int size_to_read;
+  int status;
+  int status_io;
+  int transfer_send_size;
+  static unsigned char xfer_buffer [OSDP_BUF_MAX];
+
+
+  status = ST_OK;
+
+  // find and open file
+
+  strcpy(context->xferctx.filename, "./osdp_data_file");
+  if (strlen (1+details) > 0)
+    strcpy(context->xferctx.filename, 1+details);
+
+  fprintf(context->log, "  File transfer: file %s\n",
+    context->xferctx.filename);
+
+        context->xferctx.xferf = fopen (context->xferctx.filename, "r");
+        if (context->xferctx.xferf EQUALS NULL)
+        {
+          fprintf(context->log, "  local open failed, errno %d\n", errno);
+          strcpy(context->xferctx.filename, "/opt/osdp-conformance/etc/osdp_data_file");
+          context->xferctx.xferf = fopen (context->xferctx.filename, "r");
+          if (context->xferctx.xferf EQUALS NULL)
+          {
+            fprintf(context->log, "SEND: data file not found (checked %s as last resort)\n",
+              context->xferctx.filename);
+            status = ST_OSDP_BAD_TRANSFER_FILE;
+          }
+          else 
+            if (context->verbosity > 3)
+              fprintf(stderr, "data file is /opt/osdp-conformance/etc/osdp_data_file\n");
+        }
+        else
+        {
+          if (context->verbosity > 3)
+          {
+            fprintf(context->log, "  File transfer: Data file is %s\n",
+              context->xferctx.filename);
+          };
+        };
+
+        if (status EQUALS ST_OK)
+        {
+          struct stat datafile_status;
+
+          stat(context->xferctx.filename, &datafile_status);
+          fprintf(context->log,
+            "  FIle transfer: data file %s size %d.\n",
+            context->xferctx.filename, (int)datafile_status.st_size);
+          context->xferctx.total_length = datafile_status.st_size;
+          context->xferctx.current_offset = 0; // should be set already but just in case.
+
+          // set up the osdp_FILETRANSFER command.  structure uses 'xfer_buffer' as it's data area.
+
+          memset (xfer_buffer, 0, sizeof(xfer_buffer));
+          file_transfer = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
+
+          // file type is first octet of details
+
+          file_transfer->FtType = details [0];
+
+          // load data from file starting at msg->FtData
+
+          if (context->pd_cap.rec_max > 0)
+          {
+            if (context->max_message EQUALS 0)
+            {
+              context->max_message = context->pd_cap.rec_max;
+            };
+          };
+          if (context->max_message EQUALS 0)
+          {
+            context->max_message = 128;
+            fprintf(stderr, "max message unset, setting it to 128\n");
+            context->xferctx.current_send_length = context->max_message;
+          };
+          size_to_read = context->max_message;
+
+          // wimp out and restrict transfer, got my math wrong somewhere...
+          if (size_to_read > 1000)
+          {
+            fprintf(context->log, "Limiting filetransfer read size to %d (was %d)\n", 1000, size_to_read);
+            size_to_read = 1000;
+          };
+
+          // adjust for header, crc, secure channel
+
+          size_to_read = size_to_read - 6 - 2;
+
+// if it's checksum use -1 not -2.
+
+          if (context->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+            size_to_read = size_to_read - 2 - 4; //scs header, mac
+
+          size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
+          if (context->verbosity > 3)
+            fprintf(context->log, "Reading %d. from file to start.\n", size_to_read);
+          memset(&(file_transfer->FtData), 0, size_to_read);
+          status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, context->xferctx.xferf);
+
+          // if what's left is less than allowed size, adjust
+
+          if (status_io < size_to_read)
+            size_to_read = status_io;
+
+          context->xferctx.total_sent = size_to_read;
+          osdp_doubleByte_to_array(size_to_read, file_transfer->FtFragmentSize);
+          osdp_quadByte_to_array(context->xferctx.total_length, file_transfer->FtSizeTotal);
+          osdp_quadByte_to_array(context->xferctx.current_offset, file_transfer->FtOffset); 
+
+          if (context->verbosity > 3)
+            fprintf (stderr, "Initiating File Transfer\n");
+
+    // send the first chunk.
+
+    context->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
+    current_length = 0;
+    transfer_send_size = size_to_read;
+    transfer_send_size = transfer_send_size - 1 + sizeof (*file_transfer);
+    status = send_message_ex(context, OSDP_FILETRANSFER, p_card.addr, &current_length,
+      transfer_send_size, (unsigned char *)file_transfer, OSDP_SEC_SCS_17, 0, NULL);
+
+    // after the send update the current offset
+    context->xferctx.current_offset = context->xferctx.current_offset + size_to_read;
+  };
+  return(status);
+
+} /* oo_filetransfer_initiate */
+
+
+int
+  zoo_filetransfer_initate
     (OSDP_CONTEXT *context)
 
 { /* oo_filetransfer_initiate */

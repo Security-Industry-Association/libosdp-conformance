@@ -1098,6 +1098,7 @@ unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
 int oo_send_next_genauth_fragment(OSDP_CONTEXT *ctx);
+int oo_filetransfer_initiate(OSDP_CONTEXT *context, char *details);
 int oo_write_status (OSDP_CONTEXT *ctx);
 void osdp_array_to_doubleByte (unsigned char a [2], unsigned short int *i);
 void osdp_array_to_quadByte (unsigned char a [4], unsigned int *i);

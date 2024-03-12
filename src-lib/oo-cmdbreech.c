@@ -1001,19 +1001,33 @@ int
   };
 
   // command transfer
+  // arguments: file (string) and file-type (hex)
+
+  // note this code is responsible for setting the file transfer type
+  // even if it's not specified by the caller.
 
   if (status EQUALS ST_OK)
   {
     if (0 EQUALS strcmp (current_command, "transfer"))
     {
       cmd->command = OSDP_CMDB_TRANSFER;
+      cmd->details [0] = OSDP_FILETRANSFER_TYPE_OPAQUE;
 
       // if there's a "file" argument use that
       parameter = json_object_get (root, "file");
       if (json_is_string (parameter))
       {
-        strcpy ((char *)cmd->details, json_string_value (parameter));
+        strcpy (1+(char *)cmd->details, json_string_value (parameter));
       };
+
+      // if there's a "file-type" argument use that
+      parameter = json_object_get (root, "file-type");
+      if (json_is_string (parameter))
+      {
+        sscanf(json_string_value(parameter), "%x", &i);
+        cmd->details [0] = i; // file transfer type to first octet of details
+      };
+
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;
     };
