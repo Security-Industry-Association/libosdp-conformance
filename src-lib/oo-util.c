@@ -307,13 +307,14 @@ int
         fprintf (context->log, "LED Control Payload:\n");
         for (i=0; i<count; i++)
         {
-          fprintf (context->log, "[%02d] Rdr %d LED %d Tcmd %d Pcmd %d\n",
+          fprintf (context->log, "[%02d] Rdr %d LED %d Tcmd %d Pcmd %d",
             i, led_ctl->reader, led_ctl->led, led_ctl->temp_control,
             led_ctl->perm_control);
+          fprintf(context->log, " tc %d pc %d\n", led_ctl->temp_control, led_ctl->perm_control);
           if (led_ctl->reader EQUALS 0)
             if (led_ctl->temp_control EQUALS OSDP_LED_TEMP_SET)
             {
-              if (context->verbosity > 2)
+//              if (context->verbosity > 0)
               {
                 fprintf(context->log, "LED-TEMP: On: C=%d T=%d Off C=%d T=%d timer %02x %02x\n",
                   led_ctl->temp_on_color, led_ctl->temp_on, led_ctl->temp_off_color, led_ctl->temp_off,
@@ -325,6 +326,10 @@ int
 
             if (led_ctl->perm_control EQUALS OSDP_LED_SET)
             {
+              fprintf(context->log, "LED-PERM: state %d pOnT %d pOffT %d pOnCol %d pOfCol %d\n",
+                context->led [led_ctl->led].state, led_ctl->perm_on_time,
+                led_ctl->perm_off_time, led_ctl->perm_on_color, led_ctl->perm_off_color);
+
               context->led [led_ctl->led].state = OSDP_LED_ACTIVATED;
               if (led_ctl->perm_on_time > 0)
                 context->led [led_ctl->led].web_color = web_color_lookup [led_ctl->perm_on_color];

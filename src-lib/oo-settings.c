@@ -327,7 +327,7 @@ int
     if (!json_is_string (value))
       found_field = 0;
   };
-  if (found_field)
+  if ((ctx->verbosity > 0) && (found_field))
   {
     fprintf(ctx->log, "enabling protocol tracing\n");
     ctx->trace = 1;

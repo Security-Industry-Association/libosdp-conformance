@@ -1,7 +1,7 @@
 /*
   oosdp_secure_actions - open osdp secure channel action routines
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -297,7 +297,6 @@ int
   int status;
 
 
-fprintf(ctx->log, "DEBUG: action_osdp_KEYSET top\n");
   status = ST_OK;
   keyset_payload = (unsigned char *)(msg->data_payload);
   // new key type is ignored
