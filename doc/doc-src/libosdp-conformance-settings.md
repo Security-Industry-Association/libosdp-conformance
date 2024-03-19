@@ -6,8 +6,9 @@ These are set in open-osdp-params.json in the current directory when open-osdp s
 
 - address.  Set to a decimal address value in the range 0 to 126.
 - bits
+- capability-led - set to 0 to disable LED.
 - capability-scbk-d
-- capability-sounder
+- capability-sounder - set to 0 to disable buzzer.
 - capability-text
 - check.  Set to "CHECK" or "CHECKSUM".  Default CHECK.
 - disable_checking

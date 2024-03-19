@@ -255,7 +255,8 @@ int
     context->serial_number [1] = 0xfe;
     context->serial_number [2] = 0xde;
     context->serial_number [3] = 0xed;
-    context->capability_configured_sounder = 1; // it's got a beeper
+    context->configured_led = 1; // it's got an LED
+    context->configured_sounder = 1; // it's got a beeper
     context->capability_version = -1; // set this to the unused value.
 
     // we do scbk-d unless otherwise note.

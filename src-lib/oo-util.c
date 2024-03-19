@@ -56,6 +56,7 @@ int
   char logmsg [1024];
   char nak_code;
   char nak_data;
+  int nak_length;
   int new_speed;
   unsigned char osdp_nak_response_data [2];
   OSDP_HDR *oh;
@@ -157,6 +158,7 @@ int
       break;
 
     case OSDP_BUZ:
+      if (context->configured_sounder)
       {
         sprintf (logmsg, "BUZZER %02x %02x %02x %02x %02x\n",
           *(msg->data_payload + 0), *(msg->data_payload + 1),
@@ -164,13 +166,35 @@ int
           *(msg->data_payload + 4));
         fprintf (context->log, "%s", logmsg);
         logmsg[0]=0;
-      };
       osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);
       current_length = 0;
       current_security = OSDP_SEC_SCS_16;
       status = send_message_ex(context, OSDP_ACK, p_card.addr,
         &current_length, 0, NULL, current_security, 0, NULL);
       context->pd_acks ++;
+      }
+      else
+      {
+        unsigned char osdp_nak_response_data [2];
+
+        // buzzer disabled
+
+        status = ST_OK;
+
+        current_length = 0;
+
+        osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+        nak_length = 1;
+ 
+        status = send_message (context,
+          OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
+        context->sent_naks ++;
+        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+        if (context->verbosity > 2)
+        {
+          fprintf(context->log, "BUZ command rejected as command unknown.\n");
+        };
+      };
       break;
 
     case OSDP_CAP:
@@ -289,11 +313,12 @@ int
       break;
 
     case OSDP_LED:
-      /*
-        There are 256 LED's.  They all use the colors in the spec.
-        They switch on or off.  They don't blink.
-      */
+      if (context->configured_led)
       {
+        /*
+          There are 256 LED's.  They all use the colors in the spec.
+          They switch on or off.  They don't blink.
+        */
         int count;
         OSDP_RDR_LED_CTL *led_ctl;
 
@@ -357,6 +382,28 @@ int
         context->pd_acks ++;
         if (context->verbosity > 9)
           fprintf (stderr, "Responding with OSDP_ACK\n");
+      }
+      else
+      {
+        unsigned char osdp_nak_response_data [2];
+
+        // led disabled
+
+        status = ST_OK;
+
+        current_length = 0;
+
+        osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+        nak_length = 1;
+ 
+        status = send_message (context,
+          OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
+        context->sent_naks ++;
+        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+        if (context->verbosity > 2)
+        {
+          fprintf(context->log, "LED command rejected as command unknown.\n");
+        };
       };
       break;
 
@@ -427,7 +474,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     default:
       status = ST_OK;
       {
-        int nak_length;
         unsigned char osdp_nak_response_data [2];
 
         current_length = 0;

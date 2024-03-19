@@ -50,16 +50,25 @@ int
   // 8 LED's
   status = osdp_add_capability(ctx, capas, 4, 1, 8, capabilities_response_length, sizeof(capas));
 
-  if (ctx->capability_configured_sounder)
+  if (ctx->configured_led)
+  {
+    status = osdp_add_capability(ctx, capas, OSDP_CAP_LED_CONTROL, 1, 0, capabilities_response_length, sizeof(capas));
+  }
+  else
+  {
+    status = osdp_add_capability(ctx, capas, OSDP_CAP_LED_CONTROL, 0, 0, capabilities_response_length, sizeof(capas));
+  };
+
+  if (ctx->configured_sounder)
   {
     // audible annunciator present, claim on/off only
     // assumes capability_sounder is 1 (not 0 or 2)
 
-    status = osdp_add_capability(ctx, capas, 5, 1, 0, capabilities_response_length, sizeof(capas));
+    status = osdp_add_capability(ctx, capas, OSDP_CAP_AUDIBLE_OUT, 1, 0, capabilities_response_length, sizeof(capas));
   }
   else
   {
-    status = osdp_add_capability(ctx, capas, 5, 0, 0, capabilities_response_length, sizeof(capas));
+    status = osdp_add_capability(ctx, capas, OSDP_CAP_AUDIBLE_OUT, 0, 0, capabilities_response_length, sizeof(capas));
   };
 
   // text display, 1 row of 16 if enabled

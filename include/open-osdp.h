@@ -504,10 +504,9 @@ typedef struct osdp_context
   int configured_inputs;
   int configured_outputs;
   int configured_scbk_d;
+  int configured_sounder;
   int configured_led;
   int capability_max_packet;
-  int capability_configured_leds;
-  int capability_configured_sounder;
   int capability_configured_text;
   int capability_version;
   int saved_bio_format;

@@ -622,7 +622,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         unsigned char
           buzzer_control [5];
 
-        if (context->capability_configured_sounder EQUALS 0)
+        if (context->configured_sounder EQUALS 0)
         {
           fprintf(context->log, "PD reports no sounder capability, skipping osdp_BUZ command\n");
         }

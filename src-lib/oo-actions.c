@@ -551,7 +551,10 @@ int
     {
     case OSDP_CAP_AUDIBLE_OUT:
       fprintf(ctx->log, "PD: Annunciator present. ");
-      ctx->capability_configured_sounder = 1; // only one per spec
+
+      // here in the ACU record the PD says it has a buzzer
+      ctx->configured_sounder = 1; // only one per spec
+
       switch(entry->compliance)
       {
       case 1:

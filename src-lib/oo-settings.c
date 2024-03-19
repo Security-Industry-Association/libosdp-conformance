@@ -172,7 +172,7 @@ int
   {
     if (ctx->verbosity > 3)
       fprintf(ctx->log, "Enabling sounder.\n");
-    ctx->capability_configured_sounder = 1;
+    ctx->configured_sounder = 1;
   };
 
   if (status EQUALS ST_OK)
@@ -190,7 +190,7 @@ int
     sscanf (vstr, "%d", &i);
     if ((i EQUALS 1) || (i EQUALS 0))
     {
-      ctx->capability_configured_sounder = i;
+      ctx->configured_sounder = i;
     };
   };
 
