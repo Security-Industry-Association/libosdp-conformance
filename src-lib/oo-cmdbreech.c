@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -1227,7 +1227,12 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "led"))
+    if (!(ctx->configured_led))
+    {
+      fprintf(ctx->log, "LED not enabled, command not issued.\n");
+      status = 0;
+    };
+    if ((ctx->configured_led) && (0 EQUALS strcmp (current_command, "led")))
     {
       OSDP_RDR_LED_CTL *led_ctl;
 

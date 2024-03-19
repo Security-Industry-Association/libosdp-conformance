@@ -47,6 +47,7 @@ int
   FILE *cmdf;
   char field [1024];
   int found_field;
+  int i;
   char json_string [4096];
   json_t *root;
   int status;
@@ -123,6 +124,22 @@ int
     sscanf (vstr, "%d", &i);
     p_card.bits = i;
   }; 
+
+  // parameter "capability-led"
+  // value is 0 for not supported, 1 for supported
+
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "capability-led");
+    if (json_is_string (value))
+    {
+      sscanf (json_string_value(value), "%d", &i);
+      if (i EQUALS 1)
+      {
+        ctx->configured_led = i;
+      };
+    };
+  };
 
   // parameter "capability-scbk-d"
   // value is 0 for not-supported, 1 for supported.
