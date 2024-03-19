@@ -1028,6 +1028,7 @@ int
         cmd->details [0] = i; // file transfer type to first octet of details
       };
 
+      ctx->xferctx.file_transfer_type = cmd->details [0]; // use whatever they specified
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;
     };

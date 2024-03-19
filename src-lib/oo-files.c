@@ -69,10 +69,10 @@ int
   fprintf(context->log, "  File transfer: file %s\n",
     context->xferctx.filename);
 
-        context->xferctx.xferf = fopen (context->xferctx.filename, "r");
-        if (context->xferctx.xferf EQUALS NULL)
-        {
-          fprintf(context->log, "  local open failed, errno %d\n", errno);
+  context->xferctx.xferf = fopen (context->xferctx.filename, "r");
+  if (context->xferctx.xferf EQUALS NULL)
+  {
+    fprintf(context->log, "  local open failed, errno %d\n", errno);
           strcpy(context->xferctx.filename, "/opt/osdp-conformance/etc/osdp_data_file");
           context->xferctx.xferf = fopen (context->xferctx.filename, "r");
           if (context->xferctx.xferf EQUALS NULL)
@@ -110,9 +110,10 @@ int
           memset (xfer_buffer, 0, sizeof(xfer_buffer));
           file_transfer = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
 
-          // file type is first octet of details
+          // file type is first octet of details.  save it in the context for later use.
 
           file_transfer->FtType = details [0];
+          context->xferctx.file_transfer_type = file_transfer->FtType;
 
           // load data from file starting at msg->FtData
 
@@ -256,7 +257,7 @@ int
           if (status_io < size_to_read)
             size_to_read = status_io;
 
-          file_transfer->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+          file_transfer->FtType = context->xferctx.file_transfer_type;
           context->xferctx.total_sent = size_to_read;
           osdp_doubleByte_to_array(size_to_read, file_transfer->FtFragmentSize);
           osdp_quadByte_to_array(context->xferctx.total_length, file_transfer->FtSizeTotal);
@@ -766,7 +767,7 @@ int
       transfer_send_size = 1 + sizeof(*ft); // just sending a header
       memset(ft, 0, sizeof(*ft));
       osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
-      ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+      ft->FtType = ctx->xferctx.file_transfer_type;
       osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtOffset);
       current_length = 0;
       status = send_message (ctx,
@@ -812,7 +813,7 @@ int
       // load data length into FtSizeTotal (little-endian)
       osdp_quadByte_to_array(ctx->xferctx.total_length, ft->FtSizeTotal);
 
-      ft->FtType = OSDP_FILETRANSFER_TYPE_OPAQUE;
+      ft->FtType = ctx->xferctx.file_transfer_type;
 
       osdp_doubleByte_to_array(size_to_read, ft->FtFragmentSize);
       osdp_quadByte_to_array(ctx->xferctx.current_offset, ft->FtOffset);
