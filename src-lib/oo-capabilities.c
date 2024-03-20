@@ -47,12 +47,9 @@ int
   // 1024 bits max in raw
   status = osdp_add_capability(ctx, capas, 3, 1, 0, capabilities_response_length, sizeof(capas));
 
-  // 8 LED's
-  status = osdp_add_capability(ctx, capas, 4, 1, 8, capabilities_response_length, sizeof(capas));
-
   if (ctx->configured_led)
   {
-    status = osdp_add_capability(ctx, capas, OSDP_CAP_LED_CONTROL, 1, 0, capabilities_response_length, sizeof(capas));
+    status = osdp_add_capability(ctx, capas, OSDP_CAP_LED_CONTROL, 1, 1, capabilities_response_length, sizeof(capas));
   }
   else
   {
@@ -72,7 +69,7 @@ int
   };
 
   // text display, 1 row of 16 if enabled
-  if (ctx->capability_configured_text)
+  if (ctx->configured_text)
   {
     if (ctx->verbosity > 3)
       fprintf(ctx->log, "Enabling capability: Text output, 1 line of 16\n");
@@ -163,6 +160,11 @@ int
     capas [idx] = capability;
     capas [idx+1] = compliance_level;
     capas [idx+2] = number_of;
+    if (ctx->verbosity > 2)
+    {
+      fprintf(ctx->log, "reporting capability %2d. Compliance level %d. Number of %d.\n",
+        capability, compliance_level, number_of);
+    };
     idx = idx + 3;
     *capabilities_response_length = *capabilities_response_length + 3;
   };

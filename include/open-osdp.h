@@ -506,8 +506,8 @@ typedef struct osdp_context
   int configured_scbk_d;
   int configured_sounder;
   int configured_led;
+  int configured_text;
   int capability_max_packet;
-  int capability_configured_text;
   int capability_version;
   int saved_bio_format;
   char saved_bio_template [8192];

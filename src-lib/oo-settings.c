@@ -134,10 +134,7 @@ int
     if (json_is_string (value))
     {
       sscanf (json_string_value(value), "%d", &i);
-      if (i EQUALS 1)
-      {
-        ctx->configured_led = i;
-      };
+      ctx->configured_led = i;
     };
   };
 
@@ -211,7 +208,7 @@ int
     sscanf (vstr, "%d", &i);
     if ((i EQUALS 1) || (i EQUALS 0))
     {
-      ctx->capability_configured_text = i;
+      ctx->configured_text = i;
     };
   };
 
