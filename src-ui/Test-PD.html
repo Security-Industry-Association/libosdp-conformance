@@ -34,17 +34,6 @@ Recent PD
       <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">050-01-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD>Physical Interface</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-03-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD>Encoding</TD>
-
-    <TD ALIGN="CENTER">050-04-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD>Channel Access</TD>
-  </TR>
-  <TR>
     <TD ALIGN="CENTER">050-04-02</TD>
     <TD ALIGN="CENTER">
       <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform_050_04_02">
@@ -57,103 +46,11 @@ Recent PD
       <EM>Test</EM></A></TD>
     <TD>Resend (busy)</TD>
 
-    <TD ALIGN="CENTER">050-04-04</TD>
-      <TD ALIGN="CENTER">(auto)</TD>
-    <TD>New after busy</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-05-01</TD>
-      <TD ALIGN="CENTER">(auto)</TD>
-      <TD>Multi-byte encoding</TD>
-
-    <TD ALIGN="CENTER">050-06-01</TD>
-      <TD ALIGN="CENTER">(auto)</TD>
-      <TD>Packet size (ACU to PD)</TD>
-
     <TD ALIGN="CENTER">050-06-02</TD>
       <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=PD-conform_050_06_02">
       <EM>Test</EM></A></TD>
       <TD>Packet size (PD to ACU)</TD>
   </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-07-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD>Timing</TD>
-
-    <TD ALIGN="CENTER">050-08-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD>Synchronization</TD>
-
-    <TD ALIGN="CENTER">050-09-14</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Rogue Secure Poll</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD>Packet Format</TD>
-
-    <TD ALIGN="CENTER">050-09-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM</TD>
-
-    <TD ALIGN="CENTER">050-09-12</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">SOM Sent</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-04</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Address</TD>
-
-    <TD ALIGN="CENTER">050-09-13</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Configuration Address</TD>
-
-    <TD ALIGN="CENTER">050-09-06</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Length</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-07</TD>
-    <TD ALIGN="CENTER">(auto)</TD> <TD ALIGN="CENTER">Control field</TD>
-
-    <TD ALIGN="CENTER">050-09-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Sequence 0</TD>
-
-    <TD ALIGN="CENTER">050-09-08</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">Security Control Block</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-11</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Checksum</TD>
-
-    <TD ALIGN="CENTER">050-09-15</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TDCENTER">CRC</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-02-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Signalling (9600)</TD>
-
-    <TD ALIGN="CENTER">050-02-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Signalling (19,200)</TD>
-
-    <TD ALIGN="CENTER">050-02-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Signalling (38,400)</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-02-04</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Signalling (115,200)</TD>
-
-    <TD ALIGN="CENTER">050-02-05</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Signalling (57,600)</TD>
-
-    <TD ALIGN="CENTER">050-02-06</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Signalling (230,400)</TD>
-  </TR>
-
 </TABLE>
 <BR>
 <TABLE><CAPTION><B>Test Group 6 (Commands)</B></CAPTION>
@@ -169,99 +66,13 @@ Recent PD
     <TD ALIGN="CENTER">060-03-01</TD>
        <TD ALIGN="CENTER"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-capabilities">
       <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER">Cmd: CAP</TD>
+    <TD>Cmd: osdp_CAP</TD>
 
     <TD ALIGN="CENTER">060-04-01</TD>
       <TD ALIGN="center"><A HREF="/cgi-bin/send-osdp-command?cmd=CP-local_status">
       <EM>Test</EM></A></TD>
-    <TD ALIGN="CENTER">Cmd: LSTAT</TD>
+    <TD">Cmd: osdp_LSTAT</TD>
   </TR>
-  <TR>
-    <TD ALIGN="CENTER">060-10-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">LED Test (Red)</TD>
-
-    <TD ALIGN="CENTER">060-10-04</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">LED Test (Green)</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">060-11-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_BUZ</TD>
-
-    <TD ALIGN="CENTER">060-12-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_TEXT</TD>
-
-    <TD ALIGN="CENTER">060-13-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_COMSET</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">070-16-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_KEYSET</TD>
-
-    <TD ALIGN="CENTER">070-17-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_CHLNG</TD>
-
-    <TD ALIGN="CENTER">070-18-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_SCRYPT</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">060-19-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_MFG</TD>
-  </TR>
-  <TR>
-    </TD>
-    <TD ALIGN="CENTER">060-20-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_ACURXSIZE</TD>
-
-    <TD ALIGN="CENTER">060-21-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">Cmd: KEEPACTIVE</TD>
-
-    <TD ALIGN="CENTER">060-22-01</TD>
-      <TD ALIGN="CENTER">t.b.d.</TD>
-    <TD>Cmd: ABORT</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">060-23-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: PIVDATA</TD>
-
-    <TD ALIGN="CENTER">060-24-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: GENAUTH</TD>
-
-    <TD ALIGN="CENTER">060-24-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>GENAUTH after RAW</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">060-25-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>CRAUTH</TD>
-
-    <TD ALIGN="CENTER">060-25-02</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>CRAUTH after RAW</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">060-26-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Cmd: osdp_FILETRANSFER</TD>
-
-    <TD ALIGN="CENTER">060-27-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD ALIGN="CENTER">Cmd: XWR</TD>
-  </TR>
-
 </TABLE>
 
 <TABLE><CAPTION><B>Test Group 7 (Responses)</B></CAPTION>
