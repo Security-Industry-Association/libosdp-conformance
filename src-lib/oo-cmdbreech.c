@@ -284,6 +284,12 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
+  case OSDP_CMDB_INPUT_STATUS:
+    fprintf(ctx->log, "Reporting input status\n");
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   case OSDP_CMDB_KEYSET:
     status = ST_OK;
     // command "keyset" to send a KEYSET using the supplied key
