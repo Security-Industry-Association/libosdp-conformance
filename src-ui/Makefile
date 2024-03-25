@@ -43,8 +43,8 @@ EXTRA = osdp.conf service/install-osdp-service \
 PROGS = open-osdp-kick osdp-config-print
 TLS_PROGS = 
 
-PAGES = open-osdp-control.html open-osdp-CP.html open-osdp-PD.html \
-  open-osdp-MON.html osdp-conformance-CP.html osdp-conformance-PD.html \
+PAGES = open-osdp-control.html open-osdp-CP.html \
+  open-osdp-MON.html osdp-conformance-CP.html \
   index-conformance.html \
   Test-ACU.html Test-ACU-Status.html Test-PD.html
 CSS = picnic.min.css
