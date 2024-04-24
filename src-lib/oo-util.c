@@ -761,12 +761,21 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 // assumes test_details is still valid.
 // assumes it was a perm on command
 #define LP_ON (12)
+
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_AMBER)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_amber, OCONFORM_FAIL);
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLACK)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_black, OCONFORM_FAIL);
         if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_blue, OCONFORM_FAIL);
         if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_CYAN)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_cyan, OCONFORM_FAIL);
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_GREEN)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_FAIL);
         if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_MAGENTA)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_magenta, OCONFORM_FAIL);
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_RED)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_FAIL);
         if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_WHITE)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_white, OCONFORM_FAIL);
 

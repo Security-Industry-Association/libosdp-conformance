@@ -1,7 +1,7 @@
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -104,9 +104,10 @@ int
       if (msg.check_size EQUALS 1)
         current_check_value = 0xff & current_check_value; // crc is 2 bytes checksum is the low order byte
 
-      fprintf(context.log,
-        "  NAK: last-cmd %02x last-seq %d last-checkval %04x cur-checkval %04x next seq %d\n",
-        last_command_received, context.last_sequence_received, last_check_value, current_check_value, context.next_sequence);
+      if (context.verbosity > 3)
+        fprintf(context.log,
+          "  NAK: last-cmd %02x last-seq %d last-checkval %04x cur-checkval %04x next seq %d\n",
+          last_command_received, context.last_sequence_received, last_check_value, current_check_value, context.next_sequence);
 
       /*
         is it a resend?

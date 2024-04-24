@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### updates in 1.40 build 1 ###
+
+tweak nak logging for PD
+instrument nak to all LED commands.
+
 ### updates in 1.39 build 5 ###
 
 correct availability of input-status command.
