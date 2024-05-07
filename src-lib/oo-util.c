@@ -164,7 +164,8 @@ int
           *(msg->data_payload + 0), *(msg->data_payload + 1),
           *(msg->data_payload + 2), *(msg->data_payload + 3),
           *(msg->data_payload + 4));
-        fprintf (context->log, "%s", logmsg);
+        if (context->verbosity > 3)
+          fprintf (context->log, "%s", logmsg);
         logmsg[0]=0;
       osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);
       current_length = 0;
@@ -328,8 +329,11 @@ int
         count = oh->len_lsb + (oh->len_msb << 8);
         count = count - 7;
         count = count / sizeof (*led_ctl);
-        fprintf (context->log, "LED Control cmd count %d\n", count);
-        fprintf (context->log, "LED Control Payload:\n");
+        if (context->verbosity > 3)
+        {
+          fprintf (context->log, "LED Control cmd count %d\n", count);
+          fprintf (context->log, "LED Control Payload:\n");
+        };
         for (i=0; i<count; i++)
         {
           fprintf (context->log, "[%02d] Rdr %d LED %d Tcmd %d Pcmd %d",
@@ -351,9 +355,12 @@ int
 
             if (led_ctl->perm_control EQUALS OSDP_LED_SET)
             {
-              fprintf(context->log, "LED-PERM: state %d pOnT %d pOffT %d pOnCol %d pOfCol %d\n",
-                context->led [led_ctl->led].state, led_ctl->perm_on_time,
-                led_ctl->perm_off_time, led_ctl->perm_on_color, led_ctl->perm_off_color);
+              if (context->verbosity > 3)
+              {
+                fprintf(context->log, "LED-PERM: state %d pOnT %d pOffT %d pOnCol %d pOfCol %d\n",
+                  context->led [led_ctl->led].state, led_ctl->perm_on_time,
+                  led_ctl->perm_off_time, led_ctl->perm_on_color, led_ctl->perm_off_color);
+              };
 
               context->led [led_ctl->led].state = OSDP_LED_ACTIVATED;
               if (led_ctl->perm_on_time > 0)

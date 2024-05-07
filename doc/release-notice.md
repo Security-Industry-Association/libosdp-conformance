@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### updates in 1.40 build 2 ###
+
+more subtle logging of FTSTAT; less uncontrolled logging to stderr
+
 ### updates in 1.40 build 1 ###
 
 tweak nak logging for PD

@@ -29,7 +29,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (40)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -451,6 +451,8 @@ typedef struct osdp_command_queue
 #define OO_POSTCOMMAND_CONTINUE (0)
 #define OO_POSTCOMMAND_SINGLESTEP (1)
 
+#define VERBOSITY_OVERRIDE_1 (0x01)
+
 typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
@@ -467,6 +469,7 @@ typedef struct osdp_context
   char serial_speed [1024];
   int trace; // 0=disabled 1=enabled
   int verbosity;
+  unsigned int verbosity_override;
   int pii_display;
   unsigned char my_guid [128/8];
   int pd_filetransfer_payload;

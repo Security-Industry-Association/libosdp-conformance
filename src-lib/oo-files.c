@@ -334,7 +334,13 @@ int oo_send_ftstat
 
   to_send = sizeof(*response);
   current_length = 0;
-//  status = send_message (ctx, OSDP_FTSTAT, p_card.addr, &current_length, to_send, (unsigned char *)response);
+  if ((ctx->verbosity > 3) || (ctx->verbosity_override & VERBOSITY_OVERRIDE_1))
+  {
+    fprintf(ctx->log, "--sending FTSTAT FtAction %02X FtDelay %02X %02X FtStatusDetail %02X %02X FtUpdateMsgMax %02X %02X\n",
+      response->FtAction, response->FtDelay [0], response->FtDelay [1],
+      response->FtStatusDetail [0], response->FtStatusDetail [1],
+      response->FtUpdateMsgMax [0], response->FtUpdateMsgMax [1]);
+  };
   status = send_message_ex(ctx, OSDP_FTSTAT, p_card.addr,
     &current_length, to_send, (unsigned char *)response,
     OSDP_SEC_SCS_18, 0, NULL);
@@ -640,12 +646,14 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
   value = json_object_get(saved_parameters_root, "serial-speed");
   if (json_is_string(value))
   {
-fprintf(stderr, "DEBUG: new speed would be %s\n", json_string_value(value));
+    if (ctx->verbosity > 3)
+      fprintf(stderr, "DEBUG: restored speed would be %s\n", json_string_value(value));
   };
   value = json_object_get(saved_parameters_root, "pd-address");
   if (json_is_string(value))
   {
-fprintf(stderr, "DEBUG: new PD address would be %s\n", json_string_value(value));
+    if (ctx->verbosity > 3)
+      fprintf(stderr, "DEBUG: restored PD address would be %s\n", json_string_value(value));
   };
 
   // also load saved credentials.
