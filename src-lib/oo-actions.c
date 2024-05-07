@@ -82,9 +82,9 @@ int
 
   osdp_com_response_data [0] = p_card.addr;
   if (OSDP_LOCK_SPEED)
-    *(unsigned short int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
+    *(unsigned long int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
   else
-    *(unsigned short int *)(osdp_com_response_data+1) = i;
+    *(unsigned long int *)(osdp_com_response_data+1) = i;
 
   status = ST_OK;
 

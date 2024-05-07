@@ -9,6 +9,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 ### updates in 1.40 build 2 ###
 
+correct osdp_COM response to include full speed.
+
 more subtle logging of FTSTAT; less uncontrolled logging to stderr
 
 ### updates in 1.40 build 1 ###
