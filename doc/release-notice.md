@@ -11,6 +11,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 correct osdp_COM response to include full speed.
 
+change the ISTATR response test to use the configured number of inputs
+
 more subtle logging of FTSTAT; less uncontrolled logging to stderr
 
 ### updates in 1.40 build 1 ###
