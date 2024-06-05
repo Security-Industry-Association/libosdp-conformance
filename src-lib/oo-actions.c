@@ -740,18 +740,31 @@ int
 
   if ((!done) && (ctx->next_istatr EQUALS 1))
   {
+    int input_length;
     unsigned char osdp_istat_response_data [OOSDP_DEFAULT_INPUTS];
 
     // hard code to show first input active, all others inactive
 
     memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
     osdp_istat_response_data [0] = 1; // input 0 is active
+    input_length = ctx->configured_inputs;
     osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
 
     current_length = 0;
     status = send_message_ex(ctx, OSDP_ISTATR, p_card.addr,
-      &current_length, sizeof(osdp_istat_response_data), osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
+      &current_length, input_length, osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
     ctx->next_istatr = 0;
+    done = 1;
+  };
+
+  if ((!done) && (ctx->next_huge EQUALS 1))
+  {
+    // if a large response test was requested send that
+    unsigned char value [2048];
+
+    memset (value, 0, sizeof(value));
+    current_length = 0;
+    status = send_message_ex(ctx, OSDP_ISTATR, p_card.addr, &current_length, 1300, value, OSDP_SEC_SCS_17, 0, NULL);
     done = 1;
   };
 

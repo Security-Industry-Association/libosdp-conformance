@@ -799,7 +799,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_050_06_02"))
+    if (0 EQUALS strcmp (current_command, "conform-050-06-02"))
     {
       cmd->command = OSDP_CMDB_CONFORM_050_06_02;
       status = enqueue_command(ctx, cmd);

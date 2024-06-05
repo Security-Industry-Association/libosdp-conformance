@@ -523,11 +523,14 @@ typedef struct osdp_context
   unsigned int last_command_sent;
   char last_nak_error;
   char last_response_received;
-  char next_response;
-  int next_istatr;
-  int next_sequence;
   int last_sequence_received;
   int left_to_send;
+  int next_huge;
+  int next_istatr;
+  char next_response;
+  int next_sequence;
+  int power_report;
+  int tamper_report;
   unsigned char left_to_send_destination;
 
   // secure channel
@@ -555,8 +558,6 @@ typedef struct osdp_context
   int tamper;
 
 
-  int power_report;
-  int tamper_report;
   int card_data_valid; // bits
   int card_format; // 0 for raw, 1 for P/Data/P, 2-0xff invalid
   int creds_a_avail; // octets

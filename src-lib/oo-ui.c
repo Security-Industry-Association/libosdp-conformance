@@ -121,22 +121,11 @@ context=ctx;
       status = ST_OK;
       break;
 
-    /*
-      induce ISTATR.  set the first input as active.
-    */
     case OSDP_CMDB_CONFORM_050_06_02:
-      {
-        int input_length;
-        unsigned char value [OOSDP_DEFAULT_INPUTS];
-
-        memset (value, 0, sizeof(value));
-        current_length = 0;
-        value [0] = 1; //ISTATR value for 'active'
-        input_length = ctx->configured_inputs;
-
-        status = send_message_ex(context, OSDP_ISTATR, p_card.addr, &current_length, input_length, value,
-          OSDP_SEC_SCS_17, 0, NULL);
-      };
+      status = ST_OK;
+      ctx->next_huge = 1;
+      if (context->verbosity > 2)
+        fprintf (context->log, "Activating oversize response\n");
       break;
 
     case OSDP_CMDB_CONFORM_060_24_02:

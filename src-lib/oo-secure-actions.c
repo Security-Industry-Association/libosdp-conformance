@@ -314,6 +314,15 @@ int
   (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS,
     (unsigned char *)(keyset_payload+2)); // key material starts at +2 of the payload
 
+  // all the time even if in 'quiet' (verbosity 0) mode
+  {
+    int i;
+    fprintf(stderr, "SCBK set via osdp_KEYSET: ");
+    for (i=0; i<OSDP_KEY_OCTETS; i++)
+      fprintf(stderr, "%02X", keyset_payload[2+i]);
+    fprintf(stderr, "\n");
+  }
+
   current_length = 0;
   status = send_message_ex
     (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
