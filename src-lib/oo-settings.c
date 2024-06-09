@@ -52,6 +52,7 @@ int
   json_t *root;
   int status;
   int status_io;
+  extern unsigned char special_pdcap_list [];
   json_error_t status_json;
   char *test_command;
   char this_command [1024];
@@ -124,6 +125,18 @@ int
     sscanf (vstr, "%d", &i);
     p_card.bits = i;
   }; 
+
+  // parameter "capability-custom"
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "capability-custom");
+    if (json_is_string (value))
+    {
+      unsigned short int i;
+      status = osdp_string_to_buffer(ctx, (char *)json_string_value(value), special_pdcap_list, &i);
+      ctx->special_pdcap = i/3;
+    };
+  };
 
   // parameter "capability-led"
   // value is 0 for not supported, 1 for supported

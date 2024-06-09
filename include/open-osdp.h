@@ -479,6 +479,7 @@ typedef struct osdp_context
   int cmd_q_overflow;
 
   OSDP_PD_CAPABILITY pd_cap;
+  int special_pdcap; // set if we spoof someone else's pdcap list
 
   // IO context
   int current_pid;

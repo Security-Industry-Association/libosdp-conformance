@@ -190,6 +190,7 @@ int
   char optstring [1024];
   extern OSDP_BUFFER *osdp_buf;
   extern time_t previous_time;
+  extern unsigned char special_pdcap_list [32*3];
   int status;
   int status_io;
 
@@ -291,6 +292,8 @@ int
   m_dump = 0;
   strcpy (p_card.filename, "/dev/ttyUSB0");
   context->next_sequence = 0;
+
+  memset(special_pdcap_list, 0, 32*3);
 
   // timer set-up
 

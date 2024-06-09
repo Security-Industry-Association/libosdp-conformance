@@ -725,28 +725,28 @@ int
     };
   }; 
 
-  // command conform_2_2_1
+  // command conform-2-2-1
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_1")) {
+    if (0 EQUALS strcmp (current_command, "conform-2-2-1")) {
       cmd->command = OSDP_CMDB_CONFORM_2_2_1; }; };
 
-  // command conform_2_2_2
+  // command conform-2-2-2
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_2")) {
+    if (0 EQUALS strcmp (current_command, "conform-2-2-2")) {
       cmd->command = OSDP_CMDB_CONFORM_2_2_2; }; };
 
-  // command conform_2_2_3
+  // command conform-2-2-3
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_3")) {
+    if (0 EQUALS strcmp (current_command, "conform-2-2-3")) {
       cmd->command = OSDP_CMDB_CONFORM_2_2_3; }; };
 
-  // command conform_2_2_4
+  // command conform-2-2-4
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_2_2_4")) {
+    if (0 EQUALS strcmp (current_command, "conform-2-2-4")) {
       cmd->command = OSDP_CMDB_CONFORM_2_2_4; }; };
 
   // command conform_2_6_1

@@ -10,6 +10,8 @@
 
 #include <open-osdp.h>
 
+unsigned char special_pdcap_list [32*3];
+
 int osdp_add_capability(OSDP_CONTEXT *ctx, unsigned char *capas, unsigned char capability, unsigned char compliance_level,
   unsigned char number_of, int *capabilities_response_length, int max);
 
@@ -29,12 +31,26 @@ int
 { /* osdp_get_capabilities */
 
   unsigned char capas [32*3];
+  int i;
   int status;
 
 
   status = ST_OK;
   memset(capas, 0, sizeof(capas));
   *capabilities_response_length = 0;
+
+  if (ctx->special_pdcap > 0)
+  {
+    // special list is a set of capability,compliance,number-of tuples in arbitrary order
+
+    for (i=0; i<ctx->special_pdcap; i++)
+    {
+      status = osdp_add_capability(ctx, capas, special_pdcap_list [i*3], special_pdcap_list [1+i*3], special_pdcap_list [2+i*3],
+        capabilities_response_length, sizeof(capas));
+    };
+  }
+  else
+  {
 
   // inputs
   if (ctx->pdcap_select EQUALS 0)
@@ -129,6 +145,7 @@ int
     if (ctx->capability_version != -1)
       my_version = ctx->capability_version;
     status = osdp_add_capability(ctx, capas, 16, my_version, 0, capabilities_response_length, sizeof(capas));
+  };
   };
 
   memcpy(capabilities_list, capas, *capabilities_response_length);
