@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### updates in 1.41 build 0 ###
+
+added 'react' command.
+
 ### updates in 1.40 build 2 ###
 
 correct osdp_COM response to include full speed.

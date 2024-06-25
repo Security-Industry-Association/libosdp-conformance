@@ -231,6 +231,22 @@ Defaults
 
 \newpage{}
 
+Command react
+-------------
+
+This command causes a specific command upon receipt of an osdp_RAW response.
+It us used by LED (and eventually GENAUTH/CRAUTH for that off-nominal use case.)
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| reaction-command        | LED or GENAUTH or CRAUTH                                            |
+|                |                                                         |
+| reaction-details           | hex string to use as payload for reaction command.                 |
+|             |                                            |
+
+\newpage{}
+
 ## Command transfer ##
 
 This command causes the ACU to initiate a file transfer.

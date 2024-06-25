@@ -28,8 +28,8 @@
 #endif
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (40)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (41)
+#define OSDP_VERSION_BUILD ( 0)
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -219,6 +219,7 @@
 #define OSDP_CMDB_CONFORM_050_06_02 (1055)
 #define OSDP_CMDB_MFGREP            (1056)
 #define OSDP_CMDB_INPUT_STATUS      (1057)
+#define OSDP_CMDB_REACT             (1058)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -556,8 +557,6 @@ typedef struct osdp_context
   int timer_count;
   OSDP_TIMER timer [OSDP_TIMER_MAX];
   int last_errno;
-  int tamper;
-
 
   int card_data_valid; // bits
   int card_format; // 0 for raw, 1 for P/Data/P, 2-0xff invalid
@@ -599,13 +598,10 @@ typedef struct osdp_context
   unsigned short int total_outbound_multipart;
   int current_sdu_length;
 
-//  unsigned short int total_len;
-
   // for assembling multipart message.  assumes one context structure
   // per PD we talk to
 
   // for transmitting multi-part
-//  unsigned short int next_out;
 
   int authenticated;
   char command_path [1024];
@@ -628,7 +624,8 @@ typedef struct osdp_context
   int next_crc_bad;
   int next_nak; // nak the next incoming message from the CP
   int pdcap_select; // 0 for normal 1 for short
-
+  unsigned char raw_reaction_command; // 0 if nothing else the thing to be sent right away.
+  int tamper;
 } OSDP_CONTEXT;
 
 // four different details maintained about a secure channel connection,

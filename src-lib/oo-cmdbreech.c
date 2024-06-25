@@ -468,6 +468,25 @@ int
     };
     break;
 
+  // command react, takes two arguments reaction-command and reaction-details
+
+  case OSDP_CMDB_REACT:
+    ctx->raw_reaction_command = OSDP_LED;
+    parameter = json_object_get(root, "reaction-command");
+    if (json_is_string(parameter))
+    {
+      if (0 EQUALS strcmp((char *)json_string_value(parameter), "LED"))
+        ctx->raw_reaction_command = OSDP_LED;
+    };
+    parameter = json_object_get(root, "reaction-details");
+    if (json_is_string(parameter))
+    {
+      status = osdp_string_to_buffer(ctx, (char *)json_string_value(parameter), ctx->test_details, &temp_buffer_length);
+      ctx->test_details_length = temp_buffer_length;
+    };
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   // command reset - reset "link" i.e. sequence number
 
   case OSDP_CMDB_RESET:

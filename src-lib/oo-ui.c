@@ -131,6 +131,7 @@ context=ctx;
     case OSDP_CMDB_CONFORM_060_24_02:
       status = ST_OK;
       strcpy (context->test_in_progress, "060-24-02"); // genauth-after-raw
+      context->raw_reaction_command = OSDP_GENAUTH;
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)
@@ -149,6 +150,7 @@ context=ctx;
     case OSDP_CMDB_CONFORM_060_25_02:
       status = ST_OK;
       strcpy (context->test_in_progress, "060-25-02"); // crauth-after-raw
+      context->raw_reaction_command = OSDP_CRAUTH;
       memcpy(context->test_details, details, details_length);
       context->test_details_length = details_length;
       if (context->verbosity > 2)
@@ -283,20 +285,20 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
           status = ST_OSDP_CRC_REQUIRED;
         if (status EQUALS ST_OK)
         {
-        osdp_command = OSDP_GENAUTH;
-        challenge_payload_size = sizeof(challenge_command);
-        strcpy (context->test_in_progress, "x-challenge");
-        memset (&challenge_command, 0, sizeof (challenge_command));
+          osdp_command = OSDP_GENAUTH;
+          challenge_payload_size = sizeof(challenge_command);
+          strcpy (context->test_in_progress, "x-challenge");
+          memset (&challenge_command, 0, sizeof (challenge_command));
 
-        status = oo_build_genauth(ctx, (unsigned char *)challenge_command, &challenge_payload_size,
-          (unsigned char *)details, details_length);
-        if (ctx->verbosity > 3)
-        {
-          fprintf(ctx->log, "  cmd %02X challenge payload size %d. (status from oo_build_genauth %d.)\n",
-            osdp_command, challenge_payload_size, status);
-        };
-        if (command EQUALS OSDP_CMDB_CHALLENGE)
-          osdp_command = OSDP_CRAUTH;
+          status = oo_build_genauth(ctx, (unsigned char *)challenge_command, &challenge_payload_size,
+            (unsigned char *)details, details_length);
+          if (ctx->verbosity > 3)
+          {
+            fprintf(ctx->log, "  cmd %02X challenge payload size %d. (status from oo_build_genauth %d.)\n",
+              osdp_command, challenge_payload_size, status);
+          };
+          if (command EQUALS OSDP_CMDB_CHALLENGE)
+            osdp_command = OSDP_CRAUTH;
         current_length = 0;
         status = send_message_ex(context, osdp_command, p_card.addr,
           &current_length, challenge_payload_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);

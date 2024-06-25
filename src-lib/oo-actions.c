@@ -1077,6 +1077,42 @@ int
     osdp_test_set_status_ex(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED, details);
   };
 
+  switch(ctx->raw_reaction_command)
+  {
+  case 0x00:
+    // do nothing special
+    break;
+
+  default:
+    fprintf(ctx->log, "unknown raw_reaction_command %02X\n", ctx->raw_reaction_command);
+    ctx->raw_reaction_command = 0;
+    break;
+
+  case OSDP_CRAUTH:
+    {
+      fprintf(ctx->log, "Exercising test 060-25-03");
+    };
+    break;
+
+  case OSDP_LED:
+    // immediately send a LED response (blinking Red perhaps?)
+fprintf(stderr, "DEBUG: insert LED red blink here.\n");
+
+    memset(&command_for_later, 0, sizeof(command_for_later));
+    command_for_later.command = OSDP_CMDB_LED;
+    memcpy(command_for_later.details, ctx->test_details, ctx->test_details_length);
+    status = enqueue_command(ctx, &command_for_later);
+    ctx->raw_reaction_command = 0;
+    status = enqueue_command(ctx, &command_for_later);
+    break;
+
+  case OSDP_GENAUTH:
+    {
+      fprintf(ctx->log, "Exercising test 060-24-03");
+    };
+    break;
+  };
+
   // if a (react to raw) genauth was requested, enqueue the request
 
   if (0 EQUALS strcmp (ctx->test_in_progress, "060-24-03"))
