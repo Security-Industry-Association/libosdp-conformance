@@ -306,7 +306,7 @@ int
       ret_cmd = OSDP_CMDB_PIVDATA;
     if (0 EQUALS strcmp(command, "polling"))
       ret_cmd = OSDP_CMDB_POLLING;
-    if (0 EQUALS strcmp(command, "reaction"))
+    if (0 EQUALS strcmp(command, "react"))
       ret_cmd = OSDP_CMDB_REACT;
     if (0 EQUALS strcmp(command, "reset"))
       ret_cmd = OSDP_CMDB_RESET;

@@ -1101,7 +1101,7 @@ fprintf(stderr, "DEBUG: insert LED red blink here.\n");
     memset(&command_for_later, 0, sizeof(command_for_later));
     command_for_later.command = OSDP_CMDB_LED;
     memcpy(command_for_later.details, ctx->test_details, ctx->test_details_length);
-    status = enqueue_command(ctx, &command_for_later);
+    command_for_later.details_length = ctx->test_details_length;
     ctx->raw_reaction_command = 0;
     status = enqueue_command(ctx, &command_for_later);
     break;
