@@ -360,6 +360,8 @@ int
     ctx->trace = 1;
   }; 
 
+//firmware-version goes here
+
   // parameter "fqdn"
 
   if (status EQUALS ST_OK)
@@ -690,6 +692,27 @@ int
       memcpy(ctx->serial_number, serial_number, sizeof(ctx->serial_number));
 fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
   ctx->serial_number [0], ctx->serial_number [1], ctx->serial_number [2], ctx->serial_number [3]);
+  };
+
+  // parameter "firmware-version"
+  // argument is a three byte hex value.
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "firmware-version");
+    if (!json_is_string (value))
+      found_field = 0;
+  };
+  if (found_field)
+  {
+    unsigned char firmware_version [6];
+    unsigned short int firmware_version_length;
+
+    firmware_version_length = sizeof(firmware_version);
+    status = osdp_string_to_buffer(ctx, (char *)json_string_value(value), firmware_version, &firmware_version_length);
+    if (status EQUALS ST_OK)
+      memcpy(ctx->fw_version, firmware_version, sizeof(ctx->fw_version));
   };
 
   // parameter "service-root" - where libosdp-conformance runs from

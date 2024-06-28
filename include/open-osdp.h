@@ -831,10 +831,8 @@ typedef struct osdp_mfg_response
 unsigned char OOSDP_MFG_VENDOR_CODE [3] = {0x0A, 0x00, 0x17 };
 char tlogmsg [2*1024];
 char tlogmsg2 [3*1024];
-int m_build;
 int m_dump;
 int m_check;
-int m_version_minor;
 int mfg_rep_sequence;
 time_t previous_time;
 #endif

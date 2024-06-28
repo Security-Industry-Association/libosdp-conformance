@@ -256,9 +256,9 @@ int
         osdp_pdid_response_data [ 6] = context->serial_number [1];
         osdp_pdid_response_data [ 7] = context->serial_number [2];
         osdp_pdid_response_data [ 8] = context->serial_number [3];
-        osdp_pdid_response_data [ 9] = context->fw_version [0] = OSDP_VERSION_MAJOR;
-        osdp_pdid_response_data [10] = m_version_minor;
-        osdp_pdid_response_data [11] = m_build;
+        osdp_pdid_response_data [ 9] = context->fw_version [0];
+        osdp_pdid_response_data [10] = context->fw_version [1];
+        osdp_pdid_response_data [11] = context->fw_version [2];
         status = ST_OK;
         current_length = 0;
         current_security = OSDP_SEC_SCS_18;

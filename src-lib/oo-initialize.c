@@ -247,13 +247,11 @@ int
     context->current_key_slot = -1;
     memcpy(context->current_default_scbk, OSDP_SCBK_DEFAULT, sizeof(context->current_default_scbk));
 
-    m_version_minor = OSDP_VERSION_MINOR;
-    m_build = OSDP_VERSION_BUILD;
     context->model = 3;
     context->version = 0;
     context->fw_version [0] = OSDP_VERSION_MAJOR;
-    context->fw_version [1] = m_version_minor;
-    context->fw_version [2] = m_build;
+    context->fw_version [1] = OSDP_VERSION_MINOR;
+    context->fw_version [2] = OSDP_VERSION_BUILD;
     context->vendor_code [0] = 0x0A;
     context->vendor_code [1] = 0x00;
     context->vendor_code [2] = 0x17; //yellow pig
@@ -383,7 +381,7 @@ int
     context->power_report = 1;
 
     sprintf (logmsg, "Open-OSDP - OSDP Tester Version %d.%d Build %d",
-      context->fw_version [0], m_version_minor, m_build);
+      context->fw_version [0], context->fw_version [1], context->fw_version [2]);
     fprintf (context->log, "%s\n", logmsg);
     printf ("%s\n", logmsg);
 
