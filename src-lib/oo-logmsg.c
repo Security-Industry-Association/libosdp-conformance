@@ -397,12 +397,12 @@ int
         sprintf(file_transfer_status_detail, "%d (file data unacceptable or malformed)", i);
         break;
       default:
-        sprintf(file_transfer_status_detail, "%d", i);
+        sprintf(file_transfer_status_detail, "%d.", i);
         break;
       };
     };
     sprintf(tmpstr,
-"  Response: osdp_FTSTAT.  Detail Detail %s; Action %02x Delay %02x-%02x(%d. ms) Update-max %02x-%02x(%d.)\n",
+"  Response: osdp_FTSTAT.  Detail (Status %s); Action %02x Delay %02x-%02x(%d. ms) Update-max %02x-%02x(%d.)\n",
       file_transfer_status_detail,
       ftstat->FtAction,
       ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,

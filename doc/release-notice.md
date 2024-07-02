@@ -10,7 +10,7 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 ### updates in 1.50 build 1 ###
 
 added osdp root path logic for actions and responses, moved actions, moved
-responses out of tmp
+responses out of tmp.  tuned ftstat logging.
 
 ### updates in 1.50 build 0 ###
 
