@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+
+### updates in 1.41 build 1 ###
+
+tune osdp_PDID output, add /opt/osdp-conformance/tmp/response_PDID
+
 ### updates in 1.41 build 0 ###
 
 added 'react' command.
