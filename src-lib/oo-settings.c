@@ -249,7 +249,7 @@ int
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "disable_checking");
+    strcpy (field, "disable-checking");
     value = json_object_get (root, field);
     if (!json_is_string (value))
       found_field = 0;
@@ -382,7 +382,7 @@ int
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "init_command");
+    strcpy (field, "init-command");
     value = json_object_get (root, field);
     if (!json_is_string (value))
       found_field = 0;
@@ -408,41 +408,6 @@ int
       if ((count >=0) && (count <= OOSDP_DEFAULT_INPUTS))
         ctx->configured_inputs = count;
     }; 
-  };
-
-  // parameter  "key" ("DEFAULT" or a 16-byte hex value)
-
-  if (status EQUALS ST_OK)
-  {
-    found_field = 1;
-    strcpy (field, "key");
-    value = json_object_get (root, field);
-    if (!json_is_string (value))
-      found_field = 0;
-  };
-  if (found_field)
-  {
-    char key_value [1024];
-
-    strcpy (key_value, json_string_value (value));
-    ctx->enable_secure_channel = 1;
-    if (0 EQUALS strcmp (key_value, "DEFAULT"))
-      ctx->enable_secure_channel = 2;
-    if (strlen (key_value) EQUALS 32)
-    {
-      int byte;
-      int i;
-      char octetstring [3];
-      for (i=0; i<16; i++)
-      {
-        memcpy (octetstring, key_value+(2*i), 2);
-        octetstring [2] = 0;
-        sscanf (octetstring, "%x", &byte);
-        ctx->current_scbk [i] = byte;
-      };
-      fprintf(ctx->log, "Key configured: %s\n", key_value);
-      ctx->secure_channel_use [OO_SCU_KEYED] = OO_SECPOL_KEYLOADED;
-    };
   };
 
   // parameter "max-send"
@@ -491,7 +456,7 @@ int
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "network_address");
+    strcpy (field, "network-address");
     value = json_object_get (root, field);
     if (!json_is_string (value))
       found_field = 0;
@@ -856,7 +821,7 @@ fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
 
   if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
   {
-    strcpy (field, "serial_device");
+    strcpy (field, "serial-device");
     found_field = 1;
     value = json_object_get (root, field);
     if (!json_is_string (value))
@@ -871,7 +836,7 @@ fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
   // parameter "serial_speed"
   if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
   {
-    strcpy (field, "serial_speed");
+    strcpy (field, "serial-speed");
     found_field = 1;
     value = json_object_get (root, field);
     if (!json_is_string (value))
@@ -888,7 +853,7 @@ fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "raw_value");
+    strcpy (field, "raw-value");
     value = json_object_get (root, field);
     if (!json_is_string (value))
       found_field = 0;

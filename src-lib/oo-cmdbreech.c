@@ -625,7 +625,7 @@ int
 
       // also use off_time if it's present
 
-      parameter = json_object_get (root, "off_time");
+      parameter = json_object_get (root, "off-time");
       if (json_is_string (parameter))
       {
         strcpy (vstr, json_string_value (parameter));
@@ -635,7 +635,7 @@ int
 
       // also use on_time if it's present
 
-      parameter = json_object_get (root, "on_time");
+      parameter = json_object_get (root, "on-time");
       if (json_is_string (parameter))
       {
         strcpy (vstr, json_string_value (parameter));
@@ -680,7 +680,7 @@ int
   }; 
 
   /*
-    COMSET.  takes two option arguments, "new_address" and "new_speed".
+    COMSET.  takes two option arguments, "new-address" and "new_speed".
     default for new_address is 0x00, default for new_speed is 9600
     details block:
       details [0] is the new address
@@ -697,14 +697,14 @@ int
     {
       cmd->command = OSDP_CMDB_COMSET;
 
-      value = json_object_get (root, "new_address");
+      value = json_object_get (root, "new-address");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
         sscanf (vstr, "%d", &i);
         cmd->details [0] = i;
       };
-      value = json_object_get (root, "new_speed");
+      value = json_object_get (root, "new-speed");
       if (json_is_string (value))
       {
         strcpy (vstr, json_string_value (value));
@@ -772,7 +772,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_2_6_1"))
+    if (0 EQUALS strcmp (current_command, "conform-2-6-1"))
     {
       cmd->command = OSDP_CMDB_CONFORM_2_6_1;
       strcpy (ctx->text,
@@ -784,7 +784,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_2_11_3"))
+    if (0 EQUALS strcmp (current_command, "conform-2-11-3"))
     {
       cmd->command = OSDP_CMDB_CONFORM_2_11_3;
     };
@@ -794,7 +794,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_2_14_3"))
+    if (0 EQUALS strcmp (current_command, "conform-2-14-3"))
     {
       cmd->command = OSDP_CMDB_CONFORM_2_14_3;
       status = enqueue_command(ctx, cmd);
@@ -806,7 +806,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_3_14_2"))
+    if (0 EQUALS strcmp (current_command, "conform-3-14-2"))
     {
       cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
 
@@ -830,7 +830,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "conform_050_09_16"))
+    if (0 EQUALS strcmp (current_command, "conform-050-09-16"))
     {
       cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
       ctx->next_crc_bad = 1;
@@ -840,21 +840,21 @@ int
   // command conform_6_10_2 (LED was Red)
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_6_10_2")) {
+    if (0 EQUALS strcmp (current_command, "conform-6-10-2")) {
       osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_EXERCISED);
       cmd->command = OSDP_CMDB_NOOP; }; };
 
   // command conform_6_10_3 (LED was Green)
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_6_10_2")) {
+    if (0 EQUALS strcmp (current_command, "conform-6-10-3")) {
       osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_EXERCISED);
       cmd->command = OSDP_CMDB_NOOP; }; };
 
   // command conform_3_20_1 - MFG
 
   if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp (current_command, "conform_3_20_1")) {
+    if (0 EQUALS strcmp (current_command, "conform-3-20-1")) {
       cmd->command = OSDP_CMDB_CONFORM_3_20_1; }; };
 
   // command induce-NAK
@@ -1063,7 +1063,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "dump_status"))
+    if (0 EQUALS strcmp (current_command, "dump-status"))
     {
       cmd->command = OSDP_CMDB_DUMP_STATUS;
       if (ctx->verbosity > 3)
@@ -1402,7 +1402,7 @@ int
   }; 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "operator_confirm"))
+    if (0 EQUALS strcmp (current_command, "operator-confirm"))
     {
       cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
       value = json_object_get (root, "test");
@@ -1483,7 +1483,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    if (0 EQUALS strcmp (current_command, "output_status"))
+    if (0 EQUALS strcmp (current_command, "output-status"))
     {
       cmd->command = OSDP_CMDB_OSTAT;
       if (ctx->verbosity > 3)
@@ -1567,7 +1567,7 @@ int
   {
     value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
-    test_command = "reader_status";
+    test_command = "reader-status";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_RSTAT;
@@ -1581,7 +1581,7 @@ int
   {
     value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
-    test_command = "reset_power";
+    test_command = "reset-power";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_RESET_POWER;
@@ -1594,7 +1594,7 @@ int
   {
     value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
-    test_command = "send_poll";
+    test_command = "send-poll";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_SEND_POLL;
