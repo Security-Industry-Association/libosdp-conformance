@@ -1,3 +1,7 @@
 #!/bin/bash
+RESPONSES=/opt/osdp-conformance/responses
+LOG=/opt/osdp-conformance/log
 mkdir -p /opt/osdp-conformance/log
-echo >>/opt/osdp-conformance/log/actions.log osdp_MFGREP called $1 $2 $3 $4 $5 $6 $7 $8
+echo >${RESPONSES}/response_MFGREP $1 $2 $3 $4 $5 $6 $7 $8
+echo >>${LOG}/actions.log osdp_MFGREP called $1 $2 $3 $4 $5 $6 $7 $8
+

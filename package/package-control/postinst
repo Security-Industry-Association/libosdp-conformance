@@ -9,6 +9,8 @@ mkdir -p /opt/osdp-conformance/run/MON
 mkdir -p /opt/osdp-conformance/run/PD
 mkdir -p /opt/osdp-conformance/results
 mkdir -p /opt/osdp-conformance/log
+mkdir -p /opt/osdp-conformance/responses
+mkdir -p /opt/osdp-conformance/tmp
 
 # set up default parameter files 
 
@@ -38,6 +40,9 @@ echo web server configuration updated.
 
 cp /opt/osdp-conformance/etc/www-data /etc/sudoers.d
 chown root /etc/sudoers.d/www-data
+
+echo >>/opt/osdp-conformance/log/install.log linking ACU-actions to actions
+ln -s /opt/osdp-conformance/actions /opt/osdp-conformance/run/ACU-actions
 
 echo >>/opt/osdp-conformance/log/install.log libosdp-conformance was installed.
 

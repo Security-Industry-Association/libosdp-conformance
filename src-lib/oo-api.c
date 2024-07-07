@@ -184,11 +184,38 @@ void
 } /* preserve_current_command */
 
 
+int
+  oosdp_callout
+    (OSDP_CONTEXT *ctx,
+    char *action_command,
+    char *details)
+
+{ /* oosdp_callout */
+
+  char command [3*1024]; // three 'cause there are three args to the command sprintf
+  int status;
+
+
+  status = ST_OK;
+  sprintf(command, "%s/%s %02X %s", oo_osdp_root(ctx, OO_DIR_ACTIONS), action_command, ctx->pd_address, details);
+//  sprintf(command, "%s/run/ACU-actions/%s %02X %s", ctx->service_root, action_command, ctx->pd_address, details);
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "action path: %s\n", oo_osdp_root(ctx, OO_DIR_ACTIONS));
+    fprintf(ctx->log, "action: %s\n", command);
+  };
+  fflush(ctx->log);
+  system(command);
+  return(status);
+
+} /* oosdp_callout */
+
+
 void
-  oosdp_clear_statistics
+  oo_clear_statistics
     (OSDP_CONTEXT *ctx)
 
-{ /* oosdp_clear_statistics */
+{ /* oo_clear_statistics */
 
   ctx->acu_polls = 0;
   ctx->bytes_received = 0;
@@ -207,5 +234,50 @@ void
   ctx->sent_naks = 0;
   ctx->seq_bad = 0;
 
-} /* oosdp_clear_statistics */
+} /* oo_clear_statistics */
+
+/*
+  assumes full path less than 1024
+  assumes service root less than 512
+*/
+
+
+char *oo_osdp_root
+  (OSDP_CONTEXT *ctx,
+  int directory)
+
+{ /* oo_osdp_root */
+
+  static char response [1024];
+  char service_root [512];
+
+  strcpy(service_root, ctx->service_root);
+  strcpy(response, service_root);
+  
+  switch(directory)
+  {
+  default:
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "WARNING: OSDP root directory selector unknown (%d)\n", directory);
+    // ...and it just uses the service root as initialized above.
+    break;
+  case OO_DIR_ACTIONS:
+    sprintf(response, "%s/actions", service_root);
+    break;
+  case OO_DIR_CONFORMANCE:
+    sprintf(response, "%s/testing", service_root);
+    break;
+  case OO_DIR_LOG:
+    sprintf(response, "%s/log", service_root);
+    break;
+  case OO_DIR_RESPONSES:
+    sprintf(response, "%s/responses", service_root);
+    break;
+  case OO_DIR_RUN:
+    sprintf(response, "%s/run", service_root);
+    break;
+  };
+  return(response);
+
+} /* oo_osdp_root */
 

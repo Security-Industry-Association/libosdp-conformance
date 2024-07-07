@@ -1065,9 +1065,8 @@ int
 
       // run the action routine with the bytes,bit count,format, details
 
-      sprintf(cmd,
-        "%s/run/ACU-actions/osdp_RAW %s %d %d %s",
-        ctx->service_root,
+      sprintf(cmd, "%s/osdp_RAW %s %d %d %s",
+        oo_osdp_root(ctx, OO_DIR_ACTIONS),
         hstr, bits, *(msg->data_payload+1), hex_details);
       system(cmd);
     }; // not encrypted

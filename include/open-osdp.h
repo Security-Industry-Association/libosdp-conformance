@@ -29,7 +29,14 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (50)
-#define OSDP_VERSION_BUILD ( 0)
+#define OSDP_VERSION_BUILD ( 1)
+
+#define OO_DIR_RUN         (1)
+#define OO_DIR_LOG         (2)
+#define OO_DIR_ACTIONS     (3)
+#define OO_DIR_RESPONSES   (4)
+#define OO_DIR_CONFORMANCE (5)
+#define OO_DIR_ROOT_DEFAULT "/opt/osdp-conformance"
 
 #define OSDP_EXCLUSIVITY_LOCK "osdp-lock"
 #define OSDP_SAVED_PARAMETERS    "osdp-saved-parameters.json"
@@ -1094,6 +1101,7 @@ int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);
 char * oo_lookup_nak_text(int nak_code);
 int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
 int oo_next_sequence (OSDP_CONTEXT *ctx);
+char *oo_osdp_root(OSDP_CONTEXT *ctx, int directory);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
@@ -1146,7 +1154,7 @@ int osdp_xwrite_get_mode (OSDP_CONTEXT *ctx);
 int osdp_xwrite_mode1 (OSDP_CONTEXT *ctx, int command, unsigned char * payload, int payload_length);
 int osdp_xwrite_set_mode (OSDP_CONTEXT *ctx, int mode);
 int oosdp_callout(OSDP_CONTEXT *ctx, char *action, char *details);
-void oosdp_clear_statistics(OSDP_CONTEXT *ctx);
+void oo_clear_statistics(OSDP_CONTEXT *ctx);
 int oosdp_log (OSDP_CONTEXT *context, int logtype, int level, char *message);
 int oosdp_log_key (OSDP_CONTEXT *ctx, char *prefix_message, unsigned char *key);
 int oosdp_make_message (int msgtype, char *logmsg, void *aux);

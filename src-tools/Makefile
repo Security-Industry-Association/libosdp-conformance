@@ -1,6 +1,6 @@
 # make file for tools
 
-# (C)Copyright 2017-2023 Smithee Solutions LLC
+# (C)Copyright 2017-2024 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -43,8 +43,8 @@ build:	all
 	cp ${PROGS} ${OSDPBUILD}/bin
 	mkdir -p ${OSDPBUILD}/cgi-bin
 	cp ${CGI_PROGS} ${OSDPBUILD}/cgi-bin
-	mkdir -p ${OSDPBUILD}/run/ACU-actions
-	(cd actions; tar czvf /tmp/osdp-actions.tgz *;cp ${ACTIONS} ../${OSDPBUILD}/run/ACU-actions)
+	mkdir -p ${OSDPBUILD}/actions
+	(cd actions; tar czvf /tmp/osdp-actions.tgz *;cp ${ACTIONS} ../${OSDPBUILD}/actions)
 	cp /tmp/osdp-actions.tgz ${OSDPBUILD}/etc
 
 osdp-decode:	osdp-decode.o Makefile 

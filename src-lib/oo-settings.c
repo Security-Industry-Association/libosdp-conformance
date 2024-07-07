@@ -377,7 +377,7 @@ int
     strcpy (ctx->fqdn, json_string_value (value));
   }; 
 
-  // parameter "init_command"
+  // parameter "init-command"
 
   if (status EQUALS ST_OK)
   {

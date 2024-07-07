@@ -496,7 +496,7 @@ int
     break;
 
   case OSDP_CMDB_RESET_STATS:
-    oosdp_clear_statistics(ctx);
+    oo_clear_statistics(ctx);
     cmd->command = OSDP_CMD_NOOP;
     status = ST_OK;
     break;

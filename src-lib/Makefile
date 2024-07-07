@@ -2,7 +2,7 @@
 
 # note MORE_COMPILE_SWITCHES in case you want to add options e.g "-D SPACER_TEST"
 
-#  (C)Copyright 2017-2022 Smithee Solutions LLC
+#  (C)Copyright 2017-2024 Smithee Solutions LLC
 
 #  Support provided by the Security Industry Association
 #  http://www.securityindustry.org
@@ -40,7 +40,7 @@ clean:
 
 ${OUTLIB}:	\
 	oo-actions.o oo-api.o \
-	oo-bio.o oo-callout.o oo-capabilities.o oo-commands2.o oo-conformance.o oo-crc.o \
+	oo-bio.o oo-capabilities.o oo-commands2.o oo-conformance.o oo-crc.o \
 	oo-cmdbreech.o oo-io-actions.o oo-initialize.o \
 	oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o oo-parse.o \
 	  oo-printmsg.o oo-printmsg2.o oo-process.o \
@@ -49,7 +49,7 @@ ${OUTLIB}:	\
 	  oo-files.o oo-logmsg.o oo-prims.o \
 	  oo-secure.o oo-secure-actions.o oo-settings.o oo-ui.o oo-73.o
 	ar r ${OUTLIB} \
-	  oo-actions.o oo-api.o oo-bio.o oo-capabilities.o oo-callout.o \
+	  oo-actions.o oo-api.o oo-bio.o oo-capabilities.o \
 	  oo-cmdbreech.o oo-commands2.o oo-initialize.o oo-io-actions.o oo-logprims.o oo-mfg-actions.o oo-mgmt-actions.o \
 	  oo-parse.o oo-printmsg.o oo-printmsg2.o oo-process.o oo-util.o oo-util2.o \
 	  oo-util3.o oo-xpm-actions.o oo-xwrite.o \
@@ -65,9 +65,6 @@ oo-api.o:	oo-api.c ../include/osdp-tls.h ../include/open-osdp.h
 
 oo-bio.o:	oo-bio.c ../include/osdp-tls.h ../include/open-osdp.h
 	${CC} ${CFLAGS} oo-bio.c
-
-oo-callout.o:	oo-callout.c ../include/open-osdp.h
-	${CC} ${CFLAGS} oo-callout.c
 
 oo-capabilities.o:	oo-capabilities.c
 	${CC} ${CFLAGS} oo-capabilities.c

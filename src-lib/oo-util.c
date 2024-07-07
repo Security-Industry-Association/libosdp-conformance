@@ -277,8 +277,7 @@ int
           fprintf (context->log, "%s\n", logmsg);
         };
       }
-      sprintf(cmd,
-        "/opt/osdp-conformance/run/ACU-actions/osdp_ID");
+      sprintf(cmd, "%s/osdp_ID", oo_osdp_root(context, OO_DIR_ACTIONS));
       system(cmd);
     break;
 
