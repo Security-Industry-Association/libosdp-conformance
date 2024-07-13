@@ -91,7 +91,7 @@ int
 
 int
   action_osdp_NAK
-    (OSDP_CONTEXT *ctx,
+    (OSDP_CONTEXT *context,
     OSDP_MSG *msg)
 
 { /* action_OSDP_NAK */
@@ -104,12 +104,11 @@ int
   int status;
 
 
-  status = ST_OK;
+      status = ST_OK;
   oh = (OSDP_HDR *)(msg->ptr);
-  ctx->sent_naks ++;
-  ctx->last_nak_error = *(0+msg->data_payload);
+  context->sent_naks ++;
+  context->last_nak_error = *(0+msg->data_payload);
 
-      if (ctx->verbosity > 2)
       {
         count = oh->len_lsb + (oh->len_msb << 8);
         count = count - 6 - 2; // less header less CRC
@@ -132,35 +131,32 @@ int
           nak_code, nak_data);
         system(cmd);
 
-        fprintf (ctx->log, "%s\n", tlogmsg);
-// { *(0+msg->data_payload) is nak code 070-03-(3+that) is test zzz };
+        fprintf (context->log, "%s\n", tlogmsg);
         switch(*(0+msg->data_payload))
         {
-//7 3 3 is nak 0
 //not yet displayed: OO_NAK_COMMAND_LENGTH OO_NAK_BIO_TYPE_UNSUPPORTED OO_NAK_BIO_FMT_UNSUPPORTED OO_NAK_CMD_UNABLE
         case OO_NAK_CHECK_CRC:
-          fprintf(ctx->log, "  NAK: (1)Bad CRC/Checksum\n");
+          fprintf(context->log, "  NAK: (1)Bad CRC/Checksum\n");
           break;
         case OO_NAK_UNK_CMD:
-          fprintf(ctx->log, "  NAK: (3)Command not implemented by PD\n");
+          fprintf(context->log, "  NAK: (3)Command not implemented by PD\n");
           break;
         case OO_NAK_SEQUENCE:
-          fprintf(ctx->log, "  NAK: (4)Unexpected sequence number\n");
-          ctx->seq_bad ++;
+          fprintf(context->log, "  NAK: (4)Unexpected sequence number\n");
+          context->seq_bad ++;
             // hopefully not double counted, works in monitor mode
-          ctx->next_sequence = 0; // reset sequence due to NAK
+          context->next_sequence = 0; // reset sequence due to NAK
           break;
         case OO_NAK_UNSUP_SECBLK:
-          fprintf(ctx->log, "  NAK: (5)Security block not accepted.\n");
+          fprintf(context->log, "  NAK: (5)Security block not accepted.\n");
           break;
         case OO_NAK_ENC_REQ:
           // drop out of secure channel and in fact reset the sequence number
 
-          fprintf(ctx->log, "  NAK: (%d)Encryption required.\n", nak_code);
-          osdp_reset_secure_channel(ctx);
-          ctx->next_sequence = 0; 
+          fprintf(context->log, "  NAK: (%d)Encryption required.\n", nak_code);
+          osdp_reset_secure_channel(context);
+          context->next_sequence = 0; 
           break;
-
         };
       };
       osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
@@ -173,49 +169,49 @@ int
 
       // if the PD NAK'd during secure channel set-up then reset out of secure channel
 
-      if (ctx->secure_channel_use [OO_SCU_ENAB] & 0x80)
+      if (context->secure_channel_use [OO_SCU_ENAB] & 0x80)
       {
-        osdp_reset_secure_channel (ctx);
+        osdp_reset_secure_channel (context);
       }
       else
       {
         // if the PD said it does BIO and it NAK'd a BIOREAD fail the test.
 
-        if (ctx->last_command_sent EQUALS OSDP_BIOREAD)
+        if (context->last_command_sent EQUALS OSDP_BIOREAD)
         {
-          if (ctx->configured_biometrics)
+          if (context->configured_biometrics)
             osdp_test_set_status(OOC_SYMBOL_cmd_bioread, OCONFORM_FAIL);
         };
 
         // if the PD NAK'd a BIOMATCH fail the test.
 
-        if (ctx->last_command_sent EQUALS OSDP_BIOMATCH)
+        if (context->last_command_sent EQUALS OSDP_BIOMATCH)
         {
-          if (ctx->configured_biometrics)
+          if (context->configured_biometrics)
             osdp_test_set_status(OOC_SYMBOL_cmd_biomatch, OCONFORM_FAIL);
         };
 
         // if the PD NAK'd an ID fail the test.
 
-        if (ctx->last_command_sent EQUALS OSDP_ID)
+        if (context->last_command_sent EQUALS OSDP_ID)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_FAIL);
         };
 
         // if the PD NAK'd an ACURXSIZE fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
-        if (ctx->last_command_sent EQUALS OSDP_ACURXSIZE)
+        if (context->last_command_sent EQUALS OSDP_ACURXSIZE)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_FAIL);
         };
 
         // if the PD NAK'd a TEXT fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
-        if ((unsigned int)(ctx->last_command_sent) EQUALS (unsigned int)OSDP_TEXT)
+        if ((unsigned int)(context->last_command_sent) EQUALS (unsigned int)OSDP_TEXT)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_text, OCONFORM_FAIL);
         };
 
         // if the PD NAK'd a KEEPACTIVE fail the test.  If you didn't want the failure signal you'd use the sequencer to skip the test.
-        if ((unsigned int)(ctx->last_command_sent) EQUALS (unsigned int)OSDP_KEEPACTIVE)
+        if ((unsigned int)(context->last_command_sent) EQUALS (unsigned int)OSDP_KEEPACTIVE)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_FAIL);
         };
@@ -223,57 +219,66 @@ int
 // assumes test_details is still valid.
 // assumes it was a perm on command
 #define LP_ON (12)
-        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
+
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_AMBER)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_amber, OCONFORM_FAIL);
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLACK)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_black, OCONFORM_FAIL);
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_blue, OCONFORM_FAIL);
-        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_CYAN)
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_CYAN)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_cyan, OCONFORM_FAIL);
-        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_MAGENTA)
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_GREEN)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_FAIL);
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_MAGENTA)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_magenta, OCONFORM_FAIL);
-        if (ctx->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_WHITE)
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_RED)
+          osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_FAIL);
+        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_WHITE)
           osdp_test_set_status(OOC_SYMBOL_cmd_led_white, OCONFORM_FAIL);
 
         // if the PD NAK'd an OSTAT that is a fail.  The initiator of the OSTAT is responsible for only
         // using it if output support declared.
 
-        if (ctx->last_command_sent EQUALS OSDP_OSTAT)
+        if (context->last_command_sent EQUALS OSDP_OSTAT)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_ostat, OCONFORM_FAIL);
         };
 
         // if the PD NAK'd an RSTAT that is ok because RSTAT/RSTATR are effectively deprecated
 
-        if (ctx->last_command_sent EQUALS OSDP_RSTAT)
+        if (context->last_command_sent EQUALS OSDP_RSTAT)
         {
           osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
         };
 
       // if the PD NAK'd an ISTAT fail the test.
-      if (ctx->last_command_sent EQUALS OSDP_ISTAT)
+      if (context->last_command_sent EQUALS OSDP_ISTAT)
       {
         osdp_conformance.cmd_istat.test_status = OCONFORM_FAIL;
-        SET_FAIL ((ctx), "3-6-1");
+        SET_FAIL ((context), "060-06-01");
       };
 
       // if the PD NAK'd a KEYSET fail the test.
-      if (ctx->last_command_sent EQUALS OSDP_KEYSET)
+      if (context->last_command_sent EQUALS OSDP_KEYSET)
       {
         osdp_test_set_status(OOC_SYMBOL_cmd_keyset, OCONFORM_FAIL);
       };
 
       // if the PD NAK'd an LSTAT fail the test.
-      if (ctx->last_command_sent EQUALS OSDP_LSTAT)
+      if (context->last_command_sent EQUALS OSDP_LSTAT)
       {
         osdp_test_set_status(OOC_SYMBOL_cmd_lstat, OCONFORM_FAIL);
       };
       // if the PD NAK'd a CAP fail the test.
-      if (ctx->last_command_sent EQUALS OSDP_CAP)
+      if (context->last_command_sent EQUALS OSDP_CAP)
       {
         osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_FAIL);
       };
 
-      };
+  };
 
-      ctx->last_was_processed = 1; // if we got a NAK that processes the cmd
+  context->last_was_processed = 1; // if we got a NAK that processes the cmd
 
   return(status);
 

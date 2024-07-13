@@ -1,7 +1,7 @@
 /*
   oo-conformance - conformance reporting routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -737,7 +737,7 @@ void
 "3-5-1  Local Status Report Request        %s",
     conformance_status (oconf->cmd_lstat.test_status)));
   LOG_REPORT ((log_string,
-"3-6-1  Input Status Report Request        %s",
+"060-06-01  Input Status Report Request        %s",
     conformance_status (oconf->cmd_istat.test_status)));
   LOG_REPORT ((log_string,
 "3-7-1  Output Status Report Request       %s",

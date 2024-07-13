@@ -54,8 +54,8 @@ int
   char details [1024];
   int i;
   char logmsg [1024];
-  char nak_code;
-  char nak_data;
+//  char nak_code;
+//  char nak_data;
   int nak_length;
   int new_speed;
   unsigned char osdp_nak_response_data [2];
@@ -648,6 +648,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 
     // action for NAK
 
+#if NOT_USED
     case OSDP_NAK:
       status = ST_OK;
 //      context->sent_naks ++;
@@ -828,6 +829,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 
       context->last_was_processed = 1; // if we got a NAK that processes the cmd
       break;
+#endif
 
     case OSDP_COM:
       status = ST_OK;
