@@ -2,6 +2,7 @@
 RESPONSES=/opt/osdp-conformance/responses
 LOG=/opt/osdp-conformance/log
 mkdir -p /opt/osdp-conformance/log
-echo >${RESPONSES}/response_MFGREP $1 $2 $3 $4 $5 $6 $7 $8
+# arg 2 is the json blob
+echo >${RESPONSES}/response_MFGREP $2
 echo >>${LOG}/actions.log osdp_MFGREP called $1 $2 $3 $4 $5 $6 $7 $8
 
