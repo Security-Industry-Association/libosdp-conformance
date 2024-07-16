@@ -978,6 +978,7 @@ int
   int display;
   char hex_details [4096];
   char hstr [1024]; // hex string of raw card data payload
+  char json_blob [1024];
   unsigned char *raw_data;
   int status;
 
@@ -1065,9 +1066,12 @@ int
 
       // run the action routine with the bytes,bit count,format, details
 
-      sprintf(cmd, "%s/osdp_RAW %s %d %d %s",
+      sprintf(json_blob, "{\\\"bits\\\":\\\"%d\\\",\\\"raw\\\":\\\"", bits);
+      strcat(json_blob, hstr);
+      strcat(json_blob, "\\\"}");
+      sprintf(cmd, "%s/osdp_RAW %s %d %d %s \"%s\"",
         oo_osdp_root(ctx, OO_DIR_ACTIONS),
-        hstr, bits, *(msg->data_payload+1), hex_details);
+        hstr, bits, *(msg->data_payload+1), hex_details, json_blob);
       system(cmd);
     }; // not encrypted
 
