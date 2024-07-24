@@ -9,7 +9,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 ### updates in 1.50 build 2
 
-t.b.d.
+introduce SERVICE_ROOT environment variable for action callouts
+refactored source code for action routines.
 
 ### updates in 1.50 build 1 ###
 
