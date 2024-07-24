@@ -1066,6 +1066,7 @@ int action_osdp_GENAUTHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_KEYPAD(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEYSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFG (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_MFGERRR (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
