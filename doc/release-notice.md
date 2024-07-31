@@ -12,6 +12,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 introduce SERVICE_ROOT environment variable for action callouts
 refactored source code for action routines.
 
+tune callout so osdp_MFG can be used with plugins
+
 ### updates in 1.50 build 1 ###
 
 added osdp root path logic for actions and responses, moved actions, moved

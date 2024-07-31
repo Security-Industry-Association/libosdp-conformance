@@ -1,7 +1,7 @@
 /*
   oo-prims - primitives for OSDP processing
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -48,6 +48,27 @@ void
 }
 
 
+int oo_bytes_to_hex_string
+  (OSDP_CONTEXT *ctx,
+  unsigned char *bytes,
+  int byte_length,
+  char *hex_string,
+  int hex_string_max)
+{
+  int i;
+  char tstring [4];
+
+  *hex_string = 0;
+  for (i=0; i<byte_length; i++)
+  {
+    sprintf(tstring, "%02X", bytes [i]);
+    strcat(hex_string, tstring);
+  };
+
+  return(ST_OK);
+}
+
+
 char *
   oo_lookup_nak_text
     (int nak_code)
@@ -85,35 +106,6 @@ char *
   return(nak_text);
 
 } /* oo_lookup_nak_text */
-
-
-int ZZoo_filetransfer_SDU_offer
-  (OSDP_CONTEXT *ctx)
-
-{ /* oo_filetransfer_SDU_offer */
-
-  int offered_size;
-
-
-  offered_size = ctx->max_message;
-  if (ctx->verbosity > 3)
-    fprintf(ctx->log, "FTMsgUpdateMax-1 %d.\n", offered_size);
-  if (ctx->max_message > 0)
-  {
-    offered_size = offered_size - 14; // headers and footers, secure channel
-    if (ctx->verbosity > 3)
-      fprintf(ctx->log, "FTMsgUpdateMax-2 %d.\n", offered_size);
-    offered_size = ((offered_size / OSDP_KEY_OCTETS) * OSDP_KEY_OCTETS) - 1; // fit in cipher blocks with minimal padding
-    if (ctx->verbosity > 3)
-      fprintf(ctx->log, "FTMsgUpdateMax-3 %d.\n", offered_size);
-    offered_size = offered_size - 11; // less osdp_FILETRANSFER header
-  };
-  if (ctx->verbosity > 3)
-    fprintf(ctx->log, "FTMsgUpdateMax offered: %d.\n", offered_size);
-
-  return(offered_size);
-
-} /* oo_filetransfer_SDU_offer */
 
 
 unsigned char

@@ -1093,8 +1093,8 @@ int enqueue_command (OSDP_CONTEXT *ctx, OSDP_COMMAND *cmd);
 int fasc_n_75_to_string (char * s, long int *sample_1);
 int initialize_osdp (OSDP_CONTEXT *ctx);
 int init_serial (OSDP_CONTEXT *context, char *device);
-int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int oo_build_genauth(OSDP_CONTEXT *ctx, unsigned char *challenge_payload_buffer, int *payload_length, unsigned char *details, int details_length);
+int oo_bytes_to_hex_string(OSDP_CONTEXT *ctx, unsigned char *bytes, int byte_length, char *hex_string, int hex_string_max);
 int oo_command_setup_out(OSDP_CONTEXT *ctx, json_t *output_command, OSDP_COMMAND *cmd);
 int oo_filetransfer_SDU_offer(OSDP_CONTEXT *ctx);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message, int security_block_type, unsigned char *hash, int message_length);
@@ -1124,6 +1124,7 @@ int osdp_command_match (OSDP_CONTEXT *ctx, json_t *root, char *command, int *com
 char *osdp_command_reply_to_string (unsigned char cmdrep, int role);
 void osdp_create_client_cryptogram (OSDP_CONTEXT *context, OSDP_SC_CCRYPT *ccrypt_response);
 void osdp_create_keys (OSDP_CONTEXT *ctx);
+int osdp_decrypt_payload(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 void osdp_doubleByte_to_array(unsigned short int i, unsigned char a [2]);
 int osdp_encrypt_payload(OSDP_CONTEXT *ctx, unsigned char *data, int data_length, unsigned char *enc_buf,
   int *padded_length, int *padding);

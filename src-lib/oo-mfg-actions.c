@@ -1,7 +1,7 @@
 /*
   oo-mfg-actions - action call-outs for manufacturer specific commands
 
-  (C)Copyright 2017-2021 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -24,6 +24,7 @@
 
 
 #include <open-osdp.h>
+extern OSDP_PARAMETERS p_card;
 char OSDP_VENDOR_LIBOSDP_CONFORMANCE_LOCAL [] = { 0x0A, 0x00, 0x17 };
 char OSDP_VENDOR_INID [] = { 0x00, 0x75, 0x32 };
 char *osdp_manufacturer_list [] = {
@@ -105,6 +106,119 @@ typedef struct __attribute__((packed)) osdp_msc_status
   char status;
   char info [2];
 } OSDP_MSC_STATUS;
+
+
+int
+  action_osdp_MFG
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_MFG */
+
+  char cmd [4096]; //C_STRING_MX];
+  int count;
+  int current_length;
+  char hex_buffer [2000];
+  int matches_conformance_oui;
+  int matches_vendor_oui;
+  OSDP_MFG_COMMAND *mfg;
+  OSDP_HDR *oh;
+  int status;
+  int unknown;
+
+
+  status = ST_OK;
+  unknown = 1;
+  oh = (OSDP_HDR *)(msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 6; // assumes no SCS header
+  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
+    count = count - 2; // for SCS 18
+  count = count - msg->check_size;
+
+  mfg = (OSDP_MFG_COMMAND *)(msg->data_payload);
+
+  matches_vendor_oui = memcmp(mfg->vendor_code, ctx->vendor_code, 3);
+  matches_conformance_oui = memcmp(mfg->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE));
+  if ((matches_vendor_oui EQUALS 0) && (matches_conformance_oui != 0))
+    unknown = 0; // if it was the one explicitly specified but not (mine) it's not unknown
+
+  if (matches_conformance_oui EQUALS 0) //memcmp returns 0 on match
+  {
+    switch (mfg->mfg_command_id)
+    {
+    case OOSDP_MFG_PING:
+      {
+        unsigned char mfg_response [sizeof(struct osdp_mfg_command) + 4];
+        OSDP_MFG_COMMAND *mh;
+
+        unknown = 0; // we known this guy
+        mh = (OSDP_MFG_COMMAND *)mfg_response;
+        memcpy(mh->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE));
+        mh->mfg_command_id = OOSDP_MFGR_PING_ACK;
+        memcpy(&(mh->data), (char *)&(mfg->data), 4); // arbitrarily copy the 4 detail bytes back at ya
+        current_length = 0;
+        status = send_message(ctx, OSDP_MFGREP, p_card.addr, &current_length, sizeof(mfg_response), mfg_response);
+      };
+      break;
+
+    case OOSDP_MFG_PIRATE:
+      {
+        unsigned char mfg_response [500];
+        int response_payload_length;
+
+        unknown = 0; // we known this guy
+        memset(mfg_response, 0, sizeof(mfg_response));
+        response_payload_length = count - 4; // payload length includes OUI, command
+        memcpy(mfg_response, &(mfg->data), msg->data_length);
+        current_length = 0;
+        if (ctx->verbosity > 3)
+        {
+          fprintf(ctx->log, "DEBUG: Authenticate like a pirate - unknown %d response payload length %d first payload octet 0x%02X\n",
+            unknown, response_payload_length, mfg->data);
+        };
+        status = send_message_ex (ctx, OSDP_MFGERRR, ctx->pd_address,
+          &current_length, response_payload_length, mfg_response,
+          OSDP_SEC_SCS_18, 0, NULL);
+      };
+      break;
+    };
+  };
+
+  if (!unknown)
+  {
+    // and after we do whatever we did, call the action script.
+    /*
+      ACTION SCRIPT ARGS: 1=6 hexit OUI 2=MFG command 2 hexit 3=first octet of data 2hexit 4=data payload length
+
+      length is payload less 4 (oui and id)
+    */
+
+    status = oo_bytes_to_hex_string(ctx, &(mfg->data), msg->data_length - 4, hex_buffer, sizeof(hex_buffer));
+    sprintf(cmd, "\"{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%02X\\\",\\\"4\\\":\\\"%s\\\"}\"",
+      ctx->pd_address,
+      mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg->mfg_command_id, hex_buffer);
+    status = oosdp_callout(ctx, "osdp_MFG", cmd);
+  };
+  if (unknown)
+  {
+    // dunno this mfg command, nak it
+
+    int nak_length;
+    unsigned char osdp_nak_response_data [1024];
+
+    current_length = 0;
+    osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+    memcpy(osdp_nak_response_data, mfg->vendor_code, 3);
+    nak_length = 3;
+fprintf(ctx->log, "DEBUG: 5 NAK: %d.\n", osdp_nak_response_data [0]);
+    status = send_message (ctx, OSDP_NAK, p_card.addr, &current_length, nak_length,
+      osdp_nak_response_data); ctx->sent_naks ++;
+  };
+
+  return (status);
+
+} /* action_osdp_MFG */
 
 
 int
