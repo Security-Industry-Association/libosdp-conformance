@@ -316,6 +316,50 @@ int
     };
     break;
 
+  // command MFG.  Arguments are OUI, command-id, command-specific-data, config-address.
+  // c-s-d is is 2-hexit bytes, length inferred.
+
+  case OSDP_CMDB_MFG:
+    {
+      int found_oui;
+
+      found_oui = 0;
+      cmd->command = OSDP_CMDB_MFG; 
+      cmd->details_param_1 = 0;
+      mfg_args = (OSDP_MFG_ARGS *)(cmd->details);
+      memset(mfg_args, 0, sizeof (*mfg_args));
+      parameter = json_object_get(root, "config-address");
+      if (json_is_string(parameter))
+      {
+        cmd->details_param_1 = OSDP_CONFIGURATION_ADDRESS;
+      };
+      parameter = json_object_get(root, "command-id");
+      if (json_is_string(parameter))
+      {
+        int i;
+        sscanf(json_string_value(parameter), "%x", &i);
+        mfg_args->command_ID = i;
+      };
+      parameter = json_object_get(root, "command-specific-data");
+      if (json_is_string(parameter))
+      {
+        strcpy(mfg_args->c_s_d, json_string_value(parameter));
+      };
+      parameter = json_object_get(root, "oui");
+      if (json_is_string(parameter))
+      {
+        found_oui = 1;
+        strcpy(mfg_args->oui, json_string_value(parameter));
+      };
+      if (!found_oui)
+      {
+        sprintf(mfg_args->oui, "%02x%02x%02x", ctx->vendor_code [0], ctx->vendor_code [1], ctx->vendor_code [2]);
+      };
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+    };
+    break;
+
   // command MFGREP.  Arguments are OUI, command-id, command-specific-data.
   // c-s-d is is 2-hexit bytes, length inferred.
 
@@ -911,50 +955,6 @@ int
         cmd->details [1] = (i/0x100); // msb
       };
 
-      status = enqueue_command(ctx, cmd);
-      cmd->command = OSDP_CMD_NOOP;
-    };
-  };
-
-  // command MFG.  Arguments are OUI, command-id, command-specific-data, config-address.
-  // c-s-d is is 2-hexit bytes, length inferred.
-
-  if (status EQUALS ST_OK) {
-    if (0 EQUALS strcmp(current_command, "mfg")) {
-      int found_oui;
-
-      found_oui = 0;
-      cmd->command = OSDP_CMDB_MFG; 
-      cmd->details_param_1 = 0;
-      mfg_args = (OSDP_MFG_ARGS *)(cmd->details);
-      memset(mfg_args, 0, sizeof (*mfg_args));
-      parameter = json_object_get(root, "config-address");
-      if (json_is_string(parameter))
-      {
-        cmd->details_param_1 = OSDP_CONFIGURATION_ADDRESS;
-      };
-      parameter = json_object_get(root, "command-id");
-      if (json_is_string(parameter))
-      {
-        int i;
-        sscanf(json_string_value(parameter), "%x", &i);
-        mfg_args->command_ID = i;
-      };
-      parameter = json_object_get(root, "command-specific-data");
-      if (json_is_string(parameter))
-      {
-        strcpy(mfg_args->c_s_d, json_string_value(parameter));
-      };
-      parameter = json_object_get(root, "oui");
-      if (json_is_string(parameter))
-      {
-        found_oui = 1;
-        strcpy(mfg_args->oui, json_string_value(parameter));
-      };
-      if (!found_oui)
-      {
-        sprintf(mfg_args->oui, "%02x%02x%02x", ctx->vendor_code [0], ctx->vendor_code [1], ctx->vendor_code [2]);
-      };
       status = enqueue_command(ctx, cmd);
       cmd->command = OSDP_CMD_NOOP;
     };
