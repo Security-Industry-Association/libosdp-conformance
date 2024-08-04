@@ -140,6 +140,9 @@ int
 
   matches_vendor_oui = memcmp(mfg->vendor_code, ctx->vendor_code, 3);
   matches_conformance_oui = memcmp(mfg->vendor_code, OOSDP_MFG_VENDOR_CODE, sizeof(OOSDP_MFG_VENDOR_CODE));
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "OUI match conformance %d match vendor %d\n",
+      matches_conformance_oui, matches_vendor_oui);
   if ((matches_vendor_oui EQUALS 0) && (matches_conformance_oui != 0))
     unknown = 0; // if it was the one explicitly specified but not (mine) it's not unknown
 
@@ -195,10 +198,18 @@ int
     */
 
     status = oo_bytes_to_hex_string(ctx, &(mfg->data), msg->data_length - 4, hex_buffer, sizeof(hex_buffer));
-    sprintf(cmd, "\"{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%02X\\\",\\\"4\\\":\\\"%s\\\"}\"",
-      ctx->pd_address,
-      mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg->mfg_command_id, hex_buffer);
-    status = oosdp_callout(ctx, "osdp_MFG", cmd);
+    if (status EQUALS ST_OK)
+    {
+      sprintf(cmd, "\"{\\\"1\\\":\\\"%02X\\\",\\\"2\\\":\\\"%02X%02X%02X\\\",\\\"3\\\":\\\"%02X\\\",\\\"4\\\":\\\"%s\\\"}\"",
+        ctx->pd_address,
+        mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg->mfg_command_id, hex_buffer);
+      status = oosdp_callout(ctx, "osdp_MFG", cmd);
+    };
+    if (status EQUALS ST_OK)
+    {
+      current_length = 0;
+      status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
+    };
   };
   if (unknown)
   {
