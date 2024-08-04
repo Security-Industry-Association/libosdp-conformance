@@ -44,5 +44,5 @@ chown root /etc/sudoers.d/www-data
 echo >>/opt/osdp-conformance/log/install.log linking ACU-actions to actions
 ln -s /opt/osdp-conformance/actions /opt/osdp-conformance/run/ACU-actions
 
-echo >>/opt/osdp-conformance/log/install.log libosdp-conformance was installed.
+echo >>/opt/osdp-conformance/log/install.log libosdp-conformance 1.50-2 was installed.
 

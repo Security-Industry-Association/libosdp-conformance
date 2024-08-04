@@ -544,9 +544,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     switch (msg->msg_cmd)
     {
     case OSDP_ACK:
-      if (context->verbosity > 3)
-        fprintf(stderr, "DEBUG: ack check multi next_out %d total_outbound_multipart %d\n", context->next_out,
-  context->total_outbound_multipart);
       status = ST_OK;
 
       /*
@@ -665,6 +662,10 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       status = action_osdp_MFGREP(context, msg);
       break;
 
+    case OSDP_NAK:
+      status = action_osdp_NAK(context, msg);
+      break;
+
     case OSDP_OSTATR:
       osdp_test_set_status(OOC_SYMBOL_resp_ostatr, OCONFORM_EXERCISED);
 
@@ -760,17 +761,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       status = action_osdp_PIVDATAR(context, msg);
       break;
 
-    case OSDP_XRD:
-      status = action_osdp_XRD(context, msg);
-      break;
-
-    default:
-      if (context->verbosity > 2)
-      {
-        fprintf (stderr, "CMD %02x Unknown to ACU\n", msg->msg_cmd);
-      };
-    break;
-
     case OSDP_RAW:
       status = action_osdp_RAW (context, msg);
       break;
@@ -802,6 +792,17 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           osdp_test_set_status(OOC_SYMBOL_cmd_rstat, OCONFORM_EXERCISED);
       };
       break;
+
+    case OSDP_XRD:
+      status = action_osdp_XRD(context, msg);
+      break;
+
+    default:
+      if (context->verbosity > 2)
+      {
+        fprintf (stderr, "Response %02x Unknown to ACU\n", msg->msg_cmd);
+      };
+    break;
     };
   } /* role ACU */
 

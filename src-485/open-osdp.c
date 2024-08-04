@@ -2,7 +2,7 @@ extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -66,20 +66,16 @@ int
   creds_buffer_a_remaining;
 
 
-void
-  check_serial
-    (OSDP_CONTEXT
-      *ctx)
-{
-  struct termios
-    serial_termios;
+void check_serial
+  (OSDP_CONTEXT *ctx)
+
+{ /* check_serial */
+
+  struct termios serial_termios;
   speed_t speed;
-  int status_io;
 
 
-  status_io = tcgetattr (ctx->fd, &serial_termios);
-  if (ctx->verbosity > 3)
-    fprintf (stderr, "tcgetattr returned %d\n", status_io);
+  (void) tcgetattr (ctx->fd, &serial_termios);
   speed = cfgetispeed (&serial_termios);
   if (ctx->verbosity > 3)
     fprintf (stderr, "input speed %d\n", speed);
@@ -87,7 +83,7 @@ void
   if (ctx->verbosity > 3)
     fprintf (stderr, "output speed %d\n", speed);
 
-}
+} /* check_serial */
 
 int
   initialize

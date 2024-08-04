@@ -425,9 +425,6 @@ sleep(1);
           memcpy(tmps, (idx)+(oargs->c_s_d), 2);
           sscanf(tmps, "%x", &i);
           *(&(omfg->data)+out_idx) = i;
-          if (context->verbosity > 3)
-            fprintf(stderr, "mfg data %d. s %s hex value 0x%x\n",
-              out_idx, tmps, i);
           out_idx ++;
           send_length ++;
         };

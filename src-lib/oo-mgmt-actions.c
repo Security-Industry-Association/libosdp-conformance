@@ -89,10 +89,9 @@ int
 } /* action_osdp_MFGREP */
 
 
-int
-  action_osdp_NAK
-    (OSDP_CONTEXT *context,
-    OSDP_MSG *msg)
+int action_osdp_NAK
+  (OSDP_CONTEXT *context,
+  OSDP_MSG *msg)
 
 { /* action_OSDP_NAK */
 
