@@ -292,7 +292,7 @@ int
       ret_cmd = OSDP_CMDB_KEYSET;
     if (0 EQUALS strcmp(command, "mfg"))
       ret_cmd = OSDP_CMDB_MFG;
-    if (0 EQUALS strcmp(command, "mfg-response"))
+    if (0 EQUALS strcmp(command, "mfgrep"))
       ret_cmd = OSDP_CMDB_MFGREP;
     if (0 EQUALS strcmp(command, "ondemand-lstatr"))
       ret_cmd = OSDP_CMDB_ONDEMAND_LSTATR;
