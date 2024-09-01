@@ -6,7 +6,7 @@ extern unsigned char pending_response;
 /*
   oosdp-actions - open osdp action routines
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -169,8 +169,9 @@ int
   to_send = OSDP_MAX_OUT;
   memcpy (buffer, out_status, OSDP_MAX_OUT);
   current_length = 0;
-  status = send_message (ctx, OSDP_OSTATR, p_card.addr,
-    &current_length, to_send, buffer);
+fprintf(stderr, "DEBUG: send_message_ex OSTATR\n");
+  status = send_message_ex (ctx, OSDP_OSTATR, p_card.addr,
+    &current_length, to_send, buffer, OSDP_SEC_SCS_18, 0, NULL);
   return (status);
 
 } /* action_osdp_OSTAT */

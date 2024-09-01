@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### updates in 1.50 build 3
+
+fixed osdp_OSTATR secure channel response
+
 ### updates in 1.50 build 2
 
 introduce SERVICE_ROOT environment variable for action callouts
