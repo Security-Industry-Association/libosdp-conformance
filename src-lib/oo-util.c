@@ -287,20 +287,17 @@ int
         unsigned char
           osdp_istat_response_data [OOSDP_DEFAULT_INPUTS];
 
-        // hard code to show all inputs in '0' state.
-
         memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
+        if (context->next_istatr EQUALS 1)
+        {
+          osdp_istat_response_data [0] = 1; // input 0 is active
+        };
         osdp_test_set_status(OOC_SYMBOL_cmd_istat, OCONFORM_EXERCISED);
         osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
         current_length = 0;
 
         status = send_message_ex(context, OSDP_ISTATR, p_card.addr,
           &current_length, sizeof(osdp_istat_response_data), osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
-        if (context->verbosity > 2)
-        {
-          sprintf (logmsg, "Responding with OSDP_ISTAT (hard-coded all zeroes)");
-          fprintf (context->log, "%s\n", logmsg);
-        };
       };
       break;
 

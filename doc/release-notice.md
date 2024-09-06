@@ -10,6 +10,7 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 ### updates in 1.50 build 3
 
 fixed osdp_OSTATR secure channel response
+fixed ISTATR response
 
 ### updates in 1.50 build 2
 

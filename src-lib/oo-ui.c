@@ -534,7 +534,8 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       }
       else
       {
-        if (ctx->last_was_processed)
+        if ((ctx->role EQUALS OSDP_ROLE_PD) ||
+          (ctx->last_was_processed))
         {
           // really raw
 
