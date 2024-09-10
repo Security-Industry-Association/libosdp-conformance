@@ -900,10 +900,10 @@ int
       fprintf(sf, "%02x", ctx->current_scbk [i]);
     fprintf(sf, "\",\n");
     fprintf (sf,
-"\"serial_speed\" : \"%s\",",
+"\"serial-speed\" : \"%s\",",
       ctx->serial_speed);
     fprintf (sf,
-"\"pd_address\" : \"%02x\",\n",
+"\"pd-address\" : \"%02x\",\n",
       p_card.addr);
     fprintf(sf,
 "\"max_pd_send\" : \"%d\",\n",
