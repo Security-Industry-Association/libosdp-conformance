@@ -123,7 +123,7 @@ int
 
   // if waiting for response to last cleartext message then do NOT poll
 
-  if (ctx->verbosity > 3)
+  if (ctx->verbosity > 9)
     fprintf(ctx->log, "wait: send_poll %d awaiting... %d\n",
       send_poll, osdp_awaiting_response(ctx));
   if (send_poll)
