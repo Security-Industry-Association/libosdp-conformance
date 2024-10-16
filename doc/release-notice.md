@@ -7,6 +7,12 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+
+### updates in 1.51 Build 2
+
+fixed hyphenation errors in status commands
+
+
 ### updates in 1.51 Build 1
 
 fixed link in PD web page.
