@@ -19,7 +19,7 @@ echo Content-type: text/html
 echo
 echo "<HTML><HEAD><TITLE>Start open-osdp as PD using TLS as a network server</TITLE></HEAD><BODY>"
 echo "<META HTTP-EQUIV=\"REFRESH\""
-echo " CONTENT=\"1;URL=/open-osdp-PD.html\">"
+echo " CONTENT=\"1;URL=/Test-PD.html\">"
 echo "<PRE>"
 echo
 echo Note: server will restart automatically.  Run from the command line if you want it to only run once.

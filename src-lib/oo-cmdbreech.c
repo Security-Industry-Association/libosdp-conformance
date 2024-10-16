@@ -1193,7 +1193,7 @@ int
   {
     value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
-    test_command = "input_status";
+    test_command = "input-status";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_ISTAT;
@@ -1235,7 +1235,7 @@ int
   {
     value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
-    test_command = "local_status";
+    test_command = "local-status";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
       cmd->command = OSDP_CMDB_LSTAT;
@@ -1491,6 +1491,7 @@ int
           this_command);
 
       status = enqueue_command(ctx, cmd);
+fprintf(stderr, "DEBUG: back from enqueuing output-status (%d)\n", status);
       cmd->command = OSDP_CMD_NOOP;
     };
   }; 

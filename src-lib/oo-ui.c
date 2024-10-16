@@ -993,6 +993,7 @@ if (ctx->verbosity > 3)
           osdp_OSTAT requires no arguments.
         */
         current_length = 0;
+fprintf(stderr, "DEBUG: sending OSTAT\n");
         status = send_message_ex (context,
           OSDP_OSTAT, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
         if (context->verbosity > 3)
