@@ -137,10 +137,13 @@ int
       context->max_acu_receive = 
         (*(msg->data_payload + 1) * 256) + *(msg->data_payload + 0);
 
-      sprintf (logmsg, "  ACU Receive Buffer %d. bytes\n",
-        context->max_acu_receive);
-      fprintf (context->log, "%s", logmsg);
-      logmsg[0]=0;
+      if (context->verbosity > 2)
+      {
+        sprintf (logmsg, "  ACU Receive Buffer %d. bytes\n",
+          context->max_acu_receive);
+        fprintf (context->log, "%s", logmsg);
+        logmsg[0]=0;
+      };
       osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
       current_length = 0;
       current_security = OSDP_SEC_SCS_16;

@@ -826,16 +826,13 @@ status = ST_OK; // tolerate checksum error and continue
         {
           if (wire_sequence != 0)
           {
-fprintf(context->log,
-"DEBUG: bad seq bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",
-            osdp_buf.next,
-            osdp_buf.buf [0], osdp_buf.buf [1], osdp_buf.buf [2],
-            osdp_buf.buf [5], osdp_buf.buf [6]);
-
-            fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
+          
             status = ST_OSDP_BAD_SEQUENCE;
             if (context->verbosity > 3)
+            {
+              fprintf(context->log, "***sequence number mismatch got %d expected %d\n", msg_sqn, context->next_sequence);
               fprintf(stderr, "nak bad seq: wire addr %d my addr %d %d\n", p->addr, p_card.addr, context->pd_address);
+            };
             context->seq_bad++;
 
             // putting this back (0.91-10)

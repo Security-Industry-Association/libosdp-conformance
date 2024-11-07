@@ -1,7 +1,7 @@
 /*
   oo-printmsg - open osdp message printing routines
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2024 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -137,6 +137,8 @@ int
   };
   if ((osdp_msg->security_block_length EQUALS 0) || (osdp_msg->payload_decrypted))
   {
+    if (ctx->verbosity > 1)
+    {
     sprintf(tmpstr, "LED Control: %d. commands\n", count);
     strcat(tlogmsg, tmpstr);
     for (i=0; i<count; i++)
@@ -174,6 +176,7 @@ int
       };
 
       led_ctl++; // increment structure pointer to next LED
+      };
     };
   };
 
@@ -226,8 +229,9 @@ int
     fprintf (identf, "}\n");
     fclose (identf);
   };
-  sprintf (tlogmsg, 
-"  PD Identification: OUI %02x-%02x-%02x Model %d Ver %d SN %02x-%02x-%02x-%02x FW %d.%d Build %d\n",
+  if (ctx->verbosity > 2)
+    sprintf (tlogmsg, 
+"    PD Identification: OUI %02x-%02x-%02x Model %d Ver %d SN %02x-%02x-%02x-%02x FW %d.%d Build %d\n",
      *(osdp_msg->data_payload + 0), *(osdp_msg->data_payload + 1),
      *(osdp_msg->data_payload + 2), *(osdp_msg->data_payload + 3),
      *(osdp_msg->data_payload + 4), *(osdp_msg->data_payload + 5),
@@ -490,35 +494,41 @@ int
 
 
   status = ST_OK;
-  oh = (OSDP_HDR *)(osdp_msg->ptr);
-  count = oh->len_lsb + (oh->len_msb << 8);
-  count = count - 8;  // payload
-  count = count - 4; // 1 for reader number, 1 for format, 2 for no. of bits
-  hstr [0] = 0;
-  tlogmsg [0] = 0;
-  if (osdp_msg->security_block_length > 0)
+  if (ctx->verbosity > 2)
   {
+    oh = (OSDP_HDR *)(osdp_msg->ptr);
+    count = oh->len_lsb + (oh->len_msb << 8);
+    count = count - 8;  // payload
+    count = count - 4; // 1 for reader number, 1 for format, 2 for no. of bits
+    hstr [0] = 0;
     tlogmsg [0] = 0;
-    for (i=0; i<count; i++)
+    if (osdp_msg->security_block_length > 0)
     {
-      d = *(unsigned char *)(osdp_msg->data_payload+i);
-      sprintf(tstr, "%02x", d);
-      strcat(hstr, tstr);
-    };
-    sprintf(tlogmsg,
-      "  Encrypted TEXT Payload (%d. bytes) %s\n", count, hstr);
-  }
-  else
-  {
-    char text_message [1024];
+      tlogmsg [0] = 0;
+      for (i=0; i<count; i++)
+      {
+        d = *(unsigned char *)(osdp_msg->data_payload+i);
+        sprintf(tstr, "%02x", d);
+        strcat(hstr, tstr);
+      };
+      sprintf(tlogmsg,
+        "  Encrypted TEXT Payload (%d. bytes) %s\n", count, hstr);
+    }
+    else
+    {
+      char text_message [1024];
 
-    memset(text_message, 0, sizeof(text_message));
-    memcpy(text_message, osdp_msg->data_payload+6, (unsigned int)*(osdp_msg->data_payload+5));
-    sprintf(tlogmsg,
-      "Text: Rdr %d. Cmd %d. Temp time %d. Row %d. Column %d. Text length %d.\n  %s\n",
-      *(osdp_msg->data_payload+0), *(osdp_msg->data_payload+1), *(osdp_msg->data_payload+2),
-      *(osdp_msg->data_payload+3), *(osdp_msg->data_payload+4), *(osdp_msg->data_payload+5),
-      text_message);
+      memset(text_message, 0, sizeof(text_message));
+      memcpy(text_message, osdp_msg->data_payload+6, (unsigned int)*(osdp_msg->data_payload+5));
+      if (ctx->verbosity > 2)
+      {  
+        sprintf(tlogmsg,
+          "Text: Rdr %d. Cmd %d. Temp time %d. Row %d. Column %d. Text length %d.\n  %s\n",
+          *(osdp_msg->data_payload+0), *(osdp_msg->data_payload+1), *(osdp_msg->data_payload+2),
+          *(osdp_msg->data_payload+3), *(osdp_msg->data_payload+4), *(osdp_msg->data_payload+5),
+          text_message);
+      };
+    };
   };
 
   return(status);

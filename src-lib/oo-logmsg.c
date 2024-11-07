@@ -179,7 +179,8 @@ int
       // per spec it is lsb/msb
 
       c = (msg->data_payload [0]) + 256 * (msg->data_payload [1]);
-      sprintf(tlogmsg, "  ACU Rx Size: %0d.\n", c);
+      if (context.verbosity > 2)
+        sprintf(tlogmsg, "  ACU Rx Size: %0d.\n", c);
     };
     break;
 
@@ -438,7 +439,8 @@ int
     tlogmsg [0] = 0;
     if (msg->security_block_length > 0)
     {
-      strcat(tlogmsg, "  (ISTATR message contents encrypted)\n");
+      if (context.verbosity > 2)
+        strcat(tlogmsg, "  (ISTATR message contents encrypted)\n");
     };
     if (msg->security_block_length EQUALS 0)
     {
@@ -469,7 +471,8 @@ int
       msg = (OSDP_MSG *) aux;
       if (msg->security_block_length > 0)
       {
-        strcat(tlogmsg, "  (KEEPACTIVE message contents encrypted)\n");
+        if (context.verbosity > 2)
+          strcat(tlogmsg, "  (KEEPACTIVE message contents encrypted)\n");
       };
       if (msg->security_block_length EQUALS 0)
       {
@@ -503,7 +506,8 @@ int
       msg = (OSDP_MSG *) aux;
       if (msg->security_block_length > 0)
       {
-        strcat(tlogmsg, "  (LSTATR message contents encrypted)\n");
+        if (context.verbosity > 2)
+          strcat(tlogmsg, "  (LSTATR message contents encrypted)\n");
       };
       if (msg->security_block_length EQUALS 0)
       {

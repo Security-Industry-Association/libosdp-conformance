@@ -174,7 +174,6 @@ int
       fclose(f);
     };
   };
-//  sprintf(cmd, "%02X %d.", *(msg->data_payload), msg->data_length);
   status = oosdp_callout(ctx, "osdp_MFGERRR", cmd);
 
   osdp_test_set_status(OOC_SYMBOL_resp_mfgerrr, OCONFORM_EXERCISED);
@@ -670,20 +669,23 @@ int
   text_length = (unsigned char) *(msg->data_payload+5);
   strncpy (ctx->text, (char *)(msg->data_payload+6), text_length);
 
-  fprintf (ctx->log, "Text:");
-  fprintf (ctx->log,
-    " Rdr %x tc %x tsec %x Row %x Col %x Lth %x\n",
-     *(msg->data_payload + 0), *(msg->data_payload + 1), *(msg->data_payload + 2),
+  if (ctx->verbosity > 2)
+  {
+    fprintf (ctx->log, "Text:");
+    fprintf (ctx->log,
+      " Rdr %x tc %x tsec %x Row %x Col %x Lth %x\n",
+      *(msg->data_payload + 0), *(msg->data_payload + 1), *(msg->data_payload + 2),
       *(msg->data_payload + 3), *(msg->data_payload + 4), *(msg->data_payload + 5));
+  };
 
   memset (tlogmsg, 0, sizeof (tlogmsg));
   strncpy (tlogmsg, (char *)(msg->data_payload+6), text_length);
-  fprintf (ctx->log, "Text: %s\n", tlogmsg);
+  if (ctx->verbosity > 2)
+    fprintf (ctx->log, "Text: %s\n", tlogmsg);
 
   // we always ack the TEXT command regardless of param errors
 
   current_length = 0;
-//  status = send_message (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL);
   status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
   ctx->pd_acks ++;
   if (ctx->verbosity > 2)
