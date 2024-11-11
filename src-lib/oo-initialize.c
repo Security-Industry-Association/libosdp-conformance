@@ -220,7 +220,10 @@ int
   {
     status_io = flock(context->process_lock, LOCK_EX | LOCK_NB);
     if (status_io EQUALS -1)
+    {
+      fprintf(stderr, "OSDP already running.\n");
       status = ST_OSDP_EXCLUSIVITY_FAILED;
+    };
   };
 
   // initialize the trace file to empty

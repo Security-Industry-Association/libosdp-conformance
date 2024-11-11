@@ -9,8 +9,11 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 ### updates in 1.60 Build 1
 
-```
+add text message if OSDP is already running.
+
 Remove more logging at verbosity 1.  verbosity settings:
+```
+verbosity settings:
 level 0: no/minimal logging or test reporting; tracing still works
 level 1: no/minimal logging, test reporting available
 level 3: default, logging and test reporting
