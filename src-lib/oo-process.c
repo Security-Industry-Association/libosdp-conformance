@@ -174,7 +174,9 @@ int
         (void)send_message_ex(&context,
           OSDP_NAK, p_card.addr, &current_length,
           1, osdp_nak_response, OSDP_SEC_NOT_SCS, 0, NULL);
-        sprintf(cmd, "%s/run/ACU-actions/osdp_NAK transmitted", context.service_root); system(cmd);
+        sprintf(cmd, "%s/run/ACU-actions/osdp_NAK transmitted", context.service_root);
+        if (context.verbosity > 1)
+          system(cmd);
         context.sent_naks ++;
 
         if (nak_not_msg)

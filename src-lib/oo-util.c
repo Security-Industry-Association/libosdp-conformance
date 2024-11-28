@@ -281,7 +281,8 @@ int
         };
       }
       sprintf(cmd, "%s/osdp_ID", oo_osdp_root(context, OO_DIR_ACTIONS));
-      system(cmd);
+      if (context->verbosity > 1)
+        system(cmd);
     break;
 
     case OSDP_ISTAT:
@@ -651,7 +652,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
       */
       sprintf(cmd, "%s/run/ACU-actions/osdp_LSTATR %d %d %d", context->service_root,
         *(msg->data_payload + 0), *(msg->data_payload + 1), (oh->addr & 0x7f));
-      system(cmd);
+      if (context->verbosity > 1)
+        system(cmd);
       break;
 
     case OSDP_MFGERRR:
@@ -724,7 +726,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
           context->serial_number [0], context->serial_number [1],
           context->serial_number [2], context->serial_number [3],
           context->fw_version [0], context->fw_version [1], context->fw_version [2]);
-        system(cmd);
+        if (context->verbosity > 1)
+          system(cmd);
 
         osdp_test_set_status(OOC_SYMBOL_rep_pdid_check, OCONFORM_EXERCISED);
       };

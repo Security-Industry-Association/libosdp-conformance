@@ -66,8 +66,10 @@ service:	osdp-tls
 package:	osdp-tls 
 	(cd package; make package)
 
-documentation:	service
+documentation:	service 
 	(cd doc; make build;)
+	(cd package; make package)
+
 clean:
 	(cd include; make clean; cd ..)
 	(cd src-lib; make clean; cd ..)

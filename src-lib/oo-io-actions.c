@@ -169,7 +169,6 @@ int
   to_send = OSDP_MAX_OUT;
   memcpy (buffer, out_status, OSDP_MAX_OUT);
   current_length = 0;
-fprintf(stderr, "DEBUG: send_message_ex OSTATR\n");
   status = send_message_ex (ctx, OSDP_OSTATR, p_card.addr,
     &current_length, to_send, buffer, OSDP_SEC_SCS_18, 0, NULL);
   return (status);

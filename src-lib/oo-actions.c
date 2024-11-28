@@ -214,28 +214,33 @@ int
   entry = (OSDP_PDCAP_ENTRY *)ptr;
   for (i=0; i<num_entries; i++)
   {
-    // create results json files
-
-    sprintf(results_filename, "%s/results/070-05-%02d-results.json", ctx->service_root, 1+entry->function_code);
-    capf = fopen(results_filename, "w");
-    fprintf(capf, "{\"test\":\"070-05-%02d\",\"test-status\":\"1\",\"pdcap-function\":\"%d\",\"pdcap-compliance\":\"%d\",\"pdcap-number\":\"%d\"}\n",
-      entry->function_code+1, entry->function_code, entry->compliance, entry->number_of);
-    fclose(capf);
-
-    sprintf(temp_string, "{\"function\":\"%02x\",\"compliance\":\"%02x\",\"number-of\":\"%02x\"},",
-      entry->function_code, entry->compliance, entry->number_of);
-    if (ctx->verbosity > 3)
+    aux [0] = 0; // null the aux string just in case it gets through
+    if (ctx->verbosity > 1)
     {
-      fprintf(ctx->log, "f %02x c %02x n %02x old len %d.\n",
-        entry->function_code, entry->compliance, entry->number_of, (int)strlen(aux));
-      fflush(ctx->log);
+      // create results json files
+
+      sprintf(results_filename, "%s/results/070-05-%02d-results.json", ctx->service_root, 1+entry->function_code);
+      capf = fopen(results_filename, "w");
+      fprintf(capf, "{\"test\":\"070-05-%02d\",\"test-status\":\"1\",\"pdcap-function\":\"%d\",\"pdcap-compliance\":\"%d\",\"pdcap-number\":\"%d\"}\n",
+        entry->function_code+1, entry->function_code, entry->compliance, entry->number_of);
+      fclose(capf);
+
+      sprintf(temp_string, "{\"function\":\"%02x\",\"compliance\":\"%02x\",\"number-of\":\"%02x\"},",
+        entry->function_code, entry->compliance, entry->number_of);
+      if (ctx->verbosity > 3)
+      {
+        fprintf(ctx->log, "f %02x c %02x n %02x old len %d.\n",
+          entry->function_code, entry->compliance, entry->number_of, (int)strlen(aux));
+        fflush(ctx->log);
+      };
+      strcat(aux, temp_string);
     };
-    strcat(aux, temp_string);
 
     switch (entry->function_code)
     {
     case OSDP_CAP_AUDIBLE_OUT:
-      fprintf(ctx->log, "PD: Annunciator present. ");
+      if (ctx->verbosity > 1)
+        fprintf(ctx->log, "PD: Annunciator present. ");
 
       // here in the ACU record the PD says it has a buzzer
       ctx->configured_sounder = 1; // only one per spec
@@ -243,14 +248,23 @@ int
       switch(entry->compliance)
       {
       case 1:
-        fprintf(ctx->log, "On/Off only.\n");
+        {
+          if (ctx->verbosity > 1)
+            fprintf(ctx->log, "On/Off only.\n");
+        };
         break;
       case 2:
-        fprintf(ctx->log, "Timed and On/Off.\n");
+        {
+          if (ctx->verbosity > 1)
+            fprintf(ctx->log, "Timed and On/Off.\n");
+        };
         break;
       default:
-        fprintf(ctx->log, "Not defined (%02x %02x)\n",
-          entry->compliance, entry->number_of);
+        {
+          if (ctx->verbosity > 1)
+            fprintf(ctx->log, "Not defined (%02x %02x)\n",
+              entry->compliance, entry->number_of);
+        };
         break;
       };
       break;
@@ -261,28 +275,42 @@ int
       switch(entry->compliance)
       {
       case 1:
-        fprintf(ctx->log, "Card format: Binary.\n");
+        {
+          if (ctx->verbosity > 1)
+            fprintf(ctx->log, "Card format: Binary.\n");
+        };
         break;
       case 2:
-        fprintf(ctx->log, "Card format: BCD.\n");
+        {
+          if (ctx->verbosity > 1)
+            fprintf(ctx->log, "Card format: BCD.\n");
+        };
         break;
       case 3:
-        fprintf(ctx->log, "Card format: Binary or BCD.\n");
+        {
+          if (ctx->verbosity > 1)
+            fprintf(ctx->log, "Card format: Binary or BCD.\n");
+        };
         break;
       default:
-        fprintf(ctx->log, "Card format: not defined (%02x %02x)\n",
-          entry->compliance, entry->number_of);
+        {
+          if (ctx->verbosity > 1)
+            fprintf(ctx->log, "Card format: not defined (%02x %02x)\n",
+              entry->compliance, entry->number_of);
+        };
         break;
       };
       break;
     case OSDP_CAP_CHECK_CRC:
       if ((entry->compliance EQUALS 0) && (m_check EQUALS OSDP_CRC))
       {
+      if (ctx->verbosity > 1)
         fprintf(ctx->log,
 "WARNING: Device does not support CRC but CRC configured.\n");
       };
       break;
     case OSDP_CAP_CONTACT_STATUS:
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "Capability not processed in this ACU: Contact Status (%d)\n",
         entry->function_code);
       break;
@@ -294,14 +322,17 @@ int
     case OSDP_CAP_MAX_MULTIPART:
       max_multipart = entry->compliance;
       max_multipart = max_multipart + (256*entry->number_of);
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "PD: largest combined message %d.(0x%x)\n",
         max_multipart, max_multipart);
       break;
     case OSDP_CAP_OUTPUT_CONTROL:
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "Capability not processed in this ACU: Output Control (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_READERS:
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "PD: %d. Attached readers (%x)\n", entry->number_of, entry->compliance);
       break;
     case OSDP_CAP_REC_MAX:
@@ -311,6 +342,7 @@ int
       if (entry->compliance EQUALS 0)
       {
         if (ctx->enable_secure_channel > 0)
+      if (ctx->verbosity > 1)
           fprintf(ctx->log, "Secure Channel not supported by PD, disabling (was enabled.)\n");
         ctx->enable_secure_channel = 0;
       };
@@ -319,36 +351,44 @@ int
       if (entry->compliance & 1)
       {
         ctx->pd_cap.smart_card_transparent = 1;
+      if (ctx->verbosity > 1)
         fprintf(ctx->log, "PD Supports Transparent Mode\n");
       };
       if (entry->compliance & 2)
       {
         ctx->pd_cap.smart_card_extended_packet_mode = 1;
+      if (ctx->verbosity > 1)
         fprintf(ctx->log, "PD Supports Extended Packet Mode\n");
       };
       break;
     case OSDP_CAP_SPE:
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "Capability not processed in this ACU: Secure PIN Entry\n");
       break;
     case OSDP_CAP_TEXT_OUT:
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "Capability not processed in this ACU: Text Output (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_TIME_KEEPING:
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "Capability not processed in this ACU: Time Keeping (%d)\n",
         entry->function_code);
       break;
     case OSDP_CAP_VERSION:
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "PD supports OSDP version %d\n", entry->compliance);
       break;
     default:
       status = ST_OSDP_UNKNOWN_CAPABILITY;
+      if (ctx->verbosity > 1)
       fprintf(ctx->log, "unknown capability: 0x%02x\n", entry->function_code);
       status = ST_OK;
       break;
     };
     entry ++;
   };
+      if (ctx->verbosity > 1)
   fprintf(ctx->log, "PD Capabilities response processing complete.\n\n");
   if (ctx->last_command_sent EQUALS OSDP_CAP)
     osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);

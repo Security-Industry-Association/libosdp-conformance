@@ -284,8 +284,6 @@ OSDP_CONFORMANCE_TEST
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-4-4", &(osdp_conformance.new_on_busy.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
-    { "2-5-1", &(osdp_conformance.multibyte_data_encoding.test_status),
-      1, 0, 0, 0, 0, "---"}, // ??
     { "2-6-1", &(osdp_conformance.packet_size_limits.test_status),
       1, 0, 0, 0, 0, "---"}, // ??
     { "2-6-2", &(osdp_conformance.packet_size_from_pd.test_status),
@@ -375,8 +373,6 @@ OSDP_CONFORMANCE_TEST
                         "Command: PDCAP"},
     { "3-4-1", &(osdp_conformance.cmd_diag.test_status),
       1, 0, 0, 0, 0, "---" }, // optional in all cases
-    { "3-7-1", &(osdp_conformance.cmd_ostat.test_status),
-      1, 0, 0, 0, 0, "---" },
     { "3-7-2", &(osdp_conformance.cmd_ostat_ack.test_status),
       1, 0, 0, 0, 0, "---" },
     { "3-8-1", &(osdp_conformance.cmd_rstat.test_status),
@@ -559,8 +555,14 @@ void
 
 { /* dump_conformance */
 
+  time_t current_time;
+  int done;
+  int idx;
   char *profile_tag;
   char report_filename [2048];
+  FILE *rf;
+  char results_filename [3072];
+  char test_time [1024];
 
 
   oconf->pass = 0;
@@ -596,6 +598,45 @@ void
     osdp_test_set_status(OOC_SYMBOL_SOM_sent, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_LEN, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_CTRL, OCONFORM_EXERCISED);
+  };
+
+  /*
+    report the cached test results
+  */
+
+  idx = 0;
+  done = 0;
+  while (!done)
+  {
+    if (test_control [idx].name != NULL)
+    {
+        if (*(test_control [idx].conformance) != OCONFORM_UNTESTED)
+        {
+          //fprintf(stderr, "DEBUG: %d. %s conformance status %X\n", idx, test_control[idx].name, *(test_control [idx].conformance));
+
+          sprintf(results_filename, "%s/results/%s-results.json", ctx->service_root, test_control[idx].name);
+          rf = fopen(results_filename, "w");
+          if (rf)
+          {
+            current_time = time(NULL);
+            strcpy(test_time, asctime(localtime(&current_time)));
+            if (test_time [strlen(test_time)-1] == '\n')
+              test_time [strlen(test_time)-1] = 0;
+            fprintf(rf, "{\"test\":\"%s\",\"test-status\":\"%d\",\n", test_control[idx].name, *(test_control [idx].conformance));
+            fprintf(rf, " \"test-time\":\"%s\",\"test-description\":\"%s\"}\n",
+              test_time, test_control [idx].description);
+            fclose(rf);
+          }
+          else
+          {
+            fprintf(ctx->log, "Error writing results for %s\n", test_control[idx].name);
+          };
+        };
+    };
+    if (test_control [idx].name EQUALS NULL)
+      done = 1;
+    else
+      idx++;
   };
 
   sprintf(report_filename, "%s/results/report.log", ctx->service_root);
@@ -1036,7 +1077,7 @@ int
 
 
   status = ST_OK;
-  if (context.verbosity > 0)
+  //if (context.verbosity > 0)
   {
     idx = 0;
     done = 0;
@@ -1055,6 +1096,8 @@ int
       if (strcmp (test_control [idx].name, test) EQUALS 0)
     {
       *(test_control [idx].conformance) = test_status;
+if (0)
+{
       sprintf(results_filename, "%s/results/%s-results.json",
         context.service_root, test);
       rf = fopen(results_filename, "w");
@@ -1077,6 +1120,7 @@ int
       {
         fprintf(context.log, "Error writing results for %s\n", test);
       };
+};
       done = 1;
     };
     };
@@ -1146,6 +1190,8 @@ int
 //   do update
 // log anyway
         *(test_control [idx].conformance) = test_status;
+if (0)
+{
         sprintf(results_filename, "%s/results/%s-results.json",
           context.service_root, test);
         rf = fopen(results_filename, "w");
@@ -1171,6 +1217,7 @@ int
       {
         fprintf(context.log, "Error writing results for %s\n", test);
       };
+};
       done = 1;
     };
     };

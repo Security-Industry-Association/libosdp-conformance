@@ -60,6 +60,18 @@ There are no defaults.
 | send-direct    | 1 to send on the current PD id else sends on 0x7F       |
 |                |                                                         |
 
+## Command dump-status ##
+
+Dumps status report to log and flushes test results to the results directory as JSON files.
+
+___Defaults___
+
+None.
+
+___Arguments___
+
+None.
+
 \newpage {}
 
 Command genauth
@@ -251,9 +263,11 @@ It us used by LED (and eventually GENAUTH/CRAUTH for that off-nominal use case.)
 
 This command causes the ACU to initiate a file transfer.
 
-Defaults
+___Defaults___
 
 - the default file to be transfered is /opt/osdp-conformance/run/ACU/osdp_data_file
+
+___Arguments___
 
 | Argument | Value |
 | -------- | ----- |
@@ -266,8 +280,31 @@ Defaults
 
 \newpage{}
 
+## Command TEMPLATE ##
+
+Text description goes here.
+
+___Defaults___
+
+- no default values.
+
+___Arguments___
+
+| Argument       | Value |
+| --------       | ----- |
+|                |       |
+| command        | TEMPLATE |
+|                |                                            |
+| param1         | example parameter. |
+
+\newpage{}
+
 Other Commands
 --------------
+
+Command processing happens in src-lib/oo-cmdbreech.c.
+
+Commands to be documented:
 
 - acurxsize
 - bioread

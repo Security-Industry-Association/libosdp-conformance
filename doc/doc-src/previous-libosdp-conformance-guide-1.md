@@ -30,7 +30,7 @@ cd ../libosdp-conformance
 sudo mkdir -p /opt/osdp-conformance; chown opsadmin1:opsadmin1
 /opt/osdp-conformance
 
-./install-aes
+src-tools/install-aes
 
 make 2\>stderr osdp-tls
 

@@ -7,6 +7,14 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.60 Build 2 ###
+
+- only output results files if (a) verbosity > 1 or (b) verbosity 1 and you do a REPORT command.
+- minor command documentation update.
+- correct package build workflow to include documentation (*.pdf in /opt/osdp-conformance/etc);
+moved all PDF's there.
+- aes install script moved to src-tools
+
 ### updates in 1.60 Build 1
 
 add text message if OSDP is already running.

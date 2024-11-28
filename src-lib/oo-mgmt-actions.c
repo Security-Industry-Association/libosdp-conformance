@@ -103,9 +103,10 @@ int action_osdp_NAK
   int status;
 
 
-      status = ST_OK;
+  status = ST_OK;
   oh = (OSDP_HDR *)(msg->ptr);
-  context->sent_naks ++;
+  // don't have to increment here, was incremented when it came in the door.
+  // context->sent_naks ++;
   context->last_nak_error = *(0+msg->data_payload);
 
       {
@@ -125,10 +126,9 @@ int action_osdp_NAK
           sprintf (tlogmsg, "osdp_NAK: Error Code %02x", nak_code);
         };
 
-        sprintf(cmd,
-          "/opt/osdp-conformance/run/ACU-actions/osdp_NAK %x %x",
-          nak_code, nak_data);
-        system(cmd);
+        sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_NAK %x %x", nak_code, nak_data);
+        if (context->verbosity > 1)
+          system(cmd);
 
         fprintf (context->log, "%s\n", tlogmsg);
         switch(*(0+msg->data_payload))
