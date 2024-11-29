@@ -142,6 +142,7 @@ fprintf(stderr, "DEBUG: trimmed offered size to  pd_filetransfer_payload (%d.)\n
         if (ctx->verbosity > 3)
           fprintf(ctx->log, "osdp_FTSTAT FTMsgUpdateMax will be %d.\n", offered_size);
 
+fprintf(stderr, "DEBUG: offered %d. (%X) as FtUpdateMsgMax\n", offered_size, offered_size);
         osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
 
         fprintf(ctx->log, " Sending FTSTAT:Offset %d Total %d CurrentSDU %d OfferedSDU %d\n",

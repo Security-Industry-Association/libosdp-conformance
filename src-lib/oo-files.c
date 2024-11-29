@@ -294,6 +294,8 @@ int oo_filetransfer_SDU_offer
   offered_size = ctx->max_message;
   if (ctx->verbosity > 3)
     fprintf(ctx->log, "FTMsgUpdateMax-1 %d.\n", offered_size);
+if (0)
+{
   if (ctx->max_message > 0)
   {
     offered_size = offered_size - 14; // headers and footers, secure channel
@@ -304,6 +306,7 @@ int oo_filetransfer_SDU_offer
       fprintf(ctx->log, "FTMsgUpdateMax-3 %d.\n", offered_size);
     offered_size = offered_size - 11; // less osdp_FILETRANSFER header
   };
+};
   if (ctx->verbosity > 3)
     fprintf(ctx->log, "FTMsgUpdateMax offered: %d.\n", offered_size);
 

@@ -443,31 +443,6 @@ void
 } /* osdp_quadByte_to_array */
 
 
-int
-  ZZZosdp_send_ftstat
-    (OSDP_CONTEXT *ctx,
-    OSDP_HDR_FTSTAT *response)
-
-{ /* osdp_send_ftstat */
-
-  int current_length;
-  int status;
-  int to_send;
-
-
-  status = ST_OK;
-  osdp_test_set_status(OOC_SYMBOL_cmd_filetransfer, OCONFORM_EXERCISED);
-  osdp_test_set_status(OOC_SYMBOL_resp_ftstat, OCONFORM_EXERCISED);
-
-  to_send = sizeof(*response);
-  current_length = 0;
-  status = send_message (ctx, OSDP_FTSTAT, p_card.addr,
-    &current_length, to_send, (unsigned char *)response);
-  return(status);
-
-} /* osdp_send_ftstat */
-
-
 // osdp_timer_start - start a timer.  uses preset values
 
 int osdp_timer_start
