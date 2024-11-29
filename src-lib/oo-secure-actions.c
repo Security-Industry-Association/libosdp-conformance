@@ -347,12 +347,14 @@ int
   unsigned char iv [16];
   OSDP_SCS_HEADER *scs_header;
   int status;
+  int test_results;
 
 
   status = ST_OK;
   header = (OSDP_HDR *)(msg->ptr);
   scs_header = (OSDP_SCS_HEADER *)&(header->cmd_s);
   acceptable = 0;
+  test_results = OCONFORM_FAIL;
   memset (iv, 0, sizeof (iv));
 
   // check for proper state
@@ -362,21 +364,36 @@ int
   if (status EQUALS ST_OK)
   {
     // if we're here, scs_blk_type is 0x14
-    // bounds check.  length has to be 2. data is either (bad) or (good).  varies by OSDP version.
+    // bounds check.  length has to be 3. data is either (bad) or (good).  varies by OSDP version.
     if (scs_header->sec_blk_len != 3)
       status = ST_OSDP_SC_BAD_HEADER;
-    if ((scs_header->sec_blk_data EQUALS OSDP_PROTOCOL_VERSION_IEC) &&(scs_header->sec_blk_data EQUALS 0))
+    if (ctx->pd_cap.osdp_version EQUALS OSDP_PROTOCOL_VERSION_IEC)
+      if (scs_header->sec_blk_data EQUALS 0)
+        acceptable = 1;
+    if (ctx->pd_cap.osdp_version EQUALS OSDP_PROTOCOL_VERSION_SIA22)
+      if (scs_header->sec_blk_data EQUALS 0xff)
+        acceptable = 1;
+    if (ctx->pd_cap.osdp_version EQUALS 0)
+    {
+      fprintf(ctx->log, "****WARNING****  Pre-IEC Variant detected.  Issue osdp_CAP or check implementation.\n");
       acceptable = 1;
-    if ((scs_header->sec_blk_data EQUALS OSDP_PROTOCOL_VERSION_SIA22) &&(scs_header->sec_blk_data EQUALS 0xff))
-      acceptable = 1;
+    };
+    if (!acceptable)
+    {
+       // must be an out of range protocol variant.  issue error, fail, and proceed.
+
+      fprintf(ctx->log, "    Unknown Protocol Variant (%02X)\n", scs_header->sec_blk_data);
+    };
     if (status EQUALS ST_OK)
     {
       acceptable = 1;
     };
   };
-fprintf(stderr, "DEBUG: SCS Length %d.\n", scs_header->sec_blk_len);
-fprintf(stderr, "DEBUG: SCS Header %X\n", scs_header->sec_blk_type);
-fprintf(stderr, "DEBUG: SCS Data Octet1 %2X\n", scs_header->sec_blk_data);
+  if (ctx->verbosity >2)
+  {
+    fprintf(ctx->log, "    SCS Hdr %02X Lth %d. Octet1 %2X\n",
+      scs_header->sec_blk_type , scs_header->sec_blk_len, scs_header->sec_blk_data);
+  };
 
   if (acceptable)
   {
@@ -391,6 +408,7 @@ fprintf(stderr, "DEBUG: SCS Data Octet1 %2X\n", scs_header->sec_blk_data);
     // if we're set up not on the default key it's on the paired key
     if (memcmp(ctx->current_scbk, ctx->current_default_scbk, sizeof(ctx->current_scbk)) != 0)
       (void)osdp_test_set_status(OOC_SYMBOL_scs_paired, OCONFORM_EXERCISED);
+    test_results = OCONFORM_EXERCISED; // for RMAC
 
     if (ctx->post_command_action EQUALS OO_POSTCOMMAND_SINGLESTEP)
     {
@@ -400,6 +418,7 @@ fprintf(stderr, "DEBUG: SCS Data Octet1 %2X\n", scs_header->sec_blk_data);
   }
   else
   {
+    (void)osdp_test_set_status(OOC_SYMBOL_resp_rmac_i, test_results);
     osdp_reset_secure_channel (ctx);
   };
   return (status);

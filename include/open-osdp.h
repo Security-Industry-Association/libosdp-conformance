@@ -327,7 +327,7 @@ typedef struct osdp_secure_message
   unsigned char data_start;
 } OSDP_SECURE_MESSAGE;
 
-typedef struct osdp_SCS_header
+typedef struct __attribute__((packed)) osdp_SCS_header
 {
   unsigned char sec_blk_len;
   unsigned char sec_blk_type;
