@@ -222,8 +222,8 @@ int
     };
 
     // extract the command
-    returned_hdr -> command = (unsigned char) *(m->cmd_payload);
-    m->msg_cmd = returned_hdr->command;
+    returned_hdr -> cmd_s = (unsigned char) *(m->cmd_payload);
+    m->msg_cmd = returned_hdr->cmd_s;
 if ((m->msg_cmd EQUALS OSDP_PDID) || (m->msg_cmd EQUALS OSDP_ID))
 {
 fflush(context->log);
@@ -319,18 +319,11 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       
 // don't dump sec block here, gets dumped in oo_util 
         // p2 = p1+5; // command/reply
-        if (0) //(p->ctrl & 0x08)
-        {
-          strcpy(tlogmsg, osdp_sec_block_dump(p1+5));
-          fprintf(context->log, "%s\n", tlogmsg);
-          fflush (context->log);
-          // p2 = p1+5+*(p1+5); // before-secblk and secblk
-        };
     };
 
     m->data_length = msg_data_length;
     // go check the command field
-    status = osdp_check_command_reply (role, returned_hdr->command, m, tlogmsg2);
+    status = osdp_check_command_reply (role, returned_hdr->cmd_s, m, tlogmsg2);
     msg_data_length = m->data_length;
 
     // if we're the ACU and we are looking at sequence 0 then the DUT passes the seq zero test
@@ -362,14 +355,14 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       if (status != ST_OK)
         fprintf (context->log,
           "***Status %d Unknown command? (%02x), default msg_data_length was %d\n",
-          status, returned_hdr->command, msg_data_length);
+          status, returned_hdr->cmd_s, msg_data_length);
 
     if (context->verbosity > 8)
     {
-      fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->command);
+      fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->cmd_s);
     };
 
-    switch (returned_hdr->command)
+    switch (returned_hdr->cmd_s)
     {
     default:
       if ((context->role EQUALS OSDP_ROLE_PD) && !(0x80 & p->addr))
@@ -765,7 +758,7 @@ int i;
         fprintf(context->log, "CHECKSUM ERROR Parsed=0x%02x Wire=0x%02x\n",
           parsed_cksum, wire_cksum);
 fprintf(stderr, "Checksum error != c=%x p %x %x\n",
-  (unsigned)(returned_hdr->command), (unsigned)parsed_cksum, (unsigned)wire_cksum);
+  (unsigned)(returned_hdr->cmd_s), (unsigned)parsed_cksum, (unsigned)wire_cksum);
 p = (char *)(m->ptr);
 for (i=0; i<16; i++)
   fprintf(stderr, " %02x", *(unsigned char *)(p+i)); 
@@ -891,12 +884,12 @@ status = ST_OK; // tolerate checksum error and continue
 
 
       strcpy(cmd_rep_tag,
-        osdp_command_reply_to_string(returned_hdr->command, m->direction));
+        osdp_command_reply_to_string(returned_hdr->cmd_s, m->direction));
 
       // print "IEC" details of message
       (void)oosdp_message_header_print(context, m, tlogmsg);
-      if (((returned_hdr->command != OSDP_POLL) &&
-        (returned_hdr->command != OSDP_ACK)) ||
+      if (((returned_hdr->cmd_s != OSDP_POLL) &&
+        (returned_hdr->cmd_s != OSDP_ACK)) ||
         (context->verbosity > 3))
       {
         fprintf (context->log, "%s\n", tlogmsg);
@@ -926,8 +919,8 @@ status = ST_OK; // tolerate checksum error and continue
 
       };
       strcat (log_line, tlogmsg2);
-      if (((returned_hdr->command != OSDP_POLL) &&
-        (returned_hdr->command != OSDP_ACK)) ||
+      if (((returned_hdr->cmd_s != OSDP_POLL) &&
+        (returned_hdr->cmd_s != OSDP_ACK)) ||
         (context->verbosity > 3))
       {
         fprintf (context->log, "%s\n", log_line);

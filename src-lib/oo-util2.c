@@ -336,10 +336,6 @@ int
 
     // this is not a retry this will be for a new message
 
-    // if the last thing was a NAK and a CRC error don't increment
-    if (0) // (ctx->last_nak_error EQUALS OO_NAK_CHECK_CRC)
-      do_increment = 0;
-
     // if the last thing was a NAK for sequence error reset sequence to 0
     if (ctx->last_nak_error EQUALS OO_NAK_SEQUENCE)
       ctx->next_sequence = 0;

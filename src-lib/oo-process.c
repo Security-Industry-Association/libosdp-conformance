@@ -67,7 +67,7 @@ int
     current_check_value = *(unsigned short int *)(msg.crc_check);
   if (context.verbosity > 9)
     fprintf(context.log, "osdp_parse_message status was %d. last-cmd %02x parsed-cmd %02x last-check %04x current-check %04x\n",
-      status, last_command_received, parsed_msg.command, last_check_value, current_check_value);
+      status, last_command_received, parsed_msg.cmd_s, last_check_value, current_check_value);
   if (status EQUALS ST_OK)
   {
     osdp_test_set_status(OOC_SYMBOL_CMND_REPLY, OCONFORM_EXERCISED);
@@ -113,7 +113,7 @@ int
         is it a resend?
         if I'm looking for sequence 0 we really need to nak this so the ACU resets things.
       */
-      if ((last_command_received EQUALS parsed_msg.command) && (last_check_value EQUALS current_check_value) &&
+      if ((last_command_received EQUALS parsed_msg.cmd_s) && (last_check_value EQUALS current_check_value) &&
         (context.next_sequence != 0))
       {
         int old_s;
@@ -338,28 +338,6 @@ int
   strcat(new_trace_buffer, "\n");
 //fprintf(stderr, "DEBUG: new trace buffer %s\n", new_trace_buffer);
 }
-  };
-  if (0) //(status EQUALS ST_OK)
-  {
-    int i;
-    char temps [4096];
-    char octet_string [1024];
-
-    temps[0] = 0;
-    for (i=0; i<msg.lth; i++)
-    {
-      sprintf(octet_string, " %02x", *(msg.ptr+i));
-      strcat(temps, octet_string);
-    };
-    if (context.trace & 1)
-      strcpy(trace_in_buffer, temps);
-
-    // print trace to log if verbose
-
-    if (context.verbosity > 3)
-      osdp_trace_dump(&context, 1);
-    else
-      osdp_trace_dump(&context, 0);
   };
   return (status);
 

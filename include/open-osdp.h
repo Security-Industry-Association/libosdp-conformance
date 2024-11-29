@@ -27,6 +27,9 @@
 #include <jansson.h>
 #endif
 
+#define OSDP_PROTOCOL_VERSION_IEC   (0x01)
+#define OSDP_PROTOCOL_VERSION_SIA22 (0x02)
+
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (60)
 #define OSDP_VERSION_BUILD ( 2)
@@ -296,14 +299,18 @@ typedef struct osdp_pdcap_entry
 
 typedef struct osdp_pd_capability
 {
+  int enable_biometrics; // 0=disabled 1=does bioread 2=does biomatch 3-255 RFU
+  unsigned int osdp_version;
   unsigned int rec_max;
   int smart_card_transparent;
   int smart_card_extended_packet_mode;
-  int enable_biometrics; // 0=disabled 1=does bioread 2=does biomatch 3-255 RFU
 } OSDP_PD_CAPABILITY;
 #define OSDP_BIOPD_DOES_BIOREAD (1)
 #define OSDP_BIOPD_DISABLED (0)
 #define OSDP_BIOPD_DOES_BIOMATCH (2)
+
+/// reorg todo: this and OSDP_HDR were cumbersome.
+/// going forward using OSDP_SCS_HEADER for SCS manipulation.
 
 // for secure channel
 typedef struct osdp_secure_message
@@ -319,6 +326,13 @@ typedef struct osdp_secure_message
   unsigned char cmd_reply;
   unsigned char data_start;
 } OSDP_SECURE_MESSAGE;
+
+typedef struct osdp_SCS_header
+{
+  unsigned char sec_blk_len;
+  unsigned char sec_blk_type;
+  unsigned char sec_blk_data;
+} OSDP_SCS_HEADER;
 
 typedef struct osdp_sc_chlng
 {
@@ -774,7 +788,8 @@ typedef struct osdp_hdr
   unsigned char len_lsb;
   unsigned char len_msb;
   unsigned char ctrl;
-  unsigned char command;
+  unsigned char cmd_s; //command octet, or first octet of SCS header
+                       // use with OSDP_SCS_HEADER
 } OSDP_HDR;
 
 
@@ -1031,10 +1046,10 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_SC_ENCRYPT_LTH_1      ( 80)
 #define ST_OSDP_SC_ENCRYPT_LTH_2      ( 81)
 #define ST_OSDP_SC_ENCRYPT_LTH_3      ( 82)
-#define ST_OSDP_EXCEEDS_SC_MAX        ( 83)
-#define ST_SCS_FROM_PD_UNEXPECTED     ( 84)
-#define ST_OSDP_EXCLUSIVITY_FAILED    ( 85)
-#define ST_OSDP_CRAUTHR_HEADER        ( 86)
+#define ST_OSDP_EXCEEDS_SC_MAX           ( 83)
+#define ST_SCS_FROM_PD_UNEXPECTED        ( 84)
+#define ST_OSDP_EXCLUSIVITY_FAILED       ( 85)
+#define ST_OSDP_CRAUTHR_HEADER           ( 86)
 #define ST_OSDP_UNSUPPORTED_AUTH_PAYLOAD ( 87)
 #define ST_OSDP_PAYLOAD_TOO_SHORT        ( 88)
 #define ST_MSG_TOO_LONG                  ( 89)
@@ -1051,6 +1066,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_CMD_OUT_BAD_5            (100)
 #define ST_OSDP_CMD_OUT_BAD_6            (101)
 #define ST_OSDP_CRC_REQUIRED             (102)
+#define ST_OSDP_SC_BAD_HEADER            (103)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

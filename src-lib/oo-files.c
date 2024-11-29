@@ -294,19 +294,6 @@ int oo_filetransfer_SDU_offer
   offered_size = ctx->max_message;
   if (ctx->verbosity > 3)
     fprintf(ctx->log, "FTMsgUpdateMax-1 %d.\n", offered_size);
-if (0)
-{
-  if (ctx->max_message > 0)
-  {
-    offered_size = offered_size - 14; // headers and footers, secure channel
-    if (ctx->verbosity > 3)
-      fprintf(ctx->log, "FTMsgUpdateMax-2 %d.\n", offered_size);
-    offered_size = ((offered_size / OSDP_KEY_OCTETS) * OSDP_KEY_OCTETS) - 1; // fit in cipher blocks with minimal padding
-    if (ctx->verbosity > 3)
-      fprintf(ctx->log, "FTMsgUpdateMax-3 %d.\n", offered_size);
-    offered_size = offered_size - 11; // less osdp_FILETRANSFER header
-  };
-};
   if (ctx->verbosity > 3)
     fprintf(ctx->log, "FTMsgUpdateMax offered: %d.\n", offered_size);
 
@@ -789,6 +776,11 @@ int
     {
       // load data from file starting at msg->FtData
 
+      if (ctx->verbosity > 3)
+      {
+        fprintf(stderr, "DEBUG: osdp_send_filetransfer: current_send_length %d(%X) ctx->max_message %d.\n",
+          ctx->xferctx.current_send_length, ctx->xferctx.current_send_length, ctx->max_message);
+      };
       if (ctx->xferctx.current_send_length)
       {
         size_to_read = ctx->xferctx.current_send_length;
@@ -799,6 +791,8 @@ int
         size_to_read = ctx->max_message;
       };
 
+if (0)
+{
     // adjust for header, crc
     size_to_read = size_to_read - 6 - 2;
 // if it's checksum use -1 not -2.
@@ -807,6 +801,7 @@ int
       size_to_read = size_to_read - 2 - 4; //scs header, mac
 
     size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
+};
     status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,
       ctx->xferctx.xferf);
     if (status_io > 0)

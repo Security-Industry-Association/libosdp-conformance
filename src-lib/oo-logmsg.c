@@ -623,7 +623,7 @@ int
       sprintf(tmpstr2, "Msg: [Clear]  ");
     strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
     sprintf(tmpstr2, "C/R=%02x A=%02x LSB=%02x MSB=%02x\n",
-      osdp_wire_message->command, osdp_wire_message->addr, osdp_wire_message->len_lsb,
+      osdp_wire_message->cmd_s, osdp_wire_message->addr, osdp_wire_message->len_lsb,
       osdp_wire_message->len_msb);
     strcat(tlogmsg, tmpstr2); tmpstr2 [0] = 0;
     sprintf(tlogmsg, "  CTRL=%02x (", osdp_wire_message->ctrl);
@@ -642,7 +642,7 @@ int
     };
     if (scb_present)
     {
-      sec_block = (char *)&(osdp_wire_message->command);
+      sec_block = (char *)&(osdp_wire_message->cmd_s);
       switch (sec_block[1])  // "sec block type"
       {
       case OSDP_SEC_SCS_11:

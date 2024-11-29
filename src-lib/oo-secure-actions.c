@@ -342,16 +342,43 @@ int
 
 { /* action_osdp_RMAC_I */
 
+  int acceptable;
+  OSDP_HDR *header;
   unsigned char iv [16];
+  OSDP_SCS_HEADER *scs_header;
   int status;
 
 
   status = ST_OK;
+  header = (OSDP_HDR *)(msg->ptr);
+  scs_header = (OSDP_SCS_HEADER *)&(header->cmd_s);
+  acceptable = 0;
   memset (iv, 0, sizeof (iv));
 
   // check for proper state
 
-  if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS 128+OSDP_SEC_SCS_13)
+  if (ctx->secure_channel_use [OO_SCU_ENAB] != 128+OSDP_SEC_SCS_13)
+    status = ST_OSDP_SC_WRONG_STATE;
+  if (status EQUALS ST_OK)
+  {
+    // if we're here, scs_blk_type is 0x14
+    // bounds check.  length has to be 2. data is either (bad) or (good).  varies by OSDP version.
+    if (scs_header->sec_blk_len != 3)
+      status = ST_OSDP_SC_BAD_HEADER;
+    if ((scs_header->sec_blk_data EQUALS OSDP_PROTOCOL_VERSION_IEC) &&(scs_header->sec_blk_data EQUALS 0))
+      acceptable = 1;
+    if ((scs_header->sec_blk_data EQUALS OSDP_PROTOCOL_VERSION_SIA22) &&(scs_header->sec_blk_data EQUALS 0xff))
+      acceptable = 1;
+    if (status EQUALS ST_OK)
+    {
+      acceptable = 1;
+    };
+  };
+fprintf(stderr, "DEBUG: SCS Length %d.\n", scs_header->sec_blk_len);
+fprintf(stderr, "DEBUG: SCS Header %X\n", scs_header->sec_blk_type);
+fprintf(stderr, "DEBUG: SCS Data Octet1 %2X\n", scs_header->sec_blk_data);
+
+  if (acceptable)
   {
     memcpy (ctx->rmac_i, msg->data_payload, msg->data_length);
     memcpy(ctx->rmac_i, msg->data_payload, sizeof(ctx->rmac_i));
@@ -373,7 +400,6 @@ int
   }
   else
   {
-    status = ST_OSDP_SC_WRONG_STATE;
     osdp_reset_secure_channel (ctx);
   };
   return (status);

@@ -376,13 +376,14 @@ int
         entry->function_code);
       break;
     case OSDP_CAP_VERSION:
+      ctx->pd_cap.osdp_version = entry->compliance;
       if (ctx->verbosity > 1)
-      fprintf(ctx->log, "PD supports OSDP version %d\n", entry->compliance);
+        fprintf(ctx->log, "PD supports OSDP version %d\n", entry->compliance);
       break;
     default:
-      status = ST_OSDP_UNKNOWN_CAPABILITY;
+      // have to accept this to keep running status = ST_OSDP_UNKNOWN_CAPABILITY;
       if (ctx->verbosity > 1)
-      fprintf(ctx->log, "unknown capability: 0x%02x\n", entry->function_code);
+        fprintf(ctx->log, "unknown capability: 0x%02x\n", entry->function_code);
       status = ST_OK;
       break;
     };

@@ -120,7 +120,7 @@ int
   if (scb_present)
   {
     sec_block_decoded [0] = 0;
-    sec_block = (char *)&(osdp_wire_message->command);
+    sec_block = (char *)&(osdp_wire_message->cmd_s);
     if (sec_block[1] < OSDP_SEC_SCS_15)
     {
       if (sec_block [2] EQUALS OSDP_KEY_SCBK_D)

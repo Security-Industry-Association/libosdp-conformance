@@ -1071,8 +1071,6 @@ int
 
   int done;
   int idx;
-  FILE *rf;
-  char results_filename [3072];
   int status;
 
 
@@ -1083,46 +1081,13 @@ int
     done = 0;
     while (!done)
     {
-      //DEBUG
-      if (0) // (context.verbosity > 9)
-    {
-      fprintf(context.log, "osdp_test_set_status: checking %d.\n", idx);
-      fflush(context.log);
-      fprintf(context.log, "osdp_test_set_status: name %s\n", test_control [idx].name);
-      fflush(context.log);
-    };
     if (test_control [idx].name != NULL)
     {
       if (strcmp (test_control [idx].name, test) EQUALS 0)
-    {
-      *(test_control [idx].conformance) = test_status;
-if (0)
-{
-      sprintf(results_filename, "%s/results/%s-results.json",
-        context.service_root, test);
-      rf = fopen(results_filename, "w");
-      if (rf)
       {
-        time_t current_time;
-        char test_time [1024];
-
-        current_time = time(NULL);
-        strcpy(test_time, asctime(localtime(&current_time)));
-        if (test_time [strlen(test_time)-1] == '\n')
-          test_time [strlen(test_time)-1] = 0;
-        fprintf(rf, "{\"test\":\"%s\",\"test-status\":\"%d\",\n",
-          test, test_status);
-        fprintf(rf, " \"test-time\":\"%s\",\"test-description\":\"%s\"}\n",
-          test_time, test_control [idx].description);
-        fclose(rf);
-      }
-      else
-      {
-        fprintf(context.log, "Error writing results for %s\n", test);
+        *(test_control [idx].conformance) = test_status;
+        done = 1;
       };
-};
-      done = 1;
-    };
     };
     if (test_control [idx].name EQUALS NULL)
     {
@@ -1156,8 +1121,6 @@ int
 
   int done;
   int idx;
-  char results_filename [3072];
-  FILE *rf;
   int status;
 
 
@@ -1190,36 +1153,8 @@ int
 //   do update
 // log anyway
         *(test_control [idx].conformance) = test_status;
-if (0)
-{
-        sprintf(results_filename, "%s/results/%s-results.json",
-          context.service_root, test);
-        rf = fopen(results_filename, "w");
-        if (rf)
-        {
-          time_t current_time;
-          char test_time [1024];
-
-        current_time = time(NULL);
-        strcpy(test_time, asctime(localtime(&current_time)));
-        if (test_time [strlen(test_time)-1] == '\n')
-          test_time [strlen(test_time)-1] = 0;
-        fprintf(rf, "{\"test\":\"%s\",\"test-status\":\"%d\",\n",
-          test, test_status);
-        fprintf(rf, " \"test-time\":\"%s\",\"test-description\":\"%s\",\n",
-          test_time, test_control [idx].description);
-        if (strlen(aux) > 0)
-          fprintf(rf, "%s", aux);
-        fprintf(rf, "\"_\":\"_\"}\n");
-        fclose(rf);
-      }
-      else
-      {
-        fprintf(context.log, "Error writing results for %s\n", test);
+        done = 1;
       };
-};
-      done = 1;
-    };
     };
     if (test_control [idx].name EQUALS NULL)
     {
