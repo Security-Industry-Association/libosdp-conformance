@@ -868,6 +868,9 @@ int
 
   status = ST_OK;
 
+  if (ctx->verbosity > 2)
+    dump_conformance(ctx, &osdp_conformance);
+
   // clear logs if possible
   fflush(ctx->log);
 

@@ -376,6 +376,7 @@ int
     if (ctx->pd_cap.osdp_version EQUALS 0)
     {
       fprintf(ctx->log, "****WARNING****  Pre-IEC Variant detected.  Issue osdp_CAP or check implementation.\n");
+      (void)osdp_test_set_status(OOC_SYMBOL_resp_rmac_i, OCONFORM_FAIL);
       acceptable = 1;
     };
     if (!acceptable)

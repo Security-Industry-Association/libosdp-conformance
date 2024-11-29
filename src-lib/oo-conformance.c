@@ -1111,11 +1111,10 @@ int
   test_status is pass fail etc
   aux is an aux printable string added to the JSON test results file.
 */
-int
-  osdp_test_set_status_ex
-    (char *test,
-    int test_status,
-    char *aux)
+int osdp_test_set_status_ex
+  (char *test,
+  int test_status,
+  char *aux)
 
 { /* osdp_test_set-status_ex */
 

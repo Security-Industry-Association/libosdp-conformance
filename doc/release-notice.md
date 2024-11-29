@@ -9,7 +9,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 ### Updates in 1.60 Build 2 ###
 
-- use variant-specific logic to validate RMAC_I response to ACU
+- use variant-specific logic to validate RMAC_I response to ACU.
+also allow protocol variant 0 but give warnings and fail it's test.
 - respect filetransfer send size parameter in FTSTAT
 - only output results files if (a) verbosity > 1 or (b) verbosity 1 and you do a REPORT command.
 - minor command documentation update.
