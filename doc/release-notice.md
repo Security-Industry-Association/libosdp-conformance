@@ -17,6 +17,7 @@ also allow protocol variant 0 but give warnings and fail it's test.
 - correct package build workflow to include documentation (*.pdf in /opt/osdp-conformance/etc);
 moved all PDF's there.
 - aes install script moved to src-tools
+- add UI option to set verbosity to 1 for test-only telemetry.
 
 ### updates in 1.60 Build 1
 

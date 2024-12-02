@@ -908,9 +908,6 @@ void
     ctx->fw_version [0], ctx->fw_version [1], ctx->fw_version [2]));
   LOG_REPORT ((log_string,
     "---end of report---"));
-fprintf (ctx->log, "mmt %d of %d\n",
-  oconf->conforming_messages,
-  PARAM_MMT);
   if (ctx->report != NULL)
     fclose (ctx->report);
 

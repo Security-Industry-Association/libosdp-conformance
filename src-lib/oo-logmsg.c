@@ -867,33 +867,35 @@ int
   osdp_trace_dump(context, 1);
 #endif
 
-  llogtype = logtype;
-  role_tag = "";
-  strcpy (timestamp, "");
-  if (logtype EQUALS OSDP_LOG_STRING_CP)
+  if (context->verbosity > 2)
   {
-    role_tag = "ACU";
-    llogtype = OSDP_LOG_STRING;
-  };
-  if (logtype EQUALS OSDP_LOG_STRING_PD)
-  {
-    role_tag = "PD";
-    llogtype = OSDP_LOG_STRING;
-  };
-  if (llogtype == OSDP_LOG_STRING)
-  {
-    char address_suffix [1024];
-    struct timespec
+    llogtype = logtype;
+    role_tag = "";
+    strcpy (timestamp, "");
+    if (logtype EQUALS OSDP_LOG_STRING_CP)
+    {
+      role_tag = "ACU";
+      llogtype = OSDP_LOG_STRING;
+    };
+    if (logtype EQUALS OSDP_LOG_STRING_PD)
+    {
+      role_tag = "PD";
+      llogtype = OSDP_LOG_STRING;
+    };
+    if (llogtype == OSDP_LOG_STRING)
+    {
+      char address_suffix [1024];
+      struct timespec
       current_time_fine;
 
-    clock_gettime (CLOCK_REALTIME, &current_time_fine);
-    (void) time (&current_raw_time);
-    current_cooked_time = localtime (&current_raw_time);
-if (strcmp ("ACU", role_tag)==0)
-  sprintf (address_suffix, " DestAddr=%02x(hex)", context->this_message_addr);
-else
-  sprintf (address_suffix, " A=%02x(hex)", context->this_message_addr);
-    sprintf (timestamp,
+      clock_gettime (CLOCK_REALTIME, &current_time_fine);
+      (void) time (&current_raw_time);
+      current_cooked_time = localtime (&current_raw_time);
+      if (strcmp ("ACU", role_tag)==0)
+        sprintf (address_suffix, " DestAddr=%02x(hex)", context->this_message_addr);
+      else
+        sprintf (address_suffix, " A=%02x(hex)", context->this_message_addr);
+      sprintf (timestamp,
 "\n---OSDP %s Frame:%04d%s Timestamp:%04d%02d%02d-%02d%02d%02d (Sec/Nanosec: %09ld %09ld)\n",
       role_tag, context->packets_received, address_suffix,
       1900+current_cooked_time->tm_year, 1+current_cooked_time->tm_mon,
@@ -901,18 +903,19 @@ else
       current_cooked_time->tm_hour, current_cooked_time->tm_min, 
       current_cooked_time->tm_sec,
       current_time_fine.tv_sec, current_time_fine.tv_nsec);
-  };
-  if (context->role == OSDP_ROLE_MONITOR)
-  {
-    fprintf (context->log, "%s%s", timestamp, message);
-    fflush (context->log);
-  }
-  else
-    if (context->verbosity >= level)
+    };
+    if (context->role == OSDP_ROLE_MONITOR)
     {
       fprintf (context->log, "%s%s", timestamp, message);
       fflush (context->log);
-    };
+    }
+    else
+      if (context->verbosity >= level)
+      {
+        fprintf (context->log, "%s%s", timestamp, message);
+        fflush (context->log);
+      };
+  }; // verbosity above 2
   
   return (status);
 
