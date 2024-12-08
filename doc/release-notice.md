@@ -7,6 +7,13 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+
+### Updates in 1.61 Build 0 ###
+
+Correct PD secure channel set-up to accept a fresh CHLNG after a partial
+connection.  This allows a default-key challenge after the ACU has determined
+the alleged paired key is wrong.
+
 ### Updates in 1.60 Build 2 ###
 
 - use variant-specific logic to validate RMAC_I response to ACU.

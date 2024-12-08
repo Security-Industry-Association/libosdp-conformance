@@ -172,8 +172,18 @@ int
   s_msg = (OSDP_SECURE_MESSAGE *)(msg->ptr);
   nak = 0;
 
+  // ditch the current secure channel session.
   if (OO_SCS_OPERATIONAL EQUALS ctx->secure_channel_use[OO_SCU_ENAB])
-    osdp_reset_secure_channel(ctx); // ditch the current secure channel session.
+    osdp_reset_secure_channel(ctx);
+
+  // if in mid-setup (i.e. just got osdp_CHLNG again) reset to permit challenge
+  if ((OSDP_SEC_SCS_12 +  OO_SCS_STATE_FLAG) EQUALS
+       ctx->secure_channel_use[OO_SCU_ENAB])
+  {
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "Secure Channel reset in mid-dialog.\n");
+    osdp_reset_secure_channel(ctx);
+  };
 
   // make sure this PD was enabled for secure channel (see enable-secure-channel command)
 

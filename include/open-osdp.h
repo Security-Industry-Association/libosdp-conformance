@@ -31,8 +31,8 @@
 #define OSDP_PROTOCOL_VERSION_SIA22 (0x02)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (60)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (61)
+#define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -659,6 +659,7 @@ typedef struct osdp_context
 #define OO_SCS_USE_ENABLED  (1)
 #define OO_SCS_OPERATIONAL  (2)
 // remember 128+SCSstate also goes here
+#define OO_SCS_STATE_FLAG   (0x80)
 
 #define OO_SCU_INST  (1)
 	// OO_SECURE_INSTALL for install mode, normal mode if OO_SECURE_NORMAL
