@@ -55,7 +55,7 @@ SCRIPTS = clean-run do-ACU-command do-CP-command do-PD-command \
   HUP-ACU HUP-CP HUP-MON HUP-PD \
   STOP-CP STOP-MON STOP-PD \
   set-pid \
-  write-osdp-ACU-command write-osdp-PD-command \
+  write-osdp-ACU-command write-osdp-ACU-command-ex write-osdp-PD-command \
   3-identify run-address-scan write-params
 TLS_SCRIPTS = exec-CPnetclient exec-CPtcpclient exec-PDnetserver exec-PDtcpserver
 

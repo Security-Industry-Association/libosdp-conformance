@@ -1,4 +1,6 @@
-// (C) 2022 Smithee Solutions LLC
+// (C) 2022-2024 Smithee Solutions LLC
+
+#define EQUALS ==
 
 int param_verbosity = 0;
 
@@ -18,12 +20,16 @@ int
 
   char arguments [1024];
   char command [1024];
+  char filename [1024];
+  char filetype [4];
   char shell_command [C_2MSG];
   int status;
   char tag [1024];
 
 
   status = -1;
+  memset(filename, 0, sizeof(filename));
+  memset(filetype, 0, sizeof(filetype));
   strcpy (arguments, getenv ("QUERY_STRING"));
   printf ("Content-type: text/html\n\n");
   if (param_verbosity > 1)
@@ -39,6 +45,18 @@ int
     if (0 == strcmp (command, "stop"))
       system ("sudo -n killall open-osdp");
   };
+
+  // cmd=T,xx,filename
+  if (arguments [0] EQUALS 'T')
+  {
+    strncpy(filetype, arguments+2, 2);
+    strcpy(filename, arguments+5);
+    sprintf (shell_command,
+"sudo -n /opt/osdp-conformance/bin/write-osdp-ACU-command-ex transfer %s %s",
+  filetype, filename);
+    system(shell_command);
+  };
+
   strcpy (tag, "cmd=CP-");
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {

@@ -179,6 +179,16 @@ int
     // after the send update the current offset
     context->xferctx.current_offset = context->xferctx.current_offset + size_to_read;
   };
+
+  if (status != ST_OK)
+  {
+    if (status EQUALS ST_OSDP_BAD_TRANSFER_FILE)
+    {
+      fprintf(context->log, "File transfer failed, bypassing error %d.\n", status);
+      status = ST_OK;
+    };
+  };
+
   return(status);
 
 } /* oo_filetransfer_initiate */

@@ -344,31 +344,21 @@ int
     osdp_array_to_quadByte(filetransfer_message->FtSizeTotal, &utmp);
     osdp_array_to_doubleByte(filetransfer_message->FtFragmentSize, &ustmp);
     sprintf(tmpstr,
-"File Transfer: Type %02x\n",
-      filetransfer_message->FtType);
+"  File Transfer: Type %02X Fragment Size %5d.",
+      filetransfer_message->FtType, ustmp);
     strcat(tlogmsg, tmpstr);
     sprintf(tmpstr,
-"                           Size %02x-%02x-%02x-%02x(%d.)\n",
+" Total %02X:%02X:%02X:%02X(%12d.)",
       filetransfer_message->FtSizeTotal [0], filetransfer_message->FtSizeTotal [1],
       filetransfer_message->FtSizeTotal [2], filetransfer_message->FtSizeTotal [3],
       utmp);
     strcat(tlogmsg, tmpstr);
     osdp_array_to_quadByte(filetransfer_message->FtOffset, &utmp);
     sprintf(tmpstr,
-"                         Offset %02x%02x%02x%02x(%d.)\n",
+" Offset %02X:%02X:%02X:%02X(%5d.)\n",
       filetransfer_message->FtOffset [0], filetransfer_message->FtOffset [1],
       filetransfer_message->FtOffset [2], filetransfer_message->FtOffset [3],
       utmp);
-    strcat(tlogmsg, tmpstr);
-    sprintf(tmpstr,
-"  File transfer: Fragment Size 0x%02x Data[0] %02x\n",
-      ustmp, filetransfer_message->FtData);
-    strcat(tlogmsg, tmpstr);
-
-    sprintf(tmpstr, "  Current: Send %4d. Offset %8d.(of %8d) Fragment 0x%04x First octet %02x\n",
-      context.xferctx.current_send_length,
-      context.xferctx.current_offset, context.xferctx.total_length,
-      ustmp, filetransfer_message->FtData);
     strcat(tlogmsg, tmpstr);
     break;
 

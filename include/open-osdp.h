@@ -27,11 +27,12 @@
 #include <jansson.h>
 #endif
 
-#define OSDP_PROTOCOL_VERSION_IEC   (0x01)
-#define OSDP_PROTOCOL_VERSION_SIA22 (0x02)
+#define OSDP_PROTOCOL_VERSION_IEC    (0x01)
+#define OSDP_PROTOCOL_VERSION_SIA22  (0x02)
+#define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (61)
+#define OSDP_VERSION_MINOR (62)
 #define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)

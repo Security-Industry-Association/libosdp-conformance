@@ -3,7 +3,7 @@
 <TITLE>Test ACU: check PD</TITLE>
 </HEAD>
 <BODY>
-<H3>Exerciser: Test ACU - Check PD conformance (1.61 Build 0)</H3>
+<H3>Exerciser: Test ACU - Check PD conformance (1.62 Build 0)</H3>
 
 <P ALIGN="RIGHT">
 Generate
@@ -34,20 +34,6 @@ Recent ACU
 <TH>Test ID</TH> <TH>Action</TH>  <TH>Description</TH>
 </TR>
   <TR>
-    <TD ALIGN="CENTER">050-01-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Physical Interface</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-03-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Encoding</TD>
-
-    <TD ALIGN="CENTER">050-04-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Channel Access</TD>
-  </TR>
-  <TR>
     <TD ALIGN="CENTER">050-04-02</TD>
     <TD ALIGN="CENTER">
       <A HREF="/cgi-bin/send-osdp-command?cmd=ACU-conform-050-04-02">
@@ -67,49 +53,10 @@ Recent ACU
     <TD>New after busy</TD>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">050-05-01</TD>
-      <TD ALIGN="CENTER">(auto)</TD>
-      <TD>Multi-byte encoding</TD>
-
     <TD ALIGN="CENTER">050-06-01</TD>
-      <TD ALIGN="CENTER">
-        <A HREF="/cgi-bin/do-large-to-PD">
-        <EM>Test</EM></A>
-      </TD>
-      <TD>Packet size (ACU to PD)
-    </TD>
-
-    <TD ALIGN="CENTER">050-06-02</TD>
-      <TD ALIGN="CENTER">
-        <SPAN STYLE="background-color: #C0C0C0">t.b.d.</SPAN></TD>
-      <TD ALIGN="CENTER">Packet size (PD to ACU)</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-07-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Timing</TD>
-
-    <TD ALIGN="CENTER">050-08-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Synchronization</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-01</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Packet Format</TD>
-
-    <TD ALIGN="CENTER">050-09-03</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>SOM</TD>
-
-    <TD ALIGN="CENTER">050-09-12</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>SOM Sent</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-04</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Address</TD>
+    <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-large-to-PD">
+       <EM>Test</EM></A></TD>
+    <TD>Packet size (ACU to PD)</TD>
 
     <TD ALIGN="CENTER">050-09-13</TD>
     <TD ALIGN="CENTER">
@@ -117,15 +64,6 @@ Recent ACU
         <EM>Test</EM></A>
     </TD>
     <TD>Configuration Address (7F)</TD>
-  </TR>
-  <TR>
-    <TD ALIGN="CENTER">050-09-06</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Length</TD>
-
-    <TD ALIGN="CENTER">050-09-07</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Control field</TD>
 
     <TD ALIGN="CENTER">050-09-08</TD>
     <TD ALIGN="CENTER"><A HREF="/cgi-bin/do-init-secure">
@@ -134,19 +72,11 @@ Recent ACU
     <TD>Security Control Block</TD>
   </TR>
   <TR>
-    <TD ALIGN="CENTER">050-09-11</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>Checksum</TD>
-
     <TD ALIGN="CENTER">050-09-14</TD>
     <TD ALIGN="CENTER">
       <A HREF="/cgi-bin/send-osdp-command?cmd=CP-conform-2-14-3">
       <EM>Test</EM></TD>
     <TD>Rogue Secure Poll</TD>
-
-    <TD ALIGN="CENTER">050-09-15</TD>
-    <TD ALIGN="CENTER">(auto)</TD>
-    <TD>CRC</TD>
   </TR>
   <TR>
     <TD ALIGN="CENTER">050-02-01</TD>
