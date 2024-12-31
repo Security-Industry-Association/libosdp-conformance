@@ -210,38 +210,41 @@ int
 
   status = osdp_ftstat_validate(ctx, ftstat_message);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
-  if (status EQUALS ST_OSDP_FILEXFER_FINISHING)
+  switch(status)
   {
+  case ST_OSDP_FILEXFER_FINISHING:
     // the filetransfer context was already set to "finishing".
     // (and this is ok so reset the status)
     status = ST_OK;
-  };
-  if (status EQUALS ST_OSDP_FILEXFER_WRAPUP)
-  {
+    break;
+  case ST_OSDP_FILEXFER_WRAPUP:
     osdp_wrapup_filetransfer(ctx);
     status = ST_OK;
-  }
-  else
-  {
+    break;
+  case ST_OSDP_FILEXFER_POLL_RESPONSE:
+    status = ST_OK;
+    break;
+  default:
+    // if we get here either it's ok to send more or there was an error.
     if (status EQUALS ST_OK)
-  {
-    // if more send more
-
-    if (ctx->verbosity > 9)
-      fprintf(stderr, "t=%d o=%d\n", ctx->xferctx.total_length, ctx->xferctx.current_offset);
-
-    if ((ctx->xferctx.total_length > 0) && (ctx->xferctx.total_length > ctx->xferctx.current_offset))
     {
-      status = osdp_send_filetransfer(ctx);
-    };
+      // if more send more
 
-    if ((ctx->xferctx.total_length EQUALS 0) || (ctx->xferctx.total_length EQUALS ctx->xferctx.current_offset))
-    {
-      fflush(ctx->log);
-      osdp_wrapup_filetransfer(ctx);
-// make sure removing this doesn't break wavelynx...      status = oo_send_filetransfer(ctx); // will send benign msg
+      if (ctx->verbosity > 9)
+        fprintf(stderr, "t=%d o=%d\n", ctx->xferctx.total_length, ctx->xferctx.current_offset);
+
+      if ((ctx->xferctx.total_length > 0) && (ctx->xferctx.total_length > ctx->xferctx.current_offset))
+      {
+        status = osdp_send_filetransfer(ctx);
+      };
+
+      if ((ctx->xferctx.total_length EQUALS 0) || (ctx->xferctx.total_length EQUALS ctx->xferctx.current_offset))
+      {
+        fflush(ctx->log);
+        osdp_wrapup_filetransfer(ctx);
+      };
     };
-  };
+    break;
   };
   if (status EQUALS ST_OK)
     status = oo_write_status (ctx);

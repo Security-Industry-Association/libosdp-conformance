@@ -32,7 +32,7 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (62)
+#define OSDP_VERSION_MINOR (70)
 #define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)
@@ -1026,13 +1026,13 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_UNKNOWN_KEY          (58)
 #define ST_OSDP_BAD_TRANSFER_FILE    (59)
 #define ST_OSDP_BAD_TRANSFER_SAVE    (60)
-#define ST_OSDP_FILEXFER_WRITE       (61)
-#define ST_OSDP_FILEXFER_HEADER      (62)
-#define ST_OSDP_FILEXFER_ALREADY     (63)
-#define ST_OSDP_FILEXFER_SKIP        (64)
-#define ST_OSDP_FILEXFER_WRAPUP      (65)
-#define ST_OSDP_FILEXFER_ERROR       (66)
-#define ST_OSDP_FILEXFER_READ        (67)
+#define ST_OSDP_FILEXFER_WRITE           ( 61)
+#define ST_OSDP_FILEXFER_HEADER          ( 62)
+#define ST_OSDP_FILEXFER_ALREADY         ( 63)
+#define ST_OSDP_FILEXFER_SKIP            ( 64)
+#define ST_OSDP_FILEXFER_WRAPUP          ( 65)
+#define ST_OSDP_FILEXFER_ERROR           ( 66)
+#define ST_OSDP_FILEXFER_READ            ( 67)
 #define ST_OSDP_UNKNOWN_CAPABILITY   (68)
 #define ST_OSDP_FILEXFER_FINISHING   (69)
 #define ST_OSDP_BAD_TIMER            (70)
@@ -1069,6 +1069,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_CMD_OUT_BAD_6            (101)
 #define ST_OSDP_CRC_REQUIRED             (102)
 #define ST_OSDP_SC_BAD_HEADER            (103)
+#define ST_OSDP_FILEXFER_POLL_RESPONSE   (104)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

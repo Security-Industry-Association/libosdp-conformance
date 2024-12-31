@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+## Updates in 1.70 Build 0 ###
+
+Added support for interleaved responses during file transfer.
+
 ### Updates in 1.62 Build 0 ###
 
 - Add support for file transfer with other file types via CGI.  (It was there already

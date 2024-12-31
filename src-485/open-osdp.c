@@ -117,7 +117,7 @@ int
     {
       strcpy (context.init_parameters_path, argv [1]);
     };
-    fprintf(stderr, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
+    fprintf(stdout, "OSDP is in startup.  Loading parameters from %s\n", context.init_parameters_path);
 
     status = initialize_osdp (&context);
   };

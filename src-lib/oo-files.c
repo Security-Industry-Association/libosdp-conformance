@@ -66,7 +66,7 @@ int
   if (strlen (1+details) > 0)
     strcpy(context->xferctx.filename, 1+details);
 
-  fprintf(context->log, "  File transfer: file %s\n",
+  fprintf(context->log, "  Initiating File Transfer: file %s\n",
     context->xferctx.filename);
 
   context->xferctx.xferf = fopen (context->xferctx.filename, "r");
@@ -127,7 +127,7 @@ int
           if (context->max_message EQUALS 0)
           {
             context->max_message = 128;
-            fprintf(stderr, "max message unset, setting it to 128\n");
+            fprintf(context->log, "  Max message unset, setting it to 128\n");
             context->xferctx.current_send_length = context->max_message;
           };
           size_to_read = context->max_message;
@@ -408,6 +408,7 @@ int
 
 { /* osdp_ftstat_validate */
 
+  int current_length;
   unsigned long delay_nsec;
   unsigned long delay_sec;
   struct timespec delay_time;
@@ -568,6 +569,20 @@ delay_nsec = delay_nsec * 1000;
       ctx->xferctx.current_send_length = new_size;
       if (ctx->verbosity > 3)
         fprintf(ctx->log,  "DEBUG: updated send to %d.\n", ctx->xferctx.current_send_length);
+    };
+
+    // if interleave and poll available set status
+
+    if (ftstat->FtAction & OSDP_FTACTION_INTERLEAVE)
+    {
+      if (ftstat->FtAction & OSDP_FTACTION_POLL_RESPONSE)
+      {
+        current_length = 0;
+        status = send_message_ex(ctx, OSDP_POLL, p_card.addr, &current_length,
+          0, NULL, OSDP_SEC_SCS_15, 0, NULL);
+        if (status EQUALS ST_OK)
+          status = ST_OSDP_FILEXFER_POLL_RESPONSE;
+      };
     };
   };
   return (status);
