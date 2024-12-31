@@ -108,6 +108,15 @@ int
         this_command = OSDP_ILLICIT;
       };
     };
+#ifdef EXPERIMENTAL_DISCOVERY
+    if (oh->addr EQUALS OSDP_CONFIGURATION_ADDRESS)
+    {
+      if (this_command EQUALS OSDP_START_DISCOVER)
+        this_command = msg->msg_cmd;
+      if (context->verbosity > 2)
+        fprintf(context->log, "Discovery process initiated by ACU.\n");
+    };
+#endif
 
     // update count of whole messages
     context->pdus_received ++;
@@ -637,10 +646,6 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 
     case OSDP_LSTATR:
       status = ST_OK;
-      fprintf (context->log, "Local Status Report:");
-      fprintf (context->log,
-        " Tamper %d Power %d\n",
-        *(msg->data_payload + 0), *(msg->data_payload + 1));
       osdp_test_set_status(OOC_SYMBOL_resp_lstatr, OCONFORM_EXERCISED);
       if (*(msg->data_payload) > 0)
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);
