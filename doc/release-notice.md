@@ -9,10 +9,10 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 ### Updates in 1.62 Build 0 ###
 
-Add support for file transfer with other file types via CGI.  (It was there already
+- Add support for file transfer with other file types via CGI.  (It was there already
 with the "transfer" command, requires command line access.)
 
-Tune ACU HTML page and some logging.
+- Tune ACU HTML page and some logging. add page "transfer-exercises.html".
 
 ### Updates in 1.61 Build 0 ###
 
