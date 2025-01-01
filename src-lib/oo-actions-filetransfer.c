@@ -210,33 +210,30 @@ int
 
   status = osdp_ftstat_validate(ctx, ftstat_message);
   fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log);
-  switch(status)
+  if (status EQUALS ST_OSDP_FILEXFER_FINISHING)
   {
-  case ST_OSDP_FILEXFER_FINISHING:
     // the filetransfer context was already set to "finishing".
     // (and this is ok so reset the status)
     status = ST_OK;
-    break;
-  case ST_OSDP_FILEXFER_WRAPUP:
+  };
+  if (status EQUALS ST_OSDP_FILEXFER_WRAPUP)
+  {
     osdp_wrapup_filetransfer(ctx);
     status = ST_OK;
-    break;
-  case ST_OSDP_FILEXFER_POLL_RESPONSE:
-    status = ST_OK;
-    break;
-  default:
-    // if we get here either it's ok to send more or there was an error.
+  }
+  else
+  {
     if (status EQUALS ST_OK)
     {
-      // if more send more
+    // if more send more
 
-      if (ctx->verbosity > 9)
-        fprintf(stderr, "t=%d o=%d\n", ctx->xferctx.total_length, ctx->xferctx.current_offset);
+    if (ctx->verbosity > 9)
+      fprintf(stderr, "t=%d o=%d\n", ctx->xferctx.total_length, ctx->xferctx.current_offset);
 
-      if ((ctx->xferctx.total_length > 0) && (ctx->xferctx.total_length > ctx->xferctx.current_offset))
-      {
-        status = osdp_send_filetransfer(ctx);
-      };
+    if ((ctx->xferctx.total_length > 0) && (ctx->xferctx.total_length > ctx->xferctx.current_offset))
+    {
+      status = osdp_send_filetransfer(ctx);
+    };
 
       if ((ctx->xferctx.total_length EQUALS 0) || (ctx->xferctx.total_length EQUALS ctx->xferctx.current_offset))
       {
@@ -244,7 +241,15 @@ int
         osdp_wrapup_filetransfer(ctx);
       };
     };
-    break;
+  };
+  if (status EQUALS ST_OSDP_FILEXFER_POLL_RESPONSE)
+  {
+    int current_length;
+
+fprintf(stderr, "DEBUG: sending poll to address poll response\n");
+    current_length = 0;
+    status = send_message_ex(ctx, OSDP_POLL, p_card.addr, &current_length,
+      0, NULL, OSDP_SEC_SCS_15, 0, NULL);
   };
   if (status EQUALS ST_OK)
     status = oo_write_status (ctx);

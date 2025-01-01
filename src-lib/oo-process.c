@@ -22,6 +22,7 @@
 
 #include <stdio.h>
 #include <memory.h>
+#include <unistd.h>
 
 
 #include <osdp-tls.h>
@@ -218,18 +219,8 @@ int
     };
     status = process_osdp_message (&context, &msg);
     fflush(context.log);
-
-    /*
-      if we're in the middle of a file transfer but the last command was not osdp_FILETRANSFER
-      we are finishing a "poll response waiting" event.
-    */
-
-    if ((context.xferctx.total_length > 0) && (context.xferctx.total_length > context.xferctx.current_offset))
-    {
-      if (parsed_msg.cmd_s != OSDP_FILETRANSFER)
-        status = osdp_send_filetransfer(&context);
-    };
   };
+
 
   // if there's a leftover command to send then send it now.  Only get to do one of these.
 
@@ -313,10 +304,10 @@ int
       context.test_in_progress [0] = 0;
     };
   };
-  /*
-    move the existing buffer up to the front if it was unknown, not mine,
-     monitor only, or processed
-  */
+
+  // move the existing buffer up to the front if it was unknown, not mine,
+  // monitor only, or processed
+
   if ((status EQUALS ST_PARSE_UNKNOWN_CMD) || \
     (status EQUALS ST_BAD_CRC) || \
     (status EQUALS ST_OSDP_BAD_SEQUENCE) || \
@@ -335,6 +326,34 @@ int
     if (status != ST_OK)
       // if we experienced an error we just reset things and continue
       status = ST_SERIAL_IN;
+{
+  int i;
+  char new_trace_buffer [3*1024];
+  char tmps [1024];
+
+  new_trace_buffer [0] = 0;
+  for (i=0; i<length; i++)
+  {
+    sprintf(tmps, " %02x", osdp_buf->buf[i]);
+    strcat(new_trace_buffer, tmps);
+  };
+  strcat(new_trace_buffer, "\n");
+//fprintf(stderr, "DEBUG: new trace buffer %s\n", new_trace_buffer);
+}
+  };
+
+  /*
+    if we're in the middle of a file transfer but the last command was
+    not osdp_FILETRANSFER we are finishing a "poll response waiting" event.
+  */
+  if ((context.xferctx.total_length > 0) && (context.xferctx.total_length > context.xferctx.current_offset))
+  {
+    if (last_command_received != OSDP_FILETRANSFER)
+    {
+      fprintf(context.log, "File transfer interrupted by poll response\n");
+fprintf(context.log, "resuming file transfer not implemented.\n"); status = -1;
+//      status = osdp_send_filetransfer(&context);
+    };
   };
   return (status);
 

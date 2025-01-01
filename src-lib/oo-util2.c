@@ -184,7 +184,7 @@ int
   {
     current_length = 0;
     status = send_message_ex(ctx, OSDP_POLL, p_card.addr, &current_length,
-      0, NULL, OSDP_SEC_SCS_15, 0, NULL);
+      0, NULL, OSDP_SEC_SCS_17, 0, NULL);
   };
   if (send_secure_poll)
   {
