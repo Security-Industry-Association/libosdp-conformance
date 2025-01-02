@@ -39,6 +39,7 @@ extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_CONTEXT context;
 extern OSDP_PARAMETERS p_card;
 extern char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
+extern unsigned char last_command_received;
 extern unsigned char last_message_sent [2048];
 extern int last_message_sent_length;
 
@@ -178,13 +179,29 @@ int
       send_poll = 0;
 
   // dump the trace buffer 
-  if (context.trace) osdp_trace_dump(&context, 0);
+  if (context.trace)
+    osdp_trace_dump(&context, 0);
+
+  /*
+    if we're in the middle of a file transfer but the last command was
+    not osdp_FILETRANSFER we are finishing a "poll response waiting" event.
+  */
+  if ( (context.xferctx.total_length > 0) &&
+    (context.xferctx.total_length > context.xferctx.current_offset) )
+  {
+    if (last_command_received != OSDP_FILETRANSFER)
+    {
+      fprintf(context.log, "File transfer interrupted by poll response, resuming file transfer\n");
+      status = osdp_send_filetransfer(&context);
+      send_poll = 0;
+    };
+  };
 
   if (send_poll)
   {
     current_length = 0;
     status = send_message_ex(ctx, OSDP_POLL, p_card.addr, &current_length,
-      0, NULL, OSDP_SEC_SCS_17, 0, NULL);
+      0, NULL, OSDP_SEC_SCS_15, 0, NULL);
   };
   if (send_secure_poll)
   {

@@ -388,7 +388,7 @@ int
       sprintf(tstr, "%02x", d);
       strcat(hstr, tstr);
     };
-    sprintf(tstr, "  Card data: %s\n  in decimal: %lld\n", hstr, raw_number);
+    sprintf(tstr, "  Card data: %s(hex), %lld.\n", hstr, raw_number);
     strcat(tlogmsg, tstr);
   };
 

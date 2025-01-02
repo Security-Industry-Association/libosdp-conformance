@@ -606,8 +606,6 @@ void
     fprintf(ctx->log, "closing transferred file\n");
     ctx->xferctx.xferf = NULL;
   };
-  fprintf(ctx->log, "  File transfer: finished, total length was %d.\n",
-    ctx->xferctx.total_length);
   ctx->xferctx.current_offset = 0;
   ctx->xferctx.total_length = 0;
 
