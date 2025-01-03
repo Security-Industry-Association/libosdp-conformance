@@ -1,7 +1,6 @@
 #!/bin/bash
 # (C)2022 Smithee Solutions LLC
 CMDPATH=/opt/osdp-conformance/tmp/transfer-command.json
-echo "$1 $2 $3
 echo  >${CMDPATH} "{\"command\":\"$1\", \"file-type\":\"$2\", \"file\":\"$3\"}"
 sudo -n /opt/osdp-conformance/bin/open-osdp-kick ACU <${CMDPATH}
 
