@@ -10,6 +10,27 @@
 // would not fail, I think
 
 */
+/*
+  oo-commands2 - additional command processing routines.
+
+  (C)Copyright 2017-2025 Smithee Solutions LLC
+
+  Support provided by the Security Industry Association
+  http://www.securityindustry.org
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+ 
+    http://www.apache.org/licenses/LICENSE-2.0
+ 
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+*/
+
 
 
 #include <string.h>
@@ -19,6 +40,9 @@
 
 
 #include <open-osdp.h>
+extern OSDP_PARAMETERS p_card; 
+OSDP_RESPONSE_QUEUE_ENTRY osdp_response_queue [8];
+int osdp_response_queue_size;
 
 
 int oo_command_setup_out
@@ -116,3 +140,165 @@ int oo_command_setup_out
 
 } /* oo_command_setup_out */
 
+
+int oo_command_setup_present_card
+  (OSDP_CONTEXT *ctx,
+  json_t *root,
+  OSDP_COMMAND *cmd)
+
+{ /* oo_command_setup_present_card */
+
+  unsigned short buffer_length;
+  int i;
+  json_t *option;
+  int status;
+  OSDP_COMMAND temp_command;
+  char vstr [1024];
+
+
+  status = ST_OK;
+
+  temp_command.command = OSDP_CMDB_PRESENT_CARD;
+
+  // if no options are given, use preset value
+  temp_command.details_length = p_card.value_len;
+  temp_command.details_param_1 = p_card.bits;
+  memcpy(temp_command.details, p_card.value, p_card.value_len);
+
+  // if there's a "raw" option it's the data to use.  bits are also specified.
+
+  option = json_object_get (root, "raw");
+  if (json_is_string (option))
+  {
+        strcpy (vstr, json_string_value (option));
+        buffer_length = sizeof(cmd->details);
+        status = osdp_string_to_buffer(ctx, vstr, temp_command.details, &buffer_length);
+        temp_command.details_length = buffer_length;
+        temp_command.details_param_1 = 26;  // assume 26 bits unless otherwise specified
+  };
+
+      option = json_object_get (root, "bits");
+      if (json_is_string (option))
+      {
+        strcpy (vstr, json_string_value (option));
+        sscanf(vstr, "%d", &i);
+        temp_command.details_param_1 = i;
+      };
+
+      ctx->card_format = 0; // default
+
+      // format can be specified (raw or p/data/p) - use a hex value for others.
+
+      option = json_object_get (root, "format");
+      if (json_is_string (option))
+      {
+        strcpy (vstr, json_string_value (option));
+        if (0 EQUALS strcmp(vstr, "p-data-p"))
+          ctx->card_format = 1;
+        else
+        {
+          int fmt;
+
+          sscanf(vstr, "%x", &fmt);
+          ctx->card_format = 0xff & fmt;
+        };
+      };
+
+      if (ctx->verbosity > 3)
+        if (temp_command.details_length > 0)
+          fprintf(ctx->log, "present_card: raw (%d. bytes, %d. bits, fmt %d): %s\n",
+            temp_command.details_length, temp_command.details_param_1, ctx->card_format, vstr);
+
+  if (status EQUALS ST_OK)
+  {
+    // if not interleaved file transfer do as before 
+
+    if ((ctx->xferctx.total_length EQUALS 0) || !(ctx->ft_interleave))
+    {
+      fprintf(stderr, "normal card read\n");
+      memcpy(cmd, &temp_command, sizeof(*cmd));
+      status = enqueue_command(ctx, cmd);
+      cmd->command = OSDP_CMD_NOOP;
+    }
+    else
+    {
+      fprintf(stderr, "interleaved card read\n");
+      osdp_response_queue_size = 1;
+      osdp_response_queue [0].details_param_1 = temp_command.details_param_1;
+      osdp_response_queue [0].details_length = temp_command.details_length;
+      memcpy(osdp_response_queue [0].details, temp_command.details, temp_command.details_length);
+      ctx->xferctx.ft_action = OSDP_FTACTION_POLL_RESPONSE;
+    };
+  };
+
+  return(status);
+
+} /* oo_command_setup_present_card */
+
+
+int oo_command_setup_xwrite
+  (OSDP_CONTEXT *ctx,
+  json_t *root,
+  OSDP_COMMAND *cmd)
+
+{ /* oo_command_setup_xwrite */
+
+  int status;
+  json_t *value;
+  json_t *value2;
+
+
+  cmd->command = OSDP_CMDB_XWRITE;
+
+  value = json_object_get (root, "action");
+  if (json_is_string (value))
+  {
+    if (0 EQUALS strcmp(json_string_value(value), "get-mode"))
+    {
+          cmd->details [0] = 1; // 1 in byte 0 is get-mode
+    };
+    if (0 EQUALS strcmp(json_string_value(value), "scan"))
+    {
+          cmd->details [0] = 3; // 3 in byte 0 is scan (for smart card)
+    };
+    if (0 EQUALS strcmp(json_string_value(value), "set-mode"))
+    {
+          cmd->details [0] = 2; // 2 in byte 0 is set-mode
+    };
+    if (0 EQUALS strcmp(json_string_value(value), "set-zero"))
+    {
+          cmd->details [0] = 4; // 4 in byte 0 is set mode 0
+    };
+    if (0 EQUALS strcmp(json_string_value(value), "done"))
+    {
+          cmd->details [0] = 5;
+    };
+    if (0 EQUALS strcmp(json_string_value(value), "apdu"))
+    {
+          unsigned short int payload_length;
+          char payload_value [1024];
+
+          cmd->details [0] = 6;
+
+          // if there's a "payload" fill it in after the command in details
+
+          value2 = json_object_get (root, "payload");
+          if (json_is_string (value2))
+          {
+            payload_length = sizeof(cmd->details);
+            strcpy(payload_value, json_string_value(value2));
+            status = osdp_string_to_buffer
+              (ctx, payload_value, cmd->details+3, &payload_length);
+            *(short int *)(cmd->details+1) = payload_length;
+          };
+    };
+  };
+  if (status EQUALS ST_OK)
+  {
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+  };
+
+  return(status);
+
+} /* oo_command_setup_xwrite */

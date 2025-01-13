@@ -1,7 +1,7 @@
 /*
   oo-actions-filetransfer - file transfer action routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -28,6 +28,8 @@
 
 
 extern OSDP_PARAMETERS p_card;
+extern OSDP_RESPONSE_QUEUE_ENTRY osdp_response_queue [8];
+extern int osdp_response_queue_size;
 
 
 int
@@ -49,21 +51,13 @@ int
   status = ST_OK;
   filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
   memset (&response, 0, sizeof(response));
+  if (ctx->ft_interleave)
+    response.FtAction = response.FtAction | OSDP_FTACTION_INTERLEAVE;
+  response.FtAction = response.FtAction | ctx->xferctx.ft_action;
 
   if (status EQUALS ST_OK)
     status = osdp_filetransfer_validate(ctx, filetransfer_message,
       &fragment_size, &offset);
-if (0)
-{
-  (void)oosdp_make_message (OOSDP_MSG_FILETRANSFER, tlogmsg, msg);
-  if (ctx->verbosity > 0)
-  {
-    fprintf(ctx->log, "%s\n", tlogmsg);
-    fflush(ctx->log);
-  };
-};
-// check FtType
-// check FtFragmentSize sane
 
   if (status EQUALS ST_OK)
   {
@@ -127,25 +121,14 @@ if (0)
 
         offered_size = oo_filetransfer_SDU_offer(ctx);
 
-// was there to deal with buffer overflow issues.
-#if 0
-        if (offered_size > 500)
-        {
-          offered_size = 500;
-fprintf(stderr, "DEBUG: trimmed offered size to %d.\n", offered_size);
-        };
-#endif
-
         // if there was a configured size, offer that
         if (ctx->pd_filetransfer_payload > 0)
         {
           offered_size = ctx->pd_filetransfer_payload;
-fprintf(stderr, "DEBUG: trimmed offered size to  pd_filetransfer_payload (%d.)\n", offered_size);
         };
         if (ctx->verbosity > 3)
           fprintf(ctx->log, "osdp_FTSTAT FTMsgUpdateMax will be %d.\n", offered_size);
 
-fprintf(stderr, "DEBUG: offered %d. (%X) as FtUpdateMsgMax\n", offered_size, offered_size);
         osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
 
         fprintf(ctx->log, " Sending FTSTAT:Offset %d Total %d CurrentSDU %d OfferedSDU %d\n",

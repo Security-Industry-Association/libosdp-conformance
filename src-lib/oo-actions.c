@@ -1,7 +1,7 @@
 /*
   oo-actions - open osdp action routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -35,6 +35,8 @@
 
 
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
+extern OSDP_RESPONSE_QUEUE_ENTRY osdp_response_queue [8];
+extern int osdp_response_queue_size;
 extern OSDP_PARAMETERS p_card;
 
 
@@ -479,6 +481,7 @@ int
     current_length = 0;
     status = send_message_ex(ctx, OSDP_ISTATR, p_card.addr,
       &current_length, input_length, osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
+    ctx->xferctx.ft_action = 0; // if were an interleaved poll response clear that.
     ctx->next_istatr = 0;
     done = 1;
   };
@@ -532,6 +535,7 @@ int
       OSDP_LSTATR, p_card.addr, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data,
       OSDP_SEC_NOT_SCS, 0, NULL);
+    ctx->xferctx.ft_action = 0; // if were an interleaved poll response clear that.
     if (ctx->verbosity > 2)
     {
       sprintf (tlogmsg, "Responding with OSDP_LSTATR (%s)", details);
@@ -565,6 +569,17 @@ int
 
   if (!done)
   {
+    if (ctx->xferctx.total_length > 0)
+    {
+      if (ctx->xferctx.ft_action & OSDP_FTACTION_POLL_RESPONSE)
+      {
+        ctx->card_data_valid = osdp_response_queue [0].details_param_1;
+        ctx->creds_a_avail = osdp_response_queue [0].details_length;
+        memcpy(ctx->credentials_data, osdp_response_queue [0].details, osdp_response_queue [0].details_length);
+        osdp_response_queue_size = 0;
+      };
+    };
+
     /*
       the presence of card data to return is indicated because either the
       "raw" buffer or the "big" buffer is marked as non-empty when you get here.
@@ -588,6 +603,7 @@ int
       status = send_message_ex (ctx,
         OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data,
         OSDP_SEC_SCS_18, 0, NULL);
+      ctx->xferctx.ft_action = 0; // if were an interleaved poll response clear that.
       osdp_test_set_status(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED);
       if (ctx->verbosity > 2)
       {
@@ -596,67 +612,6 @@ int
         fprintf (ctx->log, "%s\n", tlogmsg);
       };
       ctx->card_data_valid = 0;
-    }
-    else
-    {
-
-// DISABLED not working
-#if 0
-      /*
-        this is the newer multi-part message for bigger credential responses,
-        like a FICAM CHUID.
-      */
-      if (ctx->creds_a_avail > 0)
-      {
-        done = 1;
-
-        // send another mfgrep message back and update things.
-
-        memset (&mmsg, 0, sizeof (mmsg));
-        if (creds_buffer_a_lth > 0xfffe)
-        {
-          status = ST_BAD_MULTIPART_BUF;
-        }
-        else
-        {
-          mmsg.VendorCode [0] = 0x08;
-          mmsg.VendorCode [1] = 0x00;
-          mmsg.VendorCode [2] = 0x1b;
-          mmsg.Reply_ID = MFGREP_OOSDP_CAKCert;
-          mmsg.MpdSizeTotal = creds_buffer_a_lth;
-          mmsg.MpdOffset = creds_buffer_a_next;
-
-          bufsize = sizeof (mmsg); // used in send operation below
-          if (ctx->creds_a_avail > 128)
-          {
-            to_send = 128;
-            ctx->creds_a_avail = ctx->creds_a_avail - 128;
-          }
-          else
-          {
-            to_send = ctx->creds_a_avail;
-            ctx->creds_a_avail = 0;
-          };
-          mmsg.MpdFragmentSize = to_send; 
-
-          // filled in all of mmsg now copy it to buffer
-
-          memcpy (buffer, &mmsg, sizeof (mmsg));
-
-          // actual data goes after header in buffer.
-          memcpy (buffer+bufsize, creds_buffer_a+creds_buffer_a_next, to_send);
-
-          current_length = 0;
-          status = send_message (ctx, OSDP_MFGREP, p_card.addr,
-            &current_length, bufsize+to_send, buffer);
-
-          // and after all that move the pointer within the buffer for where
-          // the next data is extracted from.
-
-          creds_buffer_a_next = creds_buffer_a_next + to_send;
-        };
-      };
-#endif
     };
   };
   /*

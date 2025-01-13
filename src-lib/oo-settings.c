@@ -1,7 +1,8 @@
+//"ft-payload-max":"1350",
 /*
   oo-settings - json init file processing
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -282,6 +283,20 @@ int
     sscanf (vstr, "%d", &i);
     if ((i >= 0) && (i <= 2))
       ctx->pd_cap.enable_biometrics = i;
+  }; 
+
+  // parameter "enable-ft-interleave"
+
+  if (status EQUALS ST_OK)
+  {
+    found_field = 1;
+    value = json_object_get (root, "enable-ft-interleave");
+    if (json_is_string (value))
+    {
+      if (0 EQUALS strcmp("1", json_string_value (value)))
+        ctx->ft_interleave = 1;
+      fprintf(ctx->log, "File Transfer response interleaving ENABLED\n");
+    };
   }; 
 
   // parameter "enable-install"

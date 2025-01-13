@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -42,7 +42,7 @@ int
 
 { /* read_command */
 
-  unsigned short buffer_length;
+//  unsigned short buffer_length;
   FILE *cmdf;
   char command [1024];
   char current_command [1024];
@@ -64,7 +64,7 @@ int
   char *test_command;
   char this_command [1024];
   json_t *value;
-  json_t *value2;
+//  json_t *value2;
   char vstr [1024];
 
 
@@ -1500,65 +1500,13 @@ fprintf(stderr, "DEBUG: back from enqueuing output-status (%d)\n", status);
 
   if (status EQUALS ST_OK)
   {
-    json_t *option;
 
     value = json_object_get (root, "command");
     strcpy (this_command, json_string_value (value));
     test_command = "present-card";
     if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
     {
-      cmd->command = OSDP_CMDB_PRESENT_CARD;
-      if (ctx->verbosity > 3)
-        fprintf(ctx->log, "Command %s submitted\n", test_command);
-
-      // if no options are given, use preset value
-      cmd->details_length = p_card.value_len;
-      cmd->details_param_1 = p_card.bits;
-      memcpy(cmd->details, p_card.value, p_card.value_len);
-
-      // if there's a "raw" option it's the data to use.  bits are also specified.
-
-      option = json_object_get (root, "raw");
-      if (json_is_string (option))
-      {
-        strcpy (vstr, json_string_value (option));
-        buffer_length = sizeof(cmd->details);
-        status = osdp_string_to_buffer(ctx, vstr, cmd->details, &buffer_length);
-        cmd->details_length = buffer_length;
-        cmd->details_param_1 = 26;  // assume 26 bits unless otherwise specified
-      };
-
-      option = json_object_get (root, "bits");
-      if (json_is_string (option))
-      {
-        strcpy (vstr, json_string_value (option));
-        sscanf(vstr, "%d", &i);
-        cmd->details_param_1 = i;
-      };
-
-      ctx->card_format = 0; // default
-
-      // format can be specified (raw or p/data/p) - use a hex value for others.
-
-      option = json_object_get (root, "format");
-      if (json_is_string (option))
-      {
-        strcpy (vstr, json_string_value (option));
-        if (0 EQUALS strcmp(vstr, "p-data-p"))
-          ctx->card_format = 1;
-        else
-        {
-          int fmt;
-
-          sscanf(vstr, "%x", &fmt);
-          ctx->card_format = 0xff & fmt;
-        };
-      };
-
-      if (ctx->verbosity > 3)
-        if (cmd->details_length > 0)
-          fprintf(ctx->log, "present_card: raw (%d. bytes, %d. bits, fmt %d): %s\n",
-            cmd->details_length, cmd->details_param_1, ctx->card_format, vstr);
+      status = oo_command_setup_present_card(ctx, root, cmd);
     };
   }; 
 
@@ -1664,57 +1612,7 @@ fprintf(stderr, "DEBUG: back from enqueuing output-status (%d)\n", status);
   {
     if (0 EQUALS strcmp (current_command, "xwrite"))
     {
-      cmd->command = OSDP_CMDB_XWRITE;
-      if (ctx->verbosity > 3)
-        fprintf (stderr, "command was %s\n",
-          this_command);
-
-      value = json_object_get (root, "action");
-      if (json_is_string (value))
-      {
-        if (0 EQUALS strcmp(json_string_value(value), "get-mode"))
-        {
-          cmd->details [0] = 1; // 1 in byte 0 is get-mode
-        };
-        if (0 EQUALS strcmp(json_string_value(value), "scan"))
-        {
-          cmd->details [0] = 3; // 3 in byte 0 is scan (for smart card)
-        };
-        if (0 EQUALS strcmp(json_string_value(value), "set-mode"))
-        {
-          cmd->details [0] = 2; // 2 in byte 0 is set-mode
-        };
-        if (0 EQUALS strcmp(json_string_value(value), "set-zero"))
-        {
-          cmd->details [0] = 4; // 4 in byte 0 is set mode 0
-        };
-        if (0 EQUALS strcmp(json_string_value(value), "done"))
-        {
-          cmd->details [0] = 5;
-        };
-        if (0 EQUALS strcmp(json_string_value(value), "apdu"))
-        {
-          unsigned short int payload_length;
-          char payload_value [1024];
-
-          cmd->details [0] = 6;
-
-          // if there's a "payload" fill it in after the command in details
-
-          value2 = json_object_get (root, "payload");
-          if (json_is_string (value2))
-          {
-            payload_length = sizeof(cmd->details);
-            strcpy(payload_value, json_string_value(value2));
-            status = osdp_string_to_buffer
-              (ctx, payload_value, cmd->details+3, &payload_length);
-            *(short int *)(cmd->details+1) = payload_length;
-          };
-        };
-      };
-fprintf(stderr, "test: queuing XWR %d\n", cmd->command);
-status = enqueue_command(ctx, cmd);
-cmd->command = OSDP_CMD_NOOP;
+      status = oo_command_setup_xwrite(ctx, root, cmd);
     };
   }; 
 

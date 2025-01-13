@@ -1,7 +1,7 @@
 /*
   oo_util2 - more open-osdp util routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -189,9 +189,12 @@ int
   if ( (context.xferctx.total_length > 0) &&
     (context.xferctx.total_length > context.xferctx.current_offset) )
   {
-    if (last_command_received != OSDP_FILETRANSFER)
+    // code flows for both command and response.
+
+    if ((last_command_received != OSDP_FILETRANSFER) && (last_command_received != OSDP_FTSTAT))
     {
-      fprintf(context.log, "File transfer interrupted by poll response, resuming file transfer\n");
+      fprintf(context.log, "File transfer interrupted by poll response, resuming file transfer lcr %02X\n",
+        last_command_received);
       status = osdp_send_filetransfer(&context);
       send_poll = 0;
     };

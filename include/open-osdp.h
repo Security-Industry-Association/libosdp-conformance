@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,9 +14,6 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-
-  Support provided by the Security Industry Association
-  http://www.securityindustry.org
 */
 
 
@@ -32,7 +29,7 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (70)
+#define OSDP_VERSION_MINOR (71)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OO_DIR_RUN         (1)
@@ -439,6 +436,7 @@ typedef struct osdp_context_filetransfer
   FILE *xferf;
   int state; // state=0 no transfer state=1 transferring state=2 finishing
   int file_transfer_type;
+  unsigned char ft_action;
 } OSDP_CONTEXT_FILETRANSFER;
 #define OSDP_XFER_STATE_IDLE         (0)
 #define OSDP_XFER_STATE_TRANSFERRING (1)
@@ -462,6 +460,14 @@ typedef struct osdp_command_queue
   int status; // 0=empty 1=contains entry
   OSDP_COMMAND cmd;
 } OSDP_COMMAND_QUEUE;
+
+typedef struct osdp_response_queue_entry
+{
+  unsigned char response;
+  int details_param_1;
+  int details_length;
+  unsigned char details [OSDP_OFFICIAL_MSG_MAX];
+} OSDP_RESPONSE_QUEUE_ENTRY;
 
 // poll enable values (see context->enable_poll)
 
@@ -638,6 +644,7 @@ typedef struct osdp_context
   char last_keyboard_data [8];
 
   OSDP_CONTEXT_FILETRANSFER xferctx;
+  int ft_interleave;
 
   // conformance manipulation
 
@@ -1116,6 +1123,8 @@ int init_serial (OSDP_CONTEXT *context, char *device);
 int oo_build_genauth(OSDP_CONTEXT *ctx, unsigned char *challenge_payload_buffer, int *payload_length, unsigned char *details, int details_length);
 int oo_bytes_to_hex_string(OSDP_CONTEXT *ctx, unsigned char *bytes, int byte_length, char *hex_string, int hex_string_max);
 int oo_command_setup_out(OSDP_CONTEXT *ctx, json_t *output_command, OSDP_COMMAND *cmd);
+int oo_command_setup_present_card(OSDP_CONTEXT *ctx, json_t *root, OSDP_COMMAND *cmd);
+int oo_command_setup_xwrite(OSDP_CONTEXT *ctx, json_t *root, OSDP_COMMAND *cmd);
 int oo_filetransfer_SDU_offer(OSDP_CONTEXT *ctx);
 int oo_hash_check (OSDP_CONTEXT *ctx, unsigned char *message, int security_block_type, unsigned char *hash, int message_length);
 int oo_load_parameters(OSDP_CONTEXT *ctx, char *filename);

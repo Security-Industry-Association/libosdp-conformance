@@ -1,7 +1,7 @@
 /*
   oosdp_files - osdp filetransfer management and io/
 
-  (C)2017-2024 Smithee Solutions LLC
+  (C)2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
