@@ -338,61 +338,6 @@ z64 = (0xff & (unsigned int)*(p+9));
 
 
 int
-  oo_next_sequence
-    (OSDP_CONTEXT *ctx)
-
-{ /* oo_next_sequence */
-
-  static int current_sequence;
-  int do_increment;
-
-
-  do_increment = 1;
-  if (ctx->last_response_received != OSDP_NAK)
-    do_increment = 1;
-  else
-  {
-    // 20181213 clarification: if it was a NAK and we were to RETRY then don't increment the sequence number.
-
-    // this is not a retry this will be for a new message
-
-    // if the last thing was a NAK for sequence error reset sequence to 0
-    if (ctx->last_nak_error EQUALS OO_NAK_SEQUENCE)
-      ctx->next_sequence = 0;
-  };
-  
-  if (do_increment)
-  {
-    // the current value is returned. might be 0 (if this is the first message)
-
-    current_sequence = ctx->next_sequence;
-
-    // increment sequence, skipping 1 (per spec)
-
-    ctx->next_sequence++;
-    if (ctx->next_sequence > 3)
-      ctx->next_sequence = 1;
-
-    // if polling is to resume enable it now
-    if (OO_POLL_RESUME EQUALS (ctx->enable_poll))
-      ctx->enable_poll = OO_POLL_ENABLED;
-
-    // if they disabled polling don't increment the sequence number
-    if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
-      ctx->next_sequence = 0;
-  }
-  else
-  {
-    if (ctx->verbosity > 2)
-      fprintf (ctx->log, "Last in was NAK (E=%d) Seq now %d\n",
-        ctx->last_nak_error, ctx->next_sequence);
-  };
-  return (current_sequence);
-
-} /* oo_next_sequence */
-
-
-int
   osdp_timeout
     (OSDP_CONTEXT *ctx,
     struct timespec *last_time_ex)
@@ -587,7 +532,6 @@ int
     data, 0); // no security
   if (status EQUALS ST_OK)
   {
-    oo_next_sequence(ctx);
 
     // if (context->verbosity > 3)
     {
@@ -625,24 +569,33 @@ int
       (void)monitor_osdp_message (ctx, &m);
     };
 
-    // send start-of-message marker (normally one 0xff)
-
-    buf [0] = 0xff;
-#if SPACER_TEST
-    buf [1] = 0xff;
-    status = send_osdp_data (ctx, buf, 2);
-#else
-    status = send_osdp_data (ctx, buf, 1);
-#endif
-
     if (status EQUALS ST_OK)
     {
-      memcpy(last_message_sent, test_blk, *current_length);
-      last_message_sent_length = *current_length;
-      status = send_osdp_data (ctx, test_blk, *current_length);
+      if (ctx->conformance_suppress_response)
+      {
+        fprintf(ctx->log, "Test in progress: response suppressed.  Next response will be allowed.\n");
+        ctx->conformance_suppress_response = 0;
+      }
+      else
+      {
+        oo_next_sequence(ctx);
 
-      // and after we sent the whole PDU bump the counter
-      ctx->pdus_sent++;
+        memcpy(last_message_sent, test_blk, *current_length);
+        last_message_sent_length = *current_length;
+
+        // send start-of-message marker (normally one 0xff)
+
+        buf [0] = 0xff;
+        status = send_osdp_data (ctx, buf, 1);
+        if (status EQUALS ST_OK)
+        {
+          status = send_osdp_data (ctx, test_blk, *current_length);
+
+          // and after we sent the whole PDU bump the counter
+          ctx->pdus_sent++;
+        };
+      };
+
     };
   };
   if (status EQUALS ST_OK)
@@ -680,6 +633,7 @@ int
   unsigned char current_sec_block [3];
   int current_sec_block_length;
   int current_sec_block_type;
+  int send_response_message;
   int status;
 
 
@@ -743,20 +697,28 @@ int
     if (current_sec_block_type EQUALS OSDP_SEC_STAND_DOWN)
       current_sec_block_type = OSDP_SEC_NOT_SCS;
 
+    send_response_message = 1;
+
     if (current_sec_block_type != OSDP_SEC_NOT_SCS)
     {
-      if (ctx->verbosity > 9)
+      if (send_response_message)
       {
-        fprintf(ctx->log, "send: SC-%x\n", current_sec_block_type);
+        if (ctx->verbosity > 9)
+        {
+          fprintf(ctx->log, "send: SC-%x\n", current_sec_block_type);
+        };
+        status = send_secure_message(ctx, command, dest_addr,
+          current_length, data_length, data,
+          current_sec_block_type, current_sec_block_length, current_sec_block);
       };
-      status = send_secure_message(ctx, command, dest_addr,
-        current_length, data_length, data,
-        current_sec_block_type, current_sec_block_length, current_sec_block);
     }
     else
     {
-      status = send_message (ctx, command, dest_addr, current_length,
-        data_length, data);
+      if (send_response_message)
+      {
+        status = send_message (ctx, command, dest_addr, current_length,
+          data_length, data);
+      };
     };
 
     // dump trace buffers after also so in's and out's land in correct order

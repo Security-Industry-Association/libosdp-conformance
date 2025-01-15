@@ -1,7 +1,7 @@
 /*
   oo-prims - primitives for OSDP processing
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -106,6 +106,76 @@ char *
   return(nak_text);
 
 } /* oo_lookup_nak_text */
+
+
+int
+  oo_next_sequence
+    (OSDP_CONTEXT *ctx)
+
+{ /* oo_next_sequence */
+
+  static int current_sequence;
+  int do_increment;
+
+
+  do_increment = 1;
+  if (ctx->last_response_received != OSDP_NAK)
+    do_increment = 1;
+  else
+  {
+    // 20181213 clarification: if it was a NAK and we were to RETRY then don't increment the sequence number.
+
+    // this is not a retry this will be for a new message
+
+    // if the last thing was a NAK for sequence error reset sequence to 0
+    if (ctx->last_nak_error EQUALS OO_NAK_SEQUENCE)
+      ctx->next_sequence = 0;
+  };
+  
+  if (do_increment)
+  {
+    // the current value is returned. might be 0 (if this is the first message)
+
+    current_sequence = ctx->next_sequence;
+fprintf(stderr, "DEBUG: oo_next_sequence: current sequence %d, about to increment\n", ctx->next_sequence);
+
+    // increment sequence, skipping 1 (per spec)
+
+    ctx->next_sequence++;
+    if (ctx->next_sequence > 3)
+      ctx->next_sequence = 1;
+
+    // if polling is to resume enable it now
+    if (OO_POLL_RESUME EQUALS (ctx->enable_poll))
+      ctx->enable_poll = OO_POLL_ENABLED;
+
+    // if they disabled polling don't increment the sequence number
+    if (OO_POLL_NEVER EQUALS (ctx->enable_poll))
+      ctx->next_sequence = 0;
+  }
+  else
+  {
+    if (ctx->verbosity > 2)
+      fprintf (ctx->log, "Last in was NAK (E=%d) Seq now %d\n",
+        ctx->last_nak_error, ctx->next_sequence);
+  };
+  return (current_sequence);
+
+} /* oo_next_sequence */
+
+
+int
+  oo_previous_sequence
+    (OSDP_CONTEXT *ctx)
+{
+  unsigned char previous_sequence_number;
+
+  previous_sequence_number = ctx->next_sequence;
+  previous_sequence_number --;
+  if (previous_sequence_number EQUALS 0)
+    previous_sequence_number = 3;
+  return(previous_sequence_number);
+}
 
 
 unsigned char
@@ -282,6 +352,8 @@ int
       ret_cmd = OSDP_CMDB_BIOMATCH;
     if (0 EQUALS strcmp(command, "conform-070-17-02"))
       ret_cmd = OSDP_CMDB_CONFORM_070_17_02;
+    if (0 EQUALS strcmp(command, "conform-suppress-response"))
+      ret_cmd = OSDP_CMDB_CONFORM_SUPPRESS_RESPONSE;
     if (0 EQUALS strcmp(command, "factory-default"))
       ret_cmd = OSDP_CMDB_FACTORY_DEFAULT;
     if (0 EQUALS strcmp(command, "identify"))

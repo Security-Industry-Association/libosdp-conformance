@@ -1,7 +1,7 @@
 /*
   oo-parse - parse osdp messages
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -69,6 +69,7 @@ int
   unsigned short int parsed_crc;
   int sec_blk_length;
   int sec_block_type;
+  unsigned char seq_tmp;
   int status;
   unsigned wire_cksum;
   unsigned short int wire_crc;
@@ -224,11 +225,12 @@ int
     // extract the command
     returned_hdr -> cmd_s = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->cmd_s;
-if ((m->msg_cmd EQUALS OSDP_PDID) || (m->msg_cmd EQUALS OSDP_ID))
-{
-fflush(context->log);
-//fprintf(stderr, "DEBUG: osdp_parse_message whole-message %02X\n", m->msg_cmd);
-};
+    if ((m->msg_cmd EQUALS OSDP_PDID) || (m->msg_cmd EQUALS OSDP_ID))
+    {
+      // flush the log so external instrumentation can see we got proof of life.
+
+      fflush(context->log);
+    };
 
     m->direction = 0x80 & p->addr;
     m->data_payload = m->cmd_payload + 1;
@@ -789,9 +791,6 @@ status = ST_OK; // tolerate checksum error and continue
       if (!rcv_seq)
         rcv_seq = 1;
 
-      if (context->verbosity > 9)
-        fprintf(stderr, "DEBUG: wire seq %d. rcv seq %d. next seq %d.\n",
-          wire_sequence, rcv_seq, context->next_sequence);
       bad = 0;
 
       if (p_card.addr EQUALS (0x7f & p->addr))
@@ -806,9 +805,23 @@ status = ST_OK; // tolerate checksum error and continue
           bad = 1;
         };
 
-        // if we're the PD the received sequence number should match the sequence number on the wire
-        if ((role EQUALS OSDP_ROLE_PD) && (wire_sequence != context->next_sequence))
-          bad = 1;
+        /*
+          must be this or previous sequence.
+        */
+        seq_tmp = context->next_sequence;
+        seq_tmp = seq_tmp - 1;
+        if (seq_tmp EQUALS 0)
+          seq_tmp = 3;
+        if (role EQUALS OSDP_ROLE_PD)
+        {
+          if (wire_sequence EQUALS seq_tmp)
+            status = ST_OSDP_BAD_PD_SEQUENCE;
+          else
+          {
+            if (wire_sequence != context->next_sequence)
+              bad = 1;
+          };
+        };
       };
 
       if (bad)
@@ -848,9 +861,10 @@ status = ST_OK; // tolerate checksum error and continue
       };
     };
 
-    // check the MAC if it's secure channel formatted
+    // check the MAC if it's secure channel formatted.
+    // bad pd sequence might be retry.
 
-    if (status EQUALS ST_OK)
+    if ((status EQUALS ST_OK) || (status EQUALS ST_OSDP_BAD_PD_SEQUENCE))
     {
       if (msg_scb != 0)
       {
@@ -875,6 +889,8 @@ status = ST_OK; // tolerate checksum error and continue
         };
       }; 
     };
+    if (status EQUALS ST_OSDP_BAD_PD_SEQUENCE)
+fprintf(stderr, "DEBUG: preserve MAC here...\n");
 
     if ((context->verbosity > 2) || (m_dump > 0))
     {
@@ -929,7 +945,7 @@ status = ST_OK; // tolerate checksum error and continue
       tlogmsg [0] = 0; tlogmsg2 [0] = 0;
     };
   };
-  if (status EQUALS ST_OK)
+  if ((status EQUALS ST_OK) || (status EQUALS ST_OSDP_BAD_PD_SEQUENCE))
   {
     /*
       at this point we think it's a whole well-formed frame.  might not be for
@@ -972,6 +988,9 @@ status = ST_OK; // tolerate checksum error and continue
 
   // specifically for bad sequence, call it that they did respond so life can proceed.
 
+  if (status EQUALS ST_OSDP_BAD_PD_SEQUENCE)
+    context->last_was_processed = 1;
+
   if (status EQUALS ST_OSDP_BAD_SEQUENCE)
   {
     if (context->verbosity > 3)
@@ -982,7 +1001,7 @@ status = ST_OK; // tolerate checksum error and continue
   // if there was an error dump the log buffer
 
   if ((status != ST_OK) && (status != ST_MSG_TOO_SHORT) &&
-    (status != ST_NOT_MY_ADDR))
+    (status != ST_NOT_MY_ADDR) && (status != ST_OSDP_BAD_PD_SEQUENCE))
   {
     // if parse failed report the status code
     if ((context->verbosity > 3) && (status != ST_MONITOR_ONLY))

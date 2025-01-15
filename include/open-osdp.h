@@ -228,6 +228,7 @@
 #define OSDP_CMDB_MFGREP            (1056)
 #define OSDP_CMDB_INPUT_STATUS      (1057)
 #define OSDP_CMDB_REACT             (1058)
+#define OSDP_CMDB_CONFORM_SUPPRESS_RESPONSE (1059)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -649,6 +650,7 @@ typedef struct osdp_context
   // conformance manipulation
 
   int conformance_fail_next_rmac_i;
+  int conformance_suppress_response;
   int do_retry;
   int next_crc_bad;
   int next_nak; // nak the next incoming message from the CP
@@ -1077,6 +1079,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_CRC_REQUIRED             (102)
 #define ST_OSDP_SC_BAD_HEADER            (103)
 #define ST_OSDP_FILEXFER_POLL_RESPONSE   (104)
+#define ST_OSDP_BAD_PD_SEQUENCE          (105)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
@@ -1132,6 +1135,7 @@ char * oo_lookup_nak_text(int nak_code);
 int oo_mfg_reply_action(OSDP_CONTEXT *ctx, OSDP_MSG *msg, OSDP_MFGREP_RESPONSE *mrep);
 int oo_next_sequence (OSDP_CONTEXT *ctx);
 char *oo_osdp_root(OSDP_CONTEXT *ctx, int directory);
+int oo_previous_sequence (OSDP_CONTEXT *ctx);
 unsigned char oo_response_address(OSDP_CONTEXT *ctx, unsigned char from_addr);
 int oo_save_parameters(OSDP_CONTEXT *ctx, char *filename, unsigned char *scbk);
 int oo_send_ftstat (OSDP_CONTEXT *ctx, OSDP_HDR_FTSTAT *response);
