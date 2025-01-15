@@ -137,7 +137,6 @@ int
     // the current value is returned. might be 0 (if this is the first message)
 
     current_sequence = ctx->next_sequence;
-fprintf(stderr, "DEBUG: oo_next_sequence: current sequence %d, about to increment\n", ctx->next_sequence);
 
     // increment sequence, skipping 1 (per spec)
 

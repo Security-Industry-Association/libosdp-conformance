@@ -9,6 +9,7 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 ### Updates in 1.71 Build 1 ###
 
+Added PD support for retries.  Cleartext only at this time.
 Added support for interleaved responses in the PD.
 
 ### Updates in 1.70 Build 1 ###

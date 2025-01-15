@@ -64,8 +64,6 @@ int
   msg.lth = osdp_buf->next;
   msg.ptr = osdp_buf->buf;
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
-fprintf(stderr, "DEBUG: last command %02X last seq %d last msgcheck %04X status %d\n",
-  last_command_received, oo_previous_sequence(&context),last_check_value, status);
   if (status EQUALS ST_OSDP_BAD_PD_SEQUENCE)
   {
     if (
@@ -74,7 +72,6 @@ fprintf(stderr, "DEBUG: last command %02X last seq %d last msgcheck %04X status 
 (*(unsigned short int *)(msg.crc_check) EQUALS last_check_value))
     {
       fprintf(context.log, "RETRY detected.\n");
-fprintf(stderr, "DEBUG: RETRY detected.\n");
       status = ST_OK;
     }
     else
