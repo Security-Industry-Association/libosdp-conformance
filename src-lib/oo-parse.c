@@ -731,7 +731,7 @@ fprintf(stderr, "lstat 1000\n");
       if (status EQUALS ST_OK)
       {
         last_check_value = wire_crc;
-        last_command_received = m->msg_cmd;
+// not here        last_command_received = m->msg_cmd;
       };
     }
     else
@@ -857,8 +857,19 @@ status = ST_OK; // tolerate checksum error and continue
           fprintf (stderr, "addr mismatch for: %02x me: %02x\n",
             p->addr, p_card.addr);
         status = ST_NOT_MY_ADDR;
+      }
+      else
+      {
+        // this packet is for this PD.
+        last_command_received = m->msg_cmd;
       };
+    }
+    else
+    {
+      // ACU receives all responses
+      last_command_received = m->msg_cmd;
     };
+
 
     // check the MAC if it's secure channel formatted.
     // bad pd sequence might be retry.
@@ -891,7 +902,9 @@ status = ST_OK; // tolerate checksum error and continue
     if (status EQUALS ST_OSDP_BAD_PD_SEQUENCE)
 fprintf(stderr, "DEBUG: preserve MAC here...\n");
 
-    if ((context->verbosity > 2) || (m_dump > 0))
+    // if it's ok (for me) and sufficint verbosity or dump mode then print the header
+
+    if ((status EQUALS ST_OK) && ((context->verbosity > 2) || (m_dump > 0)))
     {
       char cmd_rep_tag [1024];
       char log_line [3*1024]; // 'cause contents could be 1k already
@@ -902,6 +915,7 @@ fprintf(stderr, "DEBUG: preserve MAC here...\n");
         osdp_command_reply_to_string(returned_hdr->cmd_s, m->direction));
 
       // print "IEC" details of message
+// printing header QQQ
       (void)oosdp_message_header_print(context, m, tlogmsg);
       if (((returned_hdr->cmd_s != OSDP_POLL) &&
         (returned_hdr->cmd_s != OSDP_ACK)) ||

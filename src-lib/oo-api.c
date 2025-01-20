@@ -1,7 +1,7 @@
 /*
   osdp-api - bits to implement HUP-based "API"
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -223,6 +223,7 @@ void
   ctx->checksum_errs = 0;
   ctx->crc_errs = 0;
   memset(ctx->last_raw_read_data, 0, sizeof(ctx->last_raw_read_data));
+  memset(ctx->last_keyboard_data, 0, sizeof(ctx->last_keyboard_data));
   ctx->dropped_octets = 0;
   ctx->hash_bad = 0;
   ctx->hash_ok = 0;

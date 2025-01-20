@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.71 Build 2 ###
+
+Clear the keypad memory when stats are cleared.
+Eliminated gratuitous log messages in multi-PD chains.
+
 ### Updates in 1.71 Build 1 ###
 
 Added PD support for retries.  Cleartext only at this time.
