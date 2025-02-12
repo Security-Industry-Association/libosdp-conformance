@@ -12,6 +12,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 Added support for bad response testing
 (command conform-050-09-10), using the preserved serial speed.
 Updated settings documentation.
+changed encryption blocking so a payload with an odd number of whole cipherblocks
+is padded.
 
 ## Command conform-050-09-10 ##
 

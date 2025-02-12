@@ -1,7 +1,7 @@
 /*
   oo-ui - UI routines for open-osdp
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -118,6 +118,11 @@ context=ctx;
       context->next_response = OSDP_BUSY;
       if (context->verbosity > 2)
         fprintf (stderr, "Declaring BUSY on next response\n");
+      status = ST_OK;
+      break;
+
+    case OSDP_CMDB_CONFORM_050_09_10:
+      // handled directly in command processor
       status = ST_OK;
       break;
 

@@ -3,7 +3,7 @@
 /*
   oosdp-secure - open osdp secure channel routines
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -707,6 +707,11 @@ int
 
       *padded_length =
         ((data_length+(OSDP_KEY_OCTETS-1))/OSDP_KEY_OCTETS)*OSDP_KEY_OCTETS;
+
+      // if actual data was an odd number of whole blocks add a pad block
+      if ((data_length % OSDP_KEY_OCTETS) EQUALS 0)
+        *padded_length = *padded_length + OSDP_KEY_OCTETS;
+
       enc_buf [data_length] = 0x80;
       *padding = *padded_length - data_length;
     };
