@@ -242,6 +242,13 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
+  case OSDP_CMDB_CONFORM_050_09_10:
+    ctx->next_response_bad = 1;
+    fprintf(ctx->log, "Activating conformance test: bad response (good frame).\n");
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   case OSDP_CMDB_CONFORM_070_17_02:
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;

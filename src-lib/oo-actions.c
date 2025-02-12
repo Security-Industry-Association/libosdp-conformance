@@ -415,11 +415,13 @@ int
   unsigned char osdp_lstat_response_data [2];
   unsigned char osdp_raw_data [4+1024];
   int raw_lth;
+  unsigned char response_directive;
   int status;
 
 
   status = ST_OK;
   done = 0;
+  response_directive = OSDP_ACK;
 
   // i.e. we GOT a poll
   osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
@@ -614,6 +616,13 @@ int
       ctx->card_data_valid = 0;
     };
   };
+  response_directive = OSDP_ACK;
+  if (ctx->next_response_bad)
+  {
+    fprintf(ctx->log, "*** BAD RESPONSE INDUCED ***\n");
+    response_directive = OSDP_BOGUS;
+    ctx->next_response_bad = 0;
+  };
   /*
     if all else isn't interesting return a plain ack
   */
@@ -621,7 +630,7 @@ int
   {
     current_length = 0;
     status = send_message_ex
-      (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL,
+      (ctx, response_directive, p_card.addr, &current_length, 0, NULL,
       OSDP_SEC_SCS_16, 0, NULL);
     osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_rep_ack, OCONFORM_EXERCISED);

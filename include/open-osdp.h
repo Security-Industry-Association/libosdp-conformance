@@ -29,8 +29,8 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (71)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (80)
+#define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -229,6 +229,7 @@
 #define OSDP_CMDB_INPUT_STATUS      (1057)
 #define OSDP_CMDB_REACT             (1058)
 #define OSDP_CMDB_CONFORM_SUPPRESS_RESPONSE (1059)
+#define OSDP_CMDB_CONFORM_050_09_10         (1060)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -654,6 +655,7 @@ typedef struct osdp_context
   int do_retry;
   int next_crc_bad;
   int next_nak; // nak the next incoming message from the CP
+  int next_response_bad;
   int pdcap_select; // 0 for normal 1 for short
   unsigned char raw_reaction_command; // 0 if nothing else the thing to be sent right away.
   int tamper;

@@ -635,7 +635,7 @@ int
   if (json_is_string (value))
   {
     strcpy(new_key, json_string_value(value));
-fprintf(ctx->log, "restoring key %s\n", new_key);
+    fprintf(ctx->log, "restoring key %s\n", new_key);
     new_key_length = sizeof(ctx->current_scbk);
     status = osdp_string_to_buffer(ctx,
       new_key, ctx->current_scbk, &new_key_length);
@@ -653,8 +653,9 @@ fprintf(ctx->log, "restoring key %s\n", new_key);
   value = json_object_get(saved_parameters_root, "serial-speed");
   if (json_is_string(value))
   {
-    if (ctx->verbosity > 3)
-      fprintf(stderr, "DEBUG: restored speed would be %s\n", json_string_value(value));
+    strcpy(ctx->serial_speed, json_string_value(value));
+    fprintf(ctx->log, "Speed initialized to %s\n", ctx->serial_speed);
+    status = init_serial (ctx, p_card.filename);
   };
   value = json_object_get(saved_parameters_root, "pd-address");
   if (json_is_string(value))

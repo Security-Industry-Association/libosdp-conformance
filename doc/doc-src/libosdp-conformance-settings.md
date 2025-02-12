@@ -1,6 +1,8 @@
-# Start-up Settings #
+# Start-up and Saved Settings #
 
-These are set in open-osdp-params.json in the current directory when open-osdp starts.
+Settings are kept in ___open-osdp-params.json___.
+Saved parameters (key, speed set by comset) are in
+___osdp-saved-parameters.json___.
 
 ## Settings ##
 
@@ -49,4 +51,10 @@ because bit 1 of the first octet is a 1 meaning a private value.)
   // parameter "timeout-nsec" - timeout in nanoseconds.
   // parameter "serial-read-timeout" - nanoseconds.
 ```
+
+## Saved Parameters ##
+
+- key - OSPD SCBK saved value.  WARNING: this tool is for
+test use only.  The key is not secured by design.
+- serial-speed - serial speed. Used if ACU sets the speed with COMSET.
 

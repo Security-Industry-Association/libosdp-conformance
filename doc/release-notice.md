@@ -7,6 +7,14 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.80 Build 0 ###
+
+Added support for bad response testing
+(command conform-050-09-10), using the preserved serial speed.
+Updated settings documentation.
+
+## Command conform-050-09-10 ##
+
 ### Updates in 1.71 Build 2 ###
 
 Clear the keypad memory when stats are cleared.

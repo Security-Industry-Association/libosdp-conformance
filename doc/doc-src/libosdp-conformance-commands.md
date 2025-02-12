@@ -41,6 +41,8 @@ Command comset
 
 This command causes the ACU to send an osdp_COMSET command
 to set the address and speed of the PD.
+The speed is saved in osdp-saved-parameters.json and 
+will be used when the PD is next started.
 
 There are no defaults.
 
@@ -59,6 +61,23 @@ There are no defaults.
 |                |                                                         |
 | send-direct    | 1 to send on the current PD id else sends on 0x7F       |
 |                |                                                         |
+
+## Command conform-050-09-10 ##
+
+PD conformance test.  Causes the next response to an osdp_POLL to contain
+an invalid response code.
+
+___Defaults___
+
+- no default values.
+
+___Arguments___
+
+| Argument       | Value |
+| --------       | ----- |
+|                |       |
+| none        |  |
+|                |       |
 
 ## Command dump-status ##
 
