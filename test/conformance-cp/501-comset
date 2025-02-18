@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2022 Smithee Solutions LLC
+# (C)Copyright 2017-2025 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
 CMDPATHX=${OSDP_PATH}/run/CP/open_osdp_command.json
 sudo -n echo  >${CMDPATH} "{"
 sudo -n echo >>${CMDPATH} "   \"command\" : \"comset\"",
-sudo -n echo >>${CMDPATH} "  \"new_address\" : \"$1\"",
-sudo -n echo >>${CMDPATH} "  \"new_speed\" : \"$2\"",
+sudo -n echo >>${CMDPATH} "  \"new-address\" : \"$1\"",
+sudo -n echo >>${CMDPATH} "  \"new-speed\" : \"$2\"",
 sudo -n echo >>${CMDPATH} "  \"#\" : \"created by 501-comset\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}

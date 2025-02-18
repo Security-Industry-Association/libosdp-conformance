@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.80 Build 1 ###
+
+correct new-address/new-speed in comset script.
+
 ### Updates in 1.80 Build 0 ###
 
 Added support for bad response testing

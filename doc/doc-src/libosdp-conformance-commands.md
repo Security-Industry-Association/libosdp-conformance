@@ -53,9 +53,9 @@ There are no defaults.
 |                |                                                         |
 | cleartext   | 1 to send in the clear even if a secure channel is active. |
 |             |                                            |
-| new_address | decimal value of a supported OSDP address. |
+| new-address | decimal value of a supported OSDP address. |
 |             |                                            |
-| new_speed   | decimal value of a supported OSDP speed.   |
+| new-speed   | decimal value of a supported OSDP speed.   |
 |                |                                                         |
 | reset-sequence | 1 to reset the sequence number to zero                  |
 |                |                                                         |

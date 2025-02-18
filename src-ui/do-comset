@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2021 Smithee Solutions LLC
+# (C)Copyright 2017-2025 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,8 +33,8 @@ sudo -n rm -f ${CMDPATH}
 
 echo  >${CMDPATH} "{"
 echo >>${CMDPATH} "  \"command\" : \"comset\","
-echo >>${CMDPATH} "  \"new_address\" : \"$1\","
-echo >>${CMDPATH} "  \"new_speed\" : \"$2\","
+echo >>${CMDPATH} "  \"new-address\" : \"$1\","
+echo >>${CMDPATH} "  \"new-speed\" : \"$2\","
 echo >>${CMDPATH} "  \"#\" : \"created by do-comset from UI\""
 echo >>${CMDPATH} "}"
 echo wrote ${CMDPATH}

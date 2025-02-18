@@ -738,7 +738,7 @@ int
 
   /*
     COMSET.  takes two option arguments, "new-address" and "new_speed".
-    default for new_address is 0x00, default for new_speed is 9600
+    default for new-address is 0x00, default for new-speed is 9600
     details block:
       details [0] is the new address
       details [1] is 1 if to send in the clear during a secure channel session 
