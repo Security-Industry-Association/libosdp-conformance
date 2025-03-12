@@ -345,14 +345,21 @@ int
         };
         for (i=0; i<count; i++)
         {
-          fprintf (context->log, "[%02d] Rdr %d LED %d Tcmd %d Pcmd %d",
-            i, led_ctl->reader, led_ctl->led, led_ctl->temp_control,
-            led_ctl->perm_control);
-          fprintf(context->log, " tc %d pc %d\n", led_ctl->temp_control, led_ctl->perm_control);
+         
+          if (led_ctl->reader EQUALS 0)
+          {
+            if (context->verbosity > 0)
+            {
+              fprintf (context->log, "[%02d] Rdr %d LED %d Tcmd %d Pcmd %d",
+                i, led_ctl->reader, led_ctl->led, led_ctl->temp_control,
+                led_ctl->perm_control);
+              fprintf(context->log, " tc %d pc %d\n", led_ctl->temp_control, led_ctl->perm_control);
+            };
+          };
           if (led_ctl->reader EQUALS 0)
             if (led_ctl->temp_control EQUALS OSDP_LED_TEMP_SET)
             {
-//              if (context->verbosity > 0)
+              if (context->verbosity > 0)
               {
                 fprintf(context->log, "LED-TEMP: On: C=%d T=%d Off C=%d T=%d timer %02x %02x\n",
                   led_ctl->temp_on_color, led_ctl->temp_on, led_ctl->temp_off_color, led_ctl->temp_off,

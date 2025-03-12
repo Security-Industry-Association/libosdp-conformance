@@ -6,6 +6,6 @@
   ,"bits" : "26"
   ,"raw_value" : "70123440"
   ,"address" : "00"
-  ,"serial_device" : "/dev/ttyUSB0"
+  ,"serial-device" : "/dev/ttyUSB0"
 }
 

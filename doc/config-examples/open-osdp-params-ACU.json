@@ -1,6 +1,6 @@
 {
   "role" : "ACU",
   "address" : "00",
-  "serial_speed" : "9600",
+  "serial-speed" : "9600",
   "verbosity" : "3"
 }
