@@ -738,6 +738,7 @@ int
       fprintf(pf, "%02x", scbk_to_save [i]);
     };
 
+fprintf(stderr, "DEBUG: about to save serial speed %s\n", ctx->serial_speed);
     fprintf(pf, "\",\n  \"serial-speed\" : \"%s\",\n", ctx->serial_speed);
     fprintf(pf, "  \"pd-address\" : \"%X\",\n", ctx->pd_address);
 

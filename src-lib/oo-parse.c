@@ -832,6 +832,7 @@ status = ST_OK; // tolerate checksum error and continue
           if (wire_sequence != 0)
           {
           
+fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
             status = ST_OSDP_BAD_SEQUENCE;
             if (context->verbosity > 3)
             {
