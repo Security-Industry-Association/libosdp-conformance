@@ -168,7 +168,6 @@ int
         fprintf(context.log, "  NAK: Bad hash, sending NAK %d\n", OO_NAK_ENC_REQ);
         break;
       case ST_OSDP_BAD_SEQUENCE:
-fprintf(stderr, "DEBUG: caught ST_OSDP_BAD_SEQUENCE.\n");
         if (context.verbosity > 3)
         {
           fprintf(context.log, "bad sequence ctx addr %d msg addr %d\n", context.pd_address, parsed_msg.addr);

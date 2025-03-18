@@ -1,7 +1,7 @@
 /*
   oo_initialize - init code for OSDP
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -277,7 +277,7 @@ int
 
   strcpy (context->fqdn, "perim-0000.example.com");
   context->xferctx.state = OSDP_XFER_STATE_IDLE;
-  p_card.value [0] = 0x00; // fc=1 card=1 in 26 bit wiegand
+  p_card.value [0] = 0x80; // fc=1 card=1 in 26 bit wiegand, proper parity
   p_card.value [1] = 0x80; // fc=1 card=1 in 26 bit wiegand
   p_card.value [2] = 0x00; // fc=1 card=1 in 26 bit wiegand
   p_card.value [3] = 0x80; // fc=1 card=1 in 26 bit wiegand
