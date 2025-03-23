@@ -1,7 +1,7 @@
 /*
   oosdp_secure_actions - open osdp secure channel action routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -60,6 +60,8 @@ int
 
   status = ST_OK;
   test_results = OCONFORM_FAIL;
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "\nProcessing received osdp_CCRYPT\n");
   memset (iv, 0, sizeof (iv));
 
   // check for proper state AND secure channel enabled.
@@ -96,7 +98,14 @@ if (ctx->verbosity > 8)
       AES_CBC_decrypt_buffer (&aes_context_s_enc, message, sizeof (message));
 
       if (0 != memcmp (message, ctx->rnd_a, sizeof (ctx->rnd_a)))
+      {
         status = ST_OSDP_CHLNG_DECRYPT;
+      }
+      else
+      {
+        if (ctx->verbosity > 3)
+          fprintf(ctx->log, "Client Cryptogram was valid (RND.A matched.)\n");
+      };
     };
     if (status EQUALS ST_OK)
     {
@@ -106,6 +115,8 @@ if (ctx->verbosity > 8)
       // client crytogram looks ok, save RND.B
 
       memcpy (ctx->rnd_b, message + sizeof (ctx->rnd_a), sizeof (ctx->rnd_b));
+      if (ctx->verbosity > 3)
+        dump_buffer_log(ctx, "Saving RND.B:", ctx->rnd_b, sizeof(ctx->rnd_b));
 
       // if it was a sane CCRYPT log it
 
@@ -116,6 +127,10 @@ if (ctx->verbosity > 8)
 
       memcpy (message, ctx->rnd_b, sizeof (ctx->rnd_b));
       memcpy (message+sizeof (ctx->rnd_b), ctx->rnd_a, sizeof (ctx->rnd_a));
+      if (ctx->verbosity > 3)
+        dump_buffer_log(ctx, "Plaintext of server cryptogram:",
+          message, sizeof(server_cryptogram));
+
       AES_ctx_set_iv (&aes_context_s_enc, iv);
       memcpy (server_cryptogram, message, sizeof (server_cryptogram));
       AES_CBC_encrypt_buffer(&aes_context_s_enc,
@@ -393,7 +408,7 @@ int
     {
        // must be an out of range protocol variant.  issue error, fail, and proceed.
 
-      fprintf(ctx->log, "    Unknown Protocol Variant (%02X)\n", scs_header->sec_blk_data);
+      fprintf(ctx->log, "    RMAC_I Status check: unknown protocol variant (%02X)\n", scs_header->sec_blk_data);
     };
     if (status EQUALS ST_OK)
     {

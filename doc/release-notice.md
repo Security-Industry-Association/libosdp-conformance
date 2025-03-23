@@ -11,6 +11,7 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 fix parity in default card number.
 trim some debug messages from stderr.
+enhance debug logging during secure channel
 
 ### Updates in 1.80 Build 2 ###
 
