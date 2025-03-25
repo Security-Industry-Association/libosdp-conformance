@@ -131,7 +131,7 @@ int
     if (ctx->last_nak_error EQUALS OO_NAK_SEQUENCE)
       ctx->next_sequence = 0;
   };
-  
+
   if (do_increment)
   {
     // the current value is returned. might be 0 (if this is the first message)
@@ -154,9 +154,9 @@ int
   }
   else
   {
-    if (ctx->verbosity > 2)
-      fprintf (ctx->log, "Last in was NAK (E=%d) Seq now %d\n",
-        ctx->last_nak_error, ctx->next_sequence);
+      if (ctx->verbosity > 2)
+        fprintf (ctx->log, "Last in was NAK (E=%d) Seq now %d\n",
+          ctx->last_nak_error, ctx->next_sequence);
   };
   return (current_sequence);
 

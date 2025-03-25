@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (80)
-#define OSDP_VERSION_BUILD ( 3)
+#define OSDP_VERSION_BUILD ( 4)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -652,7 +652,7 @@ typedef struct osdp_context
 
   int conformance_fail_next_rmac_i;
   int conformance_suppress_response;
-  int do_retry;
+  int do_retry; // also used in PD to mark we are in the retry logic.
   int next_crc_bad;
   int next_nak; // nak the next incoming message from the CP
   int next_response_bad;
@@ -794,6 +794,7 @@ typedef struct osdp_param
 
 #define OSDP_CONTROLBIT_CRC (0x04)
 #define OSDP_CONTROLBIT_SCS (0x08)
+#define OSDP_ADDRESSBIT_PD  (0x80)
 typedef struct osdp_hdr
 {
   unsigned char som;

@@ -66,12 +66,24 @@ int
   status = osdp_parse_message (&context, context.role, &msg, &parsed_msg);
   if (status EQUALS ST_OSDP_BAD_PD_SEQUENCE)
   {
+    unsigned short int current_check_value;
+
+    if (parsed_msg.ctrl & OSDP_CONTROLBIT_CRC)
+      current_check_value = *(unsigned short int *)(msg.crc_check);
+    else
+      current_check_value = *msg.crc_check;
+
     if (
 (parsed_msg.cmd_s EQUALS last_command_received) &&
 ((parsed_msg.ctrl & 3) EQUALS oo_previous_sequence(&context)) &&
-(*(unsigned short int *)(msg.crc_check) EQUALS last_check_value))
+current_check_value EQUALS last_check_value)
     {
-      fprintf(context.log, "RETRY detected.\n");
+      context.do_retry = 1; // tells the rest of the logic to do special retry things.
+      if (context.next_sequence EQUALS 1)
+        context.next_sequence = 3;
+      else
+        context.next_sequence --;
+      fprintf(context.log, "RETRY detected. Decrementing next_sequence to %d\n", context.next_sequence);
       status = ST_OK;
     }
     else
@@ -411,8 +423,6 @@ fflush(ctx->log);
 
         if (!(osdp_buf.buf [0] EQUALS C_SOM)) //really index zero, first octet of buffer
         {
-fprintf(stderr, "DEBUG: drop %02x next was %d dropped before %d\n",
-  osdp_buf.buf[0], osdp_buf.next, context.dropped_octets);
           context.dropped_octets = context.dropped_octets + 1;
           osdp_buf.next --;
           if (osdp_buf.next > 1)

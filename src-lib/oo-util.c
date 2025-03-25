@@ -1,7 +1,7 @@
 /*
   oo-util - open osdp utility routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -539,7 +539,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
-          fprintf(context->log, "CMD %02x declared invalid or unknown\n", msg->msg_cmd);
+          fprintf(context->log, "NAK induced.  CMD %02x declared invalid or unknown\n", msg->msg_cmd);
         };
       };
       break;

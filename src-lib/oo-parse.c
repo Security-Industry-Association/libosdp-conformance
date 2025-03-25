@@ -235,6 +235,9 @@ int
     m->direction = 0x80 & p->addr;
     m->data_payload = m->cmd_payload + 1;
 
+    if (m->direction EQUALS OSDP_ADDRESSBIT_PD)
+      context->do_retry = 0; // for a PD reset the retry logic
+
     // if it wasn't a poll or an ack report the secure header if there is one
     if ((m->msg_cmd != OSDP_POLL) && (m->msg_cmd != OSDP_ACK))
       fprintf (context->log, "%s", tlogmsg);

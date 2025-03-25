@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.80 Build 4 ###
+
+Correct PD processing of retry for checksum.
+
 ### Updates in 1.80 Build 3 ###
 
 fix parity in default card number.
