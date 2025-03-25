@@ -636,6 +636,11 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         buzzer_control [2] = details [0]; // 15x100 ms on
         buzzer_control [3] = details [1]; // 15x100 ms off
         buzzer_control [4] = details [2];  // repeat 3 times
+
+        // if details 3 is nonzero use it as the tone code.
+        if (details [3] != 0)
+          buzzer_control [1] = details [3];
+
         if (context->verbosity > 3)
           fprintf (context->log,
 "Requesting Buzz: tone %d on %d(x100ms) off %d(x100ms) repeat %d\n",

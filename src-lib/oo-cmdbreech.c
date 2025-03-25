@@ -679,6 +679,7 @@ int
       cmd->details [0] = 15;
       cmd->details [1] = 15;
       cmd->details [2] = 3;
+      cmd->details [3] = 0; // do not use this as tone code.
 
       // also use off_time if it's present
 
@@ -708,6 +709,16 @@ int
         strcpy (vstr, json_string_value (parameter));
         sscanf (vstr, "%d", &i);
         cmd->details [2] = i;
+      };
+
+      // also use tone-code if it's present
+
+      parameter = json_object_get (root, "tone-code");
+      if (json_is_string (parameter))
+      {
+        strcpy (vstr, json_string_value (parameter));
+        sscanf (vstr, "%d", &i);
+        cmd->details [3] = i;
       };
 
       status = enqueue_command(ctx, cmd);

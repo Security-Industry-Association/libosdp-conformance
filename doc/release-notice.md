@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+
+### Updates in 1.90 Build 1 ###
+
+Added tone-code support to buzz command.
+
 ### Updates in 1.80 Build 4 ###
 
 Correct PD processing of retry for checksum.
