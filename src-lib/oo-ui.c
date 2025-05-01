@@ -880,7 +880,7 @@ if (ctx->verbosity > 3)
         memcpy(keepactive_time, details, 2);
         current_length = 0;
         status = send_message_ex (context, OSDP_KEEPACTIVE, p_card.addr,
-            &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
+            &current_length, 2, NULL, OSDP_SEC_SCS_15, 0, NULL);
       };
       break;
 

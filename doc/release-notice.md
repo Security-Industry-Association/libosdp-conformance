@@ -7,6 +7,9 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.90 Build 2 ###
+
+Correct osdp_KEEPACTIVE command (it wasn't sending the 2 byte payload.)
 
 ### Updates in 1.90 Build 1 ###
 
