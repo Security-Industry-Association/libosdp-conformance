@@ -95,7 +95,7 @@ int
   if (status EQUALS ST_OK)
   {
     status = process_command(cmd.command, &context, cmd.details_length, cmd.details_param_1, (char *)cmd.details);
-    if (ctx->verbosity > 3)
+    if (ctx->verbosity > 9)
       fprintf(stderr, "DEBUG: q %d\n", ctx->q [0].status);
   };
   if (status != ST_OK)
