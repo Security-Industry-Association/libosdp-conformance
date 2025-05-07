@@ -193,6 +193,7 @@ int
 
   char aux [4096];
   FILE *capf;
+  char cmd [2048];
   OSDP_PDCAP_ENTRY *entry;
   int i;
   int max_multipart;
@@ -396,6 +397,14 @@ int
   if (ctx->last_command_sent EQUALS OSDP_CAP)
     osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
   strcat(aux, "{\"function\":\"0\",\"compliance\":\"0\",\"number-of\":\"0\"}],");
+
+  /*
+    ACTION SCRIPT ARGS: 1=number of entries
+  */
+  sprintf(cmd, "%s/run/ACU-actions/osdp_PDCAP %d", ctx->service_root,
+    num_entries);
+  if (ctx->verbosity > 1)
+    system(cmd);
 
   osdp_test_set_status_ex(OOC_SYMBOL_rep_device_capas, OCONFORM_EXERCISED, aux);
   return(status);

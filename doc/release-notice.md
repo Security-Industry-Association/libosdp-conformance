@@ -11,6 +11,7 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 Correct osdp_KEEPACTIVE command (it wasn't sending the 2 byte payload.)
 Tune some debug log messages.
+add action routine for PDCAP.
 
 ### Updates in 1.90 Build 1 ###
 
