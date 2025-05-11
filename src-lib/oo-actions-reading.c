@@ -1,7 +1,7 @@
 /*
   oo-actions - open osdp action routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -112,6 +112,7 @@ int
   char hex_details [4096];
   char hstr [1024]; // hex string of raw card data payload
   char json_blob [1024];
+  int payload_octets;
   unsigned char *raw_data;
   int status;
 
@@ -126,7 +127,8 @@ int
     fprintf(ctx->log, "%s\n", tlogmsg); fflush(ctx->log); tlogmsg [0] = 0;
 
     raw_data = msg->data_payload + 4;
-    dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, msg->data_length);
+    payload_octets = (*(msg->data_payload+2) + ((*(msg->data_payload+3))<<8)+7)/8;
+    dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, payload_octets);
     if (msg->security_block_length > 0)
     {
       fprintf(ctx->log, "  RAW card data contents encrypted.\n");

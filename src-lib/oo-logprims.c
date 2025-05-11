@@ -1,7 +1,7 @@
 /*
   oo-logprims - open osdp logging sub-functions
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -97,7 +97,7 @@ int
   // "Chk/CRC" is either 1 byte or 2 depending on Checksum or CRC used.
 
   wire_crc = *(1+msg->crc_check) << 8 | *(msg->crc_check);
-  wire_cksum = *(1+msg->crc_check);
+  wire_cksum = *(msg->crc_check);
 //sprintf(tmpstr2, "-ckz %d check %02x %02x-", msg->check_size, *(msg->crc_check), *(1+msg->crc_check)); strcat(tlogmsg, tmpstr2);
 
   sprintf(tmpstr2, " CRC=%04x", wire_crc);
