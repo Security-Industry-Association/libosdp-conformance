@@ -128,7 +128,7 @@ int
 
     raw_data = msg->data_payload + 4;
     payload_octets = (*(msg->data_payload+2) + ((*(msg->data_payload+3))<<8)+7)/8;
-    dump_buffer_log(ctx, "osdp_RAW data", msg->data_payload, payload_octets);
+    dump_buffer_log(ctx, "osdp_RAW data", raw_data, payload_octets);
     if (msg->security_block_length > 0)
     {
       fprintf(ctx->log, "  RAW card data contents encrypted.\n");
