@@ -72,12 +72,11 @@ int
     secure_message = (OSDP_SECURE_MESSAGE *)(msg->ptr);
     if (ctx->enable_secure_channel EQUALS 2)
       if (secure_message->sec_blk_data != OSDP_KEY_SCBK_D)
-        status = ST_OSDP_UNKNOWN_KEY;
+        status = ST_OSDP_UNK_KEY_PAIR;
 
     if (ctx->enable_secure_channel EQUALS 1)
       if (secure_message->sec_blk_data != OSDP_KEY_SCBK)
-        status = ST_OSDP_UNKNOWN_KEY;
-// ctx->secure_channel_use [OO_SCU_KEYED] EQUALS OO_SECPOL_KEYLOADED
+        status = ST_OSDP_UNK_KEY_DEFAULT;
 
     if (status EQUALS ST_OK)
     {
@@ -155,7 +154,7 @@ if (ctx->verbosity > 8)
   // if there was an error reset the secure channel and let the world continue
   if (status != ST_OK)
   {
-    fprintf(ctx->log, "Error processing CCRYPT.  Secure Channel reset.\n");
+    fprintf(ctx->log, "Error processing CCRYPT (status %d.)  Secure Channel reset.\n", status);
     status = ST_OK;
     osdp_reset_secure_channel (ctx);
   };

@@ -1035,7 +1035,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_NO_KEY_LOADED        (55)
 #define ST_OSDP_BAD_KEY_SELECT       (56)
 #define ST_OSDP_NO_SCBK              (57)
-#define ST_OSDP_UNKNOWN_KEY          (58)
+//#define ST_OSDP_UNKNOWN_KEY          (58)
 #define ST_OSDP_BAD_TRANSFER_FILE    (59)
 #define ST_OSDP_BAD_TRANSFER_SAVE    (60)
 #define ST_OSDP_FILEXFER_WRITE           ( 61)
@@ -1083,6 +1083,8 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_SC_BAD_HEADER            (103)
 #define ST_OSDP_FILEXFER_POLL_RESPONSE   (104)
 #define ST_OSDP_BAD_PD_SEQUENCE          (105)
+#define ST_OSDP_UNK_KEY_PAIR             (106)
+#define ST_OSDP_UNK_KEY_DEFAULT          (107)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

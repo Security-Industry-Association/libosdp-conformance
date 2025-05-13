@@ -13,6 +13,7 @@ Correct osdp_KEEPACTIVE command (it wasn't sending the 2 byte payload.)
 Tune some debug log messages.
 add action routine for PDCAP.
 fix some log messages for osdp_RAW
+tuned the error output for osdp_CCRYPT.
 
 ### Updates in 1.90 Build 1 ###
 
