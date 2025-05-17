@@ -878,7 +878,7 @@ int
     {
       cmd->command = OSDP_CMD_NOOP; // nothing other than what's here so no-op
 
-      status = send_comset (ctx, p_card.addr, 0, "999999", 0);
+      status = send_comset (ctx, ctx->pd_address, 0, "999999", 0);
     };
   };
 

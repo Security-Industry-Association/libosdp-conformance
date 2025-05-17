@@ -231,7 +231,7 @@ int
 
 fprintf(stderr, "DEBUG: sending poll to address poll response\n");
     current_length = 0;
-    status = send_message_ex(ctx, OSDP_POLL, p_card.addr, &current_length,
+    status = send_message_ex(ctx, OSDP_POLL, ctx->pd_address, &current_length,
       0, NULL, OSDP_SEC_SCS_15, 0, NULL);
   };
   if (status EQUALS ST_OK)

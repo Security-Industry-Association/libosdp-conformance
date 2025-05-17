@@ -324,7 +324,7 @@ fprintf(stderr, "DEBUG: crauth enqueued\n");
     {
       current_length = 0;
       status = send_message_ex
-        (ctx, OSDP_GENAUTH, p_card.addr, &current_length, payload_length, payload,
+        (ctx, OSDP_GENAUTH, ctx->pd_address, &current_length, payload_length, payload,
         OSDP_SEC_SCS_17, 0, NULL);
 fprintf(stderr, "DEBUG: give GENAUTH a chance...\n"); sleep(5);
     };
@@ -361,7 +361,7 @@ fprintf(stderr, "DEBUG: give GENAUTH a chance...\n"); sleep(5);
     {
       current_length = 0;
       status = send_message_ex
-        (ctx, OSDP_CRAUTH, p_card.addr, &current_length, payload_length, payload,
+        (ctx, OSDP_CRAUTH, ctx->pd_address, &current_length, payload_length, payload,
         OSDP_SEC_SCS_17, 0, NULL);
 fprintf(stderr, "DEBUG: give CRAUTH a chance...\n"); sleep(5);
     };

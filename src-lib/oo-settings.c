@@ -845,7 +845,7 @@ fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
   if (found_field)
   {
     strcpy (this_value, json_string_value (value));
-    strcpy (p_card.filename, this_value);
+    strcpy (ctx->serial_device, this_value);
   }; 
 
   // parameter "serial_speed"

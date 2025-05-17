@@ -655,7 +655,7 @@ int
   {
     strcpy(ctx->serial_speed, json_string_value(value));
     fprintf(ctx->log, "Using speed %s from saved parameters.\n", ctx->serial_speed);
-    status = init_serial (ctx, p_card.filename);
+    status = init_serial (ctx, ctx->serial_device);
   };
   value = json_object_get(saved_parameters_root, "pd-address");
   if (json_is_string(value))

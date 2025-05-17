@@ -2,7 +2,7 @@ extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -141,7 +141,7 @@ int
 
   if (status EQUALS ST_OK)
   {
-    status = init_serial (&context, p_card.filename);
+    status = init_serial (&context, context.serial_device);
   };
   if (0) //(status EQUALS ST_OK)
   {

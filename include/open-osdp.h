@@ -29,8 +29,8 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (90)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (91)
+#define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -488,7 +488,9 @@ typedef struct osdp_context
 {
   int process_lock; // file handle to exclusivity lock
   int keep_results; // 0 for normal results flush; nonzero to flush results
-  // configuration
+
+  // Configuration
+
   int m_check; // OSDP_CHECKSUM or OSDP_CRC
   int privacy; // 1 to not display PII
   int disable_certificate_checking;
@@ -497,6 +499,7 @@ typedef struct osdp_context
   int post_command_action; // for stop-after-filetransfer or stop-after-timeout
   char fqdn [1024];
   char log_path [1024];
+  char serial_device [1024];
   char serial_speed [1024];
   int trace; // 0=disabled 1=enabled
   int verbosity;
@@ -706,14 +709,12 @@ typedef struct osdp_parameters
   unsigned char value [1024];
   int value_len;
 
+//*** DEPRECATED STOP USING THIS ***
   // PD device address
   int addr;
 
   //  Serial device filename
-  char filename [1024];
-
-  // poll delay
-//DEBUG  int poll;
+  // ??? char filename [1024];
 } OSDP_PARAMETERS;
 #define PARAMETER_NONE    (0)
 #define PARAMETER_PARAMS  (1)

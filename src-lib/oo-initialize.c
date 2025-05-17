@@ -291,7 +291,7 @@ int
   // to force checksum-only set m_check to OSDP_CHECKSUM here.
 
   m_dump = 0;
-  strcpy (p_card.filename, "/dev/ttyUSB0");
+  strcpy (context->serial_device, "/dev/ttyUSB0");
   context->next_sequence = 0;
 
   memset(special_pdcap_list, 0, 32*3);
@@ -418,7 +418,7 @@ int
       "%s (Rcvd Frame %6d)", logmsg, context->packets_received);
 
     fprintf (context->log, "Verbosity %d. Device %s Address %2d Speed %s\n",
-      context->verbosity, p_card.filename, p_card.addr, context->serial_speed);
+      context->verbosity, context->serial_device, p_card.addr, context->serial_speed);
   };
 
   if ((status EQUALS ST_OK) && (context->role != OSDP_ROLE_MONITOR))
@@ -429,7 +429,7 @@ int
 
     sprintf (logmsg, "Parameters:");
     fprintf (context->log, "%s\n", logmsg);
-    sprintf (logmsg, "  Filename: %s", p_card.filename);
+    sprintf (logmsg, "  Filename: %s", context->serial_device);
     fprintf (context->log, "%s\n", logmsg);
     sprintf (logmsg, "  Addr: %02x (%d.)", p_card.addr, p_card.addr);
     fprintf (context->log, "%s\n", logmsg);

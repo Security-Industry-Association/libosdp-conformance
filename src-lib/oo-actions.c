@@ -79,10 +79,10 @@ int
 
   new_addr = *(msg->data_payload); // first byte is new PD addr
   if ((new_addr >= 0) && (new_addr <= 0x7E))
-    p_card.addr = new_addr;
-  fprintf (ctx->log, "PD Address set to %02x\n", p_card.addr);
+    ctx->pd_address = new_addr;
+  fprintf (ctx->log, "PD Address set to %02x\n", ctx->pd_address);
 
-  osdp_com_response_data [0] = p_card.addr;
+  osdp_com_response_data [0] = ctx->pd_address;
   if (OSDP_LOCK_SPEED)
     *(unsigned long int *)(osdp_com_response_data+1) = 9600; // hard-code to 9600 BPS
   else
@@ -97,16 +97,16 @@ int
   };
   if (status EQUALS ST_OK)
   {
-    ctx->new_address = p_card.addr;
+    ctx->new_address = ctx->pd_address;
     sprintf(ctx->serial_speed, "%d", i);
 
     fprintf(ctx->log, "comset to addr %02x speed %s\n",
-      p_card.addr, ctx->serial_speed);
+      ctx->pd_address, ctx->serial_speed);
     if (ctx->verbosity > 2)
       fprintf(ctx->log, "OSDP_COMSET received, setting addr to %02x speed to %s.\n",
-        p_card.addr, ctx->serial_speed);
+        ctx->pd_address, ctx->serial_speed);
     (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS, NULL);
-    status = init_serial (ctx, p_card.filename);
+    status = init_serial (ctx, ctx->serial_device);
   };
 
   // send the response to the ACU
@@ -447,7 +447,7 @@ int
       done = 1;
       current_length = 0;
       status = send_message_ex (ctx,
-        pending_response, p_card.addr, &current_length,
+        pending_response, ctx->pd_address, &current_length,
         pending_response_length, pending_response_data,
         OSDP_SEC_NOT_SCS, 0, NULL);
       pending_response_length = 0;
@@ -464,7 +464,7 @@ int
       done = 1;
       current_length = 0;
       status = send_message_ex (ctx,
-        OSDP_BUSY, p_card.addr, &current_length,
+        OSDP_BUSY, ctx->pd_address, &current_length,
         0, NULL, OSDP_SEC_NOT_SCS, 0, NULL);
       SET_PASS (ctx, "4-16-1");
       if (ctx->verbosity > 2)
@@ -490,7 +490,7 @@ int
     osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
 
     current_length = 0;
-    status = send_message_ex(ctx, OSDP_ISTATR, p_card.addr,
+    status = send_message_ex(ctx, OSDP_ISTATR, ctx->pd_address,
       &current_length, input_length, osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
     ctx->xferctx.ft_action = 0; // if were an interleaved poll response clear that.
     ctx->next_istatr = 0;
@@ -504,7 +504,7 @@ int
 
     memset (value, 0, sizeof(value));
     current_length = 0;
-    status = send_message_ex(ctx, OSDP_ISTATR, p_card.addr, &current_length, 1300, value, OSDP_SEC_SCS_17, 0, NULL);
+    status = send_message_ex(ctx, OSDP_ISTATR, ctx->pd_address, &current_length, 1300, value, OSDP_SEC_SCS_17, 0, NULL);
     done = 1;
   };
 
@@ -543,7 +543,7 @@ int
 
     current_length = 0;
     status = send_message_ex (ctx,
-      OSDP_LSTATR, p_card.addr, &current_length,
+      OSDP_LSTATR, ctx->pd_address, &current_length,
       sizeof (osdp_lstat_response_data), osdp_lstat_response_data,
       OSDP_SEC_NOT_SCS, 0, NULL);
     ctx->xferctx.ft_action = 0; // if were an interleaved poll response clear that.
@@ -566,7 +566,7 @@ int
       osdp_lstat_response_data [ 1] = ctx->power_report;
 
       current_length = 0;
-      status = send_message_ex (ctx, OSDP_LSTATR, p_card.addr, &current_length,
+      status = send_message_ex (ctx, OSDP_LSTATR, ctx->pd_address, &current_length,
         sizeof (osdp_lstat_response_data), osdp_lstat_response_data, OSDP_SEC_NOT_SCS, 0, NULL);
       if (ctx->verbosity > 2)
       {
@@ -612,7 +612,7 @@ int
 
       dump_buffer_log(ctx, "card data", (unsigned char *)(ctx->credentials_data), ctx->creds_a_avail);
       status = send_message_ex (ctx,
-        OSDP_RAW, p_card.addr, &current_length, raw_lth, osdp_raw_data,
+        OSDP_RAW, ctx->pd_address, &current_length, raw_lth, osdp_raw_data,
         OSDP_SEC_SCS_18, 0, NULL);
       ctx->xferctx.ft_action = 0; // if were an interleaved poll response clear that.
       osdp_test_set_status(OOC_SYMBOL_rep_raw, OCONFORM_EXERCISED);
@@ -639,7 +639,7 @@ int
   {
     current_length = 0;
     status = send_message_ex
-      (ctx, response_directive, p_card.addr, &current_length, 0, NULL,
+      (ctx, response_directive, ctx->pd_address, &current_length, 0, NULL,
       OSDP_SEC_SCS_16, 0, NULL);
     osdp_test_set_status(OOC_SYMBOL_cmd_poll, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_rep_ack, OCONFORM_EXERCISED);
@@ -700,7 +700,7 @@ int
   // we always ack the TEXT command regardless of param errors
 
   current_length = 0;
-  status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
+  status = send_message_ex (ctx, OSDP_ACK, ctx->pd_address, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
   ctx->pd_acks ++;
   if (ctx->verbosity > 2)
     fprintf (ctx->log, "Responding with OSDP_ACK\n");

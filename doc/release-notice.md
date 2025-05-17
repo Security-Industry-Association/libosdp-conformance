@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.91 Build 0 ###
+
+correct COMSET and COM behavior.  COM must be returned on current addr/speed and THEN
+switch to the new address/speed, if in fact it's different.
+
 ### Updates in 1.90 Build 2 ###
 
 Correct osdp_KEEPACTIVE command (it wasn't sending the 2 byte payload.)

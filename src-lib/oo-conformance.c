@@ -1,7 +1,7 @@
 /*
   oo-conformance - conformance reporting routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -153,8 +153,6 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.multibyte_data_encoding.test_status),
       0, 0, 0, 0, 0,
                         "    Multibyte"},
-    { "3-12-1", &(osdp_conformance.cmd_text.test_status),
-      0, 0, 0, 0, 0, "---" },
     {         OOC_SYMBOL_physical_interface,
       &(osdp_conformance.physical_interface.test_status),
       1, 0, 0, 0, 0,
@@ -799,7 +797,7 @@ void
 "3-11-1 Buzzer Control                     %s",
     conformance_status (oconf->cmd_buz.test_status)));
   LOG_REPORT ((log_string,
-"3-12-1 Text output                        %s",
+"060-12-01 Text output                        %s",
     conformance_status (oconf->cmd_text.test_status)));
   LOG_REPORT ((log_string,
 "3-14-1 COMSET                             %s",

@@ -476,7 +476,7 @@ int
       param [0], ctx->serial_speed);
   ctx->new_address = param [0];
   p_card.addr = ctx->new_address;
-  status = init_serial (ctx, p_card.filename);
+  status = init_serial (ctx, ctx->serial_device);
   return (status);
 
 } /* send_comset */
