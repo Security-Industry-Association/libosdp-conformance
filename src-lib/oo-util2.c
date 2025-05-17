@@ -470,6 +470,8 @@ int
     status = send_message_ex(ctx, OSDP_COMSET, pd_address, &current_length,
       sizeof(param), param, OSDP_SEC_SCS_17, 0, NULL);
   };
+#if 0
+// do NOT set the speed here.
   sprintf (ctx->serial_speed, "%d", new_speed);
   if (ctx->verbosity > 2)
     fprintf (stderr, "Diag - set com: addr to %02x speed to %s.\n",
@@ -477,6 +479,7 @@ int
   ctx->new_address = param [0];
   p_card.addr = ctx->new_address;
   status = init_serial (ctx, ctx->serial_device);
+#endif
   return (status);
 
 } /* send_comset */

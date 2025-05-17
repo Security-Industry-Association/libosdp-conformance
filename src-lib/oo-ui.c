@@ -100,7 +100,7 @@ context=ctx;
         value [0] = 0x00ff & max_size;
         value [1] = (0xff00 & max_size) >> 8;
         current_length = 0;
-        status = send_message_ex(context, OSDP_ACURXSIZE, p_card.addr,
+        status = send_message_ex(context, OSDP_ACURXSIZE, context->pd_address,
           &current_length, 2, value,
           OSDP_SEC_SCS_17, 0, NULL);
       };
@@ -180,22 +180,22 @@ context=ctx;
 
     case OSDP_CMDB_CONFORM_2_2_1:
       strcpy (context->test_in_progress, "2-2-1");
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "9600", 0);
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, context->pd_address, "9600", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_2:
       strcpy (context->test_in_progress, "2-2-2");
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "19200", 0);
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, context->pd_address, "19200", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_3:
       strcpy (context->test_in_progress, "2-2-3");
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "38400", 0);
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, context->pd_address, "38400", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_2_4:
       strcpy (context->test_in_progress, "2-2-4");
-      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, p_card.addr, "115200", 0);
+      status = send_comset (context, OSDP_CONFIGURATION_ADDRESS, context->pd_address, "115200", 0);
       break;
 
     case OSDP_CMDB_CONFORM_2_6_1:
@@ -211,7 +211,7 @@ context=ctx;
         otxt.length = strlen (context->text);
         memcpy (otxt.text, context->text, 1024);
         current_length = 0;
-        status = send_message_ex(context, OSDP_TEXT, p_card.addr,
+        status = send_message_ex(context, OSDP_TEXT, context->pd_address,
           &current_length, 
           sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
           (unsigned char *)&otxt,
@@ -245,7 +245,7 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
 
       // no security block for an SCS_17
 
-      status = send_secure_message(context, OSDP_POLL, p_card.addr,
+      status = send_secure_message(context, OSDP_POLL, context->pd_address,
         &current_length, 0, NULL, OSDP_SEC_SCS_17, 0, sec_blk);
 
       if (status EQUALS ST_OK)
@@ -265,7 +265,7 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
         omfg.mfg_command_id = 1;
         omfg.data = 0xff;
         current_length = 0;
-        status = send_message_ex(context, OSDP_MFG, p_card.addr,
+        status = send_message_ex(context, OSDP_MFG, context->pd_address,
           &current_length, sizeof(omfg), (unsigned char *)&omfg,
           OSDP_SEC_SCS_17, 0, NULL);
         if (status EQUALS ST_OK)
@@ -305,7 +305,7 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
           if (command EQUALS OSDP_CMDB_CHALLENGE)
             osdp_command = OSDP_CRAUTH;
         current_length = 0;
-        status = send_message_ex(context, osdp_command, p_card.addr,
+        status = send_message_ex(context, osdp_command, context->pd_address,
           &current_length, challenge_payload_size, challenge_command, OSDP_SEC_SCS_17, 0, NULL);
 
 // if it was a witness, sleep a while in case it takes a while for the ACK to get back.
@@ -331,7 +331,7 @@ if (command EQUALS OSDP_CMDB_WITNESS)
           strcpy (context->test_in_progress, "induce-NAK");
           current_length = 0;
           status = send_message (context,
-            OSDP_UNDEF, p_card.addr, &current_length, 0, &nothing);
+            OSDP_UNDEF, context->pd_address, &current_length, 0, &nothing);
         }
         else
         {
@@ -382,7 +382,7 @@ if(1)//        if (context->verbosity > 3)
         {
           dump_buffer_log(context, "KEYSET key:", key_buffer, keybuflth);
         };
-        status = send_message_ex(context, OSDP_KEYSET, p_card.addr,
+        status = send_message_ex(context, OSDP_KEYSET, context->pd_address,
           &current_length, keybuflth, key_buffer,
           OSDP_SEC_SCS_17, 0, NULL);
 fprintf(stderr, "DEBUG: send keyset status %d cl %d sleep 1\n",
@@ -407,7 +407,7 @@ sleep(1);
         char tmps [3];
 
         oargs = (OSDP_MFG_ARGS *)details;
-        context->left_to_send_destination = p_card.addr;
+        context->left_to_send_destination = context->pd_address;
         omfg = (OSDP_MFG_COMMAND *)data;
         if (details_param_1 EQUALS OSDP_CONFIGURATION_ADDRESS)
           context->left_to_send_destination = OSDP_CONFIGURATION_ADDRESS;
@@ -522,7 +522,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         memcpy(pivdata_buffer, details, 6);
         dump_buffer_log(context, "PIVDATA object,element,offset:", pivdata_buffer, 6);
         current_length = 0;
-        status = send_message_ex(context, OSDP_PIVDATA, p_card.addr,
+        status = send_message_ex(context, OSDP_PIVDATA, context->pd_address,
           &current_length, 6, pivdata_buffer,
           OSDP_SEC_SCS_17, 0, NULL);
       };
@@ -533,7 +533,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       if (details_param_1 > 0)
       {
         current_length = 0;
-        status = send_message_ex(context, details[0], p_card.addr,
+        status = send_message_ex(context, details[0], context->pd_address,
           &current_length, details_length, (unsigned char *)(details+1),
           OSDP_SEC_SCS_17, 0, NULL);
       }
@@ -647,7 +647,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             buzzer_control [1], buzzer_control [2],
             buzzer_control [3], buzzer_control [4]);
         current_length = 0;
-        status = send_message_ex (context, OSDP_BUZ, p_card.addr,
+        status = send_message_ex (context, OSDP_BUZ, context->pd_address,
           &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control,
           OSDP_SEC_SCS_17, 0, NULL);
         };
@@ -663,11 +663,11 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         param [0] = 0;
         if (details [0] EQUALS 1)
         {
-          status = send_message_ex (context, OSDP_CAP, p_card.addr, &current_length, sizeof (param), param, OSDP_SEC_STAND_DOWN, 0, NULL);
+          status = send_message_ex (context, OSDP_CAP, context->pd_address, &current_length, sizeof (param), param, OSDP_SEC_STAND_DOWN, 0, NULL);
         }
         else
         {
-          status = send_message_ex (context, OSDP_CAP, p_card.addr, &current_length, sizeof (param), param, OSDP_SEC_SCS_17, 0, NULL);
+          status = send_message_ex (context, OSDP_CAP, context->pd_address, &current_length, sizeof (param), param, OSDP_SEC_SCS_17, 0, NULL);
         };
         if (context->verbosity > 2)
           fprintf (context->log, "Requesting Capabilities Report\n");
@@ -693,7 +693,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         new_speed = 0;
         dest_address = OSDP_CONFIGURATION_ADDRESS;
         if (details [2])
-          dest_address = p_card.addr;
+          dest_address = context->pd_address;
         if (details [1] & 0x80)
           context->next_sequence = 0;
   
@@ -758,7 +758,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             fprintf(context->log, "    osdp_ID, L=%u V=%02x CLEAR=%d\n",
               (unsigned)sizeof(param), param [0], details [0]);
           };
-          dest_address = p_card.addr;
+          dest_address = context->pd_address;
           if (details_param_1 EQUALS 0x7F)
             dest_address = 0x7F;
 
@@ -834,7 +834,7 @@ if (ctx->verbosity > 3)
   fprintf(ctx->log, "about to send CHLNG\n");
 
             status = send_secure_message (context,
-              OSDP_CHLNG, p_card.addr, &current_length, 
+              OSDP_CHLNG, context->pd_address, &current_length, 
               sizeof (context->rnd_a), context->rnd_a,
               OSDP_SEC_SCS_11, sizeof (sec_blk_1), sec_blk_1);
           };
@@ -862,7 +862,7 @@ if (ctx->verbosity > 3)
         }
         else
         {
-          status = send_message_ex (context, OSDP_ISTAT, p_card.addr,
+          status = send_message_ex (context, OSDP_ISTAT, context->pd_address,
             &current_length, 0, NULL,
             OSDP_SEC_SCS_15, 0, NULL);
           if (context->verbosity > 3)
@@ -879,7 +879,7 @@ if (ctx->verbosity > 3)
 
         memcpy(keepactive_time, details, 2);
         current_length = 0;
-        status = send_message_ex (context, OSDP_KEEPACTIVE, p_card.addr,
+        status = send_message_ex (context, OSDP_KEEPACTIVE, context->pd_address,
             &current_length, 2, keepactive_time, OSDP_SEC_SCS_15, 0, NULL);
       };
       break;
@@ -957,7 +957,7 @@ if (ctx->verbosity > 3)
           else
           {
             current_length = 0;
-            status = send_message_ex (context, OSDP_LED, p_card.addr,
+            status = send_message_ex (context, OSDP_LED, context->pd_address,
               &current_length, sizeof (led_control_message), (unsigned char *)&led_control_message,
               OSDP_SEC_SCS_17, 0, NULL);
             memcpy(context->test_details, (char *)&led_control_message, sizeof(led_control_message));
@@ -975,7 +975,7 @@ if (ctx->verbosity > 3)
           osdp_nak_response_data [2] = error_details [1]; // perm error
           nak_length = 3;
           status = send_message (context,
-            OSDP_NAK, p_card.addr, &current_length, nak_length,
+            OSDP_NAK, context->pd_address, &current_length, nak_length,
             osdp_nak_response_data);
           context->sent_naks ++;
         };
@@ -990,7 +990,7 @@ if (ctx->verbosity > 3)
         */
         current_length = 0;
 
-        status = send_message_ex (context, OSDP_LSTAT, p_card.addr,
+        status = send_message_ex (context, OSDP_LSTAT, context->pd_address,
           &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
       };
       status = ST_OK;
@@ -1004,7 +1004,7 @@ if (ctx->verbosity > 3)
         */
         current_length = 0;
         status = send_message_ex (context,
-          OSDP_OSTAT, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
+          OSDP_OSTAT, context->pd_address, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
         if (context->verbosity > 3)
           fprintf (context->log, "Requesting Output Status\n");
       };
@@ -1045,7 +1045,7 @@ if (ctx->verbosity > 3)
           out_lth = sizeof (osdp_out_msg [0]);
         };
         status = send_message_ex (context,
-          OSDP_OUT, p_card.addr, &current_length,
+          OSDP_OUT, context->pd_address, &current_length,
           out_lth, (unsigned char *)osdp_out_msg, OSDP_SEC_SCS_17, 0, NULL);
         status = ST_OK;
       };
@@ -1082,7 +1082,7 @@ if (ctx->verbosity > 3)
       status = ST_OK;
       current_length = 0;
       status = send_message_ex (context,
-        OSDP_RSTAT, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
+        OSDP_RSTAT, context->pd_address, &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, NULL);
       if (context->verbosity > 2)
         fprintf (context->log, "Requesting (External) Reader (Tamper) Status\n");
       break;
@@ -1090,7 +1090,7 @@ if (ctx->verbosity > 3)
     case OSDP_CMDB_SEND_POLL:
       current_length = 0;
       status = send_message (context,
-        OSDP_POLL, p_card.addr, &current_length, 0, NULL);
+        OSDP_POLL, context->pd_address, &current_length, 0, NULL);
       if (context->verbosity > 3)
         fprintf (stderr, "On-demand polling\n");
       status = ST_OK;
@@ -1115,7 +1115,7 @@ if (ctx->verbosity > 3)
         otxt.length = strlen(&(details [5]));
         strcpy(otxt.text, &(details [5]));
         current_length = 0;
-        status = send_message_ex(context, OSDP_TEXT, p_card.addr,
+        status = send_message_ex(context, OSDP_TEXT, context->pd_address,
           &current_length, 
           sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
           (unsigned char *)&otxt,

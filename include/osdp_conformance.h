@@ -36,6 +36,7 @@ typedef struct osdp_conform
 
 #define OOC_SYMBOL_physical_interface "050-01-01"
 #define OOC_SYMBOL_signalling         "050-02-01"
+#define OOC_SYMBOL_signalling_9600    "050-02-01"
 #define OOC_SYMBOL_signalling_19200   "050-02-02"
 #define OOC_SYMBOL_signalling_38400   "050-02-03"
 #define OOC_SYMBOL_signalling_57600   "050-02-05"

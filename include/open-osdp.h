@@ -1094,6 +1094,7 @@ int action_osdp_BIOREAD(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_BIOREADR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_COM(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_COMSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CRAUTH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CRAUTHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
