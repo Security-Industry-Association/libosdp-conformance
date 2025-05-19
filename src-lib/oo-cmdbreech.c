@@ -748,7 +748,7 @@ int
   }; 
 
   /*
-    COMSET.  takes two option arguments, "new-address" and "new_speed".
+    COMSET.  takes two option arguments, "new-address" and "new-speed".
     default for new-address is 0x00, default for new-speed is 9600
     details block:
       details [0] is the new address
@@ -760,10 +760,15 @@ int
 
   if (status EQUALS ST_OK)
   {
-
     if (0 EQUALS strcmp (current_command, "comset"))
     {
       cmd->command = OSDP_CMDB_COMSET;
+
+      // default is address 0 speed 9600 send as current address send in-session
+      cmd->details [0] = 0; //default PD address 0
+      cmd->details [1] = 0; // send in-session
+      cmd->details [2] = 1;
+      *(int *) &(cmd->details [4]) = 9600;
 
       value = json_object_get (root, "new-address");
       if (json_is_string (value))
@@ -803,8 +808,8 @@ int
       };
 
       if (ctx->verbosity > 2)
-        fprintf (ctx->log, "Received command COMSET Address %d Clr %d SendNotCfg %d Speed %d\n",
-          (int) (cmd->details [0]), (int) (cmd->details [1]), (int) (cmd->details [2]),
+        fprintf (ctx->log, "Sending COMSET: Address %d.(0x%02X) Clr(if 1) %d SendNotCfg (if 1) %d Speed %d\n",
+          (int) (cmd->details [0]), (int)(cmd->details [0]), (int) (cmd->details [1]), (int) (cmd->details [2]),
           *(int *) &(cmd->details [4]));
 
       status = enqueue_command(ctx, cmd);
