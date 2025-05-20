@@ -56,7 +56,7 @@ int
 
 
   if (ctx->verbosity > 3)
-    printf ("init_serial: command %s\n",
+    fprintf (ctx->log, "init_serial: command %s\n",
       ctx->init_command);
   if (strlen (ctx->init_command) > 0)
   {
@@ -68,7 +68,7 @@ int
   if (ctx->fd != -1)
   {
     if (ctx->verbosity > 3)
-      fprintf (stderr, "Closing %s\n", device);
+      fprintf (ctx->log, "Closing %s\n", device);
     close (ctx->fd);
   };
   ctx->fd = open (device, O_RDWR | O_NONBLOCK);
@@ -156,13 +156,13 @@ int
   };
   status_io = cfsetispeed (&(ctx->tio), serial_speed_cfg_value);
   if (ctx->verbosity > 3)
-    fprintf (stderr, "cfsetispeed returned %d\n", status_io);
+    fprintf (ctx->log, "cfsetispeed returned %d\n", status_io);
   status_io = cfsetospeed (&(ctx->tio), serial_speed_cfg_value);
   if (ctx->verbosity > 3)
-    fprintf (stderr, "cfsetospeed returned %d\n", status_io);
+    fprintf (ctx->log, "cfsetospeed returned %d\n", status_io);
   status_io = tcsetattr (ctx->fd, TCSANOW, &(ctx->tio));
   if (ctx->verbosity > 3)
-    fprintf (stderr, "tcsetattr returned %d\n", status_io);
+    fprintf (ctx->log, "tcsetattr returned %d\n", status_io);
   if (status_io != 0)
     status = ST_SERIAL_SET_ERR;
 };
