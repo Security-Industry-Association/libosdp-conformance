@@ -290,8 +290,8 @@ int
       int speed;
 
       msg = (OSDP_MSG *) aux;
-      speed = *(4+msg->data_payload) + (*(3+msg->data_payload) << 8) +
-        (*(2+msg->data_payload) << 16) + (*(1+msg->data_payload) << 24);
+      speed = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
+        (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
 
       sprintf(tlogmsg, "COM Returns New Address %02x New Speed %d.\n",
         *(0+msg->data_payload), speed);
