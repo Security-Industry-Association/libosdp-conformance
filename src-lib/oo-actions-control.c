@@ -42,10 +42,10 @@ int
   status = ST_OK;
   osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
   new_address = msg->data_payload [0];
-  new_speed = *(1+msg->data_payload);
-  new_speed = (new_speed << 8) +*(2+msg->data_payload);
+  new_speed = *(4+msg->data_payload);
   new_speed = (new_speed << 8) +*(3+msg->data_payload);
-  new_speed = (new_speed << 8) +*(4+msg->data_payload);
+  new_speed = (new_speed << 8) +*(2+msg->data_payload);
+  new_speed = (new_speed << 8) +*(1+msg->data_payload);
   sprintf(new_speed_string, "%d", new_speed);
   switch(new_speed)
   {
