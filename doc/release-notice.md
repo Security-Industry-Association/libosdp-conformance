@@ -11,6 +11,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 correct COMSET and COM behavior.  COM must be returned on current addr/speed and THEN
 switch to the new address/speed, if in fact it's different.
+Note that the default is now "command=comset" means a 0 s 9600 send on current address (not
+on config address.)
 
 ### Updates in 1.90 Build 2 ###
 

@@ -55,9 +55,6 @@ int
   int status_io;
 
 
-  if (ctx->verbosity > 3)
-    fprintf (ctx->log, "init_serial: command %s\n",
-      ctx->init_command);
   if (strlen (ctx->init_command) > 0)
   {
     fprintf (ctx->log, "Using init command \"%s\" for device %s\n",
