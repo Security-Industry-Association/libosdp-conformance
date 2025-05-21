@@ -706,10 +706,14 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             context->new_address, context->serial_speed);
         status = send_comset (context, dest_address, context->new_address, context->serial_speed, 0x01 && (details [1]));
 
+#if 0
+// let things proceed, don't reset, waiting for osdp_COM
+
         // reset protocol to beginning
 
         context->next_sequence = 0;
         context->last_response_received = 0;
+#endif
       };
       status = ST_OK;
       break;
