@@ -679,7 +679,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       {
         int dest_address;
         int new_speed;
-
+        char new_speed_string [1024];
 
         /*
             details [0] is the new address
@@ -687,8 +687,6 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
                            0x81 to send in the clear and on sequence 0
             details [2] is 1 if you are to send as the current address (else send to config address)
             details [4..7] are the new speed
-
-
         */
         new_speed = 0;
         dest_address = OSDP_CONFIGURATION_ADDRESS;
@@ -698,22 +696,13 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
           context->next_sequence = 0;
   
         memcpy (&new_speed, details+4, 4);
-        sprintf (context->serial_speed, "%d", new_speed);
+        sprintf (new_speed_string, "%d", new_speed);
         context->new_address = details [0];
         osdp_test_set_status(OOC_SYMBOL_cmd_comset, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
           fprintf (ctx->log, "Set Comms: addr to %02x speed to %s.\n",
             context->new_address, context->serial_speed);
-        status = send_comset (context, dest_address, context->new_address, context->serial_speed, 0x01 && (details [1]));
-
-#if 0
-// let things proceed, don't reset, waiting for osdp_COM
-
-        // reset protocol to beginning
-
-        context->next_sequence = 0;
-        context->last_response_received = 0;
-#endif
+        status = send_comset (context, dest_address, context->new_address, new_speed_string, 0x01 && (details [1]));
       };
       status = ST_OK;
       break;
