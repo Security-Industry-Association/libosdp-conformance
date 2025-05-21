@@ -130,7 +130,7 @@ int
   };
   from_address = p->addr;
   osdp_com_response_data [0] = new_addr; // response address
-  *(unsigned long int *)(osdp_com_response_data+1) = htonl(new_speed);
+  memcpy((char *)osdp_com_response_data+1, 1+msg->data_payload, 4);
 
 // lock config???
 
