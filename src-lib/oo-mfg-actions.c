@@ -1,7 +1,7 @@
 /*
   oo-mfg-actions - action call-outs for manufacturer specific commands
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -161,7 +161,9 @@ int
         mh->mfg_command_id = OOSDP_MFGR_PING_ACK;
         memcpy(&(mh->data), (char *)&(mfg->data), 4); // arbitrarily copy the 4 detail bytes back at ya
         current_length = 0;
-        status = send_message(ctx, OSDP_MFGREP, p_card.addr, &current_length, sizeof(mfg_response), mfg_response);
+//status = send_message(ctx, OSDP_MFGREP, p_card.addr, &current_length, sizeof(mfg_response), mfg_response);
+        status = send_message_ex (ctx, OSDP_MFGREP, ctx->pd_address,
+          &current_length, sizeof(mfg_response), mfg_response, OSDP_SEC_SCS_18, 0, NULL);
       };
       break;
 
@@ -186,6 +188,15 @@ int
       };
       break;
     };
+  }
+  else {
+    if (!unknown)
+    {
+      // matches OUI, we don't know what to do with it so just ACK it.
+
+      current_length = 0;
+      status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
+    };
   };
 
   if (!unknown)
@@ -205,11 +216,6 @@ int
         mfg->vendor_code [0], mfg->vendor_code [1], mfg->vendor_code [2], mfg->mfg_command_id, hex_buffer);
       status = oosdp_callout(ctx, "osdp_MFG", cmd);
     };
-    if (status EQUALS ST_OK)
-    {
-      current_length = 0;
-      status = send_message_ex (ctx, OSDP_ACK, p_card.addr, &current_length, 0, NULL, OSDP_SEC_SCS_16, 0, NULL);
-    };
   };
   if (unknown)
   {
@@ -222,7 +228,8 @@ int
     osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
     memcpy(osdp_nak_response_data, mfg->vendor_code, 3);
     nak_length = 3;
-fprintf(ctx->log, "DEBUG: 5 NAK: %d.\n", osdp_nak_response_data [0]);
+    if (ctx->verbosity > 3)
+      fprintf(ctx->log, "DEBUG: 5 NAK: %d.\n", osdp_nak_response_data [0]);
     status = send_message (ctx, OSDP_NAK, p_card.addr, &current_length, nak_length,
       osdp_nak_response_data); ctx->sent_naks ++;
   };

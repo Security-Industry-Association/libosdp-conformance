@@ -904,7 +904,9 @@ fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
       }; 
     };
     if (status EQUALS ST_OSDP_BAD_PD_SEQUENCE)
-fprintf(stderr, "DEBUG: preserve MAC here...\n");
+    {
+      fprintf(context->log, "Warning: bad sequence received, MAC not preserved.\n");
+    };
 
     // if it's ok (for me) and sufficint verbosity or dump mode then print the header
 
