@@ -1,7 +1,7 @@
 /*
   osdp-800-53.h - definitions for OSDP for PIV
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -23,9 +23,6 @@
 #define OSDP_REP_MSC_PIVDATA (0x10)
 #define OSDP_REP_MSC_CR_AUTH (0x14)
 #define OSDP_REP_MSC_STAT    (0xFD)
-
-static char OSDP_VENDOR_INID [] = { 0x00, 0x75, 0x32 };
-static char OSDP_VENDOR_WAVELYNX [] = { 0x5C, 0x26, 0x23 };
 
 typedef struct __attribute__((packed)) osdp_getpiv
 {

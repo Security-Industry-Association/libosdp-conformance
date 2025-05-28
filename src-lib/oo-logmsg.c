@@ -388,7 +388,7 @@ int
         sprintf(file_transfer_status_detail, "%d (file data unacceptable or malformed)", i);
         break;
       default:
-        sprintf(file_transfer_status_detail, "%d.", i);
+        sprintf(file_transfer_status_detail, "%d.", (short int)i);
         break;
       };
     };

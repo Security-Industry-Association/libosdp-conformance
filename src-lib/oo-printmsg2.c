@@ -1,7 +1,7 @@
 /*
   oo-printmsg - more open osdp message printing routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -126,6 +126,7 @@ int
 
     mrep = (OSDP_MFG_COMMAND *)(msg->data_payload);
     process_as_special = 0;
+#if 0
     if (0 EQUALS memcmp(mrep->vendor_code, OSDP_VENDOR_INID, sizeof(OSDP_VENDOR_INID)))
     {
       process_as_special = 1;
@@ -134,6 +135,7 @@ int
     {
       process_as_special = 1;
     };
+#endif
 
     if (!process_as_special)
     {
