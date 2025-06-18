@@ -12,6 +12,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 Added refuse-comset option to cause PD to respond to COMSET with a COM
 with unchanged values.  
 
+Note both ACU and PD now have default-parameters options in the web UI.
+
 Corrected comset/com processing for acu
 
 ### Updates in 1.91-1 Build 1 ###

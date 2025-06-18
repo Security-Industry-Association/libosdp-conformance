@@ -767,7 +767,7 @@ int
       // default is address 0 speed 9600 send as current address send in-session
       cmd->details [0] = 0; //default PD address 0
       cmd->details [1] = 0; // send in-session
-      cmd->details [2] = 1;
+      cmd->details [2] = 0; // send on config addess
       *(int *) &(cmd->details [4]) = 9600;
 
       value = json_object_get (root, "new-address");
