@@ -203,12 +203,12 @@ int
   if (send_poll)
   {
     current_length = 0;
-    status = send_message_ex(ctx, OSDP_POLL, p_card.addr, &current_length,
+    status = send_message_ex(ctx, OSDP_POLL, ctx->pd_address, &current_length,
       0, NULL, OSDP_SEC_SCS_15, 0, NULL);
   };
   if (send_secure_poll)
   {
-    status = send_secure_message(ctx, OSDP_POLL, p_card.addr,
+    status = send_secure_message(ctx, OSDP_POLL, ctx->pd_address,
       &current_length, 0, NULL, OSDP_SEC_SCS_15, 0, sec_blk);
   };
 

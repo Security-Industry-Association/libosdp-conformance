@@ -29,7 +29,7 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (91)
+#define OSDP_VERSION_MINOR (100)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OO_DIR_RUN         (1)
@@ -508,6 +508,7 @@ typedef struct osdp_context
   unsigned char my_guid [128/8];
   int pd_filetransfer_payload;
   char service_root [1024];
+  int refuse_comset;
 
   OSDP_COMMAND_QUEUE *q;
   int cmd_q_overflow;

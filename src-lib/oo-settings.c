@@ -183,6 +183,9 @@ int
   {
     if (ctx->verbosity > 3)
       fprintf(ctx->log, "Enabling sounder.\n");
+    if (ctx->verbosity < 3)
+      if (ctx->verbosity > 0)
+        fprintf(ctx->log, "Warning: no test reports, verbosity is %d.\n", ctx->verbosity);
     ctx->configured_sounder = 1;
   };
 
@@ -574,6 +577,20 @@ int
       ctx->privacy = i;
     };
   };
+
+  // refuse-comset - fix speed and address
+  if (status EQUALS ST_OK)
+  {
+    value = json_object_get (root, "refuse-comset");
+    if (json_is_string (value))
+    {
+      int i;
+      found_field = 1;
+      sscanf(json_string_value(value), "%d", &i);
+      ctx->refuse_comset = i;
+    };
+  };
+
 
   // results - "keep" or "new", default is "new"
 

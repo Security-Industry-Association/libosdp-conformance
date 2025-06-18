@@ -25,6 +25,7 @@ because bit 1 of the first octet is a 1 meaning a private value.)
 - pdcap-format
 - pd-filetransfer-recsize - size to use as FtMsgMax value in osdp_FTSTAT response.
 - raw-value
+- refuse-comset - this will respond to COMSET with COM but not change the speed/address.
 - role - PD or ACU or MON
 - RND.A - sets the value to use as an ACU in secure channel operations.  Value is hex.  Default "303132333435363738".
 - RND.B - sets the value to use as a PD in secure channel operations. Value is hex.  Default is "6162636465666768"

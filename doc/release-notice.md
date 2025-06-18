@@ -7,6 +7,13 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.100 Build 1 ###
+
+Added refuse-comset option to cause PD to respond to COMSET with a COM
+with unchanged values.  
+
+Corrected comset/com processing for acu
+
 ### Updates in 1.91-1 Build 1 ###
 
 Correct MFGREP logic (to stop sending MFGREP and an ACK.)

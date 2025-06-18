@@ -1628,6 +1628,9 @@ fprintf(stderr, "DEBUG: back from enqueuing output-status (%d)\n", status);
           ctx->trace = 1; // turn on tracing (should be stricter about low-order bit.)
         else
           ctx->trace = 0; // turn off tracing (should be stricter about low-order bit.)
+        if (ctx->verbosity > 0)
+          if (ctx->verbosity < 3)
+            fprintf(ctx->log, "Warning: no test reporting, verbosity too low.\n");
       };
     };
   }; 

@@ -24,6 +24,7 @@
 
 #include <open-osdp.h>
 #include <osdp_conformance.h>
+extern OSDP_PARAMETERS p_card;
 
 
 int
@@ -39,6 +40,7 @@ int
   int status;
 
 
+fprintf(stderr, "DEBUG: action_osdp_COM - top\n"); fflush(stderr);
   status = ST_OK;
   osdp_test_set_status(OOC_SYMBOL_resp_com, OCONFORM_EXERCISED);
   new_address = msg->data_payload [0];
@@ -46,6 +48,8 @@ int
   new_speed = (new_speed << 8) +*(3+msg->data_payload);
   new_speed = (new_speed << 8) +*(2+msg->data_payload);
   new_speed = (new_speed << 8) +*(1+msg->data_payload);
+fprintf(stderr, "DEBUG: payload address %02X speed %d\n",
+  new_address, new_speed);
   sprintf(new_speed_string, "%d", new_speed);
   switch(new_speed)
   {
@@ -68,11 +72,15 @@ int
     osdp_test_set_status(OOC_SYMBOL_signalling_230400, OCONFORM_EXERCISED);
     break;
   };
+fprintf(stderr, "DEBUG: naddr %d ctxa %d nspeed %s ctxspeed %s\n",
+  new_address, ctx->pd_address, new_speed_string, ctx->serial_speed);
+fflush(stderr);
   if ((new_address != ctx->pd_address) || (strcmp(new_speed_string,ctx->serial_speed)))
   {
     // the PD has sent us (the ACU) an osdp_COM and it was different values than our current setting so use it.
 
     ctx->pd_address = new_address;
+p_card.addr = ctx->pd_address; // legacy param
     strcpy(ctx->serial_speed, new_speed_string);
     status = init_serial (ctx, ctx->serial_device);
   };
@@ -115,9 +123,17 @@ int
   status = ST_OK;
   memset (osdp_com_response_data, 0, sizeof (osdp_com_response_data));
   p = (OSDP_HDR *)(msg->ptr);
-  new_speed = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
-    (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
-  new_addr = *(msg->data_payload); // first byte is new PD addr
+
+  // preset "new" values to old values in case we are not changing
+
+  new_addr = ctx->pd_address;
+  sscanf(ctx->serial_speed, "%d", &new_speed);
+  if (!ctx->refuse_comset)
+  {
+    new_speed = *(1+msg->data_payload) + (*(2+msg->data_payload) << 8) +
+      (*(3+msg->data_payload) << 16) + (*(4+msg->data_payload) << 24);
+    new_addr = *(msg->data_payload); // first byte is new PD addr
+  };
   if (ctx->verbosity > 2)
   {
     sprintf(logmsg, "COMSET Data Payload %02x %02x%02x%02x%02x %d. 0x%x",
@@ -132,8 +148,6 @@ int
   osdp_com_response_data [0] = new_addr; // response address
   memcpy((char *)osdp_com_response_data+1, 1+msg->data_payload, 4);
 
-// lock config???
-
   // send the response to the ACU
 
   current_length = 0;
@@ -146,24 +160,19 @@ int
     fprintf (ctx->log, "%s\n", logmsg); logmsg[0]=0;
   };
 
-  // set the new address
-
-  if ((new_addr >= 0) && (new_addr <= 0x7E))
-    ctx->pd_address = new_addr;
-  fprintf (ctx->log, "PD Address set to %02x\n", ctx->pd_address);
-
-  if (status EQUALS ST_OK)
+  if (!ctx->refuse_comset)
   {
+    // set the new address
+    if ((new_addr >= 0) && (new_addr <= 0x7E))
+    {
+      ctx->pd_address = new_addr;
+      p_card.addr = ctx->pd_address;
+    };
+    fprintf (ctx->log, "PD Address set to %02x\n", ctx->pd_address);
     ctx->new_address = ctx->pd_address;
     sprintf(ctx->serial_speed, "%d", new_speed);
-
     fprintf(ctx->log, "Changing to address %02x speed %s\n",
       ctx->pd_address, ctx->serial_speed);
-    if (ctx->verbosity > 3)
-    {
-      fprintf(ctx->log, "comset pausing...\n");
-      fflush(ctx->log);
-    };
     sleep(2);
     (void)oo_save_parameters(ctx, OSDP_SAVED_PARAMETERS, NULL);
     status = init_serial (ctx, ctx->serial_device);

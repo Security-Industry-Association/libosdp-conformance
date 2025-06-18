@@ -81,7 +81,7 @@ int
 
     // if it's for me check the squence
 
-    if (oh->addr EQUALS p_card.addr)
+    if (oh->addr EQUALS context->pd_address)
     {
       if ((oh->ctrl & 0x03) EQUALS 0)
       {
@@ -131,7 +131,7 @@ int
 
     if (!(0x80 & oh->addr)) // it's a command
     {
-      if ((oh->addr EQUALS p_card.addr)  || // it's for me
+      if ((oh->addr EQUALS context->pd_address)  || // it's for me
         (oh->addr EQUALS OSDP_CONFIGURATION_ADDRESS)) // it's a configuration command
       {
         (void)monitor_osdp_message (context, msg);
@@ -155,7 +155,7 @@ int
       osdp_test_set_status(OOC_SYMBOL_cmd_acurxsize, OCONFORM_EXERCISED);
       current_length = 0;
       current_security = OSDP_SEC_SCS_16;
-      status = send_message_ex(context, OSDP_ACK, p_card.addr,
+      status = send_message_ex(context, OSDP_ACK, context->pd_address,
         &current_length, 0, NULL, current_security, 0, NULL);
       context->pd_acks ++;
       break;
@@ -181,7 +181,7 @@ int
       osdp_test_set_status(OOC_SYMBOL_cmd_buz, OCONFORM_EXERCISED);
       current_length = 0;
       current_security = OSDP_SEC_SCS_16;
-      status = send_message_ex(context, OSDP_ACK, p_card.addr,
+      status = send_message_ex(context, OSDP_ACK, context->pd_address,
         &current_length, 0, NULL, current_security, 0, NULL);
       context->pd_acks ++;
       }
@@ -199,7 +199,7 @@ int
         nak_length = 1;
  
         status = send_message (context,
-          OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
+          OSDP_NAK, context->pd_address, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
         osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
@@ -230,7 +230,7 @@ int
           current_security = OSDP_SEC_STAND_DOWN;
 
         status = send_message_ex(context,
-          OSDP_PDCAP, p_card.addr, &current_length,
+          OSDP_PDCAP, context->pd_address, &current_length,
             response_length, response_cap,
             current_security, 0, NULL);
         osdp_test_set_status(OOC_SYMBOL_cmd_cap, OCONFORM_EXERCISED);
@@ -308,7 +308,7 @@ int
         osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
         current_length = 0;
 
-        status = send_message_ex(context, OSDP_ISTATR, p_card.addr,
+        status = send_message_ex(context, OSDP_ISTATR, context->pd_address,
           &current_length, sizeof(osdp_istat_response_data), osdp_istat_response_data, OSDP_SEC_SCS_18, 0, NULL);
       };
       break;
@@ -399,7 +399,7 @@ int
         // it asks about
 
         current_length = 0;
-        status = send_message_ex (context, OSDP_ACK, p_card.addr, &current_length,
+        status = send_message_ex (context, OSDP_ACK, context->pd_address, &current_length,
           0, NULL, OSDP_SEC_SCS_16, 0, NULL);
         context->pd_acks ++;
         if (context->verbosity > 9)
@@ -419,7 +419,7 @@ int
         nak_length = 1;
  
         status = send_message (context,
-          OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
+          OSDP_NAK, context->pd_address, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
         osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
@@ -453,7 +453,7 @@ int
       osdp_lstat_response_data [ 1] = context->power_report; // report power failure
       current_length = 0;
 
-      status = send_message_ex(context, OSDP_LSTATR, p_card.addr,
+      status = send_message_ex(context, OSDP_LSTATR, context->pd_address,
         &current_length, 2, osdp_lstat_response_data, OSDP_SEC_SCS_18, 0, NULL);
       if (context->verbosity > 2)
       {
@@ -486,7 +486,7 @@ int
       {
         osdp_nak_response_data [0] = 0xe0;
 fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
-        status = send_message_ex(context, OSDP_NAK, p_card.addr,
+        status = send_message_ex(context, OSDP_NAK, context->pd_address,
           &current_length, 1, osdp_nak_response_data, OSDP_SEC_SCS_18, 0, NULL);
         context->sent_naks ++;
       };
@@ -533,7 +533,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         };
 
         status = send_message (context,
-          OSDP_NAK, p_card.addr, &current_length, nak_length, osdp_nak_response_data);
+          OSDP_NAK, context->pd_address, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
         osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
