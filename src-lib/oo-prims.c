@@ -360,7 +360,7 @@ int
     if (0 EQUALS strcmp(command, "identify"))
       ret_cmd = OSDP_CMDB_IDENT;
     if (0 EQUALS strcmp(command, "input-status"))
-      ret_cmd = OSDP_CMDB_INPUT_STATUS;
+      ret_cmd = OSDP_CMDB_ISTAT;
     if (0 EQUALS strcmp(command, "keyset"))
       ret_cmd = OSDP_CMDB_KEYSET;
     if (0 EQUALS strcmp(command, "mfg"))
@@ -375,6 +375,8 @@ int
       ret_cmd = OSDP_CMDB_POLLING;
     if (0 EQUALS strcmp(command, "react"))
       ret_cmd = OSDP_CMDB_REACT;
+    if (0 EQUALS strcmp(command, "return-input"))
+      ret_cmd = OSDP_CMDB_RETURN_INPUT_STATUS;
     if (0 EQUALS strcmp(command, "reset"))
       ret_cmd = OSDP_CMDB_RESET;
     if (0 EQUALS strcmp(command, "reset-statistics"))

@@ -299,11 +299,7 @@ int
         unsigned char
           osdp_istat_response_data [OOSDP_DEFAULT_INPUTS];
 
-        memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
-        if (context->next_istatr EQUALS 1)
-        {
-          osdp_istat_response_data [0] = 1; // input 0 is active
-        };
+        memcpy (osdp_istat_response_data, context->in_state, sizeof (osdp_istat_response_data));
         osdp_test_set_status(OOC_SYMBOL_cmd_istat, OCONFORM_EXERCISED);
         osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
         current_length = 0;

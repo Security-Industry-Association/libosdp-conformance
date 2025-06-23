@@ -299,14 +299,24 @@ int
 
   /*
     command input-status
+  */
+
+  case OSDP_CMDB_ISTAT:
+    fprintf(ctx->log, "Request input status\n");
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
+  /*
+    command return-input
 
     default is to set input 0 to a 1 (pre-2.2.2 on/off 'on' value)
     value-0 sets the input 0 value (hex)
     value-list in the future will be 8 hex bytes
   */
 
-  case OSDP_CMDB_INPUT_STATUS:
-    fprintf(ctx->log, "Reporting input status\n");
+  case OSDP_CMDB_RETURN_INPUT_STATUS:
+    fprintf(ctx->log, "Return input status\n");
 
     ctx->in_state [0] = 1;
     value = json_object_get(root, "input-0");

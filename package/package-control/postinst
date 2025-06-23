@@ -36,6 +36,8 @@ ln 2>/tmp/stderr -s /etc/apache2/mods-available/cgid.conf /etc/apache2/mods-enab
 /etc/init.d/apache2 stop
 /etc/init.d/apache2 start
 
+ln -s /opt/osdp-conformance/bin/open-osdp-kick /opt/osdp-conformance/bin/kick
+
 echo web server configuration updated.
 
 cp /opt/osdp-conformance/etc/www-data /etc/sudoers.d

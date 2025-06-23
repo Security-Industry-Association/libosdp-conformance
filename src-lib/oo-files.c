@@ -908,9 +908,22 @@ int
     current_date_string [strlen (current_date_string)-1] = 0;
 
     fprintf(sf, "{");
+    fprintf (sf,
+"\"serial-speed\" : \"%s\",\n",
+      ctx->serial_speed);
+    fprintf(sf,
+"\"role\" : \"%d\",\n", ctx->role);
+
+    for (j=0; j<OOSDP_DEFAULT_INPUTS; j++)
+    {
+      fprintf (sf,
+        " \"in-%02d\":\"%02X\",",
+        j, ctx->in_state [j]);
+    };
+    fprintf(sf, "\n");
+
     fprintf(sf, "\"mmt\" : \"%d\",", osdp_conformance.conforming_messages);
     fprintf(sf, "\"retries\" : \"%d\",", ctx->retries);
-    fprintf(sf, "\"role\" : \"%d\",", ctx->role);
     if (strlen (ctx->text) > 0)
       fprintf(sf,"\"text\" : \"%s\",", ctx->text);
 
@@ -919,9 +932,6 @@ int
     for (i=0; i<OSDP_KEY_OCTETS; i++)
       fprintf(sf, "%02x", ctx->current_scbk [i]);
     fprintf(sf, "\",\n");
-    fprintf (sf,
-"\"serial-speed\" : \"%s\",",
-      ctx->serial_speed);
     fprintf (sf,
 "\"pd-address\" : \"%02x\",\n",
       p_card.addr);
@@ -951,10 +961,10 @@ int
     for (j=0; j<OSDP_MAX_OUT; j++)
     {
       fprintf (sf,
-        " \"out-%02d\" : \"%d\",",
-        j, ctx->out [j].current);
+        " \"out-%02d\":\"%d\"," , j, ctx->out [j].current);
+      if (!((j+1)%8))
+        fprintf(sf, "\n");
     };
-    fprintf(sf, "\n");
     fprintf (sf,
 "\"verbosity\" : \"%d\", \"trace\" : \"%d\",  ",
       ctx->verbosity, ctx->trace);

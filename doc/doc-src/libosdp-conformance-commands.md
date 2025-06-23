@@ -279,6 +279,18 @@ It us used by LED (and eventually GENAUTH/CRAUTH for that off-nominal use case.)
 | reaction-details           | hex string to use as payload for reaction command.                 |
 |             |                                            |
 
+# return-input #
+
+This command returns an input status.  If no value is specified it sets input 0 to a 1.
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| command  | return-input                                           |
+|                |                                                         |
+| input-0           | hex value (00-FF) to use for input 0 .                 |
+|             |                                            |
+
 \newpage{}
 
 ## Command transfer ##

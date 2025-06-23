@@ -9,7 +9,7 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 ### Updates in 1.101 Build 1 ###
 
-Added input value option to input-status command.
+Added new command return-input to return supervised input.
 
 ### Updates in 1.100 Build 1 ###
 

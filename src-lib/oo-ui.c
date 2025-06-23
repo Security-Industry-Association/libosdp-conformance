@@ -359,7 +359,7 @@ if (command EQUALS OSDP_CMDB_WITNESS)
       };
       break;
 
-    case OSDP_CMDB_INPUT_STATUS:
+    case OSDP_CMDB_RETURN_INPUT_STATUS:
       context->next_istatr = 1;
       status = ST_OK;
       break;

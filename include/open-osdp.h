@@ -230,6 +230,7 @@
 #define OSDP_CMDB_REACT             (1058)
 #define OSDP_CMDB_CONFORM_SUPPRESS_RESPONSE (1059)
 #define OSDP_CMDB_CONFORM_050_09_10         (1060)
+#define OSDP_CMDB_RETURN_INPUT_STATUS       (1061)
 
 #define OSDP_CMD_NOOP         (0)
 

@@ -1,4 +1,5 @@
 {
+  "enable-trace":"1",
    "role" : "MON"
   ,"serial-device" : "/dev/ttyUSB0"
   ,"serial-speed" : "9600"
