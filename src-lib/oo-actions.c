@@ -406,10 +406,8 @@ int
     int input_length;
     unsigned char osdp_istat_response_data [OOSDP_DEFAULT_INPUTS];
 
-    // hard code to show first input active, all others inactive
 
-    memset (osdp_istat_response_data, 0, sizeof (osdp_istat_response_data));
-    osdp_istat_response_data [0] = 1; // input 0 is active
+    memcpy(osdp_istat_response_data, ctx->in_state, OOSDP_DEFAULT_INPUTS);
     input_length = ctx->configured_inputs;
     osdp_test_set_status(OOC_SYMBOL_resp_istatr, OCONFORM_EXERCISED);
 

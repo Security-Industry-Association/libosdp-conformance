@@ -29,7 +29,7 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (100)
+#define OSDP_VERSION_MINOR (101)
 #define OSDP_VERSION_BUILD ( 1)
 
 #define OO_DIR_RUN         (1)
@@ -642,7 +642,10 @@ typedef struct osdp_context
   int cmd_hist_counter;
   char init_parameters_path [1024];
 
+  // I/O current info
+
   OSDP_OUT_STATE out [16];
+  unsigned char in_state [OOSDP_DEFAULT_INPUTS];
 
   int last_raw_read_bits;
   int slow_timer;

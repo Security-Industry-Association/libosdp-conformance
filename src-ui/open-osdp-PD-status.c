@@ -1,10 +1,7 @@
 /*
   open-osdp-PD-status - display PD status as refreshing HTML page
 
-  (C)Copyright 2017-2022 Smithee Solutions LLC
-
-  Support provided by the Security Industry Association
-  http://www.securityindustry.org
+  (C)Copyright 2017-2027 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -185,7 +182,7 @@ void
   };
 
   if (status EQUALS ST_OK)
-  { found_field = 1; value = json_object_get (root, "serial_speed"); if (!json_is_string (value)) found_field = 0; };
+  { found_field = 1; value = json_object_get (root, "serial-speed"); if (!json_is_string (value)) found_field = 0; };
 
   if (found_field) { strcpy (parameter_speed, json_string_value (value)); };
   if (status EQUALS ST_OK) {
@@ -389,7 +386,7 @@ int
   config_root = json_load_file("/opt/osdp-conformance/run/PD/open-osdp-params.json", 0, &status_json);
   if (config_root)
   {
-    value = json_object_get (config_root, "serial_speed");
+    value = json_object_get (config_root, "serial-speed");
     if (json_is_string (value))
     {
       strcpy (parameter_speed, json_string_value (value));

@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.101 Build 1 ###
+
+Added input value option to input-status command.
+
 ### Updates in 1.100 Build 1 ###
 
 Added refuse-comset option to cause PD to respond to COMSET with a COM

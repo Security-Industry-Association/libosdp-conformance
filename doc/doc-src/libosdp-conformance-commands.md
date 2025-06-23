@@ -138,12 +138,15 @@ Default behavior is to send to the currently-configured PD address on the curren
 Command input-status
 --------------------
 
-This response sends an osdp_ISTATR to the ACU.  It is hard-coded to indicate input zero (the first one) is active.
+This response sends an osdp_ISTATR to the ACU.  If no argument is given it sets input 0 to 0x01.
 
 | Argument | Value                    |
 | -------- | -----                    |
 |          |                          |
 | command  | input-status             |
+|          |                          |
+| input-0  | 0-0xff hex               |
+
 
 \newpage {}
 

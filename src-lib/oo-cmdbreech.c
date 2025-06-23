@@ -297,8 +297,24 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
+  /*
+    command input-status
+
+    default is to set input 0 to a 1 (pre-2.2.2 on/off 'on' value)
+    value-0 sets the input 0 value (hex)
+    value-list in the future will be 8 hex bytes
+  */
+
   case OSDP_CMDB_INPUT_STATUS:
     fprintf(ctx->log, "Reporting input status\n");
+
+    ctx->in_state [0] = 1;
+    value = json_object_get(root, "input-0");
+    if (json_is_string(value))
+    {
+      sscanf(json_string_value(value), "%x", &i);
+      ctx->in_state [0] = i;
+    };
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;
     break;
@@ -1213,23 +1229,6 @@ int
       {
         fprintf(ctx->log, "Enqueue: %s %d\n", test_command, cmd->details_param_1);
       };
-    };
-  }; 
-
-  // command "input_status" - request input status
-
-  if (status EQUALS ST_OK)
-  {
-    value = json_object_get (root, "command");
-    strcpy (this_command, json_string_value (value));
-    test_command = "input-status";
-    if (0 EQUALS strncmp (this_command, test_command, strlen (test_command)))
-    {
-      cmd->command = OSDP_CMDB_ISTAT;
-      if (ctx->verbosity > 3)
-        fprintf(ctx->log, "input_status command enqueued.\n");
-      status = enqueue_command(ctx, cmd);
-      cmd->command = OSDP_CMD_NOOP;
     };
   }; 
 

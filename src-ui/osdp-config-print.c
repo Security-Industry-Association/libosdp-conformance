@@ -1,8 +1,5 @@
 /*
-  (C)Copyright 2017 Smithee Solutions LLC
-
-  Support provided by the Security Industry Association
-  http://www.securityindustry.org
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -123,7 +120,7 @@ int
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    value = json_object_get (root, "serial_speed");
+    value = json_object_get (root, "serial-speed");
     if (!json_is_string (value))
       found_field = 0;
     if (found_field)
