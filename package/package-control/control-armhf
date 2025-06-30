@@ -1,10 +1,10 @@
 Package: libosdp-conformance
-Version: 1.101-1
+Version: 1.101-2
 Section: custom
 Priority: optional
 Architecture: armhf
 Essential: no
 Installed-Size: 1024
 Maintainer: github@smithee.solutions
-Description: OSDP (SIA 2.2/IEC 60839-11-5) implementation for conformance testing
+Description: OSDP (SIA 2.2.2/IEC 60839-11-5) implementation for conformance testing
 

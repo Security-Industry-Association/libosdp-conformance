@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.101 Build 2 ###
+
+Fix use of CP prefix in osdp commands.  factory default link in Test-ACU.html now works.
+Update test results telemetry.
+
 ### Updates in 1.101 Build 1 ###
 
 Added new command return-input to return supervised input.

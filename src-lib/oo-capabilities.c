@@ -1,7 +1,7 @@
 /*
   oo-capabilities - primitives to manage the capabilities list
 
-  (C) 2021-2024 Smithee Solutions LLC
+  (C) 2021-2025 Smithee Solutions LLC
 */
 
 
@@ -170,6 +170,11 @@ int
   int status;
 
 
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "osdp_add_capability top, called for capas %02X level %02x number %02x\n", capability, compliance_level, number_of);
+    fflush(ctx->log);
+  };
   status = ST_OSDP_TOO_MANY_CAPAS;
   idx = *capabilities_response_length;
   if (*capabilities_response_length < (max-3))

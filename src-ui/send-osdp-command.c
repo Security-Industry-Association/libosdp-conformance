@@ -1,4 +1,4 @@
-// (C) 2022-2024 Smithee Solutions LLC
+// (C) 2022-2025 Smithee Solutions LLC
 
 #define EQUALS ==
 
@@ -22,6 +22,7 @@ int
   char command [1024];
   char filename [1024];
   char filetype [4];
+  int matches_ACU;
   char shell_command [C_2MSG];
   int status;
   char tag [1024];
@@ -57,8 +58,19 @@ int
     system(shell_command);
   };
 
+  matches_ACU = 0;
   strcpy (tag, "cmd=CP-");
   if (0 == strncmp (tag, arguments, strlen (tag)))
+    matches_ACU = 1;
+  if (!matches_ACU)
+  {
+    strcpy (tag, "cmd=ACU-");
+    if (0 == strncmp (tag, arguments, strlen (tag)))
+      matches_ACU = 1;
+  };
+
+//  if (0 == strncmp (tag, arguments, strlen (tag)))
+  if (matches_ACU)
   {
     printf ("<HTML><HEAD><TITLE>Control PD Testing (CP Emulator)</TITLE>");
 #ifdef OSDP_CONFORMANCE

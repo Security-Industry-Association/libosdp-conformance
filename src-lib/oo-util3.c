@@ -1,7 +1,7 @@
 /*
   oo_util3 -more (3)  open osdp utility routines
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -236,7 +236,8 @@ int
       m->data_payload = m->cmd_payload + data_offset; \
       if (ctx->verbosity > 2) \
         strcpy (tlogmsg2, osdp_command_reply_to_string(command, ctx->role)); /* osdp_tag */ \
-      osdp_conformance.conformance_test.test_status = OCONFORM_EXERCISED; \
+if (ctx->verbosity > 3) fprintf(ctx->log, "not setting exercised status for %s\n", osdp_tag); \
+      /* osdp_conformance.conformance_test.test_status = OCONFORM_EXERCISED; */ \
       if (osdp_conformance.conforming_messages < PARAM_MMT) { \
 if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conformance.conforming_messages); \
         osdp_conformance.conforming_messages ++;};
@@ -297,7 +298,7 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_ID");
 
-      osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
+//      osdp_conformance.cmd_id.test_status = OCONFORM_EXERCISED;
 
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
@@ -669,7 +670,6 @@ if (ctx->verbosity>3) fprintf(stderr, "cm was %d, incrementing\n", osdp_conforma
       if (ctx->verbosity > 2)
         strcpy (tlogmsg2, "osdp_PDCAP");
 
-//      osdp_conformance.rep_device_capas.test_status = OCONFORM_EXERCISED;
       if (osdp_conformance.conforming_messages < PARAM_MMT)
         osdp_conformance.conforming_messages ++;
       break;
