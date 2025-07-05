@@ -242,6 +242,13 @@ int
     cmd->command = OSDP_CMD_NOOP;
     break;
 
+  case OSDP_CMDB_CLEARTEXT:
+    ctx->all_cleartext_commands = 1 ^ ctx->all_cleartext_commands;
+    fprintf(ctx->log, "all-cleartext set to %d\n", ctx->all_cleartext_commands);
+    cmd->command = OSDP_CMD_NOOP;
+    status = ST_OK;
+    break;
+
   case OSDP_CMDB_CONFORM_050_09_10:
     ctx->next_response_bad = 1;
     fprintf(ctx->log, "Activating conformance test: bad response (good frame).\n");

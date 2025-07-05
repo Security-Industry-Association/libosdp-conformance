@@ -11,6 +11,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 
 Fix use of CP prefix in osdp commands.  factory default link in Test-ACU.html now works.
 Update test results telemetry.
+fix Test-PD.html command to send LSTATR/Poweron.
+add cleartext command to force selected injected commands to be sent in the clear.
 
 ### Updates in 1.101 Build 1 ###
 

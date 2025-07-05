@@ -231,6 +231,7 @@
 #define OSDP_CMDB_CONFORM_SUPPRESS_RESPONSE (1059)
 #define OSDP_CMDB_CONFORM_050_09_10         (1060)
 #define OSDP_CMDB_RETURN_INPUT_STATUS       (1061)
+#define OSDP_CMDB_CLEARTEXT                 (1062)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -510,6 +511,7 @@ typedef struct osdp_context
   int pd_filetransfer_payload;
   char service_root [1024];
   int refuse_comset;
+  int all_cleartext_commands;
 
   OSDP_COMMAND_QUEUE *q;
   int cmd_q_overflow;

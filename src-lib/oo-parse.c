@@ -857,7 +857,7 @@ fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
     {
       if ((p_card.addr != (0x7f & p->addr)) && (p->addr != OSDP_CONFIGURATION_ADDRESS))
       {
-        if (context->verbosity > 3)
+        if (context->verbosity > 9)
           fprintf (stderr, "addr mismatch for: %02x me: %02x\n",
             p->addr, p_card.addr);
         status = ST_NOT_MY_ADDR;

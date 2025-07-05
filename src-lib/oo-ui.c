@@ -52,6 +52,9 @@ extern OSDP_BUFFER osdp_buf;
 extern OSDP_INTEROP_ASSESSMENT osdp_conformance;
 extern OSDP_PARAMETERS p_card;
 
+int SCBTYP(OSDP_CONTEXT *ctx, int sec_block_type)
+{ if (ctx->all_cleartext_commands) return(OSDP_SEC_STAND_DOWN); else return(sec_block_type);}
+
 
 int
   process_command
@@ -101,8 +104,7 @@ context=ctx;
         value [1] = (0xff00 & max_size) >> 8;
         current_length = 0;
         status = send_message_ex(context, OSDP_ACURXSIZE, context->pd_address,
-          &current_length, 2, value,
-          OSDP_SEC_SCS_17, 0, NULL);
+          &current_length, 2, value, SCBTYP(context, OSDP_SEC_SCS_17), 0, NULL);
       };
       break;
 
@@ -212,10 +214,8 @@ context=ctx;
         memcpy (otxt.text, context->text, 1024);
         current_length = 0;
         status = send_message_ex(context, OSDP_TEXT, context->pd_address,
-          &current_length, 
-          sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
-          (unsigned char *)&otxt,
-          OSDP_SEC_SCS_17, 0, NULL);
+          &current_length, sizeof(otxt)-sizeof(otxt.text) + strlen(otxt.text),
+          (unsigned char *)&otxt, SCBTYP(context, OSDP_SEC_SCS_17), 0, NULL);
         status = ST_OK;
       };
       break;
@@ -232,9 +232,8 @@ fprintf(context->log, "*** DEPRECATED COMMAND use ident,config-address=1 instead
         strcpy (context->test_in_progress, "2_11_3");
         param [0] = 0;
         current_length = 0;
-        status = send_message_ex (context, OSDP_ID, 0x7F,
-          &current_length, sizeof (param), param,
-          OSDP_SEC_SCS_17, 0, NULL);
+        status = send_message_ex (context, OSDP_ID, 0x7F, &current_length, sizeof (param), param,
+          SCBTYP(context, OSDP_SEC_SCS_17), 0, NULL);
         status = ST_OK;
       };
       break;
@@ -384,7 +383,7 @@ if(1)//        if (context->verbosity > 3)
         };
         status = send_message_ex(context, OSDP_KEYSET, context->pd_address,
           &current_length, keybuflth, key_buffer,
-          OSDP_SEC_SCS_17, 0, NULL);
+          SCBTYP(context, OSDP_SEC_SCS_17), 0, NULL);
 fprintf(stderr, "DEBUG: send keyset status %d cl %d sleep 1\n",
   status, current_length);
 sleep(1);
@@ -451,8 +450,8 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         else
         {
           current_length = 0;
-          status = send_message_ex(context, OSDP_MFG, context->left_to_send_destination, &current_length, send_length, data,
-          OSDP_SEC_SCS_17, 0, NULL);
+          status = send_message_ex(context, OSDP_MFG, context->left_to_send_destination, &current_length,
+            send_length, data, SCBTYP(context, OSDP_SEC_SCS_17), 0, NULL);
         };
         status = ST_OK;
       };
@@ -535,7 +534,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         current_length = 0;
         status = send_message_ex(context, details[0], context->pd_address,
           &current_length, details_length, (unsigned char *)(details+1),
-          OSDP_SEC_SCS_17, 0, NULL);
+          SCBTYP(context, OSDP_SEC_SCS_17), 0, NULL);
       }
       else
       {
@@ -649,7 +648,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
         current_length = 0;
         status = send_message_ex (context, OSDP_BUZ, context->pd_address,
           &current_length, sizeof (buzzer_control), (unsigned char *)&buzzer_control,
-          OSDP_SEC_SCS_17, 0, NULL);
+          SCBTYP(context, OSDP_SEC_SCS_17), 0, NULL);
         };
       };
       break;
@@ -857,7 +856,7 @@ if (ctx->verbosity > 3)
         {
           status = send_message_ex (context, OSDP_ISTAT, context->pd_address,
             &current_length, 0, NULL,
-            OSDP_SEC_SCS_15, 0, NULL);
+            SCBTYP(context, OSDP_SEC_SCS_15), 0, NULL);
           if (context->verbosity > 3)
             fprintf (context->log, "Requesting Input Status\n");
         };

@@ -349,6 +349,8 @@ int
       ret_cmd = OSDP_CMDB_BIOREAD;
     if (0 EQUALS strcmp(command, "biomatch"))
       ret_cmd = OSDP_CMDB_BIOMATCH;
+    if (0 EQUALS strcmp(command, "cleartext"))
+      ret_cmd = OSDP_CMDB_CLEARTEXT;
     if (0 EQUALS strcmp(command, "conform-050-09-10"))
       ret_cmd = OSDP_CMDB_CONFORM_050_09_10;
     if (0 EQUALS strcmp(command, "conform-070-17-02"))

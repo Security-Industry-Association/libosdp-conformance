@@ -36,6 +36,18 @@ is a work in progress.)
 
 \newpage{}
 
+## Command clearset ##
+
+This command causes many of the injected commands (acurxsize, mfg, keyset) to be
+sent in the clear to the PD address.  It is a toggle like trace.
+
+There are no defaults.
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| command        | cleartext                                                  |
+
 Command comset
 --------------
 
