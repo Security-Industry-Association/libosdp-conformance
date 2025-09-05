@@ -1,7 +1,7 @@
 /*
   oo-mgmt-actions - action routines for (some) mgmt functions
 
-  (C)Copyright 2022-2024 Smithee Solutions LLC
+  (C)Copyright 2022-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -215,26 +215,29 @@ int action_osdp_NAK
           osdp_test_set_status(OOC_SYMBOL_cmd_keepactive, OCONFORM_FAIL);
         };
 
-// assumes test_details is still valid.
-// assumes it was a perm on command
+        if ((unsigned int)(context->last_command_sent) EQUALS (unsigned int)OSDP_LED)
+        {
+          // assumes test_details is still valid.
+          // assumes it was a perm on command
 #define LP_ON (12)
 
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_AMBER)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_amber, OCONFORM_FAIL);
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLACK)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_black, OCONFORM_FAIL);
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_blue, OCONFORM_FAIL);
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_CYAN)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_cyan, OCONFORM_FAIL);
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_GREEN)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_FAIL);
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_MAGENTA)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_magenta, OCONFORM_FAIL);
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_RED)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_FAIL);
-        if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_WHITE)
-          osdp_test_set_status(OOC_SYMBOL_cmd_led_white, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_AMBER)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_amber, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLACK)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_black, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_BLUE)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_blue, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_CYAN)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_cyan, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_GREEN)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_green, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_MAGENTA)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_magenta, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_RED)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_red, OCONFORM_FAIL);
+          if (context->test_details [LP_ON] EQUALS OSDP_LEDCOLOR_WHITE)
+            osdp_test_set_status(OOC_SYMBOL_cmd_led_white, OCONFORM_FAIL);
+        };
 
         // if the PD NAK'd an OSTAT that is a fail.  The initiator of the OSTAT is responsible for only
         // using it if output support declared.

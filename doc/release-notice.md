@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.101 Build 3 ###
+
+Correct false positive LED report in NAK processing.
+
 ### Updates in 1.101 Build 2 ###
 
 Fix use of CP prefix in osdp commands.  factory default link in Test-ACU.html now works.
