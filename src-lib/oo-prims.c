@@ -265,7 +265,7 @@ int
   if (ret && (ctx->next_sequence != following_sequence))
   {
     if (ctx->verbosity > 9)
-      fprintf(stderr, "DEBUG: waiting-ret %d following %d last %d next %d last-processed %d\n",
+      fprintf(stderr, "waiting-ret %d following %d last %d next %d last-processed %d\n",
         ret, following_sequence, ctx->last_sequence_received, ctx->next_sequence, ctx->last_was_processed);
 
     if (following_sequence EQUALS -1)
@@ -284,7 +284,7 @@ int
         if (ctx->verbosity > 9)
         {
           fprintf(ctx->log,
-"DEBUG: not actually ready n %d f %d bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",
+"not actually ready n %d f %d bcount %d 0=%02x 1=%02x 2=%02x 5=%02x 6=%02x\n",
             ctx->next_sequence, following_sequence, osdp_buf.next,
             osdp_buf.buf [0], osdp_buf.buf [1], osdp_buf.buf [2],
             osdp_buf.buf [5], osdp_buf.buf [6]);
@@ -302,6 +302,9 @@ int
     };
     if (ctx->last_was_processed) // assuming the last was processed...
       ret = 0; // if no response but timeout, call it "not waiting"
+  };
+  if (ctx->verbosity > 3)
+  {
   };
   fflush(ctx->log);
 
@@ -536,7 +539,7 @@ if (timer_index == OSDP_TIMER_RESPONSE)
 {
   if (ctx->verbosity > 9)
   {
-    fprintf(ctx->log, "DEBUG: osdp_timer_start: old s %ld ns %ld\n",
+    fprintf(ctx->log, "osdp_timer_start: old s %ld ns %ld\n",
       ctx->timer[timer_index].i_sec,
       ctx->timer[timer_index].i_nsec);
   };
@@ -559,7 +562,7 @@ if (timer_index == OSDP_TIMER_RESPONSE)
 {
   if (ctx->verbosity > 9)
   {
-    fprintf(ctx->log, "DEBUG: osdp_timer_start: restart s %ld ns %ld\n",
+    fprintf(ctx->log, "osdp_timer_start: restart s %ld ns %ld\n",
       ctx->timer[timer_index].i_sec,
       ctx->timer[timer_index].i_nsec);
   };

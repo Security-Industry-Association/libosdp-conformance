@@ -547,7 +547,7 @@ int
       if (status_monitor != ST_OK)
       {
         if (ctx->verbosity > 3)
-          fprintf(stderr, "DEBUG: ignoring osdp_parse_message status %d.\n", status);
+          fprintf(stderr, "ignoring osdp_parse_message status %d.\n", status);
         status_monitor = ST_OK;
       };
       if (ctx->verbosity > 8)

@@ -1093,6 +1093,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_BAD_PD_SEQUENCE          (105)
 #define ST_OSDP_UNK_KEY_PAIR             (106)
 #define ST_OSDP_UNK_KEY_DEFAULT          (107)
+#define ST_OSDP_FILETRANSFER_CANCEL      (108)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

@@ -194,105 +194,6 @@ int
 } /* oo_filetransfer_initiate */
 
 
-int
-  zoo_filetransfer_initate
-    (OSDP_CONTEXT *context)
-
-{ /* oo_filetransfer_initiate */
-
-  int current_length;
-  struct stat datafile_status;
-  OSDP_HDR_FILETRANSFER *file_transfer;
-  int size_to_read;
-  int status;
-  int status_io;
-  int transfer_send_size;
-  static unsigned char xfer_buffer [OSDP_BUF_MAX];
-
-
-// context is set up, initiate file transfer.
-// requires figuring out max SDU.
-
-          stat(context->xferctx.filename, &datafile_status);
-          fprintf(context->log,
-            "  FIle transfer: data file %s size %d.\n",
-            context->xferctx.filename, (int)datafile_status.st_size);
-          context->xferctx.total_length = datafile_status.st_size;
-          context->xferctx.current_offset = 0; // should be set already but just in case.
-
-          memset (xfer_buffer, 0, sizeof(xfer_buffer));
-          file_transfer = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
-
-          // load data from file starting at msg->FtData
-
-          if (context->pd_cap.rec_max > 0)
-          {
-            if (context->max_message EQUALS 0)
-            {
-              context->max_message = context->pd_cap.rec_max;
-            };
-          };
-          if (context->max_message EQUALS 0)
-          {
-            context->max_message = 128;
-            fprintf(stderr, "max message unset, setting it to 128\n");
-            context->xferctx.current_send_length = context->max_message;
-          };
-          size_to_read = context->max_message;
-
-          // wimp out and restrict transfer, got my math wrong somewhere...
-          if (size_to_read > 1000)
-          {
-            fprintf(context->log, "Limiting filetransfer read size to %d (was %d)\n", 1000, size_to_read);
-            size_to_read = 1000;
-          };
-
-          // adjust for header, crc, secure channel
-
-          size_to_read = size_to_read - 6 - 2;
-
-// if it's checksum use -1 not -2.
-
-          if (context->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
-            size_to_read = size_to_read - 2 - 4; //scs header, mac
-
-          size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
-          if (context->verbosity > 3)
-            fprintf(context->log, "Reading %d. from file to start.\n", size_to_read);
-          memset(&(file_transfer->FtData), 0, size_to_read);
-          status_io = fread (&(file_transfer->FtData), sizeof (unsigned char), size_to_read, context->xferctx.xferf);
-
-          // if what's left is less than allowed size, adjust
-
-          if (status_io < size_to_read)
-            size_to_read = status_io;
-
-          file_transfer->FtType = context->xferctx.file_transfer_type;
-          context->xferctx.total_sent = size_to_read;
-          osdp_doubleByte_to_array(size_to_read, file_transfer->FtFragmentSize);
-          osdp_quadByte_to_array(context->xferctx.total_length, file_transfer->FtSizeTotal);
-          osdp_quadByte_to_array(context->xferctx.current_offset, file_transfer->FtOffset); 
-
-          if (context->verbosity > 3)
-            fprintf (stderr, "Initiating File Transfer\n");
-
-          context->xferctx.state = OSDP_XFER_STATE_TRANSFERRING;
-          current_length = 0;
-          transfer_send_size = size_to_read;
-          transfer_send_size = transfer_send_size - 1 + sizeof (*file_transfer);
-fprintf(stderr, "xfer size %d.\n", transfer_send_size);
-          status = send_message_ex(context, OSDP_FILETRANSFER, p_card.addr, &current_length,
-            transfer_send_size, (unsigned char *)file_transfer,
-          OSDP_SEC_SCS_17, 0, NULL);
-
-          // after the send update the current offset
-          context->xferctx.current_offset = context->xferctx.current_offset + size_to_read;
-
-  return(status);
-
-} /* oo_filetransfer_initiate */
-
-
 int oo_filetransfer_SDU_offer
   (OSDP_CONTEXT *ctx)
 
@@ -373,15 +274,26 @@ int
   osdp_array_to_quadByte(ftmsg->FtOffset, offset);
   osdp_array_to_doubleByte(ftmsg->FtFragmentSize, fragsize);
 
-  // if there's a transfer in progress, a new one is bad.
+  if (status EQUALS ST_OK)
+  {
+    if ((total_length_claimed EQUALS 0) && (offset EQUALS 0) && (fragsize EQUALS 0))
+      status = ST_OSDP_FILETRANSFER_CANCEL;
+  };
+    
+  if (status EQUALS ST_OK)
+  {
+    // if there's a transfer in progress, a new one is bad.
 
-  if (ctx->xferctx.total_length && (*offset EQUALS 0))
-    status = ST_OSDP_FILEXFER_ALREADY;
+    if (ctx->xferctx.total_length && (*offset EQUALS 0))
+      status = ST_OSDP_FILEXFER_ALREADY;
+  };
+  if (status EQUALS ST_OK)
+  {
+    // message offset must match expected
 
-  // message offset must match expected
-
-  if (ctx->xferctx.current_offset != *offset)
-    status = ST_OSDP_FILEXFER_SKIP;
+    if (ctx->xferctx.current_offset != *offset)
+      status = ST_OSDP_FILEXFER_SKIP;
+  };
 
   if (status EQUALS ST_OK)
   {
@@ -567,14 +479,13 @@ delay_nsec = delay_nsec * 1000;
     {
       ctx->xferctx.current_send_length = new_size;
       if (ctx->verbosity > 3)
-        fprintf(ctx->log,  "DEBUG: updated send to %d.\n", ctx->xferctx.current_send_length);
+        fprintf(ctx->log,  "updated send to %d.\n", ctx->xferctx.current_send_length);
     };
   };
   if (ftstat->FtAction & OSDP_FTACTION_POLL_RESPONSE)
   {
     if (status EQUALS ST_OK)
     {
-      fprintf(stderr, "DEBUG: Poll Response Available\n");
       status = ST_OSDP_FILEXFER_POLL_RESPONSE;
     };
   };
@@ -599,7 +510,7 @@ void
 
   fflush(ctx->log);
   if (ctx->verbosity > 3)
-    fprintf(stderr, "DEBUG: osdp_wrapup_filetransfer xferf %lx\n", (unsigned long)(ctx->xferctx.xferf));
+    fprintf(stderr, "osdp_wrapup_filetransfer xferf %lx\n", (unsigned long)(ctx->xferctx.xferf));
   if (ctx->xferctx.xferf != NULL)
   {
     fclose(ctx->xferctx.xferf);
@@ -661,7 +572,7 @@ int
   if (json_is_string(value))
   {
     if (ctx->verbosity > 3)
-      fprintf(stderr, "DEBUG: restored PD address would be %s\n", json_string_value(value));
+      fprintf(stderr, "restored PD address would be %s\n", json_string_value(value));
   };
 
   // also load saved credentials.
@@ -738,7 +649,6 @@ int
       fprintf(pf, "%02x", scbk_to_save [i]);
     };
 
-fprintf(stderr, "DEBUG: about to save serial speed %s\n", ctx->serial_speed);
     fprintf(pf, "\",\n  \"serial-speed\" : \"%s\",\n", ctx->serial_speed);
     fprintf(pf, "  \"pd-address\" : \"%X\",\n", ctx->pd_address);
 
@@ -797,7 +707,7 @@ int
 
       if (ctx->verbosity > 3)
       {
-        fprintf(stderr, "DEBUG: osdp_send_filetransfer: current_send_length %d(%X) ctx->max_message %d.\n",
+        fprintf(stderr, "osdp_send_filetransfer: current_send_length %d(%X) ctx->max_message %d.\n",
           ctx->xferctx.current_send_length, ctx->xferctx.current_send_length, ctx->max_message);
       };
       if (ctx->xferctx.current_send_length)

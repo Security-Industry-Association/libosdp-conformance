@@ -1,7 +1,7 @@
 /*
   oo-73 - PD emulator for extended packet mode (PIV) credential processing.
 
-  (C)Copyright 2020-2023 Smithee Solutions LLC
+  (C)Copyright 2020-2025 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -101,7 +101,6 @@ rlth=256;
   current_security = OSDP_SEC_SCS_18;
   status = send_message_ex(ctx, OSDP_CRAUTHR, ctx->pd_address, &current_length,
     response_length, response_payload, current_security, 0, NULL);
-fprintf(stderr, "DEBUG: CRAUTHR sent\n");
   };
 
   return(status);
@@ -126,7 +125,6 @@ int
   int status;
 
 
-fprintf(ctx->log, "DEBUG: osdp_CRAUTHR stub.\n");
   crauthr_header = (OSDP_MULTI_HDR_IEC *)(msg->data_payload);
   crauthr_payload = (char *)&(crauthr_header->algo_payload);
 
@@ -188,7 +186,6 @@ int
   int status;
 
 
-fprintf(ctx->log, "DEBUG: osdp_GENAUTHR stub.\n");
   genauthr_header = (OSDP_MULTI_HDR_IEC *)(msg->data_payload);
   genauthr_payload = (char *)&(genauthr_header->algo_payload);
 
@@ -243,7 +240,6 @@ int
 
 
   status = ST_OK;
-  fprintf(ctx->log, "DEBUG: osdp_PIVDATAR stub.\n");
   dump_buffer_log(ctx, "action_osdp_PIVDATAR ", msg->data_payload, msg->data_length);
   sprintf(details, "\"payload-length\":\"%d\",\"payload-first-3\":\"%02x%02x%02x\",",
     msg->data_length, (msg->data_payload)[0], (msg->data_payload)[1], (msg->data_payload)[2]);
