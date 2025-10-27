@@ -172,14 +172,14 @@ Times are in units of 100 milliseconds.  Reader number is hard-coded to zero.
 | Argument | Value |
 | -------- | ----- |
 |          |       |
-| command-id  | led |
+| command  | led |
 | led-number | LED number (in decimal, range 0-255) |
 | perm-control | Perm command code (in decimal) |
 | perm-off-color | Perm off color (in decimal) |
 | perm-off-time | Perm off time (in decimal) |
 | perm-on-color | Perm on color (in decimal) |
 | perm-on-time | Perm on time (in decimal) |
-} temp-control | Perm command code (in decimal) |
+| temp-control | Perm command code (in decimal) |
 | temp-off-color | Temporary off color (in decimal) |
 | temp-off-time | Temp off time (in decimal) |
 | temp-on-color | Temporary on color (in decimal) |
@@ -217,7 +217,7 @@ t.b.d.
 | Argument | Value |
 | -------- | ----- |
 |          |       |
-| command-id  | mfg |
+| command  | mfg |
 |             |                                            |
 | oui | 3-byte organizational unit identifier |
 |             |                                            |
@@ -323,6 +323,18 @@ ___Arguments___
 | file         | fully path of file to be transferred. |
 |             |                                            |
 | file-type | (optional) file type to use.  Hex, must be nonzero. |
+
+## Command transfer-cancel ##
+
+This command causes the ACU to cancel the file transfer in progress
+by sending an osdp_FILETRANSFER with all zeroes.
+
+___Arguments___
+
+| Argument | Value |
+| -------- | ----- |
+|          |       |
+| command        | transfer-cancel |
 
 \newpage{}
 

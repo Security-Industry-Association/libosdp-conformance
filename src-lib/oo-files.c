@@ -127,7 +127,7 @@ int
           if (context->max_message EQUALS 0)
           {
             context->max_message = 128;
-            fprintf(stderr, "max message unset, setting it to 128\n");
+            fprintf(context->log, "max message unset, setting it to 128\n");
             context->xferctx.current_send_length = context->max_message;
           };
           size_to_read = context->max_message;
@@ -661,6 +661,12 @@ int
 } /* oo_save_parameters */
 
 
+/*
+  osdp_send_filetransfer - send another file transfer chunk via osdp_FILETRANSFER
+
+  Note that if ctx->cancel_filetransfer it set this just send a blank message and sets up
+  to terminate.
+*/
 int
   osdp_send_filetransfer
     (OSDP_CONTEXT *ctx)
@@ -668,6 +674,7 @@ int
 { /* osdp_send_filetransfer */
 
   int current_length;
+  int do_xfer;
   OSDP_HDR_FILETRANSFER *ft;
   int size_to_read;
   int status;
@@ -677,16 +684,26 @@ int
 
 
   status = ST_OK;
-
+  do_xfer = 1;
   if (ctx->verbosity > 3)
     fprintf (stderr, "File Transfer Offset %d. Length %d Max %d\n",
       ctx->xferctx.current_offset, ctx->xferctx.current_send_length,
       ctx->xferctx.total_length);
-  if (status EQUALS ST_OK)
+  memset (xfer_buffer, 0, sizeof(xfer_buffer));
+  ft = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
+  if (ctx->cancel_filetransfer)
   {
-    memset (xfer_buffer, 0, sizeof(xfer_buffer));
-    ft = (OSDP_HDR_FILETRANSFER *)xfer_buffer;
-
+    fprintf(ctx->log, "*** FILE TRANSFER CANCELLED ***\n");
+    transfer_send_size = 1 + sizeof(*ft); // just sending a header
+    current_length = 0;
+    status = send_message (ctx,
+      OSDP_FILETRANSFER, p_card.addr, &current_length,
+      transfer_send_size, (unsigned char *)ft);
+    do_xfer = 0;
+    ctx->cancel_filetransfer = 0;
+  };
+  if (do_xfer & (status EQUALS ST_OK))
+  {
     // if we're finishing up send a benign message
     // L=0 Off=whole-size Tot=whole-size
     if (ctx->xferctx.state EQUALS OSDP_XFER_STATE_FINISHING)
@@ -720,17 +737,6 @@ int
         size_to_read = ctx->max_message;
       };
 
-if (0)
-{
-    // adjust for header, crc
-    size_to_read = size_to_read - 6 - 2;
-// if it's checksum use -1 not -2.
-
-    if (ctx->secure_channel_use [OO_SCU_ENAB] EQUALS OO_SCS_OPERATIONAL)
-      size_to_read = size_to_read - 2 - 4; //scs header, mac
-
-    size_to_read = size_to_read + 1 - sizeof(OSDP_HDR_FILETRANSFER);
-};
     status_io = fread (&(ft->FtData), sizeof (unsigned char), size_to_read,
       ctx->xferctx.xferf);
     if (status_io > 0)

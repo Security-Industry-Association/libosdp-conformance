@@ -1,5 +1,5 @@
 Package: osdp-service
-Version: 1.102-0
+Version: 1.102-1
 Section: custom
 Priority: optional
 Architecture: armhf

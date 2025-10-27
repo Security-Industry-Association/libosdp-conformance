@@ -121,53 +121,6 @@ int
   };
   switch (cmd->command)
   {
-
-    // command bio_read send bio read template command
-    // details are:  reader, type, format, quality 
-
-  case OSDP_CMDB_BIOREAD:
-    status = ST_OK;
-    cmd->command = OSDP_CMDB_BIOREAD;
-    memset(cmd->details, 0, sizeof(cmd->details));
-
-    cmd->details [0] = 0; // default reader zero
-    value = json_object_get (root, "reader");
-    if (json_is_string (value))
-    {
-      sscanf(json_string_value(value), "%d", &i);
-      cmd->details [0] = i;
-    };
-
-    cmd->details [1] = 0; // default bio type
-    value = json_object_get (root, "type");
-    if (json_is_string (value))
-    {
-      sscanf(json_string_value(value), "%d", &i);
-      cmd->details [1] = i;
-    };
-
-    cmd->details [2] = 2; // ANSI/INCITS 378 Fingerprint template "49"
-    value = json_object_get (root, "format");
-    if (json_is_string (value))
-    {
-      sscanf(json_string_value(value), "%d", &i);
-      cmd->details [2] = i;
-    };
-
-    cmd->details [3] = 0xFF; // quality
-    value = json_object_get (root, "quality");
-    if (json_is_string (value))
-    {
-      sscanf(json_string_value(value), "%d", &i);
-      cmd->details [3] = i;
-    };
-
-    cmd->details_length = 4;
-
-    status = enqueue_command(ctx, cmd);
-    cmd->command = OSDP_CMD_NOOP;
-    break;
-
   case OSDP_CMDB_BIOMATCH:
 
     // stuff is placed in 'details' in the order it gets sent.
@@ -237,6 +190,52 @@ int
       };
     };
     cmd->details_length = cmd->details_length + details_update;
+
+    status = enqueue_command(ctx, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
+    // command bio_read send bio read template command
+    // details are:  reader, type, format, quality 
+
+  case OSDP_CMDB_BIOREAD:
+    status = ST_OK;
+    cmd->command = OSDP_CMDB_BIOREAD;
+    memset(cmd->details, 0, sizeof(cmd->details));
+
+    cmd->details [0] = 0; // default reader zero
+    value = json_object_get (root, "reader");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [0] = i;
+    };
+
+    cmd->details [1] = 0; // default bio type
+    value = json_object_get (root, "type");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [1] = i;
+    };
+
+    cmd->details [2] = 2; // ANSI/INCITS 378 Fingerprint template "49"
+    value = json_object_get (root, "format");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [2] = i;
+    };
+
+    cmd->details [3] = 0xFF; // quality
+    value = json_object_get (root, "quality");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [3] = i;
+    };
+
+    cmd->details_length = 4;
 
     status = enqueue_command(ctx, cmd);
     cmd->command = OSDP_CMD_NOOP;
@@ -653,6 +652,12 @@ int
   case OSDP_CMDB_TRACE:
     ctx->trace = 1 ^ ctx->trace; // toggle low order bit
     fprintf(ctx->log, "Tracing set to %d\n", ctx->trace);
+    cmd->command = OSDP_CMD_NOOP;
+    status = ST_OK;
+    break;
+
+  case OSDP_CMDB_TRANSFER_CANCEL:
+    ctx->cancel_filetransfer = 1;
     cmd->command = OSDP_CMD_NOOP;
     status = ST_OK;
     break;

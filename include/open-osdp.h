@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (102)
-#define OSDP_VERSION_BUILD ( 0)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -232,6 +232,7 @@
 #define OSDP_CMDB_CONFORM_050_09_10         (1060)
 #define OSDP_CMDB_RETURN_INPUT_STATUS       (1061)
 #define OSDP_CMDB_CLEARTEXT                 (1062)
+#define OSDP_CMDB_TRANSFER_CANCEL           (1063)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -655,6 +656,8 @@ typedef struct osdp_context
   char last_raw_read_data [1024];
   char last_keyboard_data [8];
 
+  // file transfer context
+  int cancel_filetransfer;
   OSDP_CONTEXT_FILETRANSFER xferctx;
   int ft_interleave;
 
