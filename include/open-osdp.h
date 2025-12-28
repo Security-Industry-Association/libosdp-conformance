@@ -29,8 +29,8 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (102)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_MINOR (103)
+#define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -765,6 +765,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_GENAUTHR     ( 737)
 #define OOSDP_MSG_FILETRANSFER (7)
 #define OOSDP_MSG_FTSTAT       (8)
+#define OOSDP_MSG_ID           ( 306)
 #define OOSDP_MSG_ISTATR       (17)
 #define OOSDP_MSG_KEEPACTIVE   (24)
 #define OOSDP_MSG_KEYSET       (103)
@@ -1112,6 +1113,7 @@ int action_osdp_CRAUTHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_GENAUTHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FILETRANSFER (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_FTSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_ID (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEEPACTIVE(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEYPAD(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_KEYSET(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

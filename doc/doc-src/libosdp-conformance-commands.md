@@ -135,7 +135,8 @@ This command sends an osdp_ID to the PD.
 Default behavior is to send to the currently-configured PD address on the current session (secure or unencrypted.)
 
 | Argument | Value                    |
-| -------- | -----                    |
+| -------------- | ---------------------------------------- |
+|                |                                          |
 |          |                          |
 | command  | identify                 |
 |          |                          |
@@ -144,6 +145,8 @@ Default behavior is to send to the currently-configured PD address on the curren
 | config-address | "1" to send to 0x7F, unencrypted. |
 |          |                          |
 | new-sequence | "1" to reset sequence number to zero. |
+|                |                                          |
+| pdid-blocktype | 0-255, default is 0 (IEC 60839-11-5 MBC) |
 
 \newpage {}
 

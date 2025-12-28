@@ -423,6 +423,11 @@ int
       (genauthr_msg->data_len_msb*256)+genauthr_msg->data_len_lsb);
     break;
 
+  case OOSDP_MSG_ID:
+    msg = (OSDP_MSG *) aux;
+    sprintf(tlogmsg, "ID (PDID Block %02X requested)\n", msg->data_payload [0]);
+    break;
+
   case OOSDP_MSG_ISTATR:
     msg = (OSDP_MSG *) aux;
     oh = (OSDP_HDR *)(msg->ptr);
@@ -753,6 +758,10 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
             value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
             sprintf (tstr, "  Capability Entry %02d. %s %d;\n",
               1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), value);
+            break;
+          case OSDP_CAP_VERSION:
+            sprintf (tstr, "  Capability Entry %02d. %s OSDP Version %02x %02x;\n",
+              1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), *(i+1+msg->data_payload), *(i+2+msg->data_payload));
             break;
           default:
             sprintf (tstr, "  Capability Entry %02d. %s %02x %02x;\n",

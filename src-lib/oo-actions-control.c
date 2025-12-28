@@ -187,3 +187,99 @@ int
 
 } /* action_osdp_COMSET */
 
+
+/*
+  action_osdp_ID
+
+  ID type is first octet, must be zero.
+  2.2.2 or earlier.
+*/
+
+int
+  action_osdp_ID
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_ID */
+
+  char cmd [3*1024];
+  int current_length;
+  int current_security;
+  char logmsg [1024];
+  int nak_length;
+  OSDP_HDR *oh;
+  unsigned char osdp_nak_response_data [2];
+  unsigned char osdp_pdid_response_data [12];
+  int status;
+
+  status = ST_OK;
+  oh = (OSDP_HDR *)(msg->ptr);
+
+  if (*(msg->data_payload) != 0)
+  {
+    // note we do not set the status to bad, we are in fact consuming the command.
+
+    current_length = 0;
+    osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+    osdp_nak_response_data [1] = *msg->data_payload;
+    nak_length = 2;
+ 
+    status = send_message (ctx,
+      OSDP_NAK, ctx->pd_address, &current_length, nak_length, osdp_nak_response_data);
+    ctx->sent_naks ++;
+    osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_FAIL);
+    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+    if (ctx->verbosity > 2)
+    {
+      fprintf(ctx->log, "ID command rejected as command unknown.\n");
+    };
+  };
+
+  if (status EQUALS ST_OK)
+  {
+    osdp_pdid_response_data [ 0] = ctx->vendor_code [0];
+    osdp_pdid_response_data [ 1] = ctx->vendor_code [1];
+    osdp_pdid_response_data [ 2] = ctx->vendor_code [2];
+    osdp_pdid_response_data [ 3] = ctx->model;;
+    osdp_pdid_response_data [ 4] = ctx->version;
+    osdp_pdid_response_data [ 5] = ctx->serial_number [0];
+    osdp_pdid_response_data [ 6] = ctx->serial_number [1];
+    osdp_pdid_response_data [ 7] = ctx->serial_number [2];
+    osdp_pdid_response_data [ 8] = ctx->serial_number [3];
+    osdp_pdid_response_data [ 9] = ctx->fw_version [0];
+    osdp_pdid_response_data [10] = ctx->fw_version [1];
+    osdp_pdid_response_data [11] = ctx->fw_version [2];
+
+    current_length = 0;
+    current_security = OSDP_SEC_SCS_18;
+
+    // SPECIAL CASE: if osdp_ID comes in in cleartext, answer it in cleartext
+
+    if (msg->security_block_length EQUALS 0)
+      current_security = OSDP_SEC_STAND_DOWN;
+    status = send_message_ex(ctx, OSDP_PDID, oo_response_address(ctx, oh->addr),
+      &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
+    osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
+  };
+  if (status EQUALS ST_OK)
+  {
+    if (ctx->verbosity > 2)
+    {
+      sprintf (logmsg, "Responding with OSDP_PDID");
+      fprintf (ctx->log, "%s\n", logmsg);
+    };
+
+    // call the plugin
+
+    sprintf(cmd, "%s/osdp_ID", oo_osdp_root(ctx, OO_DIR_ACTIONS));
+    if (ctx->verbosity > 1)
+      system(cmd);
+  };
+
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "action_osdp_ID: status return %d.\n", status);
+  return (status);
+
+} /* action_osdp_ID */
+

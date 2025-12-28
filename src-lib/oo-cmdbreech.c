@@ -273,12 +273,20 @@ int
     system(command);
     break;
 
-  // command identify cleartext=1
+  // command identify cleartext=1 pdid-blocktype=<hex>
+  // default blocktype is 0 (2.2.2 and earlier.)
   // to send cleartext sets details [0] to 1
   // to send on sequence zero sets details [1] 1
+  // to set block type set details [2]
   // to send on config address sets details_param_1 to 7F
 
   case OSDP_CMDB_IDENT:
+    value = json_object_get (root, "pdid-blocktype");
+    if (json_is_string (value))
+    {
+      sscanf(json_string_value(value), "%d", &i);
+      cmd->details [2] = 1;
+    };
     value = json_object_get (root, "cleartext");
     if (json_is_string (value))
     {
@@ -786,12 +794,18 @@ int
   }; 
 
   /*
-    COMSET.  takes two option arguments, "new-address" and "new-speed".
-    default for new-address is 0x00, default for new-speed is 9600
+    Command 'comset'
+    Arguments
+      new-address default 0
+      new-speed default 9600
+      cleartext - sends in cleartext if 1
+      reset-sequence - resets to sequence 0 if value is 1.
+      send-direct if 1 else send on config address.
+
     details block:
       details [0] is the new address
       details [1] is 1 if to send in the clear during a secure channel session 
-0x81 for seq 0
+        0x81 for seq 0
       details [2] is 1 if you are to send as the current address (else send to config address)
       details [4..7] are the new speed
   */
@@ -1227,7 +1241,6 @@ int
     };
   };
 
-
   // initiate secure channel
 
   if (status EQUALS ST_OK)
@@ -1243,6 +1256,10 @@ int
       {
         if (0 EQUALS strcmp("1", json_string_value(parameter)))
           cmd->details_param_1 = 1;
+      };
+      if (ctx->verbosity > 3)
+      {
+        fprintf(ctx->log, "Initiating secure channel, key slot %d.\n", cmd->details_param_1);
       };
 
       status = enqueue_command(ctx, cmd);
@@ -1541,7 +1558,6 @@ int
           this_command);
 
       status = enqueue_command(ctx, cmd);
-fprintf(stderr, "DEBUG: back from enqueuing output-status (%d)\n", status);
       cmd->command = OSDP_CMD_NOOP;
     };
   }; 

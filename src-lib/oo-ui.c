@@ -790,6 +790,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
 
         // if they specified key slot 1 use the specified key otherwise use
         // the default key.
+fprintf(stderr, "DEBUG: dp1 %d en-sc %d\n", details_param_1, context->enable_secure_channel);
         if (details_param_1 EQUALS 1)
           context->enable_secure_channel = 1;
 
@@ -810,6 +811,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
           {
             sec_blk_1 [0] = OSDP_KEY_SCBK;
           };
+fprintf(stderr, "DEBUG: eventually esc %d sb1 %d\n", context->enable_secure_channel, sec_blk_1 [0]);
         };
         if (status EQUALS ST_OK)
         {

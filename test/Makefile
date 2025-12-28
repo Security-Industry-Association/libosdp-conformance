@@ -7,7 +7,8 @@ build-test:
 	mkdir -p ../${OSDP_HOME}/bin
 	mkdir -p ../${OSDP_HOME}/etc/sample-files
 	cp ${SAMPLE_FILES} ../${OSDP_HOME}/etc/sample-files
-	(cd osdpcap-tests; tar czvf osdpcap-samples.tgz *.osdpcap *.md; cp *tgz ../${OSDP_HOME}/etc )
+	(cd osdpcap-tests; tar czvf osdpcap-samples.tgz *.osdpcap *.md )
+	cp osdpcap-tests/*tgz ../${OSDP_HOME}/etc
 
 clean:
 	rm -f osdpcap-tests/*.tgz

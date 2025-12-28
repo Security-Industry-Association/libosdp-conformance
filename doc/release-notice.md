@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.103 Build 0 ###
+
+Add logic to enforce use of parameter zero in osdp_ID command.
+Add monitor display logic to show osdp_ID block parameter.
+
 ### Updates in 1.102 Build 1 ###
 
 Fully functional file transfer cancel (PD and ACU side), new command "transfer-cancel".

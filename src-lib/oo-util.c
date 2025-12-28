@@ -255,43 +255,8 @@ int
       break;
 
     case OSDP_ID:
-      {
-        unsigned char osdp_pdid_response_data [12];
-
-        osdp_pdid_response_data [ 0] = context->vendor_code [0];
-        osdp_pdid_response_data [ 1] = context->vendor_code [1];
-        osdp_pdid_response_data [ 2] = context->vendor_code [2];
-        osdp_pdid_response_data [ 3] = context->model;;
-        osdp_pdid_response_data [ 4] = context->version;
-        osdp_pdid_response_data [ 5] = context->serial_number [0];
-        osdp_pdid_response_data [ 6] = context->serial_number [1];
-        osdp_pdid_response_data [ 7] = context->serial_number [2];
-        osdp_pdid_response_data [ 8] = context->serial_number [3];
-        osdp_pdid_response_data [ 9] = context->fw_version [0];
-        osdp_pdid_response_data [10] = context->fw_version [1];
-        osdp_pdid_response_data [11] = context->fw_version [2];
-        status = ST_OK;
-        current_length = 0;
-        current_security = OSDP_SEC_SCS_18;
-
-        // SPECIAL CASE: if osdp_ID comes in in cleartext, answer it in cleartext
-
-        if (msg->security_block_length EQUALS 0)
-          current_security = OSDP_SEC_STAND_DOWN;
-        status = send_message_ex(context, OSDP_PDID, oo_response_address(context, oh->addr),
-          &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
-        osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
-        osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
-        if (context->verbosity > 2)
-        {
-          sprintf (logmsg, "Responding with OSDP_PDID");
-          fprintf (context->log, "%s\n", logmsg);
-        };
-      }
-      sprintf(cmd, "%s/osdp_ID", oo_osdp_root(context, OO_DIR_ACTIONS));
-      if (context->verbosity > 1)
-        system(cmd);
-    break;
+      status = action_osdp_ID(context, msg);
+      break;
 
     case OSDP_ISTAT:
       status = ST_OK;

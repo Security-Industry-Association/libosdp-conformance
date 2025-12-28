@@ -786,6 +786,11 @@ int
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
+    case OSDP_ID:
+      status = oosdp_make_message (OOSDP_MSG_ID, tlogmsg, msg);
+      if (status == ST_OK)
+        status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+      break;
     case OSDP_KEEPACTIVE:
       status = oosdp_make_message (OOSDP_MSG_KEEPACTIVE, tlogmsg, msg);
       if (status == ST_OK)
