@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (103)
-#define OSDP_VERSION_BUILD ( 0)
+#define OSDP_VERSION_BUILD ( 1)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -1098,6 +1098,7 @@ typedef struct __attribute__((packed)) osdp_multi_hdr_iec
 #define ST_OSDP_UNK_KEY_PAIR             (106)
 #define ST_OSDP_UNK_KEY_DEFAULT          (107)
 #define ST_OSDP_FILETRANSFER_CANCEL      (108)
+#define ST_OSDP_BAD_CUID                 (109)
 
 
 int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);

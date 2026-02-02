@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2022 Smithee Solutions LLC
+# (C)Copyright 2017-2026 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 OSDPDIR=/opt/osdp-conformance
 sudo rm -f ${OSDPDIR}/tmp/current-role
 cd /opt/osdp-conformance/run/ACU
-rm -f /opt/osdp-conformance/etc/current_role
-echo "ACU" >/opt/osdp-conformance/etc/current_role
+rm -f /opt/osdp-conformance/etc/current-role
+echo "ACU" >/opt/osdp-conformance/etc/current-role
 sudo -n killall open-osdp
 sudo -n /opt/osdp-conformance/bin/exec-CP485
 sudo -n chmod 777 /opt/osdp-conformance/tmp

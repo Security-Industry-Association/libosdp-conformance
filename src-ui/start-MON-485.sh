@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-# (C)Copyright 2015-2016 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2017-2026 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@ set -x
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rm -f /opt/osdp-conformance/etc/current_role
-echo "MON" >/opt/osdp-conformance/etc/current_role
+rm -f /opt/osdp-conformance/etc/current-role
+echo "MON" >/opt/osdp-conformance/etc/current-role
 
 cd /opt/open-osdp/run/MON
 echo "Content-type: text/html"

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2022 Smithee Solutions LLC.
+# (C)Copyright 2017-2026 Smithee Solutions LLC.
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rm -f /opt/osdp-conformance/etc/current_role
-echo "PD" >/opt/osdp-conformance/etc/current_role
+rm -f /opt/osdp-conformance/etc/current-role
+echo "PD" >/opt/osdp-conformance/etc/current-role
 
 cd /opt/osdp-conformance/run/PD
 sudo -n killall open-osdp

@@ -1,7 +1,7 @@
 /*
   oo-util - open osdp utility routines
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -593,6 +593,8 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
 
     case OSDP_LSTATR:
       status = ST_OK;
+      fprintf(context->log, "LSTATR Tamper=%d Poweron=%d\n",
+        *(msg->data_payload + 0), *(msg->data_payload + 1));
       osdp_test_set_status(OOC_SYMBOL_resp_lstatr, OCONFORM_EXERCISED);
       if (*(msg->data_payload) > 0)
         osdp_test_set_status(OOC_SYMBOL_resp_lstatr_tamper, OCONFORM_EXERCISED);

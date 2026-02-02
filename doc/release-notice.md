@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.103 Build 1 ###
+
+Logging updates.
+Add code to detect malformed cUID field in CCRYPT.
+
 ### Updates in 1.103 Build 0 ###
 
 Add logic to enforce use of parameter zero in osdp_ID command.

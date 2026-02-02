@@ -1,7 +1,7 @@
 /*
   oosdp_secure_actions - open osdp secure channel action routines
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -56,10 +56,17 @@ int
   unsigned char server_cryptogram [16];
   int status;
   int test_results;
+  int was_bad_cuid;
+  unsigned char BAD_CUID[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 
   status = ST_OK;
   test_results = OCONFORM_FAIL;
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "66 ccrypt results %d\n", test_results);
+  };
+  was_bad_cuid = 0;
   if (ctx->verbosity > 3)
     fprintf(ctx->log, "\nProcessing received osdp_CCRYPT\n");
   memset (iv, 0, sizeof (iv));
@@ -78,19 +85,51 @@ int
       if (secure_message->sec_blk_data != OSDP_KEY_SCBK)
         status = ST_OSDP_UNK_KEY_DEFAULT;
 
+    ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
+
+    // make sure cUID is sane
+
+    // not zero
+    if (!memcmp(ccrypt_payload->client_id, BAD_CUID, sizeof(ccrypt_payload->client_id)))
+      status = ST_OSDP_BAD_CUID;
+
+    // matches PDID OUI if we have it
+    if (ctx->verbosity > 3)
+    {
+      fprintf(ctx->log, "ccrypt cUID OUI was %02X %02X %02X\n", ctx->vendor_code [0], ctx->vendor_code [1], ctx->vendor_code [2]);
+    };
+    if (status EQUALS ST_OK)
+      if (memcmp(ctx->vendor_code, ccrypt_payload->client_id, sizeof(ctx->vendor_code)))
+      {
+        fprintf(ctx->log, "CCRYPT: OUI does not match cUID.  Proceeding anyway.\n");
+      };
+    
+
+    if ((ctx->serial_number [0] + ctx->serial_number [1] + ctx->serial_number [2]) > 0)
+      if (memcmp(ctx->serial_number, ccrypt_payload->client_id+5, sizeof(ctx->serial_number)))
+      {
+        fprintf(ctx->log, "CCRYPT: S/N does not match cUID.  Proceeding anyway.\n");
+      };
+
+    if (status EQUALS ST_OSDP_BAD_CUID)
+    {
+      fprintf(ctx->log, "CCRYPT: bad cUID.  Proceeding anyway.\n");
+      status = ST_OK;
+      was_bad_cuid = 1;
+    };
+
     if (status EQUALS ST_OK)
     {
-      ccrypt_payload = (OSDP_SC_CCRYPT *)(msg->data_payload);
       client_cryptogram = ccrypt_payload-> cryptogram;
       // decrypt the client cryptogram (validate header, RND.A, collect RND.B)
-if (ctx->verbosity > 8)
-{
-  int i;
-  fprintf (stderr, "s_enc: ");
-  for (i=0; i<OSDP_KEY_OCTETS; i++)
-    fprintf (stderr, "%02x", ctx->s_enc [i]);
-  fprintf (stderr, "\n");
-};
+      if (ctx->verbosity > 8)
+      {
+        int i;
+        fprintf (ctx->log, "s_enc at receipt of CCRYPT: ");
+        for (i=0; i<OSDP_KEY_OCTETS; i++)
+          fprintf (ctx->log, "%02x", ctx->s_enc [i]);
+        fprintf (ctx->log, "\n");
+      };
       AES_init_ctx (&aes_context_s_enc, ctx->s_enc);
       AES_ctx_set_iv (&aes_context_s_enc, iv);
       memcpy (message, client_cryptogram, sizeof (message));
@@ -149,8 +188,19 @@ if (ctx->verbosity > 8)
   else
     status = ST_OSDP_SC_WRONG_STATE;
 
+  if (ctx->verbosity > 3)
+  {
+    fprintf(ctx->log, "181 status %d ccrypt results %d\n", status, test_results);
+  };
   if (status EQUALS ST_OK)
     test_results = OCONFORM_EXERCISED;
+  if (was_bad_cuid)
+  {
+    test_results = OCONFORM_FAIL;
+if (ctx->verbosity > 3)
+  fprintf(ctx->log, "188 status %d ccrypt results %d\n", status, test_results);
+  };
+
   // if there was an error reset the secure channel and let the world continue
   if (status != ST_OK)
   {
@@ -158,7 +208,11 @@ if (ctx->verbosity > 8)
     status = ST_OK;
     osdp_reset_secure_channel (ctx);
   };
-  (void)osdp_test_set_status(OOC_SYMBOL_cmd_chlng, test_results);
+
+  // if we got here the PD was processing our CHLNG so that's a PASS
+
+  (void)osdp_test_set_status(OOC_SYMBOL_cmd_chlng, OCONFORM_EXERCISED);
+
   (void)osdp_test_set_status(OOC_SYMBOL_resp_ccrypt, test_results);
   return (status);
 

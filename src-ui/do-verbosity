@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# (C)Copyright 2017-2018 Smithee Solutions LLC
-# (C)Copyright 2015-2017 Smithee,Spelvin,Agnew & Plinge, Inc.
+# (C)Copyright 2017-2026 Smithee Solutions LLC
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +18,7 @@ echo "Content-type: text/html"
 echo ""
 
 echo "<HTML><HEAD><TITLE>COMSET</TITLE>"
-URL=/osdp-conformance-`cat /opt/osdp-conformance/etc/current_role`.html
+URL=/osdp-conformance-`cat /opt/osdp-conformance/etc/current-role`.html
 echo "<META HTTP-EQUIV=\"REFRESH\""
 echo "CONTENT=\"1;URL=${URL}\">"
 echo "<HEAD>"
@@ -29,7 +28,7 @@ echo "<PRE>"
 date
 OSDP_PATH=/opt/osdp-conformance
 CMDPATH=${OSDP_PATH}/tmp/open_osdp_command.json
-CMDPATHX=${OSDP_PATH}/run/`cat /opt/osdp-conformance/etc/current_role`/open_osdp_command.json
+CMDPATHX=${OSDP_PATH}/run/`cat /opt/osdp-conformance/etc/current-role`/open_osdp_command.json
 
 # unilaterally clear out the last temp command
 sudo -n rm -f ${CMDPATH}
@@ -41,7 +40,7 @@ sudo -n echo >>${CMDPATH} "  \"#\" : \"created by do-verbosity from UI\""
 sudo -n echo >>${CMDPATH} "}"
 sudo -n cp ${CMDPATH} ${CMDPATHX}
 
-sudo -n ${OSDP_PATH}/bin/HUP-`cat /opt/osdp-conformance/etc/current_role`
+sudo -n ${OSDP_PATH}/bin/HUP-`cat /opt/osdp-conformance/etc/current-role`
 
 echo "Set verbosity to level $1"
 
