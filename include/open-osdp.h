@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@
 
 #define OSDP_VERSION_MAJOR ( 1)
 #define OSDP_VERSION_MINOR (103)
-#define OSDP_VERSION_BUILD ( 1)
+#define OSDP_VERSION_BUILD ( 2)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -668,6 +668,7 @@ typedef struct osdp_context
   int do_retry; // also used in PD to mark we are in the retry logic.
   int next_crc_bad;
   int next_nak; // nak the next incoming message from the CP
+  unsigned char next_nak_details [4]; // allow up to 4 detail bytes
   int next_response_bad;
   int pdcap_select; // 0 for normal 1 for short
   unsigned char raw_reaction_command; // 0 if nothing else the thing to be sent right away.

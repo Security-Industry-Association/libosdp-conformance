@@ -1,7 +1,7 @@
 /*
   oo-logmsg.c - prints log messages
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   OSDP Working Group community.
@@ -574,6 +574,7 @@ int
       char nak_detail_text [1024];
       char tmpmsg2 [2*1024];
 
+
       if ((msg->security_block_length EQUALS 0) || (msg->payload_decrypted))
       {
         msg = (OSDP_MSG *) aux;
@@ -588,8 +589,17 @@ int
         sprintf(tmpmsg2, " (%s)", nak_detail_text);
         if (msg->data_length > 1)
         {
-          sprintf(tlogmsg, "  NAK: Error Code %02x%s Data %02x\n",
-            *(0+msg->data_payload), tmpmsg2, *(1+msg->data_payload));
+          // there is data after the reason code.  dump all of it.
+
+          sprintf(tlogmsg, "  NAK: Error Code %02x%s Data",
+            *(0+msg->data_payload), tmpmsg2);
+          for (i=1; i<msg->data_length; i++)
+          {
+fprintf(stderr, "in loop payload[%d] is %02X\n", i, *(msg->data_payload+i));
+            sprintf(tlogmsg2, " %02X", *(msg->data_payload+i));
+            strcat(tlogmsg, tlogmsg2);
+          };
+          strcat(tlogmsg, "\n");
         }
         else
         {

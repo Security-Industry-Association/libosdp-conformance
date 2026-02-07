@@ -488,6 +488,11 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
             osdp_nak_response_data [0] = 0xff & context->next_nak;
             osdp_nak_response_data [1] = (0xff00 & context->next_nak) >> 8;
             nak_length = 2;
+            if (context->next_nak_details [1])
+            {
+              osdp_nak_response_data [2] = context->next_nak_details [1];
+              nak_length = 3;
+            };
           };
 
           context->next_nak = 0;

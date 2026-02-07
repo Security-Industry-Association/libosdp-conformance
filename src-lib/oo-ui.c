@@ -1,7 +1,7 @@
 /*
   oo-ui - UI routines for open-osdp
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -352,6 +352,8 @@ if (command EQUALS OSDP_CMDB_WITNESS)
             octet = octet * 256;
             ctx->next_nak = 0x020000 | details [0];
             ctx->next_nak = ctx->next_nak | octet;
+            ctx->next_nak_details [0] = details [1]; // first details octet
+            ctx->next_nak_details [1] = details [3]; // extra details octet
           };
           status = ST_OK;
         };

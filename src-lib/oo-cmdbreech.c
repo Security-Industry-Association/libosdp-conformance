@@ -1,7 +1,7 @@
 /*
   oo_cmdbreech - breech-loading command processor
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -986,6 +986,7 @@ int
   // if using defaults details[2] is 0
   // if using just a reason details[2] is a 1
   // if using a reason and detail details[2] is a 2
+  // note that if "detail" is >255 it is treated as a 16 bit number and the high byte is details [3]
 
   if (status EQUALS ST_OK) {
     if (0 EQUALS strcmp (current_command, "induce-NAK"))
@@ -1008,6 +1009,8 @@ int
         sscanf(json_string_value(value), "%d", &i);
         cmd->details [1] = (0xff & i);
         cmd->details [2] = 2;
+        if (i > 255)
+          cmd->details [3] = i >> 8;
       };
       cmd->command = OSDP_CMDB_INDUCE_NAK;
       status = enqueue_command(ctx, cmd);
