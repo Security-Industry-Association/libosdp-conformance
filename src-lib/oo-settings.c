@@ -2,7 +2,7 @@
 /*
   oo-settings - json init file processing
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -865,7 +865,7 @@ fprintf(stderr, "DEBUG: serial_number in context is now %02X %02X %02X %02X\n",
     strcpy (ctx->serial_device, this_value);
   }; 
 
-  // parameter "serial_speed"
+  // parameter "serial-speed"
   if ((status EQUALS ST_OK) || (status EQUALS ST_CMD_INVALID))
   {
     strcpy (field, "serial-speed");

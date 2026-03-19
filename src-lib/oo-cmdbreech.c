@@ -670,6 +670,11 @@ int
     status = ST_OK;
     break;
 
+  case OSDP_CMDB_XWRITE:
+    status = oo_command_setup_xwrite(ctx, root, cmd);
+    cmd->command = OSDP_CMD_NOOP;
+    break;
+
   default:
     if (ctx->verbosity > 3)
       fprintf(stderr, "command not processed in switch (%d.)\n", cmd->command);
@@ -1676,10 +1681,6 @@ int
   }; 
 
   // command "xwrite"
-  /*
-    example:
-      { "command" : "xwrite", "action" : "get-mode" }
-  */
   if (status EQUALS ST_OK)
   {
     if (0 EQUALS strcmp (current_command, "xwrite"))

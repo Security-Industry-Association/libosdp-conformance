@@ -100,6 +100,11 @@ int
     known_speed = 1;
   };
 
+  if (strcmp (ctx->serial_speed, "2400") EQUALS 0)
+  {
+    serial_speed_cfg_value = B2400;
+    known_speed = 1;
+  }
   if (strcmp (ctx->serial_speed, "9600") EQUALS 0)
   {
     serial_speed_cfg_value = B9600;

@@ -4,7 +4,7 @@ typedef struct osdp_xwr_command
 {
   unsigned char xrw_mode;
   unsigned char xwr_pcmnd;
-  unsigned char xwr_pdata [2];
+  unsigned char xwr_pdata [256];
 } OSDP_XWR_COMMAND;
 #define OSDP_XWR_0_GET_MODE (1) // per table 34 in 60839-11-5
 #define OSDP_XWR_0_SET_MODE (2) // per table 34 in 60839-11-5

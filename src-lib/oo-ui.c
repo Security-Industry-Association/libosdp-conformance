@@ -572,6 +572,7 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
       break;
 
     case OSDP_CMDB_XWRITE:
+#if 0
       {
         int payload_length;
 
@@ -613,6 +614,14 @@ fprintf(stderr, "287 busy, enqueing %02x d %02x-%02x-%02x L %d.\n",
             payload_length);
           break;
         };
+      };
+#endif
+      {
+        // first details byte is mode
+        // second details byte is pcmnd
+        // remainder of details is the payload
+        status = osdp_xwrite_explicit(context, 
+          details [0], details [1], details_length-2, (unsigned char *)details+2);
       };
       break;
 

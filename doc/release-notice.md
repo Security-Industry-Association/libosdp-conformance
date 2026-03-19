@@ -7,9 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
-$$$ Updates in 1.103 Build 2 ###
+### Updates in 1.103 Build 2 ###
 
 Dump all auxiliary parameters in a NAK response
+
+Add osdp_XWR enhancements.
 
 ### Updates in 1.103 Build 1 ###
 

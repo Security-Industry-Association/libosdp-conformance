@@ -236,6 +236,8 @@ int oo_command_setup_present_card
 } /* oo_command_setup_present_card */
 
 
+// arguments are mode pcmnd and pdata, which is variable length.  all hex.
+
 int oo_command_setup_xwrite
   (OSDP_CONTEXT *ctx,
   json_t *root,
@@ -243,55 +245,33 @@ int oo_command_setup_xwrite
 
 { /* oo_command_setup_xwrite */
 
+  unsigned short buffer_length;
+  int octet;
   int status;
   json_t *value;
-  json_t *value2;
+  char vstr [1024];
 
 
   cmd->command = OSDP_CMDB_XWRITE;
-
-  value = json_object_get (root, "action");
-  if (json_is_string (value))
+  value = json_object_get (root, "mode");
+  if (json_is_string(value))
   {
-    if (0 EQUALS strcmp(json_string_value(value), "get-mode"))
-    {
-          cmd->details [0] = 1; // 1 in byte 0 is get-mode
-    };
-    if (0 EQUALS strcmp(json_string_value(value), "scan"))
-    {
-          cmd->details [0] = 3; // 3 in byte 0 is scan (for smart card)
-    };
-    if (0 EQUALS strcmp(json_string_value(value), "set-mode"))
-    {
-          cmd->details [0] = 2; // 2 in byte 0 is set-mode
-    };
-    if (0 EQUALS strcmp(json_string_value(value), "set-zero"))
-    {
-          cmd->details [0] = 4; // 4 in byte 0 is set mode 0
-    };
-    if (0 EQUALS strcmp(json_string_value(value), "done"))
-    {
-          cmd->details [0] = 5;
-    };
-    if (0 EQUALS strcmp(json_string_value(value), "apdu"))
-    {
-          unsigned short int payload_length;
-          char payload_value [1024];
-
-          cmd->details [0] = 6;
-
-          // if there's a "payload" fill it in after the command in details
-
-          value2 = json_object_get (root, "payload");
-          if (json_is_string (value2))
-          {
-            payload_length = sizeof(cmd->details);
-            strcpy(payload_value, json_string_value(value2));
-            status = osdp_string_to_buffer
-              (ctx, payload_value, cmd->details+3, &payload_length);
-            *(short int *)(cmd->details+1) = payload_length;
-          };
-    };
+    sscanf(json_string_value(value), "%x", &octet);
+    cmd->details [0] = octet;
+  };
+  value = json_object_get (root, "pcmnd");
+  if (json_is_string(value))
+  {
+    sscanf(json_string_value(value), "%x", &octet);
+    cmd->details [1] = octet;
+  };
+  value = json_object_get (root, "pdata");
+  if (json_is_string(value))
+  {
+    strcpy (vstr, json_string_value (value));
+    buffer_length = sizeof(cmd->details);
+    status = osdp_string_to_buffer(ctx, vstr, cmd->details+2, &buffer_length);
+    cmd->details_length=2 + buffer_length;
   };
   if (status EQUALS ST_OK)
   {

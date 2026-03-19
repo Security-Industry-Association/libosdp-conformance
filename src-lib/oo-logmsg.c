@@ -835,7 +835,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
     status = oosdp_print_message_XRD(&context, msg, tlogmsg);
     break;
 
-  case OOSDP_MSG_XWRITE:
+  case OOSDP_MSG_XWR:
     msg = (OSDP_MSG *) aux;
     sprintf(tlogmsg, "Extended Write: %02x %02x %02x %02x\n",
       *(msg->data_payload + 0), *(msg->data_payload + 1),

@@ -90,6 +90,55 @@ int
 
 
 int
+  action_osdp_XWR
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_XWR */
+
+  char callout_args [8192];
+  int i;
+  char octet [3];
+  int pdata_length;
+  int status;
+
+
+// TODO CONFIRM data_payload not cmd_payload
+
+  status = oosdp_make_message (OOSDP_MSG_XWR, tlogmsg, msg);
+  if (status EQUALS ST_OK)
+    status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+
+  if (status EQUALS ST_OK)
+  {
+    sprintf(callout_args, "MODE %02X PCMND %02X PDATA ",
+      *(msg->data_payload + 0),
+      *(msg->data_payload + 1));
+    pdata_length = msg->data_length - 2;
+    if (pdata_length > 0)
+    {
+      for(i=0; i<pdata_length; i++)
+      {
+        sprintf(octet, "%02X", *(msg->data_payload+2+i));
+        strcat(callout_args, octet);
+      };
+    };
+    sprintf(tlogmsg,
+"Extended Write Mode=%02X PCMND=%02X PDATA contains %d. bytes\n",
+      *(msg->data_payload + 0), *(msg->data_payload + 1), pdata_length);
+    status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+  };
+  if (status EQUALS ST_OK)
+  {
+    status = oosdp_callout(ctx, "osdp_XWR", callout_args);
+  };
+
+  return (status);
+
+} /* action_osdp_XWR */
+
+
+int
   osdp_xwrite_mode1
   (OSDP_CONTEXT *ctx,
   int command,
@@ -201,4 +250,35 @@ if (mode EQUALS 0)
   return (status);
 
 } /* osdp_xwr_send_set_mode */
+
+
+int osdp_xwrite_explicit
+  (OSDP_CONTEXT *ctx,
+  unsigned char mode,
+  unsigned char pcmnd,
+  int pdata_length,
+  unsigned char *pdata)
+
+{ /* osdp_xwrite_explicit */
+
+  int clth;
+  int current_length;
+  int status;
+  OSDP_XWR_COMMAND xwr_cmd;
+
+
+  clth = 0;
+  xwr_cmd.xrw_mode = mode; clth++;
+  xwr_cmd.xwr_pcmnd = pcmnd; clth++;
+  memcpy(&(xwr_cmd.xwr_pdata[0]), pdata, pdata_length);
+  clth = clth + pdata_length;
+
+  current_length = 0;
+  status = send_message (ctx,
+    OSDP_XWR, p_card.addr, &current_length, clth, (unsigned char *)&xwr_cmd);
+
+  return(status);
+
+} /* osdp_xwrite_explicit */
+
 
