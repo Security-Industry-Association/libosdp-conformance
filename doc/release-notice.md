@@ -13,6 +13,8 @@ Dump all auxiliary parameters in a NAK response
 
 Add osdp_XWR enhancements.
 
+Fix lingering acu-side capture bug
+
 ### Updates in 1.103 Build 1 ###
 
 Logging updates.

@@ -1,7 +1,7 @@
 /*
   oo-xwrite - extended write and extended reader functions
 
-  (C)Copyright 2020 Smithee Solutions LLC
+  (C)Copyright 2020-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -37,6 +37,9 @@ int
 
 { /* action_osdp_XRD */
 
+  char cmd [2*8192];
+  int i;
+  char octet [3];
   int status;
 
 
@@ -44,6 +47,16 @@ int
   if (status EQUALS ST_OK)
     status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
 
+  sprintf(cmd, "MODE %02X PREPLY %02X DETAIL ",
+    *(msg->data_payload), *(msg->data_payload+1));
+  for (i=0; i<msg->data_length-2; i++)
+  {
+    sprintf(octet, "%02X", *(msg->data_payload+2+i));
+    strcat(cmd, octet);
+  };
+  status = oosdp_callout(ctx, "osdp_XRD", cmd);
+
+#if 0
   // if we know it's 7.25.5 it's a card-present alert
 
   if (*(msg->data_payload + 0) EQUALS 1)
@@ -54,7 +67,7 @@ int
 "Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
         *(msg->data_payload + 2), *(msg->data_payload + 3));
       status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      status = oosdp_callout(ctx, "osdp_XRD_1_1", "");
+sP`     status = oosdp_callout(ctx, "osdp_XRD_1_1", "");
 //      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
 //      system(cmd);
     };
@@ -83,6 +96,7 @@ int
 //      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_2 %s", apdu); system(cmd);
     };
   };
+#endif
 
   return (status);
 
@@ -280,5 +294,4 @@ int osdp_xwrite_explicit
   return(status);
 
 } /* osdp_xwrite_explicit */
-
 

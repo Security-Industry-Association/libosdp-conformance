@@ -67,6 +67,7 @@ int
   extern unsigned int web_color_lookup [];
 
 
+fprintf(context->log, "DEBUG: process_osdp_message top\ncurrent trace in buffer: %s", trace_in_buffer);
   status = ST_MSG_UNKNOWN;
   oo_osdp_max_packet = 768; // less than the 1K in some of the buffer routines
   context->capability_max_packet = oo_osdp_max_packet;

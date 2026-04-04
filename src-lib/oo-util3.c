@@ -826,6 +826,10 @@ int
   };
   if (msg->direction != 0) // direction non-0 (128) is FROM the PD
   {
+    if (context->verbosity > 3)
+    {
+      fprintf(context->log, "monitor from PD response code is %02X\n", msg->msg_cmd);
+    };
     switch (msg->msg_cmd)
     {
     default:

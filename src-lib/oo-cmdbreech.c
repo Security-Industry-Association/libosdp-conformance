@@ -1680,15 +1680,6 @@ int
     };
   }; 
 
-  // command "xwrite"
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "xwrite"))
-    {
-      status = oo_command_setup_xwrite(ctx, root, cmd);
-    };
-  }; 
-
   if (cmdf != NULL)
     fclose (cmdf);
   if (status != ST_OK)

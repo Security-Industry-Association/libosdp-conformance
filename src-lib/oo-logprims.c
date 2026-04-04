@@ -413,8 +413,13 @@ void
   FILE *tf;
 
 
+  fprintf(ctx->log, "DEBUG: osdp_trace_dump top\n  DUMP in %s\n  DUMP out %s\n",
+    trace_in_buffer, trace_out_buffer);
+
   // if verbosity is not 'quiet' OR tracing was explicitly enabled
 
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "DEBUG: 421 logmsg\n");
   if ((ctx->verbosity > 0) || (ctx->trace))
   {
     fflush(ctx->log);
@@ -480,6 +485,8 @@ void
       trace_in_buffer [0] = 0;
     };
   };
+  fprintf(ctx->log, "DEBUG: osdp_trace_dump top\n  DUMP in %s\n  DUMP out %s\n",
+    trace_in_buffer, trace_out_buffer);
 
 } /* osdp_trace_dump */
 
