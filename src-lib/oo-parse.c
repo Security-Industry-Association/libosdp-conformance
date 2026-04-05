@@ -228,7 +228,6 @@ int
     // extract the command
     returned_hdr -> cmd_s = (unsigned char) *(m->cmd_payload);
     m->msg_cmd = returned_hdr->cmd_s;
-fprintf(context->log, "DEBUG 230 msg_cmd %02X\n", m->msg_cmd);
     if ((m->msg_cmd EQUALS OSDP_PDID) || (m->msg_cmd EQUALS OSDP_ID))
     {
       // flush the log so external instrumentation can see we got proof of life.
@@ -982,8 +981,6 @@ fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
     */
     context->packets_received ++;
 
-fprintf(context->log, "DEBUG: 983\n  in %s\n out %s\n",
-  trace_in_buffer, trace_out_buffer); 
 if (context->verbosity > 3) osdp_trace_dump(context, 1);
 else osdp_trace_dump(context, 0);
     if (context->role EQUALS OSDP_ROLE_PD)
