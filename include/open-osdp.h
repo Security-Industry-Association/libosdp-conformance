@@ -147,6 +147,7 @@
 #define OSDP_COM       (0x54)
 #define OSDP_BIOREADR  (0x57)
 #define OSDP_BIOMATCHR (0x58)
+#define OSDP_EXT_PDID  (0x59)
 #define OSDP_CCRYPT    (0x76)
 #define OSDP_SCRYPT    (0x77)
 #define OSDP_RMAC_I    (0x78)

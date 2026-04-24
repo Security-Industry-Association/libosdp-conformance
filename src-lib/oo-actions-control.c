@@ -1,7 +1,7 @@
 /*
   oo-actions-control - things that control the PD
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -191,8 +191,11 @@ int
 /*
   action_osdp_ID
 
-  ID type is first octet, must be zero.
-  2.2.2 or earlier.
+  This is aware of the ID type option.  It supports PDID response
+  and has at this time a stub response for extended pdid.
+
+  It does not validate the PD is known to be a post-2.2.2 PD via
+  the version capability.
 */
 
 int
@@ -205,22 +208,73 @@ int
   char cmd [3*1024];
   int current_length;
   int current_security;
+  int id_type;
   char logmsg [1024];
   int nak_length;
   OSDP_HDR *oh;
+  unsigned char osdp_extended_response_data [2048]; // trim to max payload size
+  unsigned char osdp_extended_response_lth;
   unsigned char osdp_nak_response_data [2];
   unsigned char osdp_pdid_response_data [12];
   int status;
 
+
   status = ST_OK;
   oh = (OSDP_HDR *)(msg->ptr);
+  id_type = 0; // assume PDID
 
-  if (*(msg->data_payload) != 0)
+  // set up PDID response data regardless of outcome 
+  osdp_pdid_response_data [ 0] = ctx->vendor_code [0];
+  osdp_pdid_response_data [ 1] = ctx->vendor_code [1];
+  osdp_pdid_response_data [ 2] = ctx->vendor_code [2];
+  osdp_pdid_response_data [ 3] = ctx->model;;
+  osdp_pdid_response_data [ 4] = ctx->version;
+  osdp_pdid_response_data [ 5] = ctx->serial_number [0];
+  osdp_pdid_response_data [ 6] = ctx->serial_number [1];
+  osdp_pdid_response_data [ 7] = ctx->serial_number [2];
+  osdp_pdid_response_data [ 8] = ctx->serial_number [3];
+  osdp_pdid_response_data [ 9] = ctx->fw_version [0];
+  osdp_pdid_response_data [10] = ctx->fw_version [1];
+  osdp_pdid_response_data [11] = ctx->fw_version [2];
+
+  // validate id type
+
+  if (*(msg->data_payload) EQUALS 1)
   {
+    id_type = 1;
+    osdp_extended_response_lth = 100;
+    memset(osdp_extended_response_data, 0x17, osdp_extended_response_lth);
+
+    current_length = 0;
+    current_security = OSDP_SEC_SCS_18;
+    if (msg->security_block_length EQUALS 0)
+      current_security = OSDP_SEC_STAND_DOWN;
+    status = send_message_ex(ctx, OSDP_EXT_PDID, oo_response_address(ctx, oh->addr),
+      &current_length, osdp_extended_response_lth, osdp_extended_response_data, current_security, 0, NULL);
+    osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
+
+    if (status EQUALS ST_OK)
+    {
+      if (ctx->verbosity > 2)
+      {
+        sprintf (logmsg, "Responding with OSDP_EXT_PDID");
+        fprintf (ctx->log, "%s\n", logmsg);
+      };
+      sprintf(cmd, "%s/osdp_EXT_ID", oo_osdp_root(ctx, OO_DIR_ACTIONS));
+      if (ctx->verbosity > 1)
+        system(cmd);
+    };
+  };
+
+  if ((*(msg->data_payload) != 0) && (*(msg->data_payload) != 1))
+  {
+    id_type = -1;
+
     // note we do not set the status to bad, we are in fact consuming the command.
 
     current_length = 0;
-    osdp_nak_response_data [0] = OO_NAK_UNK_CMD;
+    osdp_nak_response_data [0] = OO_NAK_UNK_CMD; // TODO should this be bad parameter?
     osdp_nak_response_data [1] = *msg->data_payload;
     nak_length = 2;
  
@@ -231,25 +285,12 @@ int
     osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
     if (ctx->verbosity > 2)
     {
-      fprintf(ctx->log, "ID command rejected as command unknown.\n");
+      fprintf(ctx->log, "ID command rejected as command unknown.\n"); // bad parameter?
     };
   };
 
-  if (status EQUALS ST_OK)
+  if ((id_type EQUALS 0) && (status EQUALS ST_OK)) // send it back a PDID
   {
-    osdp_pdid_response_data [ 0] = ctx->vendor_code [0];
-    osdp_pdid_response_data [ 1] = ctx->vendor_code [1];
-    osdp_pdid_response_data [ 2] = ctx->vendor_code [2];
-    osdp_pdid_response_data [ 3] = ctx->model;;
-    osdp_pdid_response_data [ 4] = ctx->version;
-    osdp_pdid_response_data [ 5] = ctx->serial_number [0];
-    osdp_pdid_response_data [ 6] = ctx->serial_number [1];
-    osdp_pdid_response_data [ 7] = ctx->serial_number [2];
-    osdp_pdid_response_data [ 8] = ctx->serial_number [3];
-    osdp_pdid_response_data [ 9] = ctx->fw_version [0];
-    osdp_pdid_response_data [10] = ctx->fw_version [1];
-    osdp_pdid_response_data [11] = ctx->fw_version [2];
-
     current_length = 0;
     current_security = OSDP_SEC_SCS_18;
 
@@ -261,20 +302,20 @@ int
       &current_length, sizeof(osdp_pdid_response_data), osdp_pdid_response_data, current_security, 0, NULL);
     osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_EXERCISED);
     osdp_test_set_status(OOC_SYMBOL_rep_device_ident, OCONFORM_EXERCISED);
-  };
-  if (status EQUALS ST_OK)
-  {
-    if (ctx->verbosity > 2)
+    if (status EQUALS ST_OK)
     {
-      sprintf (logmsg, "Responding with OSDP_PDID");
-      fprintf (ctx->log, "%s\n", logmsg);
+      if (ctx->verbosity > 2)
+      {
+        sprintf (logmsg, "Responding with OSDP_PDID");
+        fprintf (ctx->log, "%s\n", logmsg);
+      };
+
+      // call the plugin
+
+      sprintf(cmd, "%s/osdp_ID", oo_osdp_root(ctx, OO_DIR_ACTIONS));
+      if (ctx->verbosity > 1)
+        system(cmd);
     };
-
-    // call the plugin
-
-    sprintf(cmd, "%s/osdp_ID", oo_osdp_root(ctx, OO_DIR_ACTIONS));
-    if (ctx->verbosity > 1)
-      system(cmd);
   };
 
   if (ctx->verbosity > 3)

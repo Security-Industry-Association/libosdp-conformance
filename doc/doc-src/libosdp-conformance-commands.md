@@ -146,7 +146,10 @@ Default behavior is to send to the currently-configured PD address on the curren
 |          |                          |
 | new-sequence | "1" to reset sequence number to zero. |
 |                |                                          |
-| pdid-blocktype | 0-255, default is 0 (IEC 60839-11-5 MBC) |
+| pdid-blocktype | 0-255, default is 0 (IEC 60839-11-5 PDID response) |
+
+PDID block type 1 requests an extended PDID response instead
+of a PDID response.
 
 \newpage {}
 

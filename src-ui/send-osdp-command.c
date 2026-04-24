@@ -73,13 +73,8 @@ int
   if (matches_ACU)
   {
     printf ("<HTML><HEAD><TITLE>Control PD Testing (CP Emulator)</TITLE>");
-#ifdef OSDP_CONFORMANCE
     printf
 ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/Test-ACU.html\">");
-#else
-    printf
-("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");
-#endif
     printf ("</HEAD><BODY>");
     strcpy (command, arguments+strlen(tag));
     // send the CP daemon a command
