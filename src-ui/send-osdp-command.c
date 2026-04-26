@@ -60,8 +60,13 @@ int
 
   matches_ACU = 0;
   strcpy (tag, "cmd=CP-");
+fprintf(stderr, "DEBUG: tag %s\n", tag);
+fprintf(stderr, "DEBUG: arguments %s\n", arguments);
   if (0 == strncmp (tag, arguments, strlen (tag)))
+  {
+fprintf(stderr, "matched.\n");
     matches_ACU = 1;
+  };
   if (!matches_ACU)
   {
     strcpy (tag, "cmd=ACU-");
