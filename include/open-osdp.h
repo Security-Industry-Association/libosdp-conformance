@@ -29,8 +29,8 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (103)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (110)
+#define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)

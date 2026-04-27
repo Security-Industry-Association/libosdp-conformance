@@ -981,8 +981,13 @@ fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
     */
     context->packets_received ++;
 
-if (context->verbosity > 3) osdp_trace_dump(context, 1);
-else osdp_trace_dump(context, 0);
+    if (context->role EQUALS OSDP_ROLE_ACU)
+    {
+      if (context->verbosity > 3)
+        osdp_trace_dump(context, 1);
+      else
+        osdp_trace_dump(context, 0);
+    };
     if (context->role EQUALS OSDP_ROLE_PD)
     {
       if (context->verbosity > 3)
