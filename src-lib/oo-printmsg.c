@@ -1,7 +1,7 @@
 /*
   oo-printmsg - open osdp message printing routines
 
-  (C)Copyright 2017-2024 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -544,40 +544,28 @@ int
 
 { /* oosdp_print_message_XRD */
 
+  int count;
+  int i;
+  char octet [1024];
+  OSDP_HDR *oh;
+  unsigned char *xrd_payload;
   int status;
 
 
   status = ST_OK;
-
-  // default...
-
-  sprintf(tlogmsg, "Extended Read: %02x %02x %02x %02x\n",
-    *(osdp_msg->data_payload + 0), *(osdp_msg->data_payload + 1),
-    *(osdp_msg->data_payload + 2), *(osdp_msg->data_payload + 3));
-
-  // if we know it's 7.25.3
-
-  if (*(osdp_msg->data_payload + 0) EQUALS 0)
+  oh = (OSDP_HDR *)(osdp_msg->ptr);
+  count = oh->len_lsb + (oh->len_msb << 8);
+  count = count - 8;  // payload
+  xrd_payload = (unsigned char *)(osdp_msg->data_payload);
+  strcpy(tlogmsg, "Extended Read:");
+  tlogmsg [0] = 0;
+  for (i=0; i<count; i++)
   {
-    if (*(osdp_msg->data_payload + 1) EQUALS 1)
-    {
-      sprintf(tlogmsg,
-"Extended Read: osdp_PR00REQR Current Mode %02x Configuration %02x\n",
-        *(osdp_msg->data_payload + 2), *(osdp_msg->data_payload + 3));
-    };
+    sprintf(octet, " %02X", *(xrd_payload+i));
+    strcat(tlogmsg, octet);
   };
+  strcat(tlogmsg, "\n");
 
-  // if we know it's 7.25.5
-
-  if (*(osdp_msg->data_payload + 0) EQUALS 1)
-    {
-      if (*(osdp_msg->data_payload + 1) EQUALS 1)
-      {
-        sprintf(tlogmsg,
-"Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
-          *(osdp_msg->data_payload + 2), *(osdp_msg->data_payload + 3));
-      };
-    };
   return(status);
 
 } /* oosdp_print_message_XRD */
