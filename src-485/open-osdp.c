@@ -52,6 +52,10 @@ OSDP_PARAMETERS p_card;
 char tag [16]; // PD or CP as a string
 char trace_in_buffer [4*OSDP_OFFICIAL_MSG_MAX];
 char trace_out_buffer [4*OSDP_OFFICIAL_MSG_MAX];
+extern struct timespec trace_in_time;
+extern struct timespec trace_out_time;
+extern int trace_in_time_valid;
+extern int trace_out_time_valid;
   unsigned char last_message_sent [2048];
   int last_message_sent_length;
 
@@ -101,6 +105,8 @@ int
   sprintf (command, "rm -f %s", OSDP_LCL_UNIX_SOCKET); system(command); // kill socket for starters
   trace_in_buffer [0] = 0;
   trace_out_buffer [0] = 0;
+  trace_in_time_valid = 0;
+  trace_out_time_valid = 0;
   check_for_command = 0;
 
   if (status EQUALS ST_OK)
@@ -407,6 +413,12 @@ int
               {
                 context.dropped_octets = context.dropped_octets + osdp_buf.next;
                 osdp_buf.next = 0;
+              }
+              else
+              {
+                // First valid byte of new frame -- capture RX timestamp
+                clock_gettime(CLOCK_REALTIME, &trace_in_time);
+                trace_in_time_valid = 1;
               };
             };
           }
@@ -520,6 +532,8 @@ int
       sprintf(octet, " %02x", (unsigned char)(buf [i]));
       strcat(trace_out_buffer, octet);
     };
+    clock_gettime(CLOCK_REALTIME, &trace_out_time);
+    trace_out_time_valid = 1;
   };
   write (context->fd, buf, lth);
 
