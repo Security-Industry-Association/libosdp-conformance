@@ -47,7 +47,7 @@ int
   if (status EQUALS ST_OK)
     status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
 
-  sprintf(cmd, "MODE %02X PREPLY %02X DETAIL ",
+  sprintf(cmd, "%02X %02X ",
     *(msg->data_payload), *(msg->data_payload+1));
   for (i=0; i<msg->data_length-2; i++)
   {
@@ -55,48 +55,6 @@ int
     strcat(cmd, octet);
   };
   status = oosdp_callout(ctx, "osdp_XRD", cmd);
-
-#if 0
-  // if we know it's 7.25.5 it's a card-present alert
-
-  if (*(msg->data_payload + 0) EQUALS 1)
-  {
-    if (*(msg->data_payload + 1) EQUALS 1)
-    {
-      sprintf(tlogmsg,
-"Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
-        *(msg->data_payload + 2), *(msg->data_payload + 3));
-      status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-sP`     status = oosdp_callout(ctx, "osdp_XRD_1_1", "");
-//      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
-//      system(cmd);
-    };
-  };
-
-  // if we know it's 7.25.8 it's an APDU from the card
-
-  if (*(msg->data_payload + 0) EQUALS 1)
-  {
-    if (*(msg->data_payload + 1) EQUALS 2)
-    {
-      char apdu [1024];
-      int i;
-      char octet [3];
-
-      apdu [0] = 0;
-      for (i=4; i<msg->data_length-4; i++)
-      {
-        sprintf(octet, "%02x", msg->data_payload [i]);
-        strcat(apdu, octet);
-      };
-
-      dump_buffer_log(ctx, "APDU: ", msg->data_payload+4, msg->data_length-4);
-
-      status = oosdp_callout(ctx, "osdp_XRD_1_2", apdu);
-//      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_2 %s", apdu); system(cmd);
-    };
-  };
-#endif
 
   return (status);
 
