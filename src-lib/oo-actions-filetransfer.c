@@ -1,7 +1,7 @@
 /*
   oo-actions-filetransfer - file transfer action routines
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -131,9 +131,10 @@ int
 
         osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
 
-        fprintf(ctx->log, " Sending FTSTAT:Offset %d Total %d CurrentSDU %d OfferedSDU %d\n",
-          ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
-          offered_size);
+        if (ctx->verbosity > 0)
+          fprintf(ctx->log, "\n   FTSTAT Response: Sending FTSTAT:Offset %d Total %d CurrentSDU %d OfferedSDU %d FtDelay %d.\n",
+            ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
+            offered_size, (response.FtDelay [0])*256 + response.FtDelay[1]);
 
         if (ctx->verbosity > 3)
         {
@@ -236,6 +237,12 @@ fprintf(stderr, "DEBUG: sending poll to address poll response\n");
   };
   if (status EQUALS ST_OK)
     status = oo_write_status (ctx);
+
+{
+  oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
+  fprintf(ctx->log, "action_osdp_FTSTAT bottom: %s\n", tlogmsg);
+};
+
   return (status);
 
 } /* action_osdp_FTSTAT */

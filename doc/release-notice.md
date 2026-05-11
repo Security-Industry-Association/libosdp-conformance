@@ -7,6 +7,12 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.110 Build 1 ###
+
+- corrected underscore in sample PD configuration.
+- correct address display in PD status
+- display FTSTAT details even if encrypted
+
 ### Updates in 1.110 Build 0 ###
 
 Move code no longer supported to "deprecate" directory to reduce confusion

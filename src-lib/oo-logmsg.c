@@ -364,8 +364,17 @@ int
 
   case OOSDP_MSG_FTSTAT:
     msg = (OSDP_MSG *) aux;
+    oh = (OSDP_HDR *)(msg->ptr);
     ftstat = (OSDP_HDR_FTSTAT *)(msg->data_payload);
+    tlogmsg [0] = 0;
 
+    if (msg->security_block_length > 0)
+    {
+      if (context.verbosity > 2)
+        strcat(tlogmsg, "  (FTSTAT response contents encrypted)\n");
+    };
+    if (msg->security_block_length EQUALS 0)
+    {
     // dump the FTSTAT response in case it's weird
     if (context.verbosity > 9)
       dump_buffer_log(&context, "  FTSTAT: ", (unsigned char *)ftstat, msg->lth);
@@ -399,6 +408,7 @@ int
       ftstat->FtDelay [0], ftstat->FtDelay [1], newdelay,
       ftstat->FtUpdateMsgMax [0], ftstat->FtUpdateMsgMax [1], newmax);
     strcat(tlogmsg, tmpstr);
+    }; // not encrypted
     break;
 
   case OOSDP_MSG_GENAUTH:
@@ -753,6 +763,7 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
               if (compliance == 2) strcpy (tstr2, "Timed");
               if (compliance == 3) strcpy (tstr2, "Timed, Bi-color");
               if (compliance == 4) strcpy (tstr2, "Timed, Tri-color");
+              if (compliance == 5) strcpy (tstr2, "Timed, 8-color");
               sprintf (tstr, "  Capability Entry %02d. %s %d LED's Compliance:%s;\n",
                 1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)), 
                 *(i+2+msg->data_payload),
