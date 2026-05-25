@@ -12,6 +12,7 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 - corrected underscore in sample PD configuration.
 - correct address display in PD status
 - display FTSTAT details even if encrypted
+- changed command socket processing to support stacking
 
 ### Updates in 1.110 Build 0 ###
 

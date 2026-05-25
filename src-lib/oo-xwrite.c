@@ -43,10 +43,6 @@ int
   int status;
 
 
-  status = oosdp_make_message (OOSDP_MSG_XREAD, tlogmsg, msg);
-  if (status EQUALS ST_OK)
-    status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-
   sprintf(cmd, "%02X %02X ",
     *(msg->data_payload), *(msg->data_payload+1));
   for (i=0; i<msg->data_length-2; i++)
@@ -233,8 +229,11 @@ int osdp_xwrite_explicit
 
 { /* osdp_xwrite_explicit */
 
+  char callout_args [8192];
   int clth;
   int current_length;
+  int i;
+  char octet [3];
   int status;
   OSDP_XWR_COMMAND xwr_cmd;
 
@@ -245,9 +244,24 @@ int osdp_xwrite_explicit
   memcpy(&(xwr_cmd.xwr_pdata[0]), pdata, pdata_length);
   clth = clth + pdata_length;
 
-  current_length = 0;
-  status = send_message (ctx,
-    OSDP_XWR, p_card.addr, &current_length, clth, (unsigned char *)&xwr_cmd);
+
+  sprintf(callout_args, "%02X %02X %02X",
+    mode, pcmnd, pdata[0]);
+  if (pdata_length > 0)
+  {
+    for(i=0; i<pdata_length; i++)
+    {
+      sprintf(octet, "%02X", pdata [i]);
+      strcat(callout_args, octet);
+    };
+  };
+  status = oosdp_callout(ctx, "osdp_XWR", callout_args);
+  if (status EQUALS ST_OK)
+  {
+    current_length = 0;
+    status = send_message (ctx,
+      OSDP_XWR, p_card.addr, &current_length, clth, (unsigned char *)&xwr_cmd);
+  };
 
   return(status);
 

@@ -557,8 +557,8 @@ int
   count = oh->len_lsb + (oh->len_msb << 8);
   count = count - 8;  // payload
   xrd_payload = (unsigned char *)(osdp_msg->data_payload);
-  strcpy(tlogmsg, "Extended Read:");
   tlogmsg [0] = 0;
+  strcpy(tlogmsg, "  -->Extended Read:");
   for (i=0; i<count; i++)
   {
     sprintf(octet, " %02X", *(xrd_payload+i));

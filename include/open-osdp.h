@@ -298,6 +298,7 @@ typedef struct osdp_pdcap_entry
 #define OSDP_CAP_BIOMETRICS     (14)
 #define OSDP_CAP_SPE            (15) // secure pin entry
 #define OSDP_CAP_VERSION        (16)
+#define OSDP_CAP_EXTENDED_PDID (17)
 
 // some of the PD's capabilities
 

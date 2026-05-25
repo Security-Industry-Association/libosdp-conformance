@@ -770,6 +770,11 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
                 tstr2);
             };
             break;
+          case OSDP_CAP_EXTENDED_PDID:
+            sprintf (tstr, "  Capability Entry %02d. %s %d %d;\n",
+              1+i/3, osdp_pdcap_function (*(i+0+msg->data_payload)),
+              *(i+1+msg->data_payload), *(i+2+msg->data_payload));
+            break;
           case OSDP_CAP_REC_MAX:
             value = *(i+1+msg->data_payload) + 256 * (*(i+2+msg->data_payload));
             sprintf (tstr, "  Capability Entry %02d. %s %d;\n",
@@ -843,14 +848,26 @@ fprintf(stderr, "unknown Security Block %d.\n", sec_block [1]);
 
   case OOSDP_MSG_XREAD:
     msg = (OSDP_MSG *) aux;
-    status = oosdp_print_message_XRD(&context, msg, tlogmsg);
+    if (msg->security_block_length > 0)
+    {
+      if (context.verbosity > 2)
+        strcat(tlogmsg, "  (FTSTAT response contents encrypted)\n");
+    }
+    else
+    {
+      status = oosdp_print_message_XRD(&context, msg, tlogmsg);
+    };
     break;
 
   case OOSDP_MSG_XWR:
     msg = (OSDP_MSG *) aux;
-    sprintf(tlogmsg, "Extended Write: %02x %02x %02x %02x\n",
-      *(msg->data_payload + 0), *(msg->data_payload + 1),
-      *(msg->data_payload + 2), *(msg->data_payload + 3));
+    sprintf(tlogmsg, "  -->Extended Write:");
+    for (i=0; i<count; i++)
+    {
+      sprintf(tmpstr, " %02x", *(msg->data_payload + i));
+      strcat(tlogmsg, tmpstr);
+    };
+    strcat(tlogmsg, "\n");
     break;
 
   default:

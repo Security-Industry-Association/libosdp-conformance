@@ -240,7 +240,7 @@ fprintf(stderr, "DEBUG: sending poll to address poll response\n");
 
 {
   oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
-  fprintf(ctx->log, "action_osdp_FTSTAT bottom: %s\n", tlogmsg);
+  fprintf(ctx->log, "\n  FTSTAT action: %s\n", tlogmsg);
 };
 
   return (status);
