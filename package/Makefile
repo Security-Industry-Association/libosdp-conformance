@@ -8,7 +8,7 @@ all:	makefile-package
 	cp package-control/control-`./get-arch` ${PACKAGE_NAME}/DEBIAN/control
 	make -f makefile-package
 	mkdir -p ${PACKAGE_NAME}-dist
-	dpkg-deb --build ${PACKAGE_NAME} ${PACKAGE_NAME}-dist
+	dpkg-deb --root-owner-group --build ${PACKAGE_NAME} ${PACKAGE_NAME}-dist
 	cp ${PACKAGE_NAME}-dist/*.deb .
 
 build:	all
@@ -27,17 +27,7 @@ service:	package
 	cp service-pkgctl/control-`./get-arch` osdp-service/DEBIAN/control
 	make -f service-package
 	mkdir -p osdp-service-dist
-	dpkg-deb --build osdp-service osdp-service-dist
+	dpkg-deb --root-owner-group --build osdp-service osdp-service-dist
 	cp osdp-service-dist/*.deb .
 	cp *.deb ..
-
-#amd64:	${PACKAGE_NAME}-amd64.deb
-
-zz${PACKAGE_NAME}-armhf.deb: makefile-package
-	mkdir -p ${PACKAGE_NAME}/DEBIAN
-	cp package-control/control-armhf ${PACKAGE_NAME}/DEBIAN/control
-	make -f makefile-package
-	mkdir -p ${PACKAGE_NAME}-dist
-	dpkg-deb --build ${PACKAGE_NAME} ${PACKAGE_NAME}-dist
-	cp ${PACKAGE_NAME}-dist/*.deb .
 
