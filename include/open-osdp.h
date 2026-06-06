@@ -234,6 +234,7 @@
 #define OSDP_CMDB_RETURN_INPUT_STATUS       (1061)
 #define OSDP_CMDB_CLEARTEXT                 (1062)
 #define OSDP_CMDB_TRANSFER_CANCEL           (1063)
+#define OSDP_CMDB_TRANSFER_MODIFY           (1064)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -662,6 +663,8 @@ typedef struct osdp_context
   int cancel_filetransfer;
   OSDP_CONTEXT_FILETRANSFER xferctx;
   int ft_interleave;
+  int ft_next_delay;
+  int ft_next_status;
 
   // conformance manipulation
 

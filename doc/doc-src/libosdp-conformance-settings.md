@@ -55,6 +55,9 @@ because bit 1 of the first octet is a 1 meaning a private value.)
 
 ## Saved Parameters ##
 
+___NOTE___ saved parameters are used on startup, including the speed.
+Delete this file if you want to reset to default values.
+
 - key - OSPD SCBK saved value.  WARNING: this tool is for
 test use only.  The key is not secured by design.
 - serial-speed - serial speed. Used if ACU sets the speed with COMSET.

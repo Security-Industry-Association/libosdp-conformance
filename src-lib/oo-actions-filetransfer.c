@@ -32,6 +32,9 @@ extern OSDP_RESPONSE_QUEUE_ENTRY osdp_response_queue [8];
 extern int osdp_response_queue_size;
 
 
+/*
+  action_osdp_FILETRANSFER - process a FILETRANSFER command as the PD
+*/
 int
   action_osdp_FILETRANSFER
     (OSDP_CONTEXT *ctx,
@@ -44,6 +47,7 @@ int
   unsigned int offset;
   OSDP_HDR_FTSTAT response;
   int status;
+  int status_ftstat;
   int status_io;
   unsigned char *transfer_fragment;
 
@@ -51,6 +55,9 @@ int
   status = ST_OK;
   filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
   memset (&response, 0, sizeof(response));
+
+  status_ftstat = OSDP_FTSTAT_OK;
+
   if (ctx->ft_interleave)
     response.FtAction = response.FtAction | OSDP_FTACTION_INTERLEAVE;
   response.FtAction = response.FtAction | ctx->xferctx.ft_action;
@@ -122,17 +129,35 @@ int
         offered_size = oo_filetransfer_SDU_offer(ctx);
 
         // if there was a configured size, offer that
+
         if (ctx->pd_filetransfer_payload > 0)
         {
           offered_size = ctx->pd_filetransfer_payload;
         };
         if (ctx->verbosity > 3)
           fprintf(ctx->log, "osdp_FTSTAT FTMsgUpdateMax will be %d.\n", offered_size);
-
         osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
 
+        // if requested set the status to something else...
+
+        if (ctx->ft_next_status > 0)
+        {
+          status_ftstat = ctx->ft_next_status;
+          osdp_doubleByte_to_array(ctx->ft_next_status, response.FtStatusDetail);
+          ctx->ft_next_status = 0;
+        };
+
+        // if requested to do a delay, do it.  Once.
+
+        if (ctx->ft_next_delay > 0)
+        {
+          osdp_doubleByte_to_array(ctx->ft_next_status, response.FtDelay);
+          ctx->ft_next_delay = 0;
+        };
+
         if (ctx->verbosity > 0)
-          fprintf(ctx->log, "\n   FTSTAT Response: Sending FTSTAT:Offset %d Total %d CurrentSDU %d OfferedSDU %d FtDelay %d.\n",
+          fprintf(ctx->log, "\n   FTSTAT Response: Status %d. Offset %d Total %d CurrentSDU %d OfferedSDU %d FtDelay %d.\n",
+            status_ftstat,
             ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
             offered_size, (response.FtDelay [0])*256 + response.FtDelay[1]);
 
