@@ -297,7 +297,7 @@ It us used by LED (and eventually GENAUTH/CRAUTH for that off-nominal use case.)
 | reaction-details           | hex string to use as payload for reaction command.                 |
 |             |                                            |
 
-# return-input #
+## Command return-input ##
 
 This command returns an input status.  If no value is specified it sets input 0 to a 1.
 

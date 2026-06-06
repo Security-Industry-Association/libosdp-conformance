@@ -670,6 +670,35 @@ int
     status = ST_OK;
     break;
 
+  /*
+    transfer-modify - tweak ongoing file transfer from this PD
+
+    cancel is 1 to cancel
+    next-delay sets the delay time in the next ftstat (one-shot)
+    next-status sets the status value in the next ftstat (one-shot)
+  */
+  case OSDP_CMDB_TRANSFER_MODIFY:
+    parameter = json_object_get(root, "cancel");
+    if (json_is_string(parameter))
+    {
+      ctx->cancel_filetransfer = 1;
+    };
+    parameter = json_object_get(root, "next-delay");
+    if (json_is_string(parameter))
+    {
+      sscanf(json_string_value(parameter), "%d", &i);
+      ctx->ft_next_delay = i;
+    };
+    parameter = json_object_get(root, "next-status");
+    if (json_is_string(parameter))
+    {
+      sscanf(json_string_value(parameter), "%d", &i);
+      ctx->ft_next_status = i;
+    };
+    cmd->command = OSDP_CMD_NOOP;
+    status = ST_OK;
+    break;
+
   case OSDP_CMDB_XWRITE:
     status = oo_command_setup_xwrite(ctx, root, cmd);
     cmd->command = OSDP_CMD_NOOP;

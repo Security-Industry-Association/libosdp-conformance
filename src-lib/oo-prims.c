@@ -394,6 +394,8 @@ int
       ret_cmd = OSDP_CMDB_TAMPER;
     if (0 EQUALS strcmp(command, "transfer-cancel"))
       ret_cmd = OSDP_CMDB_TRANSFER_CANCEL;
+    if (0 EQUALS strcmp(command, "transfer-modify"))
+      ret_cmd = OSDP_CMDB_TRANSFER_MODIFY;
     if (0 EQUALS strcmp(command, "trace"))
       ret_cmd = OSDP_CMDB_TRACE;
     if (0 EQUALS strcmp(command, "xwrite"))
