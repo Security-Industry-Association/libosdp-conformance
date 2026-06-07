@@ -124,6 +124,10 @@ int
       {
         int offered_size;
 
+        // if we're here assume status was good for now.
+
+        osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
+
         // offer an updated receive size.
 
         offered_size = oo_filetransfer_SDU_offer(ctx);
@@ -142,6 +146,8 @@ int
 
         if (ctx->ft_next_status > 0)
         {
+          if (ctx->verbosity > 3)
+            fprintf(ctx->log, "  FtStatusDetail on next FTSTAT will be %d\n", ctx->ft_next_status);
           status_ftstat = ctx->ft_next_status;
           osdp_doubleByte_to_array(ctx->ft_next_status, response.FtStatusDetail);
           ctx->ft_next_status = 0;
@@ -151,7 +157,9 @@ int
 
         if (ctx->ft_next_delay > 0)
         {
-          osdp_doubleByte_to_array(ctx->ft_next_status, response.FtDelay);
+          if (ctx->verbosity > 3)
+            fprintf(ctx->log, "  FtDelay on next FTSTAT will be %d\n", ctx->ft_next_delay);
+          osdp_doubleByte_to_array(ctx->ft_next_delay, response.FtDelay);
           ctx->ft_next_delay = 0;
         };
 
@@ -161,15 +169,14 @@ int
             ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
             offered_size, (response.FtDelay [0])*256 + response.FtDelay[1]);
 
-        if (ctx->verbosity > 3)
+        if (ctx->verbosity > 9)
         {
-          fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
-          fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);
-          fprintf(stderr, "current_send_length : %d\n", ctx->xferctx.current_send_length);
-          fprintf(stderr, "response mmax %02x %02x\n",
+          fprintf(ctx->log, "current_offset : \"%d\n", ctx->xferctx.current_offset);
+          fprintf(ctx->log, "total_length : %d\n", ctx->xferctx.total_length);
+          fprintf(ctx->log, "current_send_length : %d\n", ctx->xferctx.current_send_length);
+          fprintf(ctx->log, "response mmax %02x %02x\n",
             response.FtUpdateMsgMax [0], response.FtUpdateMsgMax [1]);
         };
-        osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
         status = oo_send_ftstat(ctx, &response);
       };
     };

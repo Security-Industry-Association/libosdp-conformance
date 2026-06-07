@@ -76,10 +76,6 @@ int
   unsigned short int wire_crc;
 
 
-  if (context->verbosity > 3)
-  {
-    fprintf(context->log, "DEBUG: osdp_parse_message top\n");
-  };
   p = (OSDP_HDR *)m->ptr;
 
   status = ST_MSG_TOO_SHORT;
@@ -971,8 +967,6 @@ fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
       tlogmsg [0] = 0; tlogmsg2 [0] = 0;
     };
   };
-  if (context->verbosity > 3)
-    fprintf(context->log, "DEBUG: 974\n");
   if ((status EQUALS ST_OK) || (status EQUALS ST_OSDP_BAD_PD_SEQUENCE))
   {
     /*

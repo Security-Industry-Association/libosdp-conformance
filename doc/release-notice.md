@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.111 Build 0 ###
+
+added transfer-modify.  deprecated transfer-cancel.
+doc updated to add transfer-modify.
+
 ### Updates in 1.110 Build 1 ###
 
 - corrected underscore in sample PD configuration.

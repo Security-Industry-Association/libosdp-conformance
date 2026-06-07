@@ -664,12 +664,6 @@ int
     status = ST_OK;
     break;
 
-  case OSDP_CMDB_TRANSFER_CANCEL:
-    ctx->cancel_filetransfer = 1;
-    cmd->command = OSDP_CMD_NOOP;
-    status = ST_OK;
-    break;
-
   /*
     transfer-modify - tweak ongoing file transfer from this PD
 
@@ -681,11 +675,13 @@ int
     parameter = json_object_get(root, "cancel");
     if (json_is_string(parameter))
     {
+fprintf(stderr, "DEBUG: transfer-modify cancel\n");
       ctx->cancel_filetransfer = 1;
     };
     parameter = json_object_get(root, "next-delay");
     if (json_is_string(parameter))
     {
+fprintf(stderr, "DEBUG: transfer-modify next-delay\n");
       sscanf(json_string_value(parameter), "%d", &i);
       ctx->ft_next_delay = i;
     };
@@ -693,6 +689,7 @@ int
     if (json_is_string(parameter))
     {
       sscanf(json_string_value(parameter), "%d", &i);
+fprintf(stderr, "DEBUG: transfer-modify next-status %d.\n", i);
       ctx->ft_next_status = i;
     };
     cmd->command = OSDP_CMD_NOOP;

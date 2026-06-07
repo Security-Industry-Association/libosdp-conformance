@@ -330,7 +330,7 @@ ___Arguments___
 |             |                                            |
 | file-type | (optional) file type to use.  Hex, must be nonzero. |
 
-## Command transfer-cancel ##
+## Command transfer-modify ##
 
 This command causes the ACU to cancel the file transfer in progress
 by sending an osdp_FILETRANSFER with all zeroes.
@@ -341,6 +341,12 @@ ___Arguments___
 | -------- | ----- |
 |          |       |
 | command        | transfer-cancel |
+|             |                                            |
+| cancel   | any value other than 0 causes a filetransfer cancel sequence. |
+|             |                                            |
+| next-delay  | next ftstat will send this delay value.  Units are milliseconds. |
+|             |                                            |
+| next-status | unsigned 32bit sent on next ftstat. |
 
 \newpage{}
 
