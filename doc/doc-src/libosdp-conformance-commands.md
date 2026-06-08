@@ -332,8 +332,9 @@ ___Arguments___
 
 ## Command transfer-modify ##
 
-This command causes the ACU to cancel the file transfer in progress
-by sending an osdp_FILETRANSFER with all zeroes.
+When sent to an ACU using the cancel=1 option causes an ACU-initiated file transfer cancellation.
+
+When sent to a PD causes the next FTSTAT response to have certain fields modified.
 
 ___Arguments___
 
@@ -342,11 +343,11 @@ ___Arguments___
 |          |       |
 | command        | transfer-cancel |
 |             |                                            |
-| cancel   | any value other than 0 causes a filetransfer cancel sequence. |
+| cancel   | (use with ACU ) any value other than 0 causes a filetransfer cancel sequence. |
 |             |                                            |
-| next-delay  | next ftstat will send this delay value.  Units are milliseconds. |
+| next-delay  | (use with PD) next ftstat will send this delay value.  Units are milliseconds. |
 |             |                                            |
-| next-status | unsigned 32bit sent on next ftstat. |
+| next-status | (use with PD) unsigned 32bit sent on next ftstat. |
 
 \newpage{}
 
