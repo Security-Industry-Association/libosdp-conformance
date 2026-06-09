@@ -28,6 +28,10 @@
 #include <osdpcap.h>
 extern char trace_in_buffer [];
 extern char trace_out_buffer [];
+struct timespec trace_in_time;
+struct timespec trace_out_time;
+int trace_in_time_valid;
+int trace_out_time_valid;
 
 
 void dump_buffer_log
@@ -414,6 +418,8 @@ void
 { /* osdp_trace_dump */
 
   struct timespec current_time_fine;
+  struct timespec out_time;
+  struct timespec in_time;
   FILE *tf;
 
 
@@ -430,7 +436,29 @@ void
         print_enable, (int)strlen(trace_out_buffer), (int)strlen(trace_in_buffer));
     }
 
+    // Fallback timestamp for buffers without a captured wire-time
     clock_gettime (CLOCK_REALTIME, &current_time_fine);
+
+    // Use wire-level timestamps when available, otherwise fall back
+    if (trace_out_time_valid)
+    {
+      out_time = trace_out_time;
+      trace_out_time_valid = 0;
+    }
+    else
+    {
+      out_time = current_time_fine;
+    }
+    if (trace_in_time_valid)
+    {
+      in_time = trace_in_time;
+      trace_in_time_valid = 0;
+    }
+    else
+    {
+      in_time = current_time_fine;
+    }
+
     if (ctx->verbosity > 9)
     {
       fprintf(ctx->log, "DEBUG: osdp_trace_dump fetched current time ol=%d il=%d\n",
@@ -449,8 +477,8 @@ void
       if (strlen(trace_out_buffer) > 0)
         fprintf(tf,
 "{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
-        OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
-        OSDPCAP_TAG_TIME_NSEC, current_time_fine.tv_nsec,
+        OSDPCAP_TAG_TIME_SEC, out_time.tv_sec,
+        OSDPCAP_TAG_TIME_NSEC, out_time.tv_nsec,
         OSDPCAP_TAG_INPUT_OUTPUT, "out",
         OSDPCAP_TAG_DATA, trace_out_buffer,
         OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
@@ -460,8 +488,8 @@ void
       {
         fprintf(tf,
 "{ \"%s\" : \"%010ld\", \"%s\" : \"%09ld\", \"%s\" : \"%s\", \"%s\" : \"%s\", \"%s\":\"%d\", \"%s\":\"libosdp-conformance %d.%d-%d\" }\n",
-          OSDPCAP_TAG_TIME_SEC, current_time_fine.tv_sec,
-          OSDPCAP_TAG_TIME_NSEC, current_time_fine.tv_nsec,
+          OSDPCAP_TAG_TIME_SEC, in_time.tv_sec,
+          OSDPCAP_TAG_TIME_NSEC, in_time.tv_nsec,
           OSDPCAP_TAG_INPUT_OUTPUT, tag,
           OSDPCAP_TAG_DATA, trace_in_buffer,
           OSDPCAP_TAG_TRACE_VERSION, OSDP_TRACE_VERSION_1,
