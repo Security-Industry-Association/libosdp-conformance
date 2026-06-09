@@ -1,7 +1,7 @@
 /*
   oo-prims - primitives for OSDP processing
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -392,10 +392,12 @@ int
       ret_cmd = OSDP_CMDB_SEND_EXPLICIT;
     if (0 EQUALS strcmp(command, "tamper"))
       ret_cmd = OSDP_CMDB_TAMPER;
-    if (0 EQUALS strcmp(command, "transfer-cancel"))
-      ret_cmd = OSDP_CMDB_TRANSFER_CANCEL;
+    if (0 EQUALS strcmp(command, "transfer-modify"))
+      ret_cmd = OSDP_CMDB_TRANSFER_MODIFY;
     if (0 EQUALS strcmp(command, "trace"))
       ret_cmd = OSDP_CMDB_TRACE;
+    if (0 EQUALS strcmp(command, "xwrite"))
+      ret_cmd = OSDP_CMDB_XWRITE;
     if (ret_cmd != -1)
       status = ST_OK;
   };

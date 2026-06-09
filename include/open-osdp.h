@@ -29,8 +29,8 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (103)
-#define OSDP_VERSION_BUILD ( 2)
+#define OSDP_VERSION_MINOR (111)
+#define OSDP_VERSION_BUILD ( 0)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)
@@ -147,6 +147,7 @@
 #define OSDP_COM       (0x54)
 #define OSDP_BIOREADR  (0x57)
 #define OSDP_BIOMATCHR (0x58)
+#define OSDP_EXT_PDID  (0x59)
 #define OSDP_CCRYPT    (0x76)
 #define OSDP_SCRYPT    (0x77)
 #define OSDP_RMAC_I    (0x78)
@@ -233,6 +234,7 @@
 #define OSDP_CMDB_RETURN_INPUT_STATUS       (1061)
 #define OSDP_CMDB_CLEARTEXT                 (1062)
 #define OSDP_CMDB_TRANSFER_CANCEL           (1063)
+#define OSDP_CMDB_TRANSFER_MODIFY           (1064)
 
 #define OSDP_CMD_NOOP         (0)
 
@@ -297,6 +299,7 @@ typedef struct osdp_pdcap_entry
 #define OSDP_CAP_BIOMETRICS     (14)
 #define OSDP_CAP_SPE            (15) // secure pin entry
 #define OSDP_CAP_VERSION        (16)
+#define OSDP_CAP_EXTENDED_PDID (17)
 
 // some of the PD's capabilities
 
@@ -660,6 +663,8 @@ typedef struct osdp_context
   int cancel_filetransfer;
   OSDP_CONTEXT_FILETRANSFER xferctx;
   int ft_interleave;
+  int ft_next_delay;
+  int ft_next_status;
 
   // conformance manipulation
 
@@ -788,7 +793,7 @@ typedef struct osdp_parameters
 #define OOSDP_MSG_SCRYPT       (101)
 #define OOSDP_MSG_TEXT         (26)
 #define OOSDP_MSG_XREAD        (23)
-#define OOSDP_MSG_XWRITE       (22)
+#define OOSDP_MSG_XWR          (22)
 
 
 #define OSDP_BUF_MAX (8192)
@@ -1134,6 +1139,7 @@ int action_osdp_RMAC_I (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_RSTAT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_SCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_TEXT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_XWR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int background (OSDP_CONTEXT *context);
 unsigned char checksum (unsigned char *msg, int length);
 int calc_parity (unsigned short value, int length, int sense);
@@ -1207,6 +1213,7 @@ int osdp_update_conformance(OSDP_CONTEXT *ctx);
 int osdp_validate_led_values
       (OSDP_RDR_LED_CTL *leds, unsigned char *errdeets, int *elth);
 void osdp_wrapup_filetransfer (OSDP_CONTEXT *ctx);
+int osdp_xwrite_explicit(OSDP_CONTEXT *ctx, unsigned char mode, unsigned char pcmnd, int pdata_length, unsigned char *pdata);
 int osdp_xwrite_get_mode (OSDP_CONTEXT *ctx);
 int osdp_xwrite_mode1 (OSDP_CONTEXT *ctx, int command, unsigned char * payload, int payload_length);
 int osdp_xwrite_set_mode (OSDP_CONTEXT *ctx, int mode);

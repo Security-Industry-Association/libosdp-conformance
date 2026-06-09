@@ -1,7 +1,7 @@
 /*
   open-osdp-PD-status - display PD status as refreshing HTML page
 
-  (C)Copyright 2017-2027 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -253,7 +253,7 @@ void
   if (status EQUALS ST_OK)
   {
     found_field = 1;
-    strcpy (field, "pd_address");
+    strcpy (field, "pd-address");
     value = json_object_get (root, field);
     if (!json_is_string (value))
       found_field = 0;

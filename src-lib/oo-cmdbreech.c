@@ -664,10 +664,41 @@ int
     status = ST_OK;
     break;
 
-  case OSDP_CMDB_TRANSFER_CANCEL:
-    ctx->cancel_filetransfer = 1;
+  /*
+    transfer-modify - tweak ongoing file transfer from this PD
+
+    cancel is 1 to cancel
+    next-delay sets the delay time in the next ftstat (one-shot)
+    next-status sets the status value in the next ftstat (one-shot)
+  */
+  case OSDP_CMDB_TRANSFER_MODIFY:
+    parameter = json_object_get(root, "cancel");
+    if (json_is_string(parameter))
+    {
+fprintf(stderr, "DEBUG: transfer-modify cancel\n");
+      ctx->cancel_filetransfer = 1;
+    };
+    parameter = json_object_get(root, "next-delay");
+    if (json_is_string(parameter))
+    {
+fprintf(stderr, "DEBUG: transfer-modify next-delay\n");
+      sscanf(json_string_value(parameter), "%d", &i);
+      ctx->ft_next_delay = i;
+    };
+    parameter = json_object_get(root, "next-status");
+    if (json_is_string(parameter))
+    {
+      sscanf(json_string_value(parameter), "%d", &i);
+fprintf(stderr, "DEBUG: transfer-modify next-status %d.\n", i);
+      ctx->ft_next_status = i;
+    };
     cmd->command = OSDP_CMD_NOOP;
     status = ST_OK;
+    break;
+
+  case OSDP_CMDB_XWRITE:
+    status = oo_command_setup_xwrite(ctx, root, cmd);
+    cmd->command = OSDP_CMD_NOOP;
     break;
 
   default:
@@ -1672,19 +1703,6 @@ int
           if (ctx->verbosity < 3)
             fprintf(ctx->log, "Warning: no test reporting, verbosity too low.\n");
       };
-    };
-  }; 
-
-  // command "xwrite"
-  /*
-    example:
-      { "command" : "xwrite", "action" : "get-mode" }
-  */
-  if (status EQUALS ST_OK)
-  {
-    if (0 EQUALS strcmp (current_command, "xwrite"))
-    {
-      status = oo_command_setup_xwrite(ctx, root, cmd);
     };
   }; 
 

@@ -1,7 +1,7 @@
 /*
   oo-parse - parse osdp messages
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -40,6 +40,7 @@ extern OSDP_BUFFER osdp_buf;
 unsigned char last_command_received;
 unsigned short int last_check_value;
 extern char trace_in_buffer [];
+extern char trace_out_buffer [];
 
 
 /*
@@ -87,8 +88,6 @@ int
   if (msg_check_type EQUALS 0)
   {
     m->check_size = 1;
-// do NOT change m_check global just because this packet was different...    m_check = OSDP_CHECKSUM; // Issue #11
-//    if (context->verbosity > 2) fprintf(context->log, "m_check set to CHECKSUM (parse)\n");
   }
   else
   {
@@ -367,6 +366,10 @@ if (m->msg_cmd EQUALS OSDP_FILETRANSFER)
       fprintf(context->log, "osdp_parse_message: command %02x\n", returned_hdr->cmd_s);
     };
 
+  if (context->verbosity > 3)
+  {
+    fprintf(context->log, "DEBUG: osdp_parse_message 374\n");
+  };
     switch (returned_hdr->cmd_s)
     {
     default:
@@ -972,8 +975,19 @@ fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
     */
     context->packets_received ++;
 
+    if (context->role EQUALS OSDP_ROLE_ACU)
+    {
+      if (context->verbosity > 3)
+        osdp_trace_dump(context, 1);
+      else
+        osdp_trace_dump(context, 0);
+    };
     if (context->role EQUALS OSDP_ROLE_PD)
     {
+      if (context->verbosity > 3)
+      {
+        fprintf(context->log, "calling trace_dump\n");
+      };
       // for the PD, go ahead and dump the trace buffers now.
       if (context->verbosity > 3)
         osdp_trace_dump(context, 1);
@@ -986,6 +1000,8 @@ fprintf(stderr, "DEBUG: bad sequence. wire_sequence %d\n", wire_sequence);
       char temps [4096];
       char octet_string [1024];
 
+      if (context->verbosity > 3)
+        fprintf(context->log, "DEBUG: 1002\n");
       temps[0] = 0;
       for (i=0; i<m->lth; i++)
       {

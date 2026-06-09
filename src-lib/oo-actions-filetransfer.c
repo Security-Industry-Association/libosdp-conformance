@@ -1,7 +1,7 @@
 /*
   oo-actions-filetransfer - file transfer action routines
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -32,6 +32,9 @@ extern OSDP_RESPONSE_QUEUE_ENTRY osdp_response_queue [8];
 extern int osdp_response_queue_size;
 
 
+/*
+  action_osdp_FILETRANSFER - process a FILETRANSFER command as the PD
+*/
 int
   action_osdp_FILETRANSFER
     (OSDP_CONTEXT *ctx,
@@ -44,6 +47,7 @@ int
   unsigned int offset;
   OSDP_HDR_FTSTAT response;
   int status;
+  int status_ftstat;
   int status_io;
   unsigned char *transfer_fragment;
 
@@ -51,6 +55,9 @@ int
   status = ST_OK;
   filetransfer_message = (OSDP_HDR_FILETRANSFER *)(msg->data_payload);
   memset (&response, 0, sizeof(response));
+
+  status_ftstat = OSDP_FTSTAT_OK;
+
   if (ctx->ft_interleave)
     response.FtAction = response.FtAction | OSDP_FTACTION_INTERLEAVE;
   response.FtAction = response.FtAction | ctx->xferctx.ft_action;
@@ -117,33 +124,59 @@ int
       {
         int offered_size;
 
+        // if we're here assume status was good for now.
+
+        osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
+
         // offer an updated receive size.
 
         offered_size = oo_filetransfer_SDU_offer(ctx);
 
         // if there was a configured size, offer that
+
         if (ctx->pd_filetransfer_payload > 0)
         {
           offered_size = ctx->pd_filetransfer_payload;
         };
         if (ctx->verbosity > 3)
           fprintf(ctx->log, "osdp_FTSTAT FTMsgUpdateMax will be %d.\n", offered_size);
-
         osdp_doubleByte_to_array(offered_size, response.FtUpdateMsgMax);
 
-        fprintf(ctx->log, " Sending FTSTAT:Offset %d Total %d CurrentSDU %d OfferedSDU %d\n",
-          ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
-          offered_size);
+        // if requested set the status to something else...
 
-        if (ctx->verbosity > 3)
+        if (ctx->ft_next_status > 0)
         {
-          fprintf(stderr, "current_offset : \"%d\n", ctx->xferctx.current_offset);
-          fprintf(stderr, "total_length : %d\n", ctx->xferctx.total_length);
-          fprintf(stderr, "current_send_length : %d\n", ctx->xferctx.current_send_length);
-          fprintf(stderr, "response mmax %02x %02x\n",
+          if (ctx->verbosity > 3)
+            fprintf(ctx->log, "  FtStatusDetail on next FTSTAT will be %d\n", ctx->ft_next_status);
+          status_ftstat = ctx->ft_next_status;
+          osdp_doubleByte_to_array(ctx->ft_next_status, response.FtStatusDetail);
+          ctx->ft_next_status = 0;
+        };
+
+        // if requested to do a delay, do it.  Once.
+
+        if (ctx->ft_next_delay > 0)
+        {
+          if (ctx->verbosity > 3)
+            fprintf(ctx->log, "  FtDelay on next FTSTAT will be %d\n", ctx->ft_next_delay);
+          osdp_doubleByte_to_array(ctx->ft_next_delay, response.FtDelay);
+          ctx->ft_next_delay = 0;
+        };
+
+        if (ctx->verbosity > 0)
+          fprintf(ctx->log, "\n   FTSTAT Response: Status %d. Offset %d Total %d CurrentSDU %d OfferedSDU %d FtDelay %d.\n",
+            status_ftstat,
+            ctx->xferctx.current_offset, ctx->xferctx.total_length, ctx->xferctx.current_send_length,
+            offered_size, (response.FtDelay [0])*256 + response.FtDelay[1]);
+
+        if (ctx->verbosity > 9)
+        {
+          fprintf(ctx->log, "current_offset : \"%d\n", ctx->xferctx.current_offset);
+          fprintf(ctx->log, "total_length : %d\n", ctx->xferctx.total_length);
+          fprintf(ctx->log, "current_send_length : %d\n", ctx->xferctx.current_send_length);
+          fprintf(ctx->log, "response mmax %02x %02x\n",
             response.FtUpdateMsgMax [0], response.FtUpdateMsgMax [1]);
         };
-        osdp_doubleByte_to_array(OSDP_FTSTAT_OK, response.FtStatusDetail);
         status = oo_send_ftstat(ctx, &response);
       };
     };
@@ -236,6 +269,12 @@ fprintf(stderr, "DEBUG: sending poll to address poll response\n");
   };
   if (status EQUALS ST_OK)
     status = oo_write_status (ctx);
+
+{
+  oosdp_make_message (OOSDP_MSG_FTSTAT, tlogmsg, msg);
+  fprintf(ctx->log, "\n  FTSTAT action: %s\n", tlogmsg);
+};
+
   return (status);
 
 } /* action_osdp_FTSTAT */

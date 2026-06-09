@@ -1,7 +1,7 @@
 /*
   oo_util3 -more (3)  open osdp utility routines
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -818,7 +818,7 @@ int
       tlogmsg [0] = 0;
       break;
     case OSDP_XWR:
-      status = oosdp_make_message(OOSDP_MSG_XWRITE, tlogmsg, msg);
+      status = oosdp_make_message(OOSDP_MSG_XWR, tlogmsg, msg);
       if (status == ST_OK)
         status = oosdp_log (context, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
       break;
@@ -826,6 +826,10 @@ int
   };
   if (msg->direction != 0) // direction non-0 (128) is FROM the PD
   {
+    if (context->verbosity > 3)
+    {
+      fprintf(context->log, "monitor from PD response code is %02X\n", msg->msg_cmd);
+    };
     switch (msg->msg_cmd)
     {
     default:

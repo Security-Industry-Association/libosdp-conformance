@@ -60,8 +60,13 @@ int
 
   matches_ACU = 0;
   strcpy (tag, "cmd=CP-");
+fprintf(stderr, "DEBUG: tag %s\n", tag);
+fprintf(stderr, "DEBUG: arguments %s\n", arguments);
   if (0 == strncmp (tag, arguments, strlen (tag)))
+  {
+fprintf(stderr, "matched.\n");
     matches_ACU = 1;
+  };
   if (!matches_ACU)
   {
     strcpy (tag, "cmd=ACU-");
@@ -73,13 +78,8 @@ int
   if (matches_ACU)
   {
     printf ("<HTML><HEAD><TITLE>Control PD Testing (CP Emulator)</TITLE>");
-#ifdef OSDP_CONFORMANCE
     printf
 ("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"1;URL=/Test-ACU.html\">");
-#else
-    printf
-("<META HTTP-EQUIV=\"REFRESH\" CONTENT=\"3;URL=/open-osdp-CP.html\">");
-#endif
     printf ("</HEAD><BODY>");
     strcpy (command, arguments+strlen(tag));
     // send the CP daemon a command

@@ -1,9 +1,8 @@
 # libosdp-conformance package make
 
-# This makes the RS-485 version.  To make the TLS version,
-# you need to explicitly do "make osdp-tls"
+# This makes the RS-485 version.
 
-#  (C)Copyright 2017-2024 Smithee Solutions LLC
+#  (C)Copyright 2017-2026 Smithee Solutions LLC
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
 #  you may not use this file except in compliance with the License.
@@ -55,15 +54,10 @@ build:	all
 	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/PD/my-root
 	echo "/opt/osdp-conformance" >opt/osdp-conformance/run/MON/my-root
 
-osdp-tls:	build
-	(cd src-tls; make all; cd ..)
-	(cd src-tls; make build; cd ..)
-	(cd src-ui; make build-tls; cd ..)
-
-service:	osdp-tls
+service:	build
 	(cd package; make service)
 
-package:	osdp-tls 
+package:	build
 	(cd package; make package)
 
 documentation:	service 
@@ -74,7 +68,6 @@ clean:
 	(cd include; make clean; cd ..)
 	(cd src-lib; make clean; cd ..)
 	(cd src-485; make clean; cd ..)
-	(cd src-tls; make clean; cd ..)
 	(cd src-ui; make clean; cd ..)
 	(cd src-tools; make clean; cd ..)
 	(cd test; make clean; cd ..)

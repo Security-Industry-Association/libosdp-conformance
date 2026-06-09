@@ -2,7 +2,7 @@ extern int pending_response_length;
 /*
   open-osdp - RS-485 implementation of OSDP protocol
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -337,7 +337,28 @@ int
         if (c1 != -1)
         {
           memset(cmdbuf, 0, sizeof(cmdbuf));
-          status_io = read (c1, cmdbuf, sizeof (cmdbuf));
+          {
+            char cmd_char [2];
+            int done;
+
+            done = 0;
+            cmd_char [1] = 0;
+            while (!done)
+            {
+              status_io = read (c1, cmd_char, sizeof(cmd_char [0]));
+              if (status_io EQUALS 1)
+                strcat(cmdbuf, cmd_char);
+              else
+                done = 1;
+              if (cmd_char [0] EQUALS 0)
+                done = 1;
+              if (cmd_char [0] EQUALS 0x0a)
+                done = 1;
+            };
+            if (context.verbosity > 3)
+              fprintf(context.log, "DEBUG: socket command was %s\n", cmdbuf);
+          };
+//          status_io = read (c1, cmdbuf, sizeof (cmdbuf));
           if (status_io > 0)
           {
             close (c1);

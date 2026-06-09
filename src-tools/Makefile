@@ -17,7 +17,7 @@
 # Support provided by the Security Industry Association
 # http://www.securityindustry.org
 
-PROGS=osdp-dump osdp-sc-calc
+PROGS=osdp-sc-calc
 CGI_PROGS=osdp-decode osdp-packet-decode
 ACTIONS=\
   osdp_ACK osdp_ACURXSIZE osdp_BIOMATCH osdp_BIOMATCHR osdp_BIOREAD osdp_BIOREADR osdp_BUSY osdp_BUZ osdp_CAP osdp_CCRYPT osdp_CHLNG osdp_COM osdp_COMSET osdp_CRAUTH osdp_CRAUTHR \
@@ -52,12 +52,6 @@ osdp-decode:	osdp-decode.o Makefile
 
 osdp-decode.o:	osdp-decode.c
 	${CC} ${CFLAGS} osdp-decode.c
-
-osdp-dump:	osdp-dump.o Makefile ${OSDPLIB}/libosdp.a
-	${LINK} -o osdp-dump osdp-dump.o ${LDFLAGS}
-
-osdp-dump.o:	osdp-dump.c ${OSDPINCLUDE}/open-osdp.h
-	${CC} ${CFLAGS} osdp-dump.c
 
 osdp-dump-util.o:	osdp-dump-util.c
 	${CC} ${CFLAGS} osdp-dump-util.c

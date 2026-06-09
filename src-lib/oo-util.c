@@ -443,6 +443,10 @@ int
       status = action_osdp_TEXT (context, msg);
       break;
 
+    case OSDP_XWR:
+      status = action_osdp_XWR(context, msg);
+      break;
+
     case OSDP_ILLICIT:
       {
         osdp_nak_response_data [0] = 0xe0;

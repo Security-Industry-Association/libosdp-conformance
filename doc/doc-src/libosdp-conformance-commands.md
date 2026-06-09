@@ -146,7 +146,10 @@ Default behavior is to send to the currently-configured PD address on the curren
 |          |                          |
 | new-sequence | "1" to reset sequence number to zero. |
 |                |                                          |
-| pdid-blocktype | 0-255, default is 0 (IEC 60839-11-5 MBC) |
+| pdid-blocktype | 0-255, default is 0 (IEC 60839-11-5 PDID response) |
+
+PDID block type 1 requests an extended PDID response instead
+of a PDID response.
 
 \newpage {}
 
@@ -294,7 +297,7 @@ It us used by LED (and eventually GENAUTH/CRAUTH for that off-nominal use case.)
 | reaction-details           | hex string to use as payload for reaction command.                 |
 |             |                                            |
 
-# return-input #
+## Command return-input ##
 
 This command returns an input status.  If no value is specified it sets input 0 to a 1.
 
@@ -327,10 +330,11 @@ ___Arguments___
 |             |                                            |
 | file-type | (optional) file type to use.  Hex, must be nonzero. |
 
-## Command transfer-cancel ##
+## Command transfer-modify ##
 
-This command causes the ACU to cancel the file transfer in progress
-by sending an osdp_FILETRANSFER with all zeroes.
+When sent to an ACU using the cancel=1 option causes an ACU-initiated file transfer cancellation.
+
+When sent to a PD causes the next FTSTAT response to have certain fields modified.
 
 ___Arguments___
 
@@ -338,6 +342,12 @@ ___Arguments___
 | -------- | ----- |
 |          |       |
 | command        | transfer-cancel |
+|             |                                            |
+| cancel   | (use with ACU ) any value other than 0 causes a filetransfer cancel sequence. |
+|             |                                            |
+| next-delay  | (use with PD) next ftstat will send this delay value.  Units are milliseconds. |
+|             |                                            |
+| next-status | (use with PD) unsigned 32bit sent on next ftstat. |
 
 \newpage{}
 

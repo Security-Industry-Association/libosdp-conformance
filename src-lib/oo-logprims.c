@@ -1,7 +1,7 @@
 /*
   oo-logprims - open osdp logging sub-functions
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -302,15 +302,19 @@ char
   case 13:
     strcpy (funcname, "Readers");
     break;
-  case 14:
+  case OSDP_CAP_BIOMETRICS:
     strcpy (funcname, "Biometrics");
     break;
-  case 15:
+  case OSDP_CAP_EXTENDED_PDID:
+    strcpy(funcname, "Extended PDID");
+    break;
+  case OSDP_CAP_SPE:
     strcpy(funcname, "Secure PIN Entry");
     break;
   case OSDP_CAP_VERSION:
     strcpy(funcname, "OSDP Protocol Version");
     break;
+//#define OSDP_CAP_CONTACT_STATUS (1) #define OSDP_CAP_OUTPUT_CONTROL (2) #define OSDP_CAP_CARD_FORMAT    (3) #define OSDP_CAP_LED_CONTROL    (4) #define OSDP_CAP_AUDIBLE_OUT    (5) #define OSDP_CAP_TEXT_OUT       (6) #define OSDP_CAP_TIME_KEEPING   (7) #define OSDP_CAP_CHECK_CRC      (8) #define OSDP_CAP_SECURE         (9) #define OSDP_CAP_REC_MAX        (10) #define OSDP_CAP_MAX_MULTIPART  (11) #define OSDP_CAP_SMART_CARD     (12) #define OSDP_CAP_READERS        (13)
   };
   return (funcname);
 }
@@ -421,6 +425,8 @@ void
 
   // if verbosity is not 'quiet' OR tracing was explicitly enabled
 
+  if (ctx->verbosity > 3)
+    fprintf(ctx->log, "DEBUG: 421 logmsg\n");
   if ((ctx->verbosity > 0) || (ctx->trace))
   {
     fflush(ctx->log);

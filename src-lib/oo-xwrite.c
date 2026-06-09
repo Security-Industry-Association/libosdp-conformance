@@ -1,7 +1,7 @@
 /*
   oo-xwrite - extended write and extended reader functions
 
-  (C)Copyright 2020 Smithee Solutions LLC
+  (C)Copyright 2020-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -37,56 +37,73 @@ int
 
 { /* action_osdp_XRD */
 
+  char cmd [2*8192];
+  int i;
+  char octet [3];
   int status;
 
 
-  status = oosdp_make_message (OOSDP_MSG_XREAD, tlogmsg, msg);
-  if (status EQUALS ST_OK)
-    status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-
-  // if we know it's 7.25.5 it's a card-present alert
-
-  if (*(msg->data_payload + 0) EQUALS 1)
+  sprintf(cmd, "%02X %02X ",
+    *(msg->data_payload), *(msg->data_payload+1));
+  for (i=0; i<msg->data_length-2; i++)
   {
-    if (*(msg->data_payload + 1) EQUALS 1)
-    {
-      sprintf(tlogmsg,
-"Extended Read: Card Present - Interface not specified.  Rdr %d Status %02x\n",
-        *(msg->data_payload + 2), *(msg->data_payload + 3));
-      status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
-      status = oosdp_callout(ctx, "osdp_XRD_1_1", "");
-//      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_1");
-//      system(cmd);
-    };
+    sprintf(octet, "%02X", *(msg->data_payload+2+i));
+    strcat(cmd, octet);
   };
-
-  // if we know it's 7.25.8 it's an APDU from the card
-
-  if (*(msg->data_payload + 0) EQUALS 1)
-  {
-    if (*(msg->data_payload + 1) EQUALS 2)
-    {
-      char apdu [1024];
-      int i;
-      char octet [3];
-
-      apdu [0] = 0;
-      for (i=4; i<msg->data_length-4; i++)
-      {
-        sprintf(octet, "%02x", msg->data_payload [i]);
-        strcat(apdu, octet);
-      };
-
-      dump_buffer_log(ctx, "APDU: ", msg->data_payload+4, msg->data_length-4);
-
-      status = oosdp_callout(ctx, "osdp_XRD_1_2", apdu);
-//      sprintf(cmd, "/opt/osdp-conformance/run/ACU-actions/osdp_XRD_1_2 %s", apdu); system(cmd);
-    };
-  };
+  status = oosdp_callout(ctx, "osdp_XRD", cmd);
 
   return (status);
 
 } /* action_osdp_XRD */
+
+
+int
+  action_osdp_XWR
+    (OSDP_CONTEXT *ctx,
+    OSDP_MSG *msg)
+
+{ /* action_osdp_XWR */
+
+  char callout_args [8192];
+  int i;
+  char octet [3];
+  int pdata_length;
+  int status;
+
+
+// TODO CONFIRM data_payload not cmd_payload
+
+  status = oosdp_make_message (OOSDP_MSG_XWR, tlogmsg, msg);
+  if (status EQUALS ST_OK)
+    status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+
+  if (status EQUALS ST_OK)
+  {
+    sprintf(callout_args, "MODE %02X PCMND %02X PDATA ",
+      *(msg->data_payload + 0),
+      *(msg->data_payload + 1));
+    pdata_length = msg->data_length - 2;
+    if (pdata_length > 0)
+    {
+      for(i=0; i<pdata_length; i++)
+      {
+        sprintf(octet, "%02X", *(msg->data_payload+2+i));
+        strcat(callout_args, octet);
+      };
+    };
+    sprintf(tlogmsg,
+"Extended Write Mode=%02X PCMND=%02X PDATA contains %d. bytes\n",
+      *(msg->data_payload + 0), *(msg->data_payload + 1), pdata_length);
+    status = oosdp_log (ctx, OSDP_LOG_NOTIMESTAMP, 1, tlogmsg);
+  };
+  if (status EQUALS ST_OK)
+  {
+    status = oosdp_callout(ctx, "osdp_XWR", callout_args);
+  };
+
+  return (status);
+
+} /* action_osdp_XWR */
 
 
 int
@@ -201,4 +218,52 @@ if (mode EQUALS 0)
   return (status);
 
 } /* osdp_xwr_send_set_mode */
+
+
+int osdp_xwrite_explicit
+  (OSDP_CONTEXT *ctx,
+  unsigned char mode,
+  unsigned char pcmnd,
+  int pdata_length,
+  unsigned char *pdata)
+
+{ /* osdp_xwrite_explicit */
+
+  char callout_args [8192];
+  int clth;
+  int current_length;
+  int i;
+  char octet [3];
+  int status;
+  OSDP_XWR_COMMAND xwr_cmd;
+
+
+  clth = 0;
+  xwr_cmd.xrw_mode = mode; clth++;
+  xwr_cmd.xwr_pcmnd = pcmnd; clth++;
+  memcpy(&(xwr_cmd.xwr_pdata[0]), pdata, pdata_length);
+  clth = clth + pdata_length;
+
+
+  sprintf(callout_args, "%02X %02X %02X",
+    mode, pcmnd, pdata[0]);
+  if (pdata_length > 0)
+  {
+    for(i=0; i<pdata_length; i++)
+    {
+      sprintf(octet, "%02X", pdata [i]);
+      strcat(callout_args, octet);
+    };
+  };
+  status = oosdp_callout(ctx, "osdp_XWR", callout_args);
+  if (status EQUALS ST_OK)
+  {
+    current_length = 0;
+    status = send_message (ctx,
+      OSDP_XWR, p_card.addr, &current_length, clth, (unsigned char *)&xwr_cmd);
+  };
+
+  return(status);
+
+} /* osdp_xwrite_explicit */
 

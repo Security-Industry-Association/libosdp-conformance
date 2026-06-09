@@ -7,9 +7,30 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
-$$$ Updates in 1.103 Build 2 ###
+### Updates in 1.111 Build 0 ###
+
+added transfer-modify.  deprecated transfer-cancel.
+doc updated to add transfer-modify.
+
+### Updates in 1.110 Build 1 ###
+
+- corrected underscore in sample PD configuration.
+- correct address display in PD status
+- display FTSTAT details even if encrypted
+- changed command socket processing to support stacking
+
+### Updates in 1.110 Build 0 ###
+
+Move code no longer supported to "deprecate" directory to reduce confusion
+caused by naive LLM's analyzing the code.
+
+### Updates in 1.103 Build 2 ###
 
 Dump all auxiliary parameters in a NAK response
+
+Add osdp_XWR enhancements.
+
+Fix lingering acu-side capture bug
 
 ### Updates in 1.103 Build 1 ###
 

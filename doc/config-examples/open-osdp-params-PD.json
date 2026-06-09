@@ -1,10 +1,10 @@
 {
    "role" : "PD"
   ,"fqdn" : "perim-0001.example.com"
-  ,"network_address" : "10.2.0.41"
+  ,"network-address" : "10.2.0.41"
   ,"verbosity" : "3"
   ,"bits" : "26"
-  ,"raw_value" : "70123440"
+  ,"raw-value" : "70123440"
   ,"address" : "00"
   ,"serial-device" : "/dev/ttyUSB0"
 }
