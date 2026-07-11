@@ -181,10 +181,6 @@ int
   // dump the trace buffer 
   if (context.trace)
   {
-    if (context.verbosity > 3)
-    {
-      fprintf(context.log, "trace dump at util2 186\n");
-    }; 
     osdp_trace_dump(&context, 0);
   };
 

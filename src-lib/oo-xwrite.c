@@ -247,9 +247,9 @@ int osdp_xwrite_explicit
 
   sprintf(callout_args, "%02X %02X %02X",
     mode, pcmnd, pdata[0]);
-  if (pdata_length > 0)
+  if (pdata_length > 1)
   {
-    for(i=0; i<pdata_length; i++)
+    for (i=1; i<pdata_length; i++)
     {
       sprintf(octet, "%02X", pdata [i]);
       strcat(callout_args, octet);

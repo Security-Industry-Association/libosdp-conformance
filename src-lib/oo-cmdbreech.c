@@ -369,8 +369,11 @@ int
     };
     break;
 
-  // command MFG.  Arguments are OUI, command-id, command-specific-data, config-address.
-  // c-s-d is is 2-hexit bytes, length inferred.
+  /*
+    command MFG.  Arguments are 
+    OUI, command-id, command-specific-data, config-address.
+    c-s-d is is 2-hexit bytes, length inferred.
+  */
 
   case OSDP_CMDB_MFG:
     {

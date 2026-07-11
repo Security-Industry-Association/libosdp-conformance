@@ -722,22 +722,24 @@ fprintf(stderr, "lstat 1000\n");
 
       if ((parsed_crc != wire_crc) || (m_check EQUALS OSDP_CHECKSUM))
       {
-        if (context->verbosity > 2)
+        if (m_check != OSDP_CHECKSUM)
         {
-          fprintf(context->log, "Bad CRC: Got %04x Expected %04x\n",
-            wire_crc, parsed_crc);
+          if (context->verbosity > 2)
+          {
+            fprintf(context->log, "Bad CRC: Got %04x Expected %04x\n",
+              wire_crc, parsed_crc);
+          };
+          status = ST_BAD_CRC;
+          context->crc_errs ++;
+          if (context->role EQUALS OSDP_ROLE_ACU)
+            osdp_test_set_status(OOC_SYMBOL_CRC_bad_response, OCONFORM_EXERCISED);
+          else
+            osdp_test_set_status(OOC_SYMBOL_CRC_bad_command, OCONFORM_EXERCISED);
         };
-        status = ST_BAD_CRC;
-        context->crc_errs ++;
-        if (context->role EQUALS OSDP_ROLE_ACU)
-          osdp_test_set_status(OOC_SYMBOL_CRC_bad_response, OCONFORM_EXERCISED);
-        else
-          osdp_test_set_status(OOC_SYMBOL_CRC_bad_command, OCONFORM_EXERCISED);
       };
       if (status EQUALS ST_OK)
       {
         last_check_value = wire_crc;
-// not here        last_command_received = m->msg_cmd;
       };
     }
     else

@@ -419,8 +419,6 @@ void
 
   // if verbosity is not 'quiet' OR tracing was explicitly enabled
 
-  if (ctx->verbosity > 3)
-    fprintf(ctx->log, "DEBUG: 421 logmsg\n");
   if ((ctx->verbosity > 0) || (ctx->trace))
   {
     fflush(ctx->log);

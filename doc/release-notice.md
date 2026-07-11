@@ -7,6 +7,14 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.111 Build 2
+
+correct logging of XWR command.
+
+### Updates in 1.111 Build 1 ###
+
+Remove false crc error 
+
 ### Updates in 1.111 Build 0 ###
 
 added transfer-modify.  deprecated transfer-cancel.
