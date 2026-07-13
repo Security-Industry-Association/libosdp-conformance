@@ -10,6 +10,8 @@ See Security-Industry-Association/osdp-verified for details on conformance testi
 ### Updates in 1.111 Build 2
 
 correct logging of XWR command.
+split poll action routine to separate file.
+enhance busy action routine to activate callout
 
 ### Updates in 1.111 Build 1 ###
 

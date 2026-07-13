@@ -560,6 +560,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
     case OSDP_BUSY:
       status = ST_OK;
       fprintf (context->log, "PD Responded BUSY\n");
+      status = action_osdp_BUSY(context, msg);
       break;
 
     case OSDP_CCRYPT:

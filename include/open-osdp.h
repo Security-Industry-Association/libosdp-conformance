@@ -1111,6 +1111,7 @@ int action_osdp_BIOMATCH(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_BIOMATCHR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_BIOREAD(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_BIOREADR(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
+int action_osdp_BUSY(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CHLNG(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_CCRYPT (OSDP_CONTEXT *ctx, OSDP_MSG *msg);
 int action_osdp_COM(OSDP_CONTEXT *ctx, OSDP_MSG *msg);
