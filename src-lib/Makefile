@@ -161,7 +161,7 @@ oo-73.o:	oo-73.c
 
 /opt/osdp-conformance/include/open-osdp.h:	../include/open-osdp.h
 	mkdir -p /opt/osdp-conformance/include
-	cp ../include/open-osdp.h /opt/osdp-conformance/include
+	#cp ../include/open-osdp.h /opt/osdp-conformance/include
 	echo really should be a makefile in the include directory
-	cp ../include/oo-api.h /opt/osdp-conformance/include
+	#cp ../include/oo-api.h /opt/osdp-conformance/include
 

@@ -227,16 +227,6 @@ int
     };
     check_serial (&context);
   };
-  if (0)
-  {
-    fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
-      OSDP_TIMER_STATISTICS, context.timer[OSDP_TIMER_STATISTICS].i_sec, context.timer[OSDP_TIMER_STATISTICS].i_nsec);
-    fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
-      OSDP_TIMER_RESPONSE, context.timer[OSDP_TIMER_RESPONSE].i_sec, context.timer[OSDP_TIMER_RESPONSE].i_nsec);
-    fprintf(stderr, "DEBUG: timer %d i_sec %ld. i_nsec %ld.\n",
-      OSDP_TIMER_SUMMARY, context.timer[OSDP_TIMER_SUMMARY].i_sec, context.timer[OSDP_TIMER_SUMMARY].i_nsec);
-    //OSDP_TIMER_LED_0_TEMP_ON OSDP_TIMER_LED_0_TEMP_OFF OSDP_TIMER_IO
-  };
   while (!done)
   {
     fflush (context.log);
@@ -348,6 +338,13 @@ int
                 done = 1;
               if (cmd_char [0] EQUALS 0x0a)
                 done = 1;
+              // assuming it ends in quote+baroque parenthesis we're done
+              if (strlen(cmdbuf) > 1)
+              {
+                if (cmdbuf [strlen(cmdbuf)-2] EQUALS '\"')
+                  if (cmdbuf [strlen(cmdbuf)-1] EQUALS '}')
+                    done = 1;
+              };
             };
             if (context.verbosity > 3)
               fprintf(context.log, "DEBUG: socket command was %s\n", cmdbuf);

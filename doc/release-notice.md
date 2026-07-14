@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.111 Build 3
+
+fix socket command input line termination
+fixed build dependancy on installation target directories
+
 ### Updates in 1.111 Build 2
 
 correct logging of XWR command.
