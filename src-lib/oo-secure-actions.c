@@ -209,7 +209,7 @@ if (ctx->verbosity > 3)
     osdp_reset_secure_channel (ctx);
   };
 
-  // if we got here the PD was processing our CHLNG so that's a PASS
+  // if we got here the PD was processing our CHLNG so report
 
   (void)osdp_test_set_status(OOC_SYMBOL_cmd_chlng, OCONFORM_EXERCISED);
 
@@ -521,6 +521,7 @@ int
   unsigned char message1 [16];
   unsigned char message2 [16];
   unsigned char message3 [16];
+  unsigned char osdp_nak_response_data [2];
   unsigned char sec_blk [1];
   unsigned char server_cryptogram [16]; // size of RND.B plus RND.A
   int status;
@@ -605,8 +606,22 @@ int
   {
     status = ST_OSDP_SC_WRONG_STATE;
     osdp_reset_secure_channel (ctx);
+
+    // nak this out of place SCRYPT so the ACU gets the memo.
+
+    current_length = 0;
+    osdp_nak_response_data [0] = OO_NAK_UNSUP_SECBLK;
+    osdp_nak_response_data [1] = 0x12; // scs header value
+    status = send_message (ctx,
+      OSDP_NAK, p_card.addr, &current_length,
+      sizeof(osdp_nak_response_data), osdp_nak_response_data);
+    ctx->sent_naks ++;
+    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+    if (ctx->verbosity > 2)
+    {
+      fprintf (ctx->log, "NAK: osdp_SCRYPT out of place.\n");
+    };
   };
-  //fprintf(stderr, "DEBUG: bottom of SCRYPT last_ %d\n", ctx->last_was_processed);
   return (status);
 
 } /* action_osdp_SCRYPT */
