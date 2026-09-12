@@ -77,7 +77,7 @@ int
     osdp_nak_response_data [1] = 0xff;
     status = send_message_ex(ctx, OSDP_NAK, ctx->pd_address, &current_length, 1, osdp_nak_response_data, OSDP_SEC_SCS_18, 0, NULL);
     ctx->sent_naks ++;
-    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
     if (ctx->verbosity > 2)
     {
       fprintf (ctx->log, "BIO not enable, responding with NAK\n");
@@ -168,7 +168,7 @@ int
     osdp_nak_response_data [1] = 0xff;
     status = send_message_ex(ctx, OSDP_NAK, ctx->pd_address, &current_length, 1, osdp_nak_response_data, OSDP_SEC_SCS_18, 0, NULL);
     ctx->sent_naks ++;
-    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
     if (ctx->verbosity > 2)
     {
       fprintf (ctx->log, "BIO not enable, responding with NAK\n");

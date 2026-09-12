@@ -517,7 +517,7 @@ int
   {
     if (command EQUALS OSDP_NAK)
     {
-      osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
       fprintf (stderr, "NAK being sent...%02x\n", *data);
     };
   };

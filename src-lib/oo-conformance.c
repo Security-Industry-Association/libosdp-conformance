@@ -1,7 +1,7 @@
 /*
   oo-conformance - conformance reporting routines
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Support provided by the Security Industry Association
   http://www.securityindustry.org
@@ -446,22 +446,34 @@ OSDP_CONFORMANCE_TEST
       &(osdp_conformance.resp_ftstat_bufsize.test_status),
       0, 0, 0, 0, 0,
                         "FTSTAT buffer size"},
-    {         OOC_SYMBOL_rep_nak,
-      &(osdp_conformance.rep_nak.test_status),
+    {         OOC_SYMBOL_resp_nak,
+      &(osdp_conformance.resp_nak.test_status),
       1, 1, 1, 1, 0,
                         "Response: NAK" },
     {         OOC_SYMBOL_resp_nak_not_msg,
       &(osdp_conformance.resp_nak_not_msg.test_status),
       0, 0, 0, 0, 0,
                         "NAK not msg" },
-    {         OOC_SYMBOL_resp_nak_3,
-      &(osdp_conformance.resp_nak_3.test_status),
+    {         OOC_SYMBOL_resp_nak_unk_cmd,
+      &(osdp_conformance.resp_nak_unk_cmd.test_status),
       0, 0, 0, 0, 0,
                         "NAK reason 3" },
-    {         OOC_SYMBOL_resp_nak_5,
-      &(osdp_conformance.resp_nak_5.test_status),
+    {         OOC_SYMBOL_resp_nak_seq,
+      &(osdp_conformance.resp_nak_seq.test_status),
+      0, 0, 0, 0, 0,
+                        "NAK unexpected sequence" },
+    {         OOC_SYMBOL_resp_nak_sec_blk,
+      &(osdp_conformance.resp_nak_sec_blk.test_status),
       0, 0, 0, 0, 0,
                         "NAK reason 5" },
+    {         OOC_SYMBOL_resp_nak_enc_req,
+      &(osdp_conformance.resp_nak_enc_req.test_status),
+      0, 0, 0, 0, 0,
+                        "NAK encryption required" },
+    {         OOC_SYMBOL_resp_nak_cmd,
+      &(osdp_conformance.resp_nak_cmd.test_status),
+      0, 0, 0, 0, 0,
+                        "NAK unable to process command" },
     {         OOC_SYMBOL_resp_pivdatar,
       &(osdp_conformance.resp_pivdatar.test_status),
       0, 0, 0, 0, 0,
@@ -826,7 +838,7 @@ void
     conformance_status (oconf->rep_ack.test_status)));
   LOG_REPORT ((log_string,
 "4-2-1  Negative Ack Error Response        %s",
-    conformance_status (oconf->rep_nak.test_status)));
+    conformance_status (oconf->resp_nak.test_status)));
   LOG_REPORT ((log_string,
 "4-3-1  Device Identification Report       %s",
     conformance_status (oconf->rep_device_ident.test_status)));

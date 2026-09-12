@@ -1,7 +1,7 @@
 /*
   osdp_conformance.h - conformance metrics per profiles
 
-  (C)Copyright 2017-2023 Smithee Solutions LLC
+  (C)Copyright 2017-2026 Smithee Solutions LLC
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -100,10 +100,15 @@ typedef struct osdp_conform
 
 #define OOC_SYMBOL_rep_ack            "070-02-01"
 #define OOC_SYMBOL_resp_ostatr_ack    "070-02-02"
-#define OOC_SYMBOL_rep_nak            "070-03-01"
+#define OOC_SYMBOL_resp_nak           "070-03-01"
 #define OOC_SYMBOL_resp_nak_not_msg   "070-03-02"
-#define OOC_SYMBOL_resp_nak_3         "070-03-06"
-#define OOC_SYMBOL_resp_nak_5         "070-03-08"
+#define OOC_SYMBOL_resp_nak_check_crc "070-03-04"
+#define OOC_SYMBOL_resp_nak_cmd_lth   "070-03-05"
+#define OOC_SYMBOL_resp_nak_unk_cmd   "070-03-06"
+#define OOC_SYMBOL_resp_nak_seq       "070-03-07"
+#define OOC_SYMBOL_resp_nak_sec_blk   "070-03-08"
+#define OOC_SYMBOL_resp_nak_enc_req   "070-03-09"
+#define OOC_SYMBOL_resp_nak_cmd       "070-03-12"
 #define OOC_SYMBOL_rep_device_ident   "070-04-01"
 #define OOC_SYMBOL_rep_pdid_check     "070-04-02"
 #define OOC_SYMBOL_rep_device_capas   "070-05-01"
@@ -238,11 +243,14 @@ typedef struct osdp_interop_assessment
 
   OSDP_CONFORM rep_ack;
   OSDP_CONFORM resp_ostatr_ack;
-  OSDP_CONFORM rep_nak;
+  OSDP_CONFORM resp_nak;
   OSDP_CONFORM resp_nak_not_msg;
-  OSDP_CONFORM resp_nak_3;
-  OSDP_CONFORM resp_nak_5;
+  OSDP_CONFORM resp_nak_unk_cmd;
+  OSDP_CONFORM resp_nak_sec_blk;
+  OSDP_CONFORM resp_nak_enc_req;
   OSDP_CONFORM rep_device_ident;
+  OSDP_CONFORM resp_nak_seq;
+  OSDP_CONFORM resp_nak_cmd;
   OSDP_CONFORM rep_pdid_check;
   OSDP_CONFORM rep_device_capas;
   OSDP_CONFORM resp_cap_card_fmt;

@@ -803,7 +803,9 @@ int
 
   status = ST_OK;
 
-  if (ctx->verbosity > 2)
+  // ok to do in minimal logging?  trying 1 not 2
+//  if (ctx->verbosity > 2)
+  if (ctx->verbosity > 0)
     dump_conformance(ctx, &osdp_conformance);
 
   // clear logs if possible

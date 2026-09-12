@@ -282,7 +282,7 @@ int
       OSDP_NAK, ctx->pd_address, &current_length, nak_length, osdp_nak_response_data);
     ctx->sent_naks ++;
     osdp_test_set_status(OOC_SYMBOL_cmd_id, OCONFORM_FAIL);
-    osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+    osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
     if (ctx->verbosity > 2)
     {
       fprintf(ctx->log, "ID command rejected as command unknown.\n"); // bad parameter?

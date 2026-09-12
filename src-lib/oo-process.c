@@ -170,6 +170,7 @@ current_check_value EQUALS last_check_value)
       default:
         nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_CMD_UNABLE;
+        osdp_test_set_status(OOC_SYMBOL_resp_nak_cmd, OCONFORM_EXERCISED);
         break;
       case ST_NOT_MY_ADDR:
         send_response = 0; // not for me, don't answer.
@@ -178,6 +179,7 @@ current_check_value EQUALS last_check_value)
         nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_ENC_REQ;
         fprintf(context.log, "  NAK: Bad hash, sending NAK %d\n", OO_NAK_ENC_REQ);
+        osdp_test_set_status(OOC_SYMBOL_resp_nak_enc_req, OCONFORM_EXERCISED);
         break;
       case ST_OSDP_BAD_SEQUENCE:
         if (context.verbosity > 3)
@@ -187,6 +189,7 @@ current_check_value EQUALS last_check_value)
 
         nak_not_msg = 1;
         osdp_nak_response [0] = OO_NAK_SEQUENCE;
+        osdp_test_set_status(OOC_SYMBOL_resp_nak_seq, OCONFORM_EXERCISED);
 
         osdp_reset_secure_channel(&context);
         // reset the current sequence number to zero (for the NAK)

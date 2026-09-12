@@ -158,11 +158,11 @@ int action_osdp_NAK
           break;
         };
       };
-      osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+      osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
       if (nak_code EQUALS 3) 
-        osdp_test_set_status(OOC_SYMBOL_resp_nak_3, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_nak_unk_cmd, OCONFORM_EXERCISED);
       if (nak_code EQUALS 5) 
-        osdp_test_set_status(OOC_SYMBOL_resp_nak_5, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_nak_sec_blk, OCONFORM_EXERCISED);
 
       // collateral effects of a NAK...
 

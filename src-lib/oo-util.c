@@ -201,7 +201,7 @@ int
         status = send_message (context,
           OSDP_NAK, context->pd_address, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
-        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
           fprintf(context->log, "BUZ command rejected as command unknown.\n");
@@ -382,7 +382,7 @@ int
         status = send_message (context,
           OSDP_NAK, context->pd_address, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
-        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
           fprintf(context->log, "LED command rejected as command unknown.\n");
@@ -505,7 +505,7 @@ fprintf(context->log, "DEBUG3: NAK: %d.\n", osdp_nak_response_data [0]);
         status = send_message (context,
           OSDP_NAK, context->pd_address, &current_length, nak_length, osdp_nak_response_data);
         context->sent_naks ++;
-        osdp_test_set_status(OOC_SYMBOL_rep_nak, OCONFORM_EXERCISED);
+        osdp_test_set_status(OOC_SYMBOL_resp_nak, OCONFORM_EXERCISED);
         if (context->verbosity > 2)
         {
           fprintf(context->log, "NAK induced.  CMD %02x declared invalid or unknown\n", msg->msg_cmd);
