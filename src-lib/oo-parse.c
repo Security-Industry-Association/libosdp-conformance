@@ -763,18 +763,22 @@ fprintf(stderr, "lstat 1000\n");
       };
       if (parsed_cksum != wire_cksum)
       {
-char *p;
-int i;
         fprintf(context->log, "CHECKSUM ERROR Parsed=0x%02x Wire=0x%02x\n",
           parsed_cksum, wire_cksum);
-fprintf(stderr, "Checksum error != c=%x p %x %x\n",
-  (unsigned)(returned_hdr->cmd_s), (unsigned)parsed_cksum, (unsigned)wire_cksum);
-p = (char *)(m->ptr);
-for (i=0; i<16; i++)
-  fprintf(stderr, " %02x", *(unsigned char *)(p+i)); 
-fprintf(stderr, "\n"); fflush(stderr);
-        status = ST_BAD_CHECKSUM;
-status = ST_OK; // tolerate checksum error and continue
+        if (context->verbosity > 3)
+        {
+          int i;
+          char *p;
+
+          fprintf(stderr, "Checksum error != c=%x p %x %x\n",
+            (unsigned)(returned_hdr->cmd_s), (unsigned)parsed_cksum, (unsigned)wire_cksum);
+          p = (char *)(m->ptr);
+          for (i=0; i<16; i++)
+            fprintf(stderr, " %02x", *(unsigned char *)(p+i)); 
+          fprintf(stderr, "\n"); fflush(stderr);
+        };
+//        status = ST_BAD_CHECKSUM;
+        status = ST_OK; // tolerate checksum error and continue
         context->checksum_errs ++;
       };
       if (status EQUALS ST_OK)
