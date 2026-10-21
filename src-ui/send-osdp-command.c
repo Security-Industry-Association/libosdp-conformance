@@ -1,4 +1,4 @@
-// (C) 2022-2025 Smithee Solutions LLC
+// (C) 2022-2026 Smithee Solutions LLC
 
 #define EQUALS ==
 
@@ -60,8 +60,6 @@ int
 
   matches_ACU = 0;
   strcpy (tag, "cmd=CP-");
-fprintf(stderr, "DEBUG: tag %s\n", tag);
-fprintf(stderr, "DEBUG: arguments %s\n", arguments);
   if (0 == strncmp (tag, arguments, strlen (tag)))
   {
 fprintf(stderr, "matched.\n");

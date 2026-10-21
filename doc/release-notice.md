@@ -7,6 +7,10 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.111 Build 6
+
+remove debug output from send-osdp-command
+
 ### Updates in 1.111 Build 4
 
 Respond with a NAK if an out of place osdp_SCRYPT is received.
