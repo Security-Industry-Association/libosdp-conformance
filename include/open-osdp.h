@@ -1,7 +1,7 @@
 /*
   open-osdp.h - definitions for libosdp-conformance
 
-  (C)Copyright 2017-2026 Smithee Solutions LLC
+  (C)Copyright 2026 Cottwol Consulting
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@
 #define OSDP_PROTOCOL_VERSION_SIA223 (0x04)
 
 #define OSDP_VERSION_MAJOR ( 1)
-#define OSDP_VERSION_MINOR (111)
-#define OSDP_VERSION_BUILD (  6)
+#define OSDP_VERSION_MINOR (112)
+#define OSDP_VERSION_BUILD (  0)
 
 #define OO_DIR_RUN         (1)
 #define OO_DIR_LOG         (2)

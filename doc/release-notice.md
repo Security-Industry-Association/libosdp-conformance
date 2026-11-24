@@ -7,6 +7,11 @@ This is libosdp-conformance, an ACU/PD/Monitor implementation of OSDP.
 
 See Security-Industry-Association/osdp-verified for details on conformance testing.
 
+### Updates in 1.112 Build 0
+
+- change version to osdp 2.2.2 (4)
+- fix issue receiving large filetransfer packets
+
 ### Updates in 1.111 Build 6
 
 remove debug output from send-osdp-command

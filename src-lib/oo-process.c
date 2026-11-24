@@ -1,10 +1,7 @@
 /*
   oo-process - process OSDP message input
 
-  (C)Copyright 2017-2025 Smithee Solutions LLC
-
-  Support provided by the Security Industry Association
-  http://www.securityindustry.org
+  (C)Copyright 2026 Cottwol Consulting
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -357,19 +354,6 @@ current_check_value EQUALS last_check_value)
     if (status != ST_OK)
       // if we experienced an error we just reset things and continue
       status = ST_SERIAL_IN;
-{
-  int i;
-  char new_trace_buffer [3*1024];
-  char tmps [1024];
-
-  new_trace_buffer [0] = 0;
-  for (i=0; i<length; i++)
-  {
-    sprintf(tmps, " %02x", osdp_buf->buf[i]);
-    strcat(new_trace_buffer, tmps);
-  };
-  strcat(new_trace_buffer, "\n");
-}
   };
   return (status);
 

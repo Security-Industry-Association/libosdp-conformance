@@ -1,7 +1,7 @@
 /*
   oo-capabilities - primitives to manage the capabilities list
 
-  (C) 2021-2025 Smithee Solutions LLC
+  (C)Copyright 2026 Cottwol Consulting
 */
 
 
@@ -141,7 +141,7 @@ int
   {
     int my_version;
 
-    my_version = 2;
+    my_version = OSDP_PROTOCOL_VERSION_SIA223;
     if (ctx->capability_version != -1)
       my_version = ctx->capability_version;
     status = osdp_add_capability(ctx, capas, 16, my_version, 0, capabilities_response_length, sizeof(capas));

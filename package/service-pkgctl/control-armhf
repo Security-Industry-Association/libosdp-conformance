@@ -1,10 +1,10 @@
 Package: osdp-service
-Version: 1.111-6
+Version: 1.112-0
 Section: custom
 Priority: optional
 Architecture: armhf
 Essential: no
 Installed-Size: 1024
-Maintainer: github@smithee.solutions
+Maintainer: git@cottwol.com
 Description: systemd service set-up for libosdp-conformance
 
